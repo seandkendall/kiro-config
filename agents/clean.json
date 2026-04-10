@@ -3,15 +3,32 @@
   "description": "macOS disk cleanup analyzer - finds space hogs without deleting anything",
   "prompt": "file://./prompts/clean.md",
   "mcpServers": {},
-  "tools": ["@builtin"],
-  "allowedTools": ["read", "shell", "glob", "grep"],
+  "tools": [
+    "@builtin"
+  ],
+  "allowedTools": [
+    "read",
+    "shell",
+    "glob",
+    "grep"
+  ],
   "toolsSettings": {
     "shell": {
       "autoAllowReadonly": true,
-      "deniedCommands": ["rm .*", "trash .*", "srm .*", "mv .*", "sudo rm.*", "sudo trash.*"]
+      "deniedCommands": [
+        "rm .*",
+        "trash .*",
+        "srm .*",
+        "mv .*",
+        "sudo rm.*",
+        "sudo trash.*",
+        "git-defender.*"
+      ]
     },
     "write": {
-      "deniedPaths": ["**/*"],
+      "deniedPaths": [
+        "**/*"
+      ],
       "fallbackAction": "deny"
     }
   }
