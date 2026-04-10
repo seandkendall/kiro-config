@@ -23,61 +23,11 @@ echo "║       Kiro CLI Setup Installer           ║"
 echo "╚══════════════════════════════════════════╝"
 echo ""
 
-# --- Step 1: Check if Kiro CLI is installed ---
-if command -v kiro-cli &>/dev/null; then
-  KIRO_VERSION=$(kiro-cli --version 2>/dev/null || echo "unknown")
-  echo -e "${GREEN}✓${NC} Kiro CLI found: $KIRO_VERSION"
-else
-  echo -e "${YELLOW}⚠${NC} Kiro CLI is not installed."
-  echo ""
-  echo "  Install options:"
-  echo "    1) Auto-install via official installer (recommended)"
-  echo "    2) Install via Homebrew"
-  echo "    3) Skip — I'll install it myself later"
-  echo ""
-  read -rp "  Choose [1/2/3]: " INSTALL_CHOICE
-  case "$INSTALL_CHOICE" in
-    1)
-      echo ""
-      echo "  Installing Kiro CLI..."
-      curl -fsSL https://cli.kiro.dev/install | bash
-      echo ""
-      if command -v kiro-cli &>/dev/null; then
-        echo -e "${GREEN}✓${NC} Kiro CLI installed successfully"
-      else
-        echo -e "${YELLOW}⚠${NC} Kiro CLI installed but not in PATH yet."
-        echo "  Add this to your shell profile (~/.zshrc or ~/.bashrc):"
-        echo '    export PATH="$HOME/.local/bin:$PATH"'
-        echo "  Then restart your terminal or run: source ~/.zshrc"
-      fi
-      ;;
-    2)
-      echo ""
-      echo "  Installing via Homebrew..."
-      brew install --cask kiro-cli
-      echo -e "${GREEN}✓${NC} Kiro CLI installed via Homebrew"
-      ;;
-    3)
-      echo ""
-      echo "  Skipping Kiro CLI install. You can install later:"
-      echo "    curl -fsSL https://cli.kiro.dev/install | bash"
-      echo "    — or —"
-      echo "    brew install --cask kiro-cli"
-      ;;
-    *)
-      echo "  Invalid choice. Skipping install."
-      ;;
-  esac
-  echo ""
-fi
-
-# --- Step 2: Check prerequisites ---
-echo "Checking prerequisites..."
-MISSING=()
-
-# --- Helper: ensure Homebrew is installed ---
+# --- Helper: ensure Homebrew is installed and up to date ---
 ensure_brew() {
   if command -v brew &>/dev/null; then
+    echo "  Updating Homebrew..."
+    NONINTERACTIVE=1 brew update --quiet 2>/dev/null
     return 0
   fi
   echo ""
@@ -86,21 +36,16 @@ ensure_brew() {
   # Add brew to PATH for this session and persist to .zshrc
   if [[ -f /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-    if ! grep -q 'brew shellenv' ~/.zshrc 2>/dev/null; then
-      echo '' >> ~/.zshrc
-      echo '# Homebrew' >> ~/.zshrc
-      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
-      echo -e "  ${GREEN}✓${NC} Added Homebrew to ~/.zshrc"
-    fi
   elif [[ -f /usr/local/bin/brew ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
+  fi
+  if command -v brew &>/dev/null; then
     if ! grep -q 'brew shellenv' ~/.zshrc 2>/dev/null; then
       echo '' >> ~/.zshrc
       echo '# Homebrew' >> ~/.zshrc
-      echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zshrc
+      echo 'eval "$('"$(command -v brew)"' shellenv)"' >> ~/.zshrc
+      echo -e "  ${GREEN}✓${NC} Added Homebrew to ~/.zshrc"
     fi
-  fi
-  if command -v brew &>/dev/null; then
     echo -e "  ${GREEN}✓${NC} Homebrew installed"
     return 0
   else
@@ -109,6 +54,48 @@ ensure_brew() {
   fi
 }
 
+# --- Step 0: Ensure Homebrew ---
+echo "Checking Homebrew..."
+ensure_brew
+
+# --- Step 1: Install or update Kiro CLI ---
+if command -v kiro-cli &>/dev/null; then
+  KIRO_VERSION=$(kiro-cli --version 2>/dev/null || echo "unknown")
+  echo -e "${GREEN}✓${NC} Kiro CLI found: $KIRO_VERSION"
+  echo "  Updating Kiro CLI..."
+  curl -fsSL https://cli.kiro.dev/install | bash 2>&1 | grep -E "complete|already|up.to.date|Installing" | tail -1
+  NEW_VERSION=$(kiro-cli --version 2>/dev/null || echo "unknown")
+  if [[ "$NEW_VERSION" != "$KIRO_VERSION" ]]; then
+    echo -e "  ${GREEN}✓${NC} Updated to $NEW_VERSION"
+  else
+    echo -e "  ${GREEN}✓${NC} Already on latest ($NEW_VERSION)"
+  fi
+else
+  echo -e "${YELLOW}⚠${NC} Kiro CLI is not installed."
+  echo ""
+  echo "  Installing Kiro CLI..."
+  curl -fsSL https://cli.kiro.dev/install | bash
+  echo ""
+  # Ensure PATH includes ~/.local/bin
+  export PATH="$HOME/.local/bin:$PATH"
+  if ! grep -q '\.local/bin' ~/.zshrc 2>/dev/null; then
+    echo '' >> ~/.zshrc
+    echo '# Kiro CLI' >> ~/.zshrc
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+    echo -e "  ${GREEN}✓${NC} Added ~/.local/bin to PATH in ~/.zshrc"
+  fi
+  if command -v kiro-cli &>/dev/null; then
+    echo -e "${GREEN}✓${NC} Kiro CLI installed: $(kiro-cli --version 2>/dev/null)"
+  else
+    echo -e "${YELLOW}⚠${NC} Kiro CLI installed but not in PATH yet."
+    echo "  Restart your terminal or run: source ~/.zshrc"
+  fi
+fi
+echo ""
+
+# --- Step 2: Check prerequisites ---
+echo "Checking prerequisites..."
+MISSING=()
 if command -v python3 &>/dev/null; then
   PY_VER=$(python3 --version 2>&1)
   echo -e "  ${GREEN}✓${NC} $PY_VER"
