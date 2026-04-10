@@ -1,0 +1,120 @@
+{
+  "name": "master",
+  "description": "Master orchestrator agent — routes any task to the right specialist subagent (no gaming)",
+  "prompt": "file://./prompts/master.md",
+  "mcpServers": {
+    "aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "web-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@brave/brave-search-mcp-server",
+        "--transport",
+        "stdio"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "disabled": false
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "disabled": false
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md",
+    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
+    "skill://~/.kiro/skills/react-frontend-patterns.md",
+    "skill://~/.kiro/skills/aws-serverless-patterns.md",
+    "skill://~/.kiro/skills/testing-patterns.md"
+  ],
+  "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "serverless",
+        "frontend",
+        "testing",
+        "cypress",
+        "architect",
+        "ai-builder",
+        "devops",
+        "data",
+        "security",
+        "docs",
+        "image-gen",
+        "research",
+        "sap-abap"
+      ],
+      "trustedAgents": [
+        "serverless",
+        "frontend",
+        "testing",
+        "cypress",
+        "architect",
+        "ai-builder",
+        "devops",
+        "data",
+        "security",
+        "docs",
+        "image-gen",
+        "research",
+        "sap-abap"
+      ]
+    },
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*github\\.com.*"
+      ]
+    }
+  },
+  "keyboardShortcut": "ctrl+1",
+  "welcomeMessage": "Master orchestrator ready. I route tasks to specialist subagents — serverless, frontend, testing, architect, AI, devops, data, security, docs, and more. What are we building?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}

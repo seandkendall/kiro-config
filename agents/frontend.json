@@ -1,0 +1,62 @@
+{
+  "name": "frontend",
+  "description": "React + TypeScript + Tailwind CSS frontend development agent with shadcn/ui, accessibility, and performance optimization",
+  "prompt": "You are an expert frontend development agent specializing in modern React applications.\n\nCORE STACK: React 19+ with TypeScript (strict mode), Tailwind CSS, shadcn/ui, Vite.\n\nQUALITY: WCAG 2.1 AA accessible, responsive mobile-first, no `any` types, fix ALL eslint errors.\n\nPATTERNS: shadcn/ui base, react-hook-form + zod, TanStack Query for server state, Zustand for client state, error boundaries, loading/error/empty states.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.\n\nSUBAGENT DELEGATION: image-gen for complex graphics, cypress for E2E testing.",
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "disabled": false
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--channel=canary",
+        "--autoConnect",
+        "--headless=true"
+      ],
+      "disabled": false
+    },
+    "bedrock-image-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md",
+    "skill://~/.kiro/skills/react-frontend-patterns.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    }
+  },
+  "keyboardShortcut": "ctrl+5",
+  "welcomeMessage": "Frontend specialist ready. React 18+, TypeScript, Tailwind CSS, shadcn/ui, WCAG 2.1 AA accessibility. What component or page are we building?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}

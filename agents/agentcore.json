@@ -1,0 +1,87 @@
+{
+  "name": "agentcore",
+  "description": "Build, deploy, and test AWS AgentCore applications with Strands Agents",
+  "prompt": "file://./prompts/agentcore.md",
+  "mcpServers": {
+    "bedrock-agentcore-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "strands-agents": {
+      "command": "uvx",
+      "args": [
+        "strands-agents-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "INFO"
+      },
+      "disabled": false
+    },
+    "aws-iac-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-iac-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "bedrock-image-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    },
+    "aws": {
+      "autoAllowReadonly": true
+    }
+  },
+  "allowedTools": [
+    "@bedrock-agentcore-mcp-server/search_agentcore_docs",
+    "@bedrock-agentcore-mcp-server/fetch_agentcore_doc",
+    "@strands-agents/search_docs",
+    "@strands-agents/fetch_doc"
+  ],
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}

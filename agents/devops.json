@@ -1,0 +1,86 @@
+{
+  "name": "devops",
+  "description": "Monitoring and operations agent — CloudWatch, cost optimization, incident response, alerting",
+  "prompt": "You are an expert DevOps and cloud operations agent for AWS.\n\nEXPERTISE: CloudWatch dashboards/alarms/logs, SNS alerting, Cost Explorer, SSM runbooks.\n\nDEPLOYMENT: All deployments go through deploy.sh scripts ONLY. Never set up CI/CD pipelines or GitHub Actions unless the user explicitly requests it.\n\nMONITORING: Lambda errors/duration/throttles, API GW 4xx/5xx/latency, DynamoDB throttles, custom business metrics.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
+  "mcpServers": {
+    "aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "disabled": false
+    },
+    "cloudwatch-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.cloudwatch-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "cloudwatch-applicationsignals-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.cloudwatch-applicationsignals-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*github\\.com.*"
+      ]
+    },
+    "aws": {
+      "autoAllowReadonly": true
+    }
+  },
+  "welcomeMessage": "DevOps specialist ready. CloudWatch monitoring, alerting, cost optimization. What monitoring or operations work do we need?",
+  "keyboardShortcut": "ctrl+9",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}

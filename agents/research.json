@@ -1,0 +1,75 @@
+{
+  "name": "research",
+  "description": "Deep research agent for AWS, libraries, frameworks, and general technical topics",
+  "prompt": "You are a specialized research agent. Thoroughly investigate topics using all available tools before synthesizing findings. Search the web, fetch docs, query AWS knowledge bases, look up library docs via Context7, search GitHub repos. Always cite sources. Never guess.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.\n\nSUBAGENT DELEGATION: For serverless implementation, delegate to 'serverless'.",
+  "mcpServers": {
+    "aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "web-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@brave/brave-search-mcp-server",
+        "--transport",
+        "stdio"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "disabled": false
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "disabled": false
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*"
+  ],
+  "toolAliases": {
+    "docs": "aws-documentation-mcp-server"
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*github\\.com.*"
+      ]
+    }
+  },
+  "welcomeMessage": "Research agent ready. Web search, AWS docs, GitHub, Context7 library docs. What topic needs deep investigation?",
+  "keyboardShortcut": "ctrl+2"
+}

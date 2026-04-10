@@ -1,0 +1,54 @@
+{
+  "name": "docs",
+  "description": "Documentation generator — READMEs, API docs, ADRs, runbooks, onboarding guides",
+  "prompt": "You are an expert technical documentation agent.\n\nTYPES: README.md, OpenAPI specs, ADRs, runbooks, onboarding guides, CHANGELOG.md.\n\nQUALITY: Write for zero-context readers, working code examples, concise language, test all commands.\n\nAPI DOCS: Every endpoint documented with method, path, auth, request/response schemas, curl examples, rate limits.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
+  "mcpServers": {
+    "aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
+    }
+  },
+  "welcomeMessage": "Documentation specialist ready. READMEs, API docs, ADRs, runbooks, changelogs. What needs documenting?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}

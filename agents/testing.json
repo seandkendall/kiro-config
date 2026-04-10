@@ -1,0 +1,78 @@
+{
+  "name": "testing",
+  "description": "QA and testing agent — Cypress E2E via subagent, pytest, Jest/Vitest, targeting 100% coverage",
+  "prompt": "You are an expert QA and testing agent. Target 100% coverage, never below 90%.\n\nE2E: ALWAYS delegate to 'cypress' subagent. \n\nPython: pytest + moto, parametrize, fixtures, `--cov-fail-under=90`.\nReact: Vitest + React Testing Library + jest-axe, MSW for API mocks.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
+  "mcpServers": {
+    "browsermcp": {
+      "command": "npx",
+      "args": [
+        "@browsermcp/mcp@latest"
+      ],
+      "disabled": false
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--channel=canary",
+        "--autoConnect",
+        "--headless=true"
+      ],
+      "disabled": false
+    },
+    "aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md",
+    "skill://~/.kiro/skills/testing-patterns.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
+    }
+  },
+  "keyboardShortcut": "ctrl+6",
+  "welcomeMessage": "QA specialist ready. pytest + moto for Lambda, Vitest + RTL for React, Cypress E2E via subagent. Target: 100% coverage. What needs testing?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}
