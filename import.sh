@@ -357,8 +357,6 @@ fi
 
 # --- Step 4: Copy files ---
 DIRS=(agents steering skills prompts settings)
-OVERWRITE_ALL=false
-SKIP_ALL=false
 
 copy_dir() {
   local src="$1"
@@ -374,25 +372,7 @@ copy_dir() {
 
   for f in "$SCRIPT_DIR/$src"/*; do
     [[ ! -f "$f" ]] && continue
-    local filename=$(basename "$f")
-    local target="$dest/$filename"
-
-    if [[ -f "$target" ]] && ! $OVERWRITE_ALL; then
-      if ! $SKIP_ALL; then
-        echo -e "  ${YELLOW}File exists:${NC} $dir_name/$filename"
-        read -rp "  Overwrite? [y/N/all/skip-all]: " CHOICE
-        case "$CHOICE" in
-          all) OVERWRITE_ALL=true ;;
-          skip-all) SKIP_ALL=true; continue ;;
-          y|Y) ;;
-          *) continue ;;
-        esac
-      else
-        continue
-      fi
-    fi
-
-    cp "$f" "$target"
+    cp "$f" "$dest/"
     ((count++))
   done
 
@@ -406,6 +386,105 @@ done
 
 # Copy README if present
 [[ -f "$SCRIPT_DIR/README.md" ]] && cp "$SCRIPT_DIR/README.md" "$KIRO_DIR/README.md"
+
+# --- Step 4.5: Check env vars and strip MCP servers that need missing keys ---
+echo ""
+echo "Checking environment variables..."
+
+# Map: env var -> MCP server keys that require it
+# Check ~/.zshrc and current env
+check_env_var() {
+  local var="$1"
+  if [[ -n "${!var}" ]]; then
+    return 0
+  fi
+  if grep -q "export $var=" ~/.zshrc 2>/dev/null; then
+    return 0
+  fi
+  return 1
+}
+
+GITHUB_SET=false
+BRAVE_SET=false
+
+if check_env_var "GITHUB_PERSONAL_ACCESS_TOKEN"; then
+  echo -e "  ${GREEN}✓${NC} GITHUB_PERSONAL_ACCESS_TOKEN is set"
+  GITHUB_SET=true
+else
+  echo -e "  ${YELLOW}⚠${NC} GITHUB_PERSONAL_ACCESS_TOKEN not found"
+  read -rp "  Paste your GitHub token (or press Enter to skip): " GH_TOKEN
+  if [[ -n "$GH_TOKEN" ]]; then
+    echo '' >> ~/.zshrc
+    echo "export GITHUB_PERSONAL_ACCESS_TOKEN=\"$GH_TOKEN\"" >> ~/.zshrc
+    export GITHUB_PERSONAL_ACCESS_TOKEN="$GH_TOKEN"
+    echo -e "  ${GREEN}✓${NC} Added to ~/.zshrc"
+    GITHUB_SET=true
+  fi
+fi
+
+if check_env_var "BRAVE_API_KEY"; then
+  echo -e "  ${GREEN}✓${NC} BRAVE_API_KEY is set"
+  BRAVE_SET=true
+else
+  echo -e "  ${YELLOW}⚠${NC} BRAVE_API_KEY not found"
+  read -rp "  Paste your Brave API key (or press Enter to skip): " BRAVE_KEY
+  if [[ -n "$BRAVE_KEY" ]]; then
+    echo '' >> ~/.zshrc
+    echo "export BRAVE_API_KEY=\"$BRAVE_KEY\"" >> ~/.zshrc
+    export BRAVE_API_KEY="$BRAVE_KEY"
+    echo -e "  ${GREEN}✓${NC} Added to ~/.zshrc"
+    BRAVE_SET=true
+  fi
+fi
+
+# Strip MCP servers from installed agents if keys are missing
+if ! $GITHUB_SET || ! $BRAVE_SET; then
+  echo ""
+  echo "  Removing MCP servers that require missing API keys..."
+  python3 << 'STRIP_MCP_EOF'
+import json, glob, os
+
+github_set = os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN", "") != ""
+brave_set = os.environ.get("BRAVE_API_KEY", "") != ""
+kiro_dir = os.path.expanduser("~/.kiro")
+count = 0
+
+for f in glob.glob(os.path.join(kiro_dir, "agents", "*.json")):
+    try:
+        with open(f) as fh:
+            d = json.load(fh)
+    except:
+        continue
+    modified = False
+    servers = d.get("mcpServers", {})
+
+    if not github_set:
+        for key in list(servers.keys()):
+            env = servers[key].get("env", {})
+            if "GITHUB_PERSONAL_ACCESS_TOKEN" in str(env):
+                del servers[key]
+                modified = True
+
+    if not brave_set:
+        for key in list(servers.keys()):
+            env = servers[key].get("env", {})
+            args = servers[key].get("args", [])
+            if "BRAVE_API_KEY" in str(env) or "brave-search" in str(args):
+                del servers[key]
+                modified = True
+
+    if modified:
+        with open(f, "w") as fh:
+            json.dump(d, fh, indent=2, ensure_ascii=False)
+            fh.write("\n")
+        count += 1
+
+if count:
+    print(f"    Removed unavailable MCP servers from {count} agent(s)")
+else:
+    print("    No changes needed")
+STRIP_MCP_EOF
+fi
 
 # --- Step 5: Apply Kiro CLI settings ---
 if command -v kiro-cli &>/dev/null && [[ -f "$SCRIPT_DIR/settings/cli.json" ]]; then
@@ -438,19 +517,20 @@ SETTINGS_EOF
   echo -e "  ${GREEN}✓${NC} Kiro CLI settings configured"
 fi
 
-# --- Step 6: Environment variable reminder ---
+# --- Step 6: Done ---
 echo ""
 echo "╔══════════════════════════════════════════╗"
 echo "║          Installation Complete!          ║"
 echo "╚══════════════════════════════════════════╝"
 echo ""
-echo "Set up your environment variables:"
-echo ""
-echo "  export GITHUB_PERSONAL_ACCESS_TOKEN=\"ghp_your_token_here\""
-echo ""
-echo "Add to ~/.zshrc (or ~/.bashrc) to persist."
-echo ""
+if ! $GITHUB_SET || ! $BRAVE_SET; then
+  echo "To enable all features later, add missing API keys to ~/.zshrc:"
+  ! $GITHUB_SET && echo "  export GITHUB_PERSONAL_ACCESS_TOKEN=\"ghp_your_token_here\""
+  ! $BRAVE_SET && echo "  export BRAVE_API_KEY=\"your_brave_api_key_here\""
+  echo "Then re-run ./import.sh to restore the MCP servers."
+  echo ""
+fi
 echo "To start using Kiro CLI:"
-echo "  kiro-cli chat"
+echo "  source ~/.zshrc && kiro-cli chat"
 echo ""
 echo "See README.md for full documentation."
