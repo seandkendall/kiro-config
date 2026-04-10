@@ -1,0 +1,40 @@
+{
+  "name": "shopify",
+  "description": "Shopify + AWS serverless integration builder",
+  "prompt": "file://./prompts/shopify.md",
+  "mcpServers": {
+    "shopify-dev-mcp": {
+      "command": "npx",
+      "args": ["-y", "@shopify/dev-mcp@latest"]
+    },
+    "aws-iac-mcp-server": {
+      "command": "uvx",
+      "args": ["awslabs.aws-iac-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    }
+  },
+  "tools": ["*"],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    }
+  },
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}

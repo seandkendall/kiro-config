@@ -1,0 +1,153 @@
+{
+  "name": "accounting",
+  "description": "Canadian accounting SaaS builder — Wave/QuickBooks alternative for Canadian small businesses, Alberta-focused, React + AWS serverless + Bedrock AI",
+  "prompt": "file://./prompts/accounting.md",
+  "mcpServers": {
+    "aws-serverless-mcp-server": {
+      "command": "uvx",
+      "args": ["awslabs.aws-serverless-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "timeout": 300000
+    },
+    "aws-iac-mcp-server": {
+      "command": "uvx",
+      "args": ["awslabs.aws-iac-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "timeout": 300000
+    },
+    "aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": ["awslabs.aws-documentation-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "timeout": 300000
+    },
+    "cdk-mcp-server": {
+      "command": "uvx",
+      "args": ["awslabs.cdk-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "timeout": 300000
+    },
+    "strands-agents": {
+      "command": "uvx",
+      "args": ["strands-agents-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "INFO"
+      },
+      "disabled": false,
+      "timeout": 300000
+    },
+    "bedrock-agentcore-mcp-server": {
+      "command": "uvx",
+      "args": ["awslabs.amazon-bedrock-agentcore-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "timeout": 300000
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "disabled": false,
+      "timeout": 300000
+    },
+    "web-search": {
+      "command": "npx",
+      "args": ["-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "disabled": false,
+      "timeout": 300000
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "disabled": false,
+      "timeout": 300000
+    },
+    "bedrock-image-mcp-server": {
+      "command": "uvx",
+      "args": ["bedrock-image-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    }
+  },
+  "tools": ["*"],
+  "allowedTools": [
+    "@strands-agents/search_docs",
+    "@strands-agents/fetch_doc",
+    "@bedrock-agentcore-mcp-server/search_agentcore_docs",
+    "@bedrock-agentcore-mcp-server/fetch_agentcore_doc"
+  ],
+  "resources": [
+    "file://README.md",
+    "file://~/.kiro/steering/*.md",
+    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
+    "skill://~/.kiro/skills/react-frontend-patterns.md",
+    "skill://~/.kiro/skills/aws-serverless-patterns.md",
+    "skill://~/.kiro/skills/testing-patterns.md"
+  ],
+  "toolsSettings": {
+    "subagent": {
+      "trustedAgents": [
+        "research",
+        "serverless",
+        "frontend",
+        "testing",
+        "cypress",
+        "architect",
+        "ai-builder",
+        "data",
+        "security",
+        "docs"
+      ]
+    },
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true
+    },
+    "web_fetch": {
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
+    },
+    "aws": {
+      "autoAllowReadonly": true
+    }
+  },
+  "keyboardShortcut": "ctrl+3",
+  "welcomeMessage": "Canadian accounting SaaS builder ready. Alberta-focused, all-Canada tax support. React + AWS serverless + Bedrock AI. What feature are we working on?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}

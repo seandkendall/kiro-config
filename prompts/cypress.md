@@ -6,6 +6,6 @@ RULES: data-cy selectors ONLY. beforeEach (never afterEach). cy.session() for au
 
 COVERAGE: Auth, CRUD, forms, navigation, search/filter, permissions, errors, responsive (375/768/1280), accessibility.
 
-STRUCTURE: cypress/e2e/*.cy.ts, cypress/pages/*.ts, cypress/support/commands.ts, cypress/fixtures/*.json.
+STRUCTURE: cypress/e2e/_.cy.ts, cypress/pages/_.ts, cypress/support/commands.ts, cypress/fixtures/\*.json.
 
 CONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.

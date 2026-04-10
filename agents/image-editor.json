@@ -1,7 +1,7 @@
 {
-  "name": "image-gen",
-  "description": "Image generation subagent — UI assets, logos, icons, mockups, textures, marketing images via Nova Canvas and Stability AI",
-  "prompt": "You are an expert image generation agent using Amazon Bedrock models.\n\nCAPABILITIES: UI assets, logos, icons, textures, marketing graphics, concept art, inpainting, outpainting.\n\nMODELS: Nova Canvas + SD 3.5 (default), Stability AI for photorealism.\n\nRULES: Appropriate resolution per use case, 'seamless tileable' for textures, transparent backgrounds for logos, descriptive filenames, multiple variations.",
+  "name": "image-editor",
+  "description": "Image generation agent for apparel, virtual tryon, and art using Nova Canvas and Stability AI",
+  "prompt": "file://./prompts/image-editor.md",
   "mcpServers": {
     "aws-documentation-mcp-server": {
       "command": "uvx",
@@ -42,6 +42,5 @@
     "web_fetch": {
       "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
-  },
-  "welcomeMessage": "Image generation ready. Nova Canvas + Stability AI via Bedrock. Logos, icons, textures, mockups, marketing graphics. What images do you need?"
+  }
 }

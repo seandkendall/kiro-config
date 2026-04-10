@@ -11,14 +11,18 @@ Generate draw.io XML files with official AWS4 icons matching the style of AWS Re
 ## Modes
 
 ### Mode A — Codebase Analysis
+
 If user says "analyze", "scan", "from code", or references their existing project:
+
 1. Scan for infrastructure files: CloudFormation, CDK (`cdk.json`), Terraform (`resource "aws_*"`)
 2. Extract services, relationships, VPC structure, and data flow
 3. For non-AWS technologies (Docker, databases, ML frameworks), map to general icons
 4. Confirm discovered architecture with user before generating
 
 ### Mode B — Brainstorming
+
 If user describes an architecture or says "brainstorm"/"design"/"from scratch":
+
 1. Ask 3-5 focused questions (purpose, services, scale, security, traffic pattern)
 2. Propose the architecture with service recommendations and data flow
 3. Iterate if needed, then generate

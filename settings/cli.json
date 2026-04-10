@@ -11,6 +11,7 @@
   "chat.enableTodoList": true,
   "chat.greeting.enabled": false,
   "inline.enabled": true,
+  "mcp.loadedBefore": true,
   "chat.enableSubagent": true,
   "mcp.noInteractiveTimeout": 180000,
   "introspect.tangentMode": true,

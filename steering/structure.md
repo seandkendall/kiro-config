@@ -5,6 +5,7 @@ inclusion: always
 # Project Structure
 
 ## Directory Layout
+
 ```
 /
 ├── cdk-backend/
@@ -25,6 +26,7 @@ inclusion: always
 ```
 
 ## File Organization
+
 - Lambda functions: `cdk-backend/lambda/functions/function_name/function_name.py`
 - CDK stacks: `cdk-backend/cdk/`
 - React components: `frontend/src/components/`
@@ -33,12 +35,14 @@ inclusion: always
 - Steering docs: `.kiro/steering/`
 
 ## Naming Conventions
+
 - Use kebab-case for directories
 - Use PascalCase for React components
 - Use snake_case for Python files
 - Use descriptive, project-specific stack names
 
 ## Import Patterns
+
 - Prefer absolute imports in React
 - Use relative imports for local modules
 - Group imports: external, internal, relative

@@ -5,6 +5,7 @@ inclusion: always
 # Development Workflow
 
 ## Package Management
+
 - Upgrade all packages to latest versions before starting work
 - Keep AWS CLI, CDK CLI, Q CLI updated
 - Use latest Python and pip versions
@@ -13,10 +14,12 @@ inclusion: always
 ## Code Quality
 
 **Shell Scripts**:
+
 - Make testable without human intervention (use `-y` flags)
 - No interactive prompts in automation scripts
 
 **Python Code** - Fix these issues automatically:
+
 - Unused imports
 - Catching general `Exception`
 - Direct library imports
@@ -26,6 +29,7 @@ inclusion: always
 - Naive datetime objects
 
 **Build Quality**:
+
 - Fix ALL eslint errors/warnings before deploy
 - Run build commands once and check exit codes
 - Delete temporary Python files after execution
@@ -47,6 +51,7 @@ Before every significant deployment, ALL of the following must pass:
 Do NOT deploy if any step fails. Fix first, then deploy.
 
 ## Validation
+
 ```bash
 # Check Python code
 pylint your_file.py
@@ -59,6 +64,7 @@ npm run lint
 ## Testing Standards
 
 **Lambda Functions** - Unit tests with pytest:
+
 ```python
 import pytest
 from moto import mock_dynamodb
@@ -71,6 +77,7 @@ def test_lambda_handler():
 ```
 
 **API Endpoints** - Integration tests:
+
 ```python
 def test_api_endpoint():
     response = requests.post(api_url, json=test_data)
@@ -79,6 +86,7 @@ def test_api_endpoint():
 ```
 
 **React Components** - Component tests with Jest/Vitest:
+
 ```typescript
 import { render, screen } from '@testing-library/react'
 import { Button } from './Button'
@@ -90,6 +98,7 @@ test('renders button with text', () => {
 ```
 
 **Test Organization**:
+
 - Lambda tests: `cdk-backend/lambda/functions/function_name/test_function_name.py`
 - React tests: `frontend/src/components/__tests__/Component.test.tsx`
 - Integration tests: `tests/integration/`
@@ -108,13 +117,16 @@ test('renders button with text', () => {
 **Coverage**: Target 100%. Use `@cypress/code-coverage` plugin.
 
 ## Documentation Requirements
+
 - Every project MUST have a README.md with: purpose, prerequisites, setup, deployment, architecture overview
 - Every Lambda function MUST have a docstring explaining its trigger, input, output, and side effects
 - Every React component MUST have a JSDoc comment describing its props and usage
 - Every API endpoint MUST be documented in an OpenAPI spec or GraphQL schema with descriptions
 
 ## Code Review Checklist
+
 Before considering any feature complete, verify:
+
 - [ ] All new components have `data-cy` attributes for Cypress selectors
 - [ ] All new API endpoints are documented in the OpenAPI spec
 - [ ] All new Lambda functions use Powertools (Logger, Tracer, Metrics)
@@ -126,31 +138,37 @@ Before considering any feature complete, verify:
 ## Kiro Interaction Rules
 
 **Kiro Specs (MANDATORY)** - Before writing ANY code:
+
 - New features: Create a Kiro Feature Spec (requirements.md → design.md → tasks.md)
 - Bug fixes: Create a Kiro Bugfix Spec (bugfix.md → design.md → tasks.md)
 - Never skip the spec phase. Code without a spec will not be accepted.
 
 **TODO List (MANDATORY)** - Always use the `todo_list` tool:
+
 - Create a persistent TODO list for every multi-step task
 - Mark tasks as completed immediately after finishing them
 - Never work on multi-step tasks without an active TODO list
 
 **Chain of Thought (MANDATORY)** - Always use the `thinking` tool:
+
 - Before complex decisions, multi-step changes, or architectural choices
 - Break problems down into steps before acting
 - Document reasoning for non-obvious decisions
 
 **Rule Acknowledgment** - When acting based on a steering rule:
+
 - Print "Rule used: `filename.md` (ID)" at start of response
 - For multiple rules: "Rule used: `file1.md` (ID1), `file2.md` (ID2)"
 - Don't mention rules generically, only cite specific ones used
 
 **Rule Checking** - Always review steering docs before:
+
 - Using any tool
 - Responding to requests
 - Making code changes
 
 **Response Format (MANDATORY)** - After completing any code/build/fix task, ALWAYS end with:
+
 1. **Summary**: Brief description of what was done
 2. **Tools & MCP Servers Used**: List every tool, MCP server, and subagent invoked
 3. **Recommended Next Steps**: 2-5 actionable next steps the user should consider

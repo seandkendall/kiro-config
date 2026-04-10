@@ -10,6 +10,7 @@ fileMatchPattern: "{cdk/**/*,**/lambda/**/*,**/*.py}"
 **Language Requirement** - ALL CDK code MUST be written in Python. No TypeScript CDK. Lambda functions in Python.
 
 **Resource Tagging** - Tag ALL resources in every stack (mandatory):
+
 ```python
 from aws_cdk import Tags
 Tags.of(stack).add('auto-stop', 'false')
@@ -20,6 +21,7 @@ Tags.of(stack).add('project', project_name)
 **Stack Naming** - NEVER use default CDK stack names (`CdkStack`, `CdkBackendStack`, `Stack`). Every stack MUST have a unique, project-specific name that clearly identifies the application and environment (e.g., `InvoiceAppDevStack`, `AccountingProdStack`).
 
 **Security Validation** - Always include cdk-nag:
+
 ```python
 from cdk_nag import AwsSolutionsChecks
 from aws_cdk import Aspects
@@ -27,6 +29,7 @@ Aspects.of(app).add(AwsSolutionsChecks())
 ```
 
 **Lambda Functions** - Use `PythonFunction` construct with Python 3.13:
+
 ```python
 from aws_cdk.aws_lambda_python_alpha import PythonFunction
 from aws_cdk.aws_lambda import Runtime
@@ -39,6 +42,7 @@ PythonFunction(self, 'MyFunction',
 ```
 
 **DynamoDB Tables** - GSI creation/deletion limits:
+
 - Only add/remove ONE GSI per `cdk deploy`
 - Wait for deployment completion before next GSI change
 
@@ -47,6 +51,7 @@ PythonFunction(self, 'MyFunction',
 ## Serverless Development
 
 **AWS Lambda Powertools** - Always use for structured logging, tracing, and metrics:
+
 ```python
 from aws_lambda_powertools import Logger, Tracer, Metrics
 from aws_lambda_powertools.utilities.typing import LambdaContext
@@ -65,6 +70,7 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
 ```
 
 **X-Ray Tracing** - Enable active tracing on ALL:
+
 - Lambda functions: `tracing=lambda_.Tracing.ACTIVE` in CDK
 - API Gateway stages: `tracing_enabled=True`
 - Step Functions state machines: `tracing_enabled=True`
@@ -73,6 +79,7 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
 ## Authentication
 
 **Cognito Configuration** - Use newer managed login version:
+
 ```python
 managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN
 ```
@@ -82,11 +89,13 @@ managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN
 ## Security
 
 **S3 Buckets** - Avoid public access:
+
 - Prefer CloudFront with Origin Access Control (OAC) for public content — never use OAI (deprecated)
 - Block ALL public access on S3 buckets serving via CloudFront
 - Use API Gateway with authentication for dynamic access
 
 **Lambda Functions** - Avoid Lambda function URLs:
+
 - Prefer API Gateway with proper authentication
 - Implement authorization at API Gateway level
 
@@ -95,6 +104,7 @@ managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN
 **Infrastructure as Code** - All changes via CDK code, React code, and the `deploy.sh` script.
 
 **deploy.sh is the ONLY deployment method** - Never deploy via `cdk deploy` directly or the AWS Console.
+
 - Every project MUST have a `deploy.sh` script at the project root
 - Required flags:
   - `--profile <name>` — AWS profile to use (no default, must be explicit)
@@ -107,11 +117,13 @@ Never make manual changes in AWS Console.
 **No Hardcoded Values** - Use environment variables, SSM Parameter Store, or Secrets Manager
 
 **Post-Deployment Testing** - Always:
+
 1. Execute live tests against deployed endpoints
 2. Verify expected responses and status codes
 3. Check application logs for errors
 
 ## Reference Files
+
 - CDK stack examples: #[[file:cdk-backend/cdk/stack.py]]
 - Lambda function templates: #[[file:cdk-backend/lambda/functions/example/example.py]]
 - React component patterns: #[[file:frontend/src/components/ui/Button.tsx]]
@@ -119,6 +131,7 @@ Never make manual changes in AWS Console.
 - API specifications: #[[file:api/openapi.yaml]]
 
 ## Lambda Resilience
+
 - All async Lambda invocations MUST have a Dead Letter Queue (SQS DLQ)
 - Implement idempotency using Lambda Powertools `@idempotent` decorator
 - Use exponential backoff for retries to downstream services
@@ -129,6 +142,7 @@ Never make manual changes in AWS Console.
 ## Error Handling
 
 **Lambda Functions** - Return structured error responses:
+
 ```python
 return {
     "statusCode": 400,

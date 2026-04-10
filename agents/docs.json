@@ -5,9 +5,7 @@
   "mcpServers": {
     "aws-documentation-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
-      ],
+      "args": ["awslabs.aws-documentation-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -15,16 +13,11 @@
     },
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     }
   },
-  "tools": [
-    "*"
-  ],
+  "tools": ["*"],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -37,9 +30,7 @@
       "autoAllowReadonly": true
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
   },
   "welcomeMessage": "Documentation specialist ready. READMEs, API docs, ADRs, runbooks, changelogs. What needs documenting?",

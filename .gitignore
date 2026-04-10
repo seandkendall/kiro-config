@@ -1,0 +1,27 @@
+# Sessions and history
+sessions/
+.cli_bash_history
+
+# IDE extensions
+extensions/
+
+# Powers (user-specific installs)
+powers/
+
+# MCP servers (local builds)
+mcp-servers/
+
+# Credentials and secrets
+elevenlabskey.txt
+*.secret
+.env
+.env.local
+
+# macOS
+.DS_Store
+
+# Backups
+steering-backup-*/
+
+# Misc
+argv.json

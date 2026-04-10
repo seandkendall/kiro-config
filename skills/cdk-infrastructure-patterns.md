@@ -6,6 +6,7 @@ description: AWS CDK Python patterns for stacks, constructs, tagging, cdk-nag, C
 # CDK Infrastructure Patterns
 
 ## Stack Template
+
 ```python
 from aws_cdk import Stack, Tags, Aspects, Duration
 from cdk_nag import AwsSolutionsChecks
@@ -19,6 +20,7 @@ class MyAppStack(Stack):
 ```
 
 ## App Entry Point
+
 ```python
 app = cdk.App()
 stack = MyAppStack(app, "MyAppDevStack", env=cdk.Environment(account="123456789", region="us-east-1"))
@@ -27,6 +29,7 @@ app.synth()
 ```
 
 ## CloudFront + S3 (OAC, not OAI)
+
 ```python
 distribution = cloudfront.Distribution(self, "CDN",
     default_behavior=cloudfront.BehaviorOptions(
@@ -39,6 +42,7 @@ distribution = cloudfront.Distribution(self, "CDN",
 ```
 
 ## Cognito
+
 ```python
 user_pool = cognito.UserPool(self, "UserPool",
     self_sign_up_enabled=True,
@@ -49,6 +53,7 @@ user_pool = cognito.UserPool(self, "UserPool",
 ```
 
 ## DynamoDB
+
 ```python
 table = dynamodb.Table(self, "Table",
     partition_key=dynamodb.Attribute(name="PK", type=dynamodb.AttributeType.STRING),
@@ -60,6 +65,7 @@ table = dynamodb.Table(self, "Table",
 ```
 
 ## Rules
+
 - NEVER use default stack names (CdkStack, Stack)
 - Let CDK auto-generate S3 bucket names
 - Only add/remove ONE GSI per deploy

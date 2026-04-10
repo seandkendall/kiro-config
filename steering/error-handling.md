@@ -7,8 +7,10 @@ description: Error handling patterns for Lambda, React, API Gateway. Use when im
 # Error Handling Standards
 
 ## Lambda Functions
+
 - Return structured error responses with error code, message, and requestId
 - Use custom exception classes, never raise generic `Exception`
+
 ```python
 class ValidationError(Exception):
     def __init__(self, message: str, field: str | None = None):
@@ -27,9 +29,11 @@ def lambda_handler(event, context):
 ```
 
 ## React Components
+
 - Use error boundaries for graceful failure handling
 - Every page-level component MUST have an error boundary
 - Show user-friendly error messages, never raw stack traces
+
 ```tsx
 <ErrorBoundary fallback={<ErrorPage />}>
   <Dashboard />
@@ -37,6 +41,7 @@ def lambda_handler(event, context):
 ```
 
 ## API Gateway
+
 - Configure error mapping for consistent JSON error responses
 - Never expose internal error details to clients
 - Always include `requestId` for traceability

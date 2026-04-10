@@ -5,24 +5,16 @@
   "mcpServers": {
     "cypress-mcp": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@jprealini/cypress-mcp"
-      ],
+      "args": ["-y", "@jprealini/cypress-mcp"],
       "disabled": false
     },
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     }
   },
-  "tools": [
-    "*"
-  ],
+  "tools": ["*"],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",

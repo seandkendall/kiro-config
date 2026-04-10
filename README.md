@@ -26,25 +26,25 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ### Agents (17)
 
-| Agent | Description |
-|---|---|
-| `master` | Orchestrator — routes to the right specialist subagent |
-| `serverless` | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools |
-| `frontend` | React, TypeScript, Tailwind CSS, shadcn/ui |
-| `testing` | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent |
-| `cypress` | Cypress E2E tests, Page Objects, data-cy selectors |
-| `architect` | Architecture diagrams, cost estimation, Well-Architected reviews |
-| `ai-builder` | Amazon Bedrock, Strands Agents, prompt engineering, RAG |
-| `agentcore` | AWS AgentCore applications with Strands framework |
-| `devops` | CloudWatch monitoring, alerting, cost optimization |
-| `data` | DynamoDB single-table design, Postgres, data modeling |
-| `security` | IAM, encryption, cdk-nag, CloudTrail |
-| `docs` | READMEs, API docs, ADRs, runbooks |
-| `image-gen` | Image generation via Bedrock (Nova Canvas + SD 3.5) |
-| `research` | Deep research with web search, AWS docs, GitHub |
-| `sap-abap` | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP |
-| `accounting` | Canadian accounting SaaS (Alberta-focused) |
-| `web-builder` | React + AWS full-stack web applications |
+| Agent         | Description                                                      |
+| ------------- | ---------------------------------------------------------------- |
+| `master`      | Orchestrator — routes to the right specialist subagent           |
+| `serverless`  | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools    |
+| `frontend`    | React, TypeScript, Tailwind CSS, shadcn/ui                       |
+| `testing`     | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent   |
+| `cypress`     | Cypress E2E tests, Page Objects, data-cy selectors               |
+| `architect`   | Architecture diagrams, cost estimation, Well-Architected reviews |
+| `ai-builder`  | Amazon Bedrock, Strands Agents, prompt engineering, RAG          |
+| `agentcore`   | AWS AgentCore applications with Strands framework                |
+| `devops`      | CloudWatch monitoring, alerting, cost optimization               |
+| `data`        | DynamoDB single-table design, Postgres, data modeling            |
+| `security`    | IAM, encryption, cdk-nag, CloudTrail                             |
+| `docs`        | READMEs, API docs, ADRs, runbooks                                |
+| `image-gen`   | Image generation via Bedrock (Nova Canvas + SD 3.5)              |
+| `research`    | Deep research with web search, AWS docs, GitHub                  |
+| `sap-abap`    | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                      |
+| `accounting`  | Canadian accounting SaaS (Alberta-focused)                       |
+| `web-builder` | React + AWS full-stack web applications                          |
 
 ### Steering Docs (15)
 
@@ -58,12 +58,12 @@ Specialized knowledge files loaded on-demand: AWS serverless patterns, CDK infra
 
 These are configured in `settings/mcp.json` and available to all agents:
 
-| Server | Type | Purpose |
-|---|---|---|
-| `fetch` | stdio | Fetch web content |
-| `awsknowledge` | HTTP | AWS architecture guidance |
-| `aws-iac-mcp-server` | stdio | IaC best practices |
-| `aws-pricing-mcp-server` | stdio | Real-time AWS pricing |
+| Server                   | Type  | Purpose                   |
+| ------------------------ | ----- | ------------------------- |
+| `fetch`                  | stdio | Fetch web content         |
+| `awsknowledge`           | HTTP  | AWS architecture guidance |
+| `aws-iac-mcp-server`     | stdio | IaC best practices        |
+| `aws-pricing-mcp-server` | stdio | Real-time AWS pricing     |
 
 Individual agents also configure their own MCP servers (AWS docs, CloudWatch, GitHub, Context7, etc.).
 

@@ -6,6 +6,7 @@ description: AWS Lambda, API Gateway, DynamoDB, Step Functions, EventBridge patt
 # AWS Serverless Patterns
 
 ## Lambda Function Template
+
 ```python
 from aws_lambda_powertools import Logger, Tracer, Metrics
 from aws_lambda_powertools.utilities.typing import LambdaContext
@@ -24,6 +25,7 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
 ```
 
 ## CDK Lambda Pattern
+
 ```python
 from aws_cdk.aws_lambda_python_alpha import PythonFunction
 from aws_cdk.aws_lambda import Runtime, Tracing
@@ -39,6 +41,7 @@ PythonFunction(self, 'MyFunction',
 ```
 
 ## DynamoDB Single-Table Pattern
+
 - PK: `ENTITY#id` (e.g., `USER#123`, `ORDER#456`)
 - SK: `METADATA` for base item, `RELATION#id` for relationships
 - GSI1PK/GSI1SK for secondary access patterns
@@ -46,18 +49,21 @@ PythonFunction(self, 'MyFunction',
 - Enable point-in-time recovery
 
 ## API Gateway Pattern
+
 - REST API with Cognito authorizer
 - Request validation models at gateway level
 - Defense in depth: validate again in Lambda with pydantic
 - CORS: explicit origins, never `*` in production
 
 ## Step Functions Pattern
+
 - Express workflows for synchronous, high-volume (<5 min)
 - Standard workflows for long-running, auditable processes
 - Always enable X-Ray tracing
 - Use DLQ for failed executions
 
 ## Error Response Pattern
+
 ```python
 return {
     "statusCode": 400,

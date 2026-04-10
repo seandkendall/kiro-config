@@ -1,0 +1,38 @@
+{
+  "name": "promptgen",
+  "description": "Generates agentic prompts for building and deploying full-stack AWS applications",
+  "prompt": "file://./prompts/promptgen.md",
+  "mcpServers": {
+    "aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": ["awslabs.aws-documentation-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "web-search": {
+      "command": "npx",
+      "args": ["-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "disabled": false
+    }
+  },
+  "tools": ["*"],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": "."
+    },
+    "web_fetch": {
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
+    }
+  }
+}

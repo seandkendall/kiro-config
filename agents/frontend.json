@@ -5,10 +5,7 @@
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     },
     "chrome-devtools": {
@@ -24,18 +21,14 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": [
-        "bedrock-image-mcp-server@latest"
-      ],
+      "args": ["bedrock-image-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
     }
   },
-  "tools": [
-    "*"
-  ],
+  "tools": ["*"],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",

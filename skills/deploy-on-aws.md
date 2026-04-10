@@ -27,12 +27,15 @@ Default to **dev-sized** (cost-conscious: small instance sizes, minimal redundan
 ## MCP Servers
 
 ### awsknowledge
+
 Consult for architecture decisions. Use when choosing between AWS services or validating that a service fits the use case. Helps answer "what's the right AWS service for X?"
 
 ### awspricing
+
 Get cost estimates. **Always present costs before generating IaC** so user can adjust before committing.
 
 ### awsiac
+
 Consult for IaC best practices. Use when writing CDK/CloudFormation to ensure patterns follow AWS recommendations.
 
 ## Principles

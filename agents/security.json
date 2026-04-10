@@ -5,9 +5,7 @@
   "mcpServers": {
     "aws-documentation-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
-      ],
+      "args": ["awslabs.aws-documentation-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -15,9 +13,7 @@
     },
     "iam-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.iam-mcp-server@latest"
-      ],
+      "args": ["awslabs.iam-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -25,9 +21,7 @@
     },
     "cloudtrail-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.cloudtrail-mcp-server@latest"
-      ],
+      "args": ["awslabs.cloudtrail-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -35,18 +29,14 @@
     },
     "well-architected-security-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.well-architected-security-mcp-server@latest"
-      ],
+      "args": ["awslabs.well-architected-security-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
     }
   },
-  "tools": [
-    "*"
-  ],
+  "tools": ["*"],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -59,9 +49,7 @@
       "autoAllowReadonly": true
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     },
     "aws": {
       "autoAllowReadonly": true

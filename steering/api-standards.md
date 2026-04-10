@@ -7,6 +7,7 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 # API Standards
 
 ## REST Conventions
+
 - Plural nouns for resources: `/invoices`, `/transactions`, `/users`
 - Kebab-case for multi-word paths: `/tax-returns`, `/bank-accounts`
 - Nest related resources: `/invoices/{id}/line-items`
@@ -14,6 +15,7 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 - Version via path prefix when needed: `/v1/invoices`
 
 ## HTTP Methods
+
 - GET: Read (never mutate state)
 - POST: Create new resource
 - PUT: Full replace
@@ -21,6 +23,7 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 - DELETE: Remove resource
 
 ## Response Format
+
 ```json
 {
   "data": {},
@@ -29,6 +32,7 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 ```
 
 ## Error Response Format
+
 ```json
 {
   "error": {
@@ -41,6 +45,7 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 ```
 
 ## Status Codes
+
 - 200: Success
 - 201: Created
 - 400: Validation error (client fault)
@@ -52,11 +57,13 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 - 500: Internal server error
 
 ## Pagination
+
 - Cursor-based for DynamoDB: `?cursor=<lastEvaluatedKey>&limit=25`
 - Return `nextCursor` in response, `null` when no more pages
 - Default limit: 25, max limit: 100
 
 ## GraphQL (AppSync)
+
 - Use input types for mutations: `input CreateInvoiceInput { ... }`
 - Return the mutated object from mutations
 - Use connections pattern for paginated lists: `{ items: [], nextToken: string }`
@@ -64,16 +71,19 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 - Use AppSync subscriptions for real-time updates — subscribe to mutations with `@aws_subscribe` directive
 
 ## Authentication
+
 - All endpoints require Bearer token unless explicitly public
 - Validate JWT at API Gateway (Cognito authorizer) AND Lambda (defense in depth)
 - Include `requestId` in all responses for traceability
 
 ## CORS
+
 - Explicitly list allowed origins — never use `*` in production
 - Allow only required HTTP methods and headers
 - Set `Access-Control-Max-Age` to 3600 for preflight caching
 
 ## Request Validation
+
 - All API endpoints MUST validate request bodies at the gateway level
 - REST: Use API Gateway request models to reject malformed requests before Lambda
 - GraphQL: Use AppSync input type validation and VTL/JS resolver input checks
