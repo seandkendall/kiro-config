@@ -407,7 +407,38 @@ done
 # Copy README if present
 [[ -f "$SCRIPT_DIR/README.md" ]] && cp "$SCRIPT_DIR/README.md" "$KIRO_DIR/README.md"
 
-# --- Step 5: Environment variable reminder ---
+# --- Step 5: Apply Kiro CLI settings ---
+if command -v kiro-cli &>/dev/null && [[ -f "$SCRIPT_DIR/settings/cli.json" ]]; then
+  echo ""
+  echo "Applying Kiro CLI settings..."
+  SCRIPT_DIR="$SCRIPT_DIR" python3 << 'SETTINGS_EOF'
+import json, subprocess, os
+
+settings_file = os.path.join(os.environ.get("SCRIPT_DIR", "."), "settings", "cli.json")
+try:
+    with open(settings_file) as f:
+        settings = json.load(f)
+except:
+    settings = {}
+
+# Settings to always apply (core defaults)
+for key, value in settings.items():
+    if key == "mcp.loadedBefore":
+        continue
+    if isinstance(value, bool):
+        val_str = "true" if value else "false"
+    elif isinstance(value, (int, float)):
+        val_str = str(value)
+    else:
+        val_str = f'"{value}"'
+    subprocess.run(["kiro-cli", "settings", key, val_str], capture_output=True)
+
+print("  Applied settings: defaultAgent, defaultModel, subagent, thinking, todoList, etc.")
+SETTINGS_EOF
+  echo -e "  ${GREEN}✓${NC} Kiro CLI settings configured"
+fi
+
+# --- Step 6: Environment variable reminder ---
 echo ""
 echo "╔══════════════════════════════════════════╗"
 echo "║          Installation Complete!          ║"
