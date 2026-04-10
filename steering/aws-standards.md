@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "{cdk/**/*,**/lambda/**/*,**/*.py}"
+fileMatchPattern: '{cdk/**/*,**/lambda/**/*,**/*.py}'
 ---
 
 # AWS Development Standards

@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: aws-architecture-diagram
-description: "Generate validated AWS architecture diagrams as draw.io XML using official AWS4 icon libraries. Triggers when user wants to create, generate, or design AWS architecture diagrams, cloud infrastructure diagrams, or system design visuals. Supports codebase analysis and brainstorming modes."
+description: 'Generate validated AWS architecture diagrams as draw.io XML using official AWS4 icon libraries. Triggers when user wants to create, generate, or design AWS architecture diagrams, cloud infrastructure diagrams, or system design visuals. Supports codebase analysis and brainstorming modes.'
 ---
 
 # AWS Architecture Diagram Generator

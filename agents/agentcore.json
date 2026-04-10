@@ -5,7 +5,9 @@
   "mcpServers": {
     "bedrock-agentcore-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.amazon-bedrock-agentcore-mcp-server@latest"],
+      "args": [
+        "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -13,7 +15,9 @@
     },
     "strands-agents": {
       "command": "uvx",
-      "args": ["strands-agents-mcp-server@latest"],
+      "args": [
+        "strands-agents-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "INFO"
       },
@@ -21,7 +25,9 @@
     },
     "aws-iac-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-iac-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-iac-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -29,14 +35,18 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": ["bedrock-image-mcp-server@latest"],
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -62,7 +72,7 @@
     "postToolUse": [
       {
         "matcher": "fs_write",
-        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       },
       {
         "matcher": "fs_write",

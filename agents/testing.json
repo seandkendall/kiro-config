@@ -5,7 +5,9 @@
   "mcpServers": {
     "browsermcp": {
       "command": "npx",
-      "args": ["@browsermcp/mcp@latest"],
+      "args": [
+        "@browsermcp/mcp@latest"
+      ],
       "disabled": false
     },
     "chrome-devtools": {
@@ -21,7 +23,9 @@
     },
     "aws-documentation-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-documentation-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -29,11 +33,16 @@
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -47,7 +56,9 @@
       "autoAllowReadonly": true
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
     }
   },
   "keyboardShortcut": "ctrl+6",
@@ -56,7 +67,7 @@
     "postToolUse": [
       {
         "matcher": "fs_write",
-        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       },
       {
         "matcher": "fs_write",

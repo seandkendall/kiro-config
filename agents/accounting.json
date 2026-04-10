@@ -5,7 +5,9 @@
   "mcpServers": {
     "aws-serverless-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-serverless-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-serverless-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -14,7 +16,9 @@
     },
     "aws-iac-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-iac-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-iac-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -23,7 +27,9 @@
     },
     "aws-documentation-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-documentation-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -32,7 +38,9 @@
     },
     "cdk-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.cdk-mcp-server@latest"],
+      "args": [
+        "awslabs.cdk-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -41,7 +49,9 @@
     },
     "strands-agents": {
       "command": "uvx",
-      "args": ["strands-agents-mcp-server@latest"],
+      "args": [
+        "strands-agents-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "INFO"
       },
@@ -50,7 +60,9 @@
     },
     "bedrock-agentcore-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.amazon-bedrock-agentcore-mcp-server@latest"],
+      "args": [
+        "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -59,13 +71,21 @@
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false,
       "timeout": 300000
     },
     "web-search": {
       "command": "npx",
-      "args": ["-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
+      "args": [
+        "-y",
+        "@brave/brave-search-mcp-server",
+        "--transport",
+        "stdio"
+      ],
       "env": {
         "BRAVE_API_KEY": "${BRAVE_API_KEY}"
       },
@@ -74,7 +94,10 @@
     },
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
@@ -83,14 +106,18 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": ["bedrock-image-mcp-server@latest"],
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "allowedTools": [
     "@strands-agents/search_docs",
     "@strands-agents/fetch_doc",
@@ -126,7 +153,10 @@
       "autoAllowReadonly": true
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*github\\.com.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true
@@ -138,7 +168,7 @@
     "postToolUse": [
       {
         "matcher": "fs_write",
-        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       },
       {
         "matcher": "fs_write",

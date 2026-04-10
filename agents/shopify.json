@@ -5,18 +5,25 @@
   "mcpServers": {
     "shopify-dev-mcp": {
       "command": "npx",
-      "args": ["-y", "@shopify/dev-mcp@latest"]
+      "args": [
+        "-y",
+        "@shopify/dev-mcp@latest"
+      ]
     },
     "aws-iac-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-iac-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-iac-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -33,7 +40,7 @@
     "postToolUse": [
       {
         "matcher": "fs_write",
-        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
   }

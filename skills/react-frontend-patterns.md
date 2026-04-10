@@ -15,7 +15,7 @@ interface DashboardProps {
 
 export function Dashboard({ userId }: DashboardProps) {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["dashboard", userId],
+    queryKey: ['dashboard', userId],
     queryFn: fetchDashboard,
   });
 
@@ -36,8 +36,8 @@ export function Dashboard({ userId }: DashboardProps) {
 
 ```tsx
 const schema = z.object({
-  amount: z.number().positive("Must be greater than 0"),
-  description: z.string().min(1, "Required"),
+  amount: z.number().positive('Must be greater than 0'),
+  description: z.string().min(1, 'Required'),
 });
 
 function TransactionForm() {
@@ -54,7 +54,7 @@ function TransactionForm() {
         type="number"
         aria-invalid={!!errors.amount}
         aria-describedby="amount-error"
-        {...register("amount", { valueAsNumber: true })}
+        {...register('amount', { valueAsNumber: true })}
       />
       {errors.amount && (
         <p id="amount-error" role="alert">

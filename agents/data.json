@@ -5,7 +5,10 @@
   "mcpServers": {
     "postgres-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.postgres-mcp-server@latest", "--allow_write_query"],
+      "args": [
+        "awslabs.postgres-mcp-server@latest",
+        "--allow_write_query"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -13,14 +16,18 @@
     },
     "aws-documentation-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-documentation-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -33,7 +40,9 @@
       "autoAllowReadonly": true
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true
@@ -44,7 +53,7 @@
     "postToolUse": [
       {
         "matcher": "fs_write",
-        "command": "ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
   }

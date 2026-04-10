@@ -8,14 +8,7 @@
   "toolsSettings": {
     "shell": {
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "rm .*",
-        "trash .*",
-        "srm .*",
-        "mv .*",
-        "sudo rm.*",
-        "sudo trash.*"
-      ]
+      "deniedCommands": ["rm .*", "trash .*", "srm .*", "mv .*", "sudo rm.*", "sudo trash.*"]
     },
     "write": {
       "deniedPaths": ["**/*"],

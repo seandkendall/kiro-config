@@ -39,21 +39,19 @@ def test_handler_validation_error(dynamodb_table):
 ## React Component Test (Vitest + RTL)
 
 ```tsx
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { axe } from "jest-axe";
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { axe } from 'jest-axe';
 
-test("submits form with valid data", async () => {
+test('submits form with valid data', async () => {
   const onSubmit = vi.fn();
   render(<InvoiceForm onSubmit={onSubmit} />);
-  await userEvent.type(screen.getByLabelText("Amount"), "100");
-  await userEvent.click(screen.getByRole("button", { name: "Submit" }));
-  expect(onSubmit).toHaveBeenCalledWith(
-    expect.objectContaining({ amount: 100 }),
-  );
+  await userEvent.type(screen.getByLabelText('Amount'), '100');
+  await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+  expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ amount: 100 }));
 });
 
-test("has no accessibility violations", async () => {
+test('has no accessibility violations', async () => {
   const { container } = render(<InvoiceForm />);
   expect(await axe(container)).toHaveNoViolations();
 });

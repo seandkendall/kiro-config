@@ -11,11 +11,7 @@
   "toolAliases": {
     "outlook": "outlook-mcp-server"
   },
-  "resources": [
-    "file://AGENTS.md",
-    "file://README.md",
-    "file://~/.kiro/steering/*.md"
-  ],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
