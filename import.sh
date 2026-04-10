@@ -82,7 +82,7 @@ ensure_brew() {
   fi
   echo ""
   echo "  Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   # Add brew to PATH for this session and persist to .zshrc
   if [[ -f /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -176,11 +176,11 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
         case "$tool" in
           python3)
             echo "  Installing Python..."
-            brew install python 2>&1 | tail -1
+            NONINTERACTIVE=1 brew install python 2>&1 | tail -1
             ;;
           node)
             echo "  Installing Node.js..."
-            brew install node 2>&1 | tail -1
+            NONINTERACTIVE=1 brew install node 2>&1 | tail -1
             ;;
           uv)
             echo "  Installing uv..."
@@ -192,7 +192,7 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
             ;;
           ruff)
             echo "  Installing ruff..."
-            brew install ruff 2>&1 | tail -1
+            NONINTERACTIVE=1 brew install ruff 2>&1 | tail -1
             ;;
           prettier)
             echo "  Installing prettier..."
@@ -200,11 +200,11 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
             ;;
           shfmt)
             echo "  Installing shfmt..."
-            brew install shfmt 2>&1 | tail -1
+            NONINTERACTIVE=1 brew install shfmt 2>&1 | tail -1
             ;;
           delta)
             echo "  Installing delta..."
-            brew install git-delta 2>&1 | tail -1
+            NONINTERACTIVE=1 brew install git-delta 2>&1 | tail -1
             ;;
         esac
       done
@@ -276,16 +276,17 @@ if $LEGACY_FOUND; then
 
     # Clean legacy patterns from existing agent configs
     if command -v python3 &>/dev/null; then
-      python3 -c "
+      python3 << 'LEGACY_CLEANUP_EOF'
 import json, glob, os
 
+kiro_dir = os.path.expanduser("~/.kiro")
 deprecated_mcp = ['code-doc-gen-mcp-server', 'aws-diagram-mcp-server', 'core-mcp-server',
                   'nova-canvas-mcp-server', 'bedrock-data-automation-mcp-server',
                   'aws-msk-mcp-server', 'nova-act', 'fetch']
 remap_ts = {'execute_bash': 'shell', 'fs_write': 'write'}
 count = 0
 
-for f in glob.glob(os.path.expanduser('$KIRO_DIR/agents/*.json')):
+for f in glob.glob(os.path.join(kiro_dir, 'agents', '*.json')):
     try:
         with open(f) as fh:
             d = json.load(fh)
@@ -294,7 +295,7 @@ for f in glob.glob(os.path.expanduser('$KIRO_DIR/agents/*.json')):
     modified = False
 
     # Remove deprecated fields
-    for field in ['\$schema', 'useLegacyMcpJson']:
+    for field in ['$schema', 'useLegacyMcpJson']:
         if field in d:
             del d[field]
             modified = True
@@ -357,7 +358,7 @@ for f in glob.glob(os.path.expanduser('$KIRO_DIR/agents/*.json')):
         count += 1
 
 print(f'    Cleaned {count} agent config(s)')
-"
+LEGACY_CLEANUP_EOF
     fi
     echo -e "  ${GREEN}✓${NC} Legacy cleanup complete"
   else
