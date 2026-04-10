@@ -130,6 +130,149 @@ if [[ ! -d "$KIRO_DIR" ]]; then
   mkdir -p "$KIRO_DIR"
 fi
 
+# --- Step 3.5: Clean up legacy Kiro config ---
+LEGACY_FOUND=false
+
+# Remove legacy global mcp.json (agents are self-contained now)
+if [[ -f "$KIRO_DIR/settings/mcp.json" ]]; then
+  LEGACY_FOUND=true
+  echo -e "  ${YELLOW}⚠${NC}  Found legacy settings/mcp.json"
+fi
+
+# Check for legacy agent patterns
+LEGACY_AGENTS=()
+if [[ -d "$KIRO_DIR/agents" ]]; then
+  for f in "$KIRO_DIR/agents"/*.json; do
+    [[ ! -f "$f" ]] && continue
+    if grep -q '"useLegacyMcpJson"' "$f" 2>/dev/null || \
+       grep -q '"autoApprove"' "$f" 2>/dev/null || \
+       grep -q '"backup_on_overwrite"' "$f" 2>/dev/null || \
+       grep -q '"execute_bash"' "$f" 2>/dev/null || \
+       grep -q '"mcp-server-fetch"' "$f" 2>/dev/null || \
+       grep -q '"\$schema"' "$f" 2>/dev/null; then
+      LEGACY_AGENTS+=("$(basename "$f")")
+      LEGACY_FOUND=true
+    fi
+  done
+fi
+
+# Check for deprecated MCP servers in agents
+DEPRECATED_SERVERS=("code-doc-gen" "aws-diagram" "core-mcp-server" "nova-canvas" "bedrock-data-automation" "aws-msk" "nova.act" "nova_act")
+for f in "$KIRO_DIR/agents"/*.json 2>/dev/null; do
+  [[ ! -f "$f" ]] && continue
+  for dep in "${DEPRECATED_SERVERS[@]}"; do
+    if grep -q "$dep" "$f" 2>/dev/null; then
+      LEGACY_FOUND=true
+      break 2
+    fi
+  done
+done
+
+if $LEGACY_FOUND; then
+  echo ""
+  echo -e "${YELLOW}Legacy Kiro configuration detected.${NC}"
+  echo "  This installer will clean up outdated config patterns:"
+  echo "    - Remove settings/mcp.json (agents are self-contained)"
+  echo "    - Remove deprecated fields from agent configs"
+  echo "    - Remove deprecated MCP server references"
+  echo ""
+  read -rp "  Clean up legacy config? [Y/n]: " CLEANUP_CHOICE
+  if [[ "$CLEANUP_CHOICE" != "n" && "$CLEANUP_CHOICE" != "N" ]]; then
+    # Remove legacy mcp.json
+    rm -f "$KIRO_DIR/settings/mcp.json" 2>/dev/null
+
+    # Clean legacy patterns from existing agent configs
+    if command -v python3 &>/dev/null; then
+      python3 -c "
+import json, glob, os
+
+deprecated_mcp = ['code-doc-gen-mcp-server', 'aws-diagram-mcp-server', 'core-mcp-server',
+                  'nova-canvas-mcp-server', 'bedrock-data-automation-mcp-server',
+                  'aws-msk-mcp-server', 'nova-act', 'fetch']
+remap_ts = {'execute_bash': 'shell', 'fs_write': 'write'}
+count = 0
+
+for f in glob.glob(os.path.expanduser('$KIRO_DIR/agents/*.json')):
+    try:
+        with open(f) as fh:
+            d = json.load(fh)
+    except:
+        continue
+    modified = False
+
+    # Remove deprecated fields
+    for field in ['\$schema', 'useLegacyMcpJson']:
+        if field in d:
+            del d[field]
+            modified = True
+
+    # Remove model: null
+    if 'model' in d and d['model'] is None:
+        del d['model']
+        modified = True
+
+    # Remove deprecated MCP servers
+    for dep in deprecated_mcp:
+        if dep in d.get('mcpServers', {}):
+            del d['mcpServers'][dep]
+            modified = True
+
+    # Fix toolsSettings keys
+    ts = d.get('toolsSettings', {})
+    for old, new in remap_ts.items():
+        if old in ts:
+            ts[new] = ts.pop(old)
+            modified = True
+
+    # Remove backup_on_overwrite
+    if 'backup_on_overwrite' in ts.get('write', {}):
+        del ts['write']['backup_on_overwrite']
+        if not ts['write']:
+            del ts['write']
+        modified = True
+
+    # Convert autoApprove to allowedTools
+    allowed = d.get('allowedTools', [])
+    for sk, sv in list(d.get('mcpServers', {}).items()):
+        if 'autoApprove' in sv:
+            for tool in sv['autoApprove']:
+                entry = f'@{sk}/{tool}'
+                if entry not in allowed:
+                    allowed.append(entry)
+            del sv['autoApprove']
+            modified = True
+    if allowed:
+        d['allowedTools'] = allowed
+
+    # Remove @fetch from allowedTools
+    if '@fetch' in d.get('allowedTools', []):
+        d['allowedTools'].remove('@fetch')
+        modified = True
+
+    # Clean empty collections
+    if d.get('toolAliases') == {}:
+        del d['toolAliases']
+        modified = True
+    if d.get('allowedTools') == []:
+        del d['allowedTools']
+        modified = True
+
+    if modified:
+        with open(f, 'w') as fh:
+            json.dump(d, fh, indent=2, ensure_ascii=False)
+            fh.write('\n')
+        count += 1
+
+print(f'    Cleaned {count} agent config(s)')
+"
+    fi
+    echo -e "  ${GREEN}✓${NC} Legacy cleanup complete"
+  else
+    echo "  Skipping legacy cleanup."
+  fi
+  echo ""
+fi
+
 # --- Step 4: Copy files ---
 DIRS=(agents steering skills prompts settings)
 OVERWRITE_ALL=false
