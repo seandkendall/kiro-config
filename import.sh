@@ -251,7 +251,7 @@ fi
 
 # Check for deprecated MCP servers in agents
 DEPRECATED_SERVERS=("code-doc-gen" "aws-diagram" "core-mcp-server" "nova-canvas" "bedrock-data-automation" "aws-msk" "nova.act" "nova_act")
-for f in "$KIRO_DIR/agents"/*.json 2>/dev/null; do
+for f in "$KIRO_DIR/agents"/*.json; do
   [[ ! -f "$f" ]] && continue
   for dep in "${DEPRECATED_SERVERS[@]}"; do
     if grep -q "$dep" "$f" 2>/dev/null; then
