@@ -75,12 +75,46 @@ fi
 echo "Checking prerequisites..."
 MISSING=()
 
+# --- Helper: ensure Homebrew is installed ---
+ensure_brew() {
+  if command -v brew &>/dev/null; then
+    return 0
+  fi
+  echo ""
+  echo "  Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Add brew to PATH for this session and persist to .zshrc
+  if [[ -f /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    if ! grep -q 'brew shellenv' ~/.zshrc 2>/dev/null; then
+      echo '' >> ~/.zshrc
+      echo '# Homebrew' >> ~/.zshrc
+      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+      echo -e "  ${GREEN}✓${NC} Added Homebrew to ~/.zshrc"
+    fi
+  elif [[ -f /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+    if ! grep -q 'brew shellenv' ~/.zshrc 2>/dev/null; then
+      echo '' >> ~/.zshrc
+      echo '# Homebrew' >> ~/.zshrc
+      echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zshrc
+    fi
+  fi
+  if command -v brew &>/dev/null; then
+    echo -e "  ${GREEN}✓${NC} Homebrew installed"
+    return 0
+  else
+    echo -e "  ${RED}✗${NC} Homebrew install failed"
+    return 1
+  fi
+}
+
 if command -v python3 &>/dev/null; then
   PY_VER=$(python3 --version 2>&1)
   echo -e "  ${GREEN}✓${NC} $PY_VER"
 else
   echo -e "  ${RED}✗${NC} Python 3 not found"
-  MISSING+=("Python 3.13+ (https://python.org)")
+  MISSING+=("python3")
 fi
 
 if command -v node &>/dev/null; then
@@ -88,21 +122,25 @@ if command -v node &>/dev/null; then
   echo -e "  ${GREEN}✓${NC} Node.js $NODE_VER"
 else
   echo -e "  ${RED}✗${NC} Node.js not found"
-  MISSING+=("Node.js 20+ (https://nodejs.org)")
+  MISSING+=("node")
 fi
 
 if command -v uvx &>/dev/null; then
   echo -e "  ${GREEN}✓${NC} uvx found"
 else
   echo -e "  ${RED}✗${NC} uvx not found"
-  MISSING+=("uv (curl -LsSf https://astral.sh/uv/install.sh | sh)")
+  MISSING+=("uv")
 fi
 
 if command -v npx &>/dev/null; then
   echo -e "  ${GREEN}✓${NC} npx found"
 else
-  echo -e "  ${RED}✗${NC} npx not found (comes with Node.js)"
-  MISSING+=("npx (included with Node.js)")
+  if ! command -v node &>/dev/null; then
+    : # already captured as node missing
+  else
+    echo -e "  ${RED}✗${NC} npx not found"
+    MISSING+=("npx")
+  fi
 fi
 
 if command -v aws &>/dev/null; then
@@ -112,15 +150,70 @@ else
   echo -e "  ${YELLOW}⚠${NC} AWS CLI not found (optional but recommended)"
 fi
 
+# Formatters (optional but recommended)
+for tool in ruff prettier shfmt delta; do
+  if command -v "$tool" &>/dev/null; then
+    echo -e "  ${GREEN}✓${NC} $tool found"
+  else
+    echo -e "  ${YELLOW}⚠${NC} $tool not found (optional — used by formatting hooks)"
+    MISSING+=("$tool")
+  fi
+done
+
 if [[ ${#MISSING[@]} -gt 0 ]]; then
   echo ""
-  echo -e "${YELLOW}Missing prerequisites:${NC}"
-  for m in "${MISSING[@]}"; do
-    echo "  - $m"
-  done
+  echo -e "${YELLOW}Missing tools:${NC} ${MISSING[*]}"
   echo ""
-  read -rp "Continue anyway? [y/N]: " CONTINUE
-  [[ "$CONTINUE" != "y" && "$CONTINUE" != "Y" ]] && echo "Aborted." && exit 1
+  echo "  1) Auto-install all missing tools (uses Homebrew)"
+  echo "  2) Skip — I'll install them myself"
+  echo ""
+  read -rp "  Choose [1/2]: " INSTALL_PREREQS
+  if [[ "$INSTALL_PREREQS" == "1" ]]; then
+    ensure_brew || { echo "Cannot install without Homebrew. Continuing anyway..."; }
+
+    if command -v brew &>/dev/null; then
+      for tool in "${MISSING[@]}"; do
+        case "$tool" in
+          python3)
+            echo "  Installing Python..."
+            brew install python 2>&1 | tail -1
+            ;;
+          node)
+            echo "  Installing Node.js..."
+            brew install node 2>&1 | tail -1
+            ;;
+          uv)
+            echo "  Installing uv..."
+            curl -LsSf https://astral.sh/uv/install.sh | sh 2>&1 | tail -1
+            export PATH="$HOME/.local/bin:$PATH"
+            ;;
+          npx)
+            echo "  npx comes with Node.js — should be available now"
+            ;;
+          ruff)
+            echo "  Installing ruff..."
+            brew install ruff 2>&1 | tail -1
+            ;;
+          prettier)
+            echo "  Installing prettier..."
+            npm install -g prettier 2>&1 | tail -1
+            ;;
+          shfmt)
+            echo "  Installing shfmt..."
+            brew install shfmt 2>&1 | tail -1
+            ;;
+          delta)
+            echo "  Installing delta..."
+            brew install git-delta 2>&1 | tail -1
+            ;;
+        esac
+      done
+      echo ""
+      echo -e "  ${GREEN}✓${NC} Installation complete"
+    fi
+  else
+    echo "  Skipping auto-install."
+  fi
 fi
 
 # --- Step 3: Create ~/.kiro if needed ---
