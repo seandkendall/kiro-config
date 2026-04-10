@@ -32,7 +32,8 @@ ensure_brew() {
   fi
   echo ""
   echo "  Installing Homebrew (you may be prompted for your Mac password)..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Homebrew installer needs sudo but we auto-confirm the "Press RETURN" prompt
+  echo | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   # Add brew to PATH for this session and persist to .zshrc
   if [[ -f /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -74,7 +75,7 @@ else
   echo -e "${YELLOW}⚠${NC} Kiro CLI is not installed."
   echo ""
   echo "  Installing Kiro CLI..."
-  curl -fsSL https://cli.kiro.dev/install | bash
+  echo | curl -fsSL https://cli.kiro.dev/install | bash
   echo ""
   # Ensure PATH includes ~/.local/bin
   export PATH="$HOME/.local/bin:$PATH"
