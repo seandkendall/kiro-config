@@ -28,6 +28,53 @@ from aws_cdk import Aspects
 Aspects.of(app).add(AwsSolutionsChecks())
 ```
 
+**AWS AppRegistry** - Every CDK app MUST register itself in Service Catalog App Registry. This groups all resources under a named application for governance, cost tracking, and operational visibility.
+
+Use the `ApplicationAssociator` pattern in `app.py` — it auto-associates every stack in the app and handles cross-account sharing. The manual `Application` + `associate_application_with_stack` pattern is older and more verbose.
+
+> Note: The module is still in alpha (`aws_servicecatalogappregistry_alpha`) as of CDK 2.248+. Before using, check latest AWS CDK docs via the Microsoft Learn / AWS documentation MCP server to see if it has graduated to stable (`aws_cdk.aws_servicecatalogappregistry`).
+
+Install:
+
+```bash
+pip install aws-cdk.aws-servicecatalogappregistry-alpha
+```
+
+Register in `app.py`:
+
+```python
+import os
+import aws_cdk as cdk
+from aws_cdk import aws_servicecatalogappregistry_alpha as appreg
+
+app = cdk.App()
+region = os.environ.get('CDK_DEFAULT_REGION', 'us-east-1')
+project_name = 'MyApp'
+
+# Auto-associates all stacks in this app with the AppRegistry application.
+# The awsApplication tag is automatically propagated to every resource.
+appreg.ApplicationAssociator(app, 'AppRegistry',
+    applications=[appreg.TargetApplication.create_application_stack(
+        application_name=f'{project_name}-{region}',
+        stack_name=f'{project_name}-AppRegistry-{region}',
+        application_description=f'{project_name} deployed in {region}',
+        associate_cross_account_stacks=True,
+    )]
+)
+
+# Define your stacks AFTER ApplicationAssociator
+MyAppStack(app, f'{project_name}Stack-{region}', ...)
+
+app.synth()
+```
+
+Rules:
+
+- `application_name` MUST be unique per account per region and is immutable once created
+- Place the `ApplicationAssociator` BEFORE any stack definitions in `app.py`
+- Do NOT manually add the `awsApplication` tag — `ApplicationAssociator` propagates it automatically to every resource in every associated stack
+- For cross-account deployments (e.g., pipeline target accounts), set `associate_cross_account_stacks=True`
+
 **Lambda Functions** - Use `PythonFunction` construct with Python 3.13:
 
 ```python
