@@ -1,8 +1,25 @@
 # Kiro CLI Setup
 
-**Version:** 2026.04.10a
+**Version:** 2026.04.18
 
 Multi-agent AWS development environment for the Kiro CLI with specialized subagents, steering docs, and skills.
+
+## What's New
+
+### 2026.04.18
+
+- **Daily maintenance workflow** — mandatory: upgrade deps, research breaking changes, lint, update README, verify builds
+- **AWS AppRegistry** — all CDK apps must register via `ApplicationAssociator` (auto-associates stacks + propagates `awsApplication` tag)
+- **Full keyboard shortcuts** — all builder agents now have shortcuts (ctrl+0-9 for primary, shift+key for specialists)
+- **Apache-2.0 license** added
+
+### 2026.04.10a
+
+- PostToolUse formatting hooks: ruff (Python), prettier (TS/HTML/CSS), shfmt (bash)
+- `shell.autoAllowReadonly` + `aws.autoAllowReadonly` for smoother dev loops
+- `web_fetch.trusted` patterns for AWS docs and GitHub
+- Externalized long inline prompts to `file://` URIs
+- Removed all legacy: gaming agents, nova-act, deprecated MCP servers, old schema fields
 
 ## Prerequisites
 

@@ -37,5 +37,6 @@
         "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
-  }
+  },
+  "keyboardShortcut": "shift+c"
 }

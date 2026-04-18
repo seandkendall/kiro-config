@@ -40,5 +40,6 @@
       "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
   },
-  "welcomeMessage": "Image generation ready. Nova Canvas + Stability AI via Bedrock. Logos, icons, textures, mockups, marketing graphics. What images do you need?"
+  "welcomeMessage": "Image generation ready. Nova Canvas + Stability AI via Bedrock. Logos, icons, textures, mockups, marketing graphics. What images do you need?",
+  "keyboardShortcut": "shift+i"
 }

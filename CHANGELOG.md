@@ -2,6 +2,22 @@
 
 All notable changes to this Kiro CLI configuration.
 
+## [2026.04.18] - 2026-04-18
+
+### Added
+
+- **Daily Maintenance workflow** in `steering/development-workflow.md` — mandatory daily: upgrade all deps + research breaking changes, lint all source files, remove dead code, update README, verify builds
+- **AWS AppRegistry guidance** in `steering/aws-standards.md` — every CDK app must register via `ApplicationAssociator` pattern (auto-associates all stacks, propagates `awsApplication` tag)
+- Keyboard shortcuts for remaining agents: `shift+c` cypress, `shift+d` data, `shift+o` docs, `shift+i` image-gen, `shift+s` security
+- `LICENSE` (Apache-2.0)
+- `What's New` section in README
+- Git tag `v2026.04.18`
+
+### Removed
+
+- `blazor` agent and prompt (was temporary for a friend)
+- "Microsoft Learn" reference from aws-standards.md
+
 ## [2026.04.10a] - 2026-04-10
 
 ### Added
