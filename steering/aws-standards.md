@@ -32,7 +32,7 @@ Aspects.of(app).add(AwsSolutionsChecks())
 
 Use the `ApplicationAssociator` pattern in `app.py` — it auto-associates every stack in the app and handles cross-account sharing. The manual `Application` + `associate_application_with_stack` pattern is older and more verbose.
 
-> Note: The module is still in alpha (`aws_servicecatalogappregistry_alpha`) as of CDK 2.248+. Before using, check latest AWS CDK docs via the Microsoft Learn / AWS documentation MCP server to see if it has graduated to stable (`aws_cdk.aws_servicecatalogappregistry`).
+> Note: The module is still in alpha (`aws_servicecatalogappregistry_alpha`) as of CDK 2.248+. Before using, check latest AWS CDK docs via the AWS documentation MCP server to see if it has graduated to stable (`aws_cdk.aws_servicecatalogappregistry`).
 
 Install:
 
