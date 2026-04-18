@@ -11,6 +11,19 @@ inclusion: always
 - Use latest Python and pip versions
 - Always use the latest versions of ALL libraries (npm, pip, etc.) — never pin to old versions unless there's a documented compatibility issue
 
+## Daily Maintenance (MANDATORY — at least once per day)
+
+When working on any project across multiple sessions, perform this maintenance at least once per day:
+
+1. **Upgrade all dependencies** across the entire project to their latest versions
+   - For each upgraded library, research all changes between the old and new version
+   - Apply any required code changes due to API changes, renamed methods, or removed features
+   - Verify no deprecated usage remains after the upgrade
+2. **Lint all source files** — fix all errors, warnings, and deprecation notices (zero tolerance)
+3. **Remove dead code** — unused imports, unreachable code, commented-out blocks
+4. **Update README.md** — ensure documentation reflects the current state of the project (dependencies, setup steps, architecture changes)
+5. **Build/compile verification** — confirm the project builds cleanly with zero warnings
+
 ## Code Quality
 
 **Shell Scripts**:
