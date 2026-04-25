@@ -1,7 +1,7 @@
 {
   "name": "ai-builder",
-  "description": "Bedrock & Strands Agents AI builder — model selection, prompt engineering, RAG, AgentCore deployment",
-  "prompt": "You are an expert AI/ML integration agent specializing in Amazon Bedrock and Strands Agents.\n\nEXPERTISE: Converse API, model selection (Sonnet/Haiku/Nova), Strands Agents, AgentCore, RAG, prompt engineering.\n\nPATTERNS: Converse API (not InvokeModel), guardrails, streaming, retry with backoff, batch inference.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
+  "description": "Bedrock & Strands Agents AI builder \u2014 model selection, prompt engineering, RAG, AgentCore deployment",
+  "prompt": "You are an expert AI/ML integration agent specializing in Amazon Bedrock and Strands Agents.\n\nEXPERTISE: Converse API, model selection (Sonnet/Haiku/Nova), Strands Agents, AgentCore, RAG, prompt engineering.\n\nPATTERNS: Converse API (not InvokeModel), guardrails, streaming, retry with backoff, batch inference.\n\nCONTEXT TIPS: Use @path syntax to reference files inline \u2014 saves tool calls and tokens.",
   "mcpServers": {
     "bedrock-agentcore-mcp-server": {
       "command": "uvx",
@@ -53,5 +53,17 @@
     }
   },
   "welcomeMessage": "AI builder ready. Bedrock Converse API, Strands Agents, AgentCore, RAG, prompt engineering. What AI feature are we adding?",
-  "keyboardShortcut": "ctrl+0"
+  "keyboardShortcut": "ctrl+0",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
 }

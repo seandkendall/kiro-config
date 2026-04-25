@@ -22,5 +22,6 @@
       "deniedPaths": ["**/*"],
       "fallbackAction": "deny"
     }
-  }
+  },
+  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"]
 }

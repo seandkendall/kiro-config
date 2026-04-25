@@ -12,5 +12,6 @@
   "chat.enableCodeIntelligence": true,
   "chat.enableSubagent": true,
   "cleanup.periodDays": 90,
-  "chat.disableTrustAllConfirmation": true
+  "chat.disableTrustAllConfirmation": true,
+  "toolSearch.enabled": true
 }

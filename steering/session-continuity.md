@@ -1,5 +1,7 @@
 ---
-inclusion: always
+inclusion: auto
+name: session-continuity
+description: Session resume and context preservation. Use when starting a new session, resuming incomplete work, or ending a work session.
 ---
 
 # Session Continuity

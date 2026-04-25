@@ -20,5 +20,13 @@
       "working_directory": ".",
       "deniedCommands": ["git-defender.*"]
     }
+  },
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
   }
 }

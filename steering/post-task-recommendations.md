@@ -1,5 +1,7 @@
 ---
-inclusion: always
+inclusion: auto
+name: post-task-recommendations
+description: Mandatory post-task recommendation format with priority-sorted next steps. Use when completing any code, infrastructure, or system-building task.
 ---
 
 # Post-Task Recommendations (MANDATORY)

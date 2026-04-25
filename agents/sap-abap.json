@@ -1,6 +1,6 @@
 {
   "name": "sap-abap",
-  "description": "SAP ABAP development agent — Clean ABAP, ALV reports, BAPIs, data migration, CDS views, RAP, ABAP Unit testing",
+  "description": "SAP ABAP development agent \u2014 Clean ABAP, ALV reports, BAPIs, data migration, CDS views, RAP, ABAP Unit testing",
   "prompt": "file://./prompts/sap-abap.md",
   "mcpServers": {
     "context7": {
@@ -29,6 +29,7 @@
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
+    "file://~/.kiro/steering/*.md",
     "skill://~/.kiro/skills/sap-abap-patterns.md"
   ],
   "toolsSettings": {
