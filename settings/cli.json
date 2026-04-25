@@ -1,20 +1,16 @@
 {
-  "app.beta": true,
   "chat.defaultAgent": "master",
   "chat.defaultModel": "claude-opus-4.7",
-  "chat.enableCheckpoint": false,
-  "chat.enableContextUsageIndicator": true,
-  "chat.enableDelegate": false,
   "chat.enableKnowledge": true,
-  "chat.enableTangentMode": true,
+  "chat.enableNotifications": true,
+  "chat.enablePromptHints": false,
   "chat.enableThinking": true,
-  "chat.enableTodoList": true,
   "chat.greeting.enabled": false,
-  "inline.enabled": true,
-  "mcp.loadedBefore": true,
-  "chat.enableSubagent": true,
+  "chat.autoExpandToolOutput": true,
   "mcp.noInteractiveTimeout": 180000,
-  "introspect.tangentMode": true,
-  "chat.ui": "tui",
-  "chat.diffTool": "delta"
+  "telemetry.enabled": true,
+  "chat.enableCodeIntelligence": true,
+  "chat.enableSubagent": true,
+  "cleanup.periodDays": 90,
+  "chat.disableTrustAllConfirmation": true
 }

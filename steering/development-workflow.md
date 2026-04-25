@@ -150,6 +150,14 @@ Before considering any feature complete, verify:
 
 ## Kiro Interaction Rules
 
+**No Time Estimates (MANDATORY)** - Never provide time estimates:
+
+- Do NOT estimate hours, days, weeks, story points, or sprint sizes for any task
+- Do NOT say things like "this is 90-120 hours of work" or "this will take X days"
+- Do NOT include effort sizing (small/medium/large) unless the user explicitly asks
+- Just execute the work. Time estimates are unreliable for AI-assisted development and add noise
+- If the user asks for complexity, respond with scope (number of files, dependencies, risks) — not time
+
 **Kiro Specs (MANDATORY)** - Before writing ANY code:
 
 - New features: Create a Kiro Feature Spec (requirements.md → design.md → tasks.md)
