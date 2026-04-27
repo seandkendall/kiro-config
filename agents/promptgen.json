@@ -12,11 +12,8 @@
       "disabled": false
     },
     "web-search": {
-      "command": "npx",
-      "args": ["-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
-      "env": {
-        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
-      },
+      "command": "uvx",
+      "args": ["duckduckgo-mcp-server"],
       "disabled": false
     }
   },

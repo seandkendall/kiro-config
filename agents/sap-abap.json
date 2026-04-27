@@ -1,6 +1,6 @@
 {
   "name": "sap-abap",
-  "description": "SAP ABAP development agent \u2014 Clean ABAP, ALV reports, BAPIs, data migration, CDS views, RAP, ABAP Unit testing",
+  "description": "SAP ABAP development agent — Clean ABAP, ALV reports, BAPIs, data migration, CDS views, RAP, ABAP Unit testing",
   "prompt": "file://./prompts/sap-abap.md",
   "mcpServers": {
     "context7": {
@@ -9,11 +9,8 @@
       "disabled": false
     },
     "web-search": {
-      "command": "npx",
-      "args": ["-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
-      "env": {
-        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
-      },
+      "command": "uvx",
+      "args": ["duckduckgo-mcp-server"],
       "disabled": false
     },
     "github": {

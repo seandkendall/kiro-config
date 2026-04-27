@@ -26,6 +26,8 @@ When working on any project across multiple sessions, perform this maintenance a
 
 ## Code Quality
 
+**File Modification Rule** - When modifying existing code, ALWAYS edit files in-place. NEVER create duplicate files like `file_new.py`, `file_modified.py`, `file_v2.py`, `file_backup.py`, or `ClassName_updated.java` alongside the original. Check if a file exists before creating it — if it exists, modify it.
+
 **Shell Scripts**:
 
 - Make testable without human intervention (use `-y` flags)
