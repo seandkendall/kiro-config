@@ -2,6 +2,24 @@
 
 All notable changes to this Kiro CLI configuration.
 
+## [2026.04.30] - 2026-04-30
+
+### Added
+
+- **Frontend agent supercharged** with 10 MCP servers: Playwright, shadcn, 21st.dev Magic, Figma Framelink, Browser Lens, Sequential Thinking, Fetch, Context7, Chrome DevTools, Bedrock Image
+- **Context7** added to serverless, architect, data, and web-builder agents for live library docs
+- **21st.dev Magic + shadcn** added to web-builder agent for AI UI generation and component registry
+- **Sequential Thinking** added to master agent for structured reasoning
+- **DuckDuckGo** replaced Brave as the web search MCP server across 7 agents (no API key needed)
+- **No-duplicate-files rule** in `development-workflow.md` — always edit in-place, never create `file_new.py` or `file_v2.py`
+- `TWENTY_FIRST_API_KEY` and `FIGMA_API_KEY` env var handling in `import.sh`
+- Externalized frontend prompt to `prompts/frontend.md`
+
+### Changed
+
+- Default model upgraded from `claude-opus-4.6` to `claude-opus-4.7` (experimental preview, 1M context)
+- `toolSearch.enabled` set to `true` (Kiro CLI v2.1 feature)
+
 ## [2026.04.18] - 2026-04-18
 
 ### Added

@@ -46,6 +46,11 @@
     "awsknowledge": {
       "type": "http",
       "url": "https://knowledge-mcp.global.api.aws"
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "disabled": false
     }
   },
   "tools": ["*"],
