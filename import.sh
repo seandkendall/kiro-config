@@ -408,6 +408,7 @@ GITHUB_SET=false
 BRAVE_SET=false
 TWENTY_FIRST_SET=false
 FIGMA_SET=false
+BROWSER_LENS_SET=false
 
 if check_env_var "GITHUB_PERSONAL_ACCESS_TOKEN"; then
   echo -e "  ${GREEN}✓${NC} GITHUB_PERSONAL_ACCESS_TOKEN is set"
@@ -469,8 +470,23 @@ else
   fi
 fi
 
+if check_env_var "BROWSER_LENS_API_KEY"; then
+  echo -e "  ${GREEN}✓${NC} BROWSER_LENS_API_KEY is set"
+  BROWSER_LENS_SET=true
+else
+  echo -e "  ${YELLOW}⚠${NC} BROWSER_LENS_API_KEY not found (Browser Lens CSS debugging)"
+  read -rp "  Paste your Browser Lens API key (or press Enter to skip): " BL_KEY
+  if [[ -n "$BL_KEY" ]]; then
+    echo '' >> ~/.zshrc
+    echo "export BROWSER_LENS_API_KEY=\"$BL_KEY\"" >> ~/.zshrc
+    export BROWSER_LENS_API_KEY="$BL_KEY"
+    echo -e "  ${GREEN}✓${NC} Added to ~/.zshrc"
+    BROWSER_LENS_SET=true
+  fi
+fi
+
 # Strip MCP servers from installed agents if keys are missing
-if ! $GITHUB_SET || ! $BRAVE_SET || ! $TWENTY_FIRST_SET || ! $FIGMA_SET; then
+if ! $GITHUB_SET || ! $BRAVE_SET || ! $TWENTY_FIRST_SET || ! $FIGMA_SET || ! $BROWSER_LENS_SET; then
   echo ""
   echo "  Removing MCP servers that require missing API keys..."
   python3 << 'STRIP_MCP_EOF'
@@ -480,6 +496,7 @@ github_set = os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN", "") != ""
 brave_set = os.environ.get("BRAVE_API_KEY", "") != ""
 twenty_first_set = os.environ.get("TWENTY_FIRST_API_KEY", "") != ""
 figma_set = os.environ.get("FIGMA_API_KEY", "") != ""
+browser_lens_set = os.environ.get("BROWSER_LENS_API_KEY", "") != ""
 kiro_dir = os.path.expanduser("~/.kiro")
 count = 0
 
@@ -518,6 +535,13 @@ for f in glob.glob(os.path.join(kiro_dir, "agents", "*.json")):
         for key in list(servers.keys()):
             env = servers[key].get("env", {})
             if "FIGMA_API_KEY" in str(env):
+                del servers[key]
+                modified = True
+
+    if not browser_lens_set:
+        for key in list(servers.keys()):
+            env = servers[key].get("env", {})
+            if "BROWSER_LENS_API_KEY" in str(env):
                 del servers[key]
                 modified = True
 
@@ -571,12 +595,13 @@ echo "╔═══════════════════════�
 echo "║          Installation Complete!          ║"
 echo "╚══════════════════════════════════════════╝"
 echo ""
-if ! $GITHUB_SET || ! $BRAVE_SET || ! $TWENTY_FIRST_SET || ! $FIGMA_SET; then
+if ! $GITHUB_SET || ! $BRAVE_SET || ! $TWENTY_FIRST_SET || ! $FIGMA_SET || ! $BROWSER_LENS_SET; then
   echo "To enable all features later, add missing API keys to ~/.zshrc:"
   ! $GITHUB_SET && echo "  export GITHUB_PERSONAL_ACCESS_TOKEN=\"ghp_your_token_here\""
   ! $BRAVE_SET && echo "  export BRAVE_API_KEY=\"your_brave_api_key_here\""
   ! $TWENTY_FIRST_SET && echo "  export TWENTY_FIRST_API_KEY=\"your_21st_dev_key_here\""
   ! $FIGMA_SET && echo "  export FIGMA_API_KEY=\"your_figma_api_key_here\""
+  ! $BROWSER_LENS_SET && echo "  export BROWSER_LENS_API_KEY=\"your_browser_lens_key_here\""
   echo "Then re-run ./import.sh to restore the MCP servers."
   echo ""
 fi
