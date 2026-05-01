@@ -60,6 +60,17 @@
         "mcp"
       ],
       "disabled": false
+    },
+    "browser-lens": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "browser-lens-mcp@latest"
+      ],
+      "env": {
+        "BROWSER_LENS_API_KEY": "${BROWSER_LENS_API_KEY}"
+      },
+      "disabled": false
     }
   },
   "tools": [
