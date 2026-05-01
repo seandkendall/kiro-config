@@ -1,28 +1,38 @@
 {
   "name": "sap-abap",
   "description": "SAP ABAP development agent — Clean ABAP, ALV reports, BAPIs, data migration, CDS views, RAP, ABAP Unit testing",
-  "prompt": "file://./prompts/sap-abap.md",
+  "prompt": "file://~/.kiro/prompts/sap-abap.md",
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     },
     "web-search": {
       "command": "uvx",
-      "args": ["duckduckgo-mcp-server"],
+      "args": [
+        "duckduckgo-mcp-server"
+      ],
       "disabled": false
     },
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -34,10 +44,14 @@
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
-      "trusted": [".*github\\.com.*"]
+      "trusted": [
+        ".*github\\.com.*"
+      ]
     }
   },
   "keyboardShortcut": "ctrl+7",

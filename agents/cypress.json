@@ -1,20 +1,28 @@
 {
   "name": "cypress",
   "description": "Cypress E2E testing agent — writes, runs, and debugs Cypress tests following official best practices",
-  "prompt": "file://./prompts/cypress.md",
+  "prompt": "file://~/.kiro/prompts/cypress.md",
   "mcpServers": {
     "cypress-mcp": {
       "command": "npx",
-      "args": ["-y", "@jprealini/cypress-mcp"],
+      "args": [
+        "-y",
+        "@jprealini/cypress-mcp"
+      ],
       "disabled": false
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -26,7 +34,9 @@
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     }
   },
   "welcomeMessage": "Cypress E2E specialist ready. Page Objects, data-cy selectors, 100% coverage target. Which app flows need E2E tests?",

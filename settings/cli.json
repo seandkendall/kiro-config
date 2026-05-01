@@ -13,5 +13,7 @@
   "chat.enableSubagent": true,
   "cleanup.periodDays": 90,
   "chat.disableTrustAllConfirmation": true,
-  "toolSearch.enabled": true
+  "toolSearch.enabled": true,
+  "chat.enableTodoList": true,
+  "chat.diffTool": "delta"
 }

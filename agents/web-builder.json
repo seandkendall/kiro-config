@@ -1,11 +1,13 @@
 {
   "name": "web-builder",
   "description": "React + AWS serverless web app builder with CDK, S3, CloudFront, Cognito",
-  "prompt": "file://./prompts/web-builder.md",
+  "prompt": "file://~/.kiro/prompts/web-builder.md",
   "mcpServers": {
     "aws-iac-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-iac-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-iac-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -24,7 +26,9 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": ["bedrock-image-mcp-server@latest"],
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -32,12 +36,18 @@
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     },
     "21st-dev-magic": {
       "command": "npx",
-      "args": ["-y", "@21st-dev/magic@latest"],
+      "args": [
+        "-y",
+        "@21st-dev/magic@latest"
+      ],
       "env": {
         "API_KEY": "${TWENTY_FIRST_API_KEY}"
       },
@@ -45,18 +55,29 @@
     },
     "shadcn": {
       "command": "npx",
-      "args": ["shadcn@latest", "mcp"],
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ],
       "disabled": false
     }
   },
-  "tools": ["*"],
-  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true
