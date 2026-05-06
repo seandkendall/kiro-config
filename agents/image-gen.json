@@ -3,38 +3,54 @@
   "description": "Image generation subagent — UI assets, logos, icons, mockups, textures, marketing images via Nova Canvas and Stability AI",
   "prompt": "You are an expert image generation agent using Amazon Bedrock models.\n\nCAPABILITIES: UI assets, logos, icons, textures, marketing graphics, concept art, inpainting, outpainting.\n\nMODELS: Nova Canvas + SD 3.5 (default), Stability AI for photorealism.\n\nRULES: Appropriate resolution per use case, 'seamless tileable' for textures, transparent backgrounds for logos, descriptive filenames, multiple variations.",
   "mcpServers": {
-    "aws-documentation-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.aws-documentation-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
     "web-search": {
       "command": "uvx",
-      "args": ["duckduckgo-mcp-server"],
+      "args": [
+        "duckduckgo-mcp-server"
+      ],
       "disabled": false
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": ["bedrock-image-mcp-server@latest"],
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
+    },
+    "aws-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=us-east-1"
+      ],
+      "disabled": false
     }
   },
-  "tools": ["*"],
-  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
     }
   },
   "welcomeMessage": "Image generation ready. Nova Canvas + Stability AI via Bedrock. Logos, icons, textures, mockups, marketing graphics. What images do you need?",

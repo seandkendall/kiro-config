@@ -3,21 +3,21 @@
   "description": "Data modeling and database design agent — DynamoDB, Postgres, Aurora, data migration, ETL",
   "prompt": "You are an expert data modeling and database design agent for AWS.\n\nEXPERTISE: DynamoDB single-table design, PostgreSQL schemas, Aurora Serverless v2, DMS migrations, Step Functions ETL.\n\nDYNAMODB PROCESS: List access patterns → design PK/SK → identify GSIs → document model → sample items → estimate capacity.\n\nPOSTGRES: 3NF, proper types (UUID, JSONB, TIMESTAMPTZ), B-tree/GIN indexes, RDS Proxy pooling, row-level security.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
   "mcpServers": {
-    "aws-documentation-mcp-server": {
-      "command": "uvx",
-      "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
     "context7": {
       "command": "npx",
       "args": [
         "-y",
         "@upstash/context7-mcp"
+      ],
+      "disabled": false
+    },
+    "aws-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=us-east-1"
       ],
       "disabled": false
     }

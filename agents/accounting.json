@@ -3,36 +3,11 @@
   "description": "Canadian accounting SaaS builder — Wave/QuickBooks alternative for Canadian small businesses, Alberta-focused, React + AWS serverless + Bedrock AI",
   "prompt": "file://~/.kiro/prompts/accounting.md",
   "mcpServers": {
-    "aws-serverless-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.aws-serverless-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false,
-      "timeout": 300000
-    },
-    "aws-iac-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.aws-iac-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false,
-      "timeout": 300000
-    },
-    "aws-documentation-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.aws-documentation-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false,
-      "timeout": 300000
-    },
     "cdk-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.cdk-mcp-server@latest"],
+      "args": [
+        "awslabs.cdk-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -41,7 +16,9 @@
     },
     "strands-agents": {
       "command": "uvx",
-      "args": ["strands-agents-mcp-server@latest"],
+      "args": [
+        "strands-agents-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "INFO"
       },
@@ -50,7 +27,9 @@
     },
     "bedrock-agentcore-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.amazon-bedrock-agentcore-mcp-server@latest"],
+      "args": [
+        "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -59,18 +38,26 @@
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false,
       "timeout": 300000
     },
     "web-search": {
       "command": "uvx",
-      "args": ["duckduckgo-mcp-server"],
+      "args": [
+        "duckduckgo-mcp-server"
+      ],
       "disabled": false
     },
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
@@ -79,14 +66,28 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": ["bedrock-image-mcp-server@latest"],
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
+    },
+    "aws-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=us-east-1"
+      ],
+      "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "allowedTools": [
     "@strands-agents/search_docs",
     "@strands-agents/fetch_doc",
@@ -120,10 +121,15 @@
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*github\\.com.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true
