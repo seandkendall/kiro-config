@@ -5,10 +5,7 @@
   "mcpServers": {
     "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
@@ -16,9 +13,7 @@
     },
     "cloudwatch-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.cloudwatch-mcp-server@latest"
-      ],
+      "args": ["awslabs.cloudwatch-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -26,9 +21,7 @@
     },
     "cloudwatch-applicationsignals-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.cloudwatch-applicationsignals-mcp-server@latest"
-      ],
+      "args": ["awslabs.cloudwatch-applicationsignals-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -45,28 +38,17 @@
       "disabled": false
     }
   },
-  "tools": [
-    "*"
-  ],
-  "resources": [
-    "file://AGENTS.md",
-    "file://README.md",
-    "file://~/.kiro/steering/*.md"
-  ],
+  "tools": ["*"],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*",
-        ".*github\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
     },
     "aws": {
       "autoAllowReadonly": true
