@@ -202,6 +202,7 @@ enable_rotation: false
 ## Troubleshooting
 
 ### KMS Key Access Issues
+
 If you encounter KMS key access errors, verify that:
 
 - The IAM user/role has kms:CreateKey and kms:PutKeyPolicy permissions
@@ -209,6 +210,7 @@ If you encounter KMS key access errors, verify that:
 - The Secrets Manager service has access to the key
 
 ### Rotation Setup Failures
+
 If automatic rotation setup fails:
 
 - Verify the Lambda function exists and has proper permissions
@@ -217,6 +219,7 @@ If automatic rotation setup fails:
 - Review CloudWatch logs for the rotation function
 
 ### CloudTrail Configuration Issues
+
 If CloudTrail setup encounters problems:
 
 - Verify S3 bucket permissions for CloudTrail
@@ -224,6 +227,7 @@ If CloudTrail setup encounters problems:
 - Ensure the S3 bucket is in the same region or properly configured for cross-region access
 
 ### Secret Access Denied
+
 If secret retrieval fails:
 
 - Verify the IAM policy is correctly attached to the principal

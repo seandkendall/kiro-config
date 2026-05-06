@@ -2,11 +2,11 @@
 
 ## Choosing an Encryption Option
 
-| Option | When to use | BucketKeyEnabled | Block SSE-C |
-|---|---|---|---|
-| SSE-S3 (AES256) | Default — no KMS needed | true | true |
-| SSE-KMS (customer managed key) | Need key policy control or cross-account sharing | true | true |
-| SSE-KMS (AWS managed `aws/s3`) | **Never** — no key policy control, blocks cross-account | — | — |
+| Option                         | When to use                                             | BucketKeyEnabled | Block SSE-C |
+| ------------------------------ | ------------------------------------------------------- | ---------------- | ----------- |
+| SSE-S3 (AES256)                | Default — no KMS needed                                 | true             | true        |
+| SSE-KMS (customer managed key) | Need key policy control or cross-account sharing        | true             | true        |
+| SSE-KMS (AWS managed `aws/s3`) | **Never** — no key policy control, blocks cross-account | —                | —           |
 
 ## SSE-S3 (Recommended Default)
 
@@ -36,7 +36,7 @@ Save the following as `key-policy.json` before creating the key. Replace `<accou
     {
       "Sid": "AllowKeyAdministration",
       "Effect": "Allow",
-      "Principal": {"AWS": "arn:aws:iam::<account-id>:role/<key-admin-role>"},
+      "Principal": { "AWS": "arn:aws:iam::<account-id>:role/<key-admin-role>" },
       "Action": [
         "kms:Create*",
         "kms:Describe*",
@@ -58,7 +58,7 @@ Save the following as `key-policy.json` before creating the key. Replace `<accou
     {
       "Sid": "AllowS3EncryptionUsage",
       "Effect": "Allow",
-      "Principal": {"AWS": "arn:aws:iam::<account-id>:root"},
+      "Principal": { "AWS": "arn:aws:iam::<account-id>:root" },
       "Action": [
         "kms:Encrypt",
         "kms:Decrypt",
@@ -117,14 +117,16 @@ aws s3api put-bucket-encryption \
 ```json
 {
   "Version": "2012-10-17",
-  "Statement": [{
-    "Sid": "DenyInsecureTransport",
-    "Effect": "Deny",
-    "Principal": "*",
-    "Action": "s3:*",
-    "Resource": ["arn:aws:s3:::<bucket>/*", "arn:aws:s3:::<bucket>"],
-    "Condition": {"Bool": {"aws:SecureTransport": "false"}}
-  }]
+  "Statement": [
+    {
+      "Sid": "DenyInsecureTransport",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": ["arn:aws:s3:::<bucket>/*", "arn:aws:s3:::<bucket>"],
+      "Condition": { "Bool": { "aws:SecureTransport": "false" } }
+    }
+  ]
 }
 ```
 

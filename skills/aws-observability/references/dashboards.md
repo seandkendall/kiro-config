@@ -16,19 +16,19 @@ Widget types, cross-account/region patterns, dynamic labels, and recommended def
 
 ## Widget types
 
-| Widget | Use case |
-|--------|----------|
-| **Line** | Time series trends (latency, request count) |
-| **Stacked area** | Composition over time (error types breakdown) |
-| **Number** | Single KPI value (current error rate) |
-| **Bar** | Comparisons across categories |
-| **Table** | Tabular metric data display |
-| **Pie** | Proportional breakdown |
-| **Gauge** | Current value against a range |
-| **Explorer** | Dynamic resource group metrics (auto-discovers new resources) |
-| **Logs table** | Log Insights query results inline |
-| **Alarm status** | Alarm state visualization |
-| **Markdown** | Free-form text, links, section headers |
+| Widget           | Use case                                                      |
+| ---------------- | ------------------------------------------------------------- |
+| **Line**         | Time series trends (latency, request count)                   |
+| **Stacked area** | Composition over time (error types breakdown)                 |
+| **Number**       | Single KPI value (current error rate)                         |
+| **Bar**          | Comparisons across categories                                 |
+| **Table**        | Tabular metric data display                                   |
+| **Pie**          | Proportional breakdown                                        |
+| **Gauge**        | Current value against a range                                 |
+| **Explorer**     | Dynamic resource group metrics (auto-discovers new resources) |
+| **Logs table**   | Log Insights query results inline                             |
+| **Alarm status** | Alarm state visualization                                     |
+| **Markdown**     | Free-form text, links, section headers                        |
 
 ---
 
@@ -41,6 +41,7 @@ Widget types, cross-account/region patterns, dynamic labels, and recommended def
 - IAM roles for cross-account access
 
 ### Dashboard body JSON
+
 Each widget supports `accountId` and `region` parameters:
 
 ```json
@@ -66,17 +67,17 @@ Each widget supports `accountId` and `region` parameters:
 
 Use dynamic values in metric widget labels (common tokens shown; AWS supports 28+ tokens including time-based variants like `${MAX_TIME}`, `${LAST_TIME_RELATIVE}`, and property tokens like `${PROP('MetricName')}`, `${PROP('Region')}`):
 
-| Token | Value |
-|-------|-------|
-| `${MAX}` | Maximum value in visible range |
-| `${MIN}` | Minimum value |
-| `${AVG}` | Average value |
-| `${SUM}` | Sum |
-| `${LAST}` | Most recent value |
-| `${FIRST}` | First value |
-| `${LABEL}` | Default metric label |
-| `${PROP('Dim.Name')}` | Dimension value |
-| `${DATAPOINT_COUNT}` | Number of data points |
+| Token                 | Value                          |
+| --------------------- | ------------------------------ |
+| `${MAX}`              | Maximum value in visible range |
+| `${MIN}`              | Minimum value                  |
+| `${AVG}`              | Average value                  |
+| `${SUM}`              | Sum                            |
+| `${LAST}`             | Most recent value              |
+| `${FIRST}`            | First value                    |
+| `${LABEL}`            | Default metric label           |
+| `${PROP('Dim.Name')}` | Dimension value                |
+| `${DATAPOINT_COUNT}`  | Number of data points          |
 
 Example: `"label": "${PROP('FunctionName')} p99=${MAX}ms"`
 
@@ -109,12 +110,12 @@ Shared dashboard viewers cannot change variable values — the dashboard renders
 
 ## Best-practice defaults
 
-| Setting | Default | Best practice |
-|---------|----------|------------|
-| `start` | `-PT3H` | **`-PT8H`** (covers a shift) |
-| `periodOverride` | AUTO | **`INHERIT`** (let widgets control) |
-| Layout width | varies | **24** for full-width, **12** for side-by-side |
-| Alarm widgets | none | **Always include** alarm status row at top |
+| Setting          | Default | Best practice                                  |
+| ---------------- | ------- | ---------------------------------------------- |
+| `start`          | `-PT3H` | **`-PT8H`** (covers a shift)                   |
+| `periodOverride` | AUTO    | **`INHERIT`** (let widgets control)            |
+| Layout width     | varies  | **24** for full-width, **12** for side-by-side |
+| Alarm widgets    | none    | **Always include** alarm status row at top     |
 
 ### Dashboard structure pattern
 
@@ -141,7 +142,13 @@ Shared dashboard viewers cannot change variable values — the dashboard renders
 ### Dashboard with alarm and graph widgets
 
 ```typescript
-import { Dashboard, AlarmWidget, GraphWidget, TextWidget, PeriodOverride } from 'aws-cdk-lib/aws-cloudwatch';
+import {
+  Dashboard,
+  AlarmWidget,
+  GraphWidget,
+  TextWidget,
+  PeriodOverride,
+} from 'aws-cdk-lib/aws-cloudwatch';
 
 const dashboard = new Dashboard(this, 'ServiceDashboard', {
   dashboardName: `${serviceName}-${stage}`,
@@ -154,7 +161,8 @@ dashboard.addWidgets(
   new AlarmWidget({ width: 12, height: 6, title: 'Error Rate', alarm: errorRateAlarm }),
   new AlarmWidget({ width: 12, height: 6, title: 'Latency P99', alarm: latencyAlarm }),
   new GraphWidget({
-    width: 24, height: 6,
+    width: 24,
+    height: 6,
     title: 'Invocations & Errors',
     left: [fn.metricInvocations({ period: Duration.minutes(1) })],
     right: [fn.metricErrors({ period: Duration.minutes(1) })],
@@ -163,4 +171,5 @@ dashboard.addWidgets(
 ```
 
 ### Automatic dashboards
+
 Pre-built per-service dashboards are available by default (EC2, Lambda, S3, etc.). No setup required. Use these as starting points, then customize.

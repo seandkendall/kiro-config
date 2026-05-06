@@ -182,12 +182,15 @@ Next steps:
 ## Troubleshooting
 
 ### "Stack not found" but I know the stack existed
+
 The stack was likely deleted after failure. If you have the Stack ARN (format: `arn:aws:cloudformation:<region>:<account>:stack/<name>/<uuid>`), pass it as `stack_name`. CloudFormation retains historical events for deleted stacks for ~90 days via `describe-events` with the ARN.
 
 ### `describe-events` with `--filters FailedEvents=true` is not recognized
+
 The `--filters` parameter requires a recent AWS CLI version. Upgrade with `pip install --upgrade awscli` or `brew upgrade awscli`. As a fallback, use `describe-events` without the filter and manually filter for `EventType` in `[PROVISIONING_ERROR, VALIDATION_ERROR]`.
 
 ### CloudTrail lookup returns nothing for a known failure
+
 Causes:
 
 - The failure was older than 90 days (CloudTrail Events history limit)
@@ -197,4 +200,5 @@ Causes:
 For older failures, check the S3 bucket configured for CloudTrail logging, if any.
 
 ### The first failed event is a downstream effect, not the root cause
+
 Sometimes CloudFormation creates resources in parallel and the first reported failure is a dependency rather than the cause. Inspect all failed events; the root cause is often the one with the most specific `ResourceStatusReason` (e.g., "Property value is invalid" is more specific than "Dependency resource failed to create").

@@ -1,10 +1,17 @@
 # Kiro CLI Setup
 
-**Version:** 2026.04.30
+**Version:** 2026.05.06
 
 Multi-agent AWS development environment for the Kiro CLI with specialized subagents, steering docs, and skills.
 
 ## What's New
+
+### 2026.05.06
+
+- **AWS Agent Toolkit adopted** — single managed MCP server (`mcp-proxy-for-aws`) replaces 6 individual awslabs servers across all agents
+- **Google Workspace agent** — read-only access to Google Docs, Sheets, and Drive (new subagent)
+- **15 AWS toolkit skills added** — Lambda+API GW, Lambda+DynamoDB, debugging timeouts, CloudFront routing, serverless patterns, S3 security, IAM, Secrets Manager, observability, CloudWatch alarms, app failure troubleshooting, Bedrock, billing, CloudFormation, messaging/streaming
+- **Steering doc** `aws-agent-toolkit.md` — instructs agents to prefer MCP server, discover skills before acting
 
 ### 2026.04.30
 
@@ -22,14 +29,6 @@ Multi-agent AWS development environment for the Kiro CLI with specialized subage
 - **AWS AppRegistry** — all CDK apps must register via `ApplicationAssociator` (auto-associates stacks + propagates `awsApplication` tag)
 - **Full keyboard shortcuts** — all builder agents now have shortcuts (ctrl+0-9 for primary, shift+key for specialists)
 - **Apache-2.0 license** added
-
-### 2026.04.10a
-
-- PostToolUse formatting hooks: ruff (Python), prettier (TS/HTML/CSS), shfmt (bash)
-- `shell.autoAllowReadonly` + `aws.autoAllowReadonly` for smoother dev loops
-- `web_fetch.trusted` patterns for AWS docs and GitHub
-- Externalized long inline prompts to `file://` URIs
-- Removed all legacy: gaming agents, nova-act, deprecated MCP servers, old schema fields
 
 ## Prerequisites
 
@@ -51,35 +50,39 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ## What's Included
 
-### Agents (17)
+### Agents (18)
 
-| Agent         | Description                                                      |
-| ------------- | ---------------------------------------------------------------- |
-| `master`      | Orchestrator — routes to the right specialist subagent           |
-| `serverless`  | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools    |
-| `frontend`    | React, TypeScript, Tailwind CSS, shadcn/ui, Playwright, Figma    |
-| `testing`     | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent   |
-| `cypress`     | Cypress E2E tests, Page Objects, data-cy selectors               |
-| `architect`   | Architecture diagrams, cost estimation, Well-Architected reviews |
-| `ai-builder`  | Amazon Bedrock, Strands Agents, prompt engineering, RAG          |
-| `agentcore`   | AWS AgentCore applications with Strands framework                |
-| `devops`      | CloudWatch monitoring, alerting, cost optimization               |
-| `data`        | DynamoDB single-table design, Postgres, data modeling            |
-| `security`    | IAM, encryption, cdk-nag, CloudTrail                             |
-| `docs`        | READMEs, API docs, ADRs, runbooks                                |
-| `image-gen`   | Image generation via Bedrock (Nova Canvas + SD 3.5)              |
-| `research`    | Deep research with web search, AWS docs, GitHub                  |
-| `sap-abap`    | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                      |
-| `accounting`  | Canadian accounting SaaS (Alberta-focused)                       |
-| `web-builder` | React + AWS full-stack web applications                          |
+| Agent              | Description                                                      |
+| ------------------ | ---------------------------------------------------------------- |
+| `master`           | Orchestrator — routes to the right specialist subagent           |
+| `serverless`       | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools    |
+| `frontend`         | React, TypeScript, Tailwind CSS, shadcn/ui, Playwright, Figma    |
+| `testing`          | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent   |
+| `cypress`          | Cypress E2E tests, Page Objects, data-cy selectors               |
+| `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews |
+| `ai-builder`       | Amazon Bedrock, Strands Agents, prompt engineering, RAG          |
+| `agentcore`        | AWS AgentCore applications with Strands framework                |
+| `devops`           | CloudWatch monitoring, alerting, cost optimization               |
+| `data`             | DynamoDB single-table design, data modeling                      |
+| `security`         | IAM, encryption, cdk-nag, CloudTrail                             |
+| `docs`             | READMEs, API docs, ADRs, runbooks                                |
+| `image-gen`        | Image generation via Bedrock (Nova Canvas + SD 3.5)              |
+| `research`         | Deep research with web search, AWS docs, GitHub                  |
+| `sap-abap`         | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                      |
+| `accounting`       | Canadian accounting SaaS (Alberta-focused)                       |
+| `web-builder`      | React + AWS full-stack web applications                          |
+| `google-workspace` | Google Docs, Sheets, Drive (read-only)                           |
 
-### Steering Docs (15)
+### Steering Docs (16)
 
-Rules and standards automatically loaded into every session: accessibility, API design, AWS/CDK patterns, development workflow, error handling, performance, Python standards, security policies, and more.
+Rules and standards automatically loaded into every session: accessibility, API design, AWS/CDK patterns, AWS Agent Toolkit usage, development workflow, error handling, performance, Python standards, security policies, and more.
 
-### Skills (7)
+### Skills (22)
 
-Specialized knowledge files loaded on-demand: AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, SAP ABAP, deploy-on-aws, and AWS architecture diagrams.
+| Source                 | Skills                                                                                                                                                                                                                                                          |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Custom (7)             | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, SAP ABAP, deploy-on-aws, AWS architecture diagrams                                                                                                                               |
+| AWS Agent Toolkit (15) | Lambda+API GW, Lambda+DynamoDB, debugging timeouts, CloudFront routing, serverless decision guide, S3 security, IAM, Secrets Manager, observability, CloudWatch alarms, app failure troubleshooting, Bedrock, billing/cost, CloudFormation, messaging/streaming |
 
 ### MCP Servers
 
@@ -87,20 +90,19 @@ Agents configure their own MCP servers. Key servers used across agents:
 
 | Server              | Agents                                                     | Purpose                              |
 | ------------------- | ---------------------------------------------------------- | ------------------------------------ |
+| AWS MCP Server      | All 18 agents                                              | Full AWS API, docs, skills, scripts  |
 | Context7            | frontend, serverless, architect, data, web-builder, master | Live library docs (React, AWS, etc.) |
 | Playwright          | frontend                                                   | Browser automation and E2E testing   |
 | shadcn              | frontend, web-builder                                      | Component registry browsing/install  |
 | 21st.dev Magic      | frontend, web-builder                                      | AI UI generation from descriptions   |
 | Figma Framelink     | frontend                                                   | Design-to-code from Figma URLs       |
-| Browser Lens        | frontend                                                   | Live CSS/layout debugging            |
+| Browser Lens        | frontend, web-builder                                      | Live CSS/layout debugging            |
 | Sequential Thinking | master, frontend                                           | Structured reasoning chains          |
 | DuckDuckGo          | master, research, sap-abap + 4                             | Privacy-first web search             |
-| AWS Documentation   | master, serverless, architect, data                        | AWS docs search and retrieval        |
-| AWS IaC             | serverless, architect, web-builder                         | IaC best practices                   |
-| AWS Pricing         | architect                                                  | Real-time AWS pricing                |
-| GitHub              | master                                                     | GitHub API (repos, PRs, issues)      |
-| Chrome DevTools     | frontend, web-builder                                      | Chrome debugging                     |
-| Bedrock Image       | frontend, web-builder, image-gen                           | Image generation                     |
+| GitHub              | master, research, sap-abap, accounting, devops             | GitHub API (repos, PRs, issues)      |
+| Chrome DevTools     | frontend, web-builder, testing                             | Chrome debugging                     |
+| Bedrock Image       | frontend, web-builder, image-gen + 3                       | Image generation                     |
+| Google Drive        | google-workspace                                           | Google Docs/Sheets/Drive (read-only) |
 
 ## Environment Variables
 
@@ -115,6 +117,9 @@ export TWENTY_FIRST_API_KEY="your_key_here"
 
 # Required for Figma design-to-code
 export FIGMA_API_KEY="your_key_here"
+
+# Required for Browser Lens CSS debugging
+export BROWSER_LENS_API_KEY="your_key_here"
 ```
 
 ## Configuration

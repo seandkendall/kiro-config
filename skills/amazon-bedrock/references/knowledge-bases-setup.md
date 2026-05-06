@@ -63,12 +63,12 @@ when a user wants to build a RAG application.
 - You SHOULD ask the user about their document types if chunking_strategy is not specified
 - You SHOULD recommend based on document type:
 
-| Strategy | Best For | Tradeoff |
-|----------|----------|----------|
-| `fixed_size` | FAQs, short articles, uniform documents | Simple but may split semantic units. Chunk size 200-300 tokens, 10-20% overlap. |
-| `semantic` | Long-form content, technical docs, reports | Better quality but slower ingestion. |
-| `hierarchical` | Structured docs with chapters/sections (manuals, legal) | Best retrieval quality for structured docs but most complex. |
-| `none` | Pre-chunked data, documents under 300 tokens | No processing. |
+| Strategy       | Best For                                                | Tradeoff                                                                        |
+| -------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `fixed_size`   | FAQs, short articles, uniform documents                 | Simple but may split semantic units. Chunk size 200-300 tokens, 10-20% overlap. |
+| `semantic`     | Long-form content, technical docs, reports              | Better quality but slower ingestion.                                            |
+| `hierarchical` | Structured docs with chapters/sections (manuals, legal) | Best retrieval quality for structured docs but most complex.                    |
+| `none`         | Pre-chunked data, documents under 300 tokens            | No processing.                                                                  |
 
 - If documents contain tables or complex figures, You MUST recommend enabling **advanced parsing (FM-based)** because standard chunking breaks tables across chunks, destroying structure
 - You MUST NOT use default chunking for documents with complex tables or figures
@@ -83,16 +83,16 @@ when a user wants to build a RAG application.
 - You SHOULD ask the user about existing infrastructure if vector_store is not specified
 - You SHOULD recommend based on this decision matrix:
 
-| Vector Store | Best When | Setup Complexity |
-|-------------|-----------|-----------------|
-| S3 Vectors | Simplest setup, AWS-managed, no infrastructure to configure | Low — Bedrock can auto-create |
-| OpenSearch Serverless | No existing vector DB, most use cases, need advanced filtering | Medium — create collection + index |
-| Aurora PostgreSQL | Already using Aurora, cost-sensitive | Medium — enable pgvector extension |
-| Pinecone | Already using Pinecone | Low — create index + store API key in Secrets Manager |
-| Redis Enterprise Cloud | Need lowest latency | Medium — create cluster with vector search module |
-| MongoDB Atlas | Already using MongoDB | Medium — create vector index + store credentials in Secrets Manager |
-| Neptune Analytics | Graph-based RAG use cases | Medium — create graph + configure |
-| OpenSearch Managed Cluster | Existing self-managed OpenSearch | Medium — configure domain + index |
+| Vector Store               | Best When                                                      | Setup Complexity                                                    |
+| -------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| S3 Vectors                 | Simplest setup, AWS-managed, no infrastructure to configure    | Low — Bedrock can auto-create                                       |
+| OpenSearch Serverless      | No existing vector DB, most use cases, need advanced filtering | Medium — create collection + index                                  |
+| Aurora PostgreSQL          | Already using Aurora, cost-sensitive                           | Medium — enable pgvector extension                                  |
+| Pinecone                   | Already using Pinecone                                         | Low — create index + store API key in Secrets Manager               |
+| Redis Enterprise Cloud     | Need lowest latency                                            | Medium — create cluster with vector search module                   |
+| MongoDB Atlas              | Already using MongoDB                                          | Medium — create vector index + store credentials in Secrets Manager |
+| Neptune Analytics          | Graph-based RAG use cases                                      | Medium — create graph + configure                                   |
+| OpenSearch Managed Cluster | Existing self-managed OpenSearch                               | Medium — configure domain + index                                   |
 
 Additional vector stores may be available — refer to the latest [AWS documentation on KB vector store setup](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html) for current options.
 

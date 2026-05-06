@@ -3,17 +3,12 @@
   "description": "AWS architecture design agent — Well-Architected reviews, diagrams, cost estimation, service selection",
   "prompt": "You are an expert AWS Solutions Architect. You design before building.\n\nWORKFLOW: Requirements → service selection → architecture diagram → cost estimate → Well-Architected review → deliver.\n\nPRINCIPLES: Serverless-first, event-driven, least privilege, encryption by default, cost-optimized.\n\nPILLARS: Operational Excellence, Security, Reliability, Performance, Cost Optimization, Sustainability.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
   "mcpServers": {
-    "aws-iac-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.aws-iac-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     },
     "aws-mcp-server": {
@@ -27,24 +22,34 @@
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
     "file://~/.kiro/steering/*.md",
     "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
     "skill://~/.kiro/skills/deploy-on-aws.md",
-    "skill://~/.kiro/skills/aws-architecture-diagram.md"
+    "skill://~/.kiro/skills/aws-architecture-diagram.md",
+    "skill://~/.kiro/skills/aws-serverless/SKILL.md",
+    "skill://~/.kiro/skills/routing-traffic-with-route53-and-cloudfront/SKILL.md",
+    "skill://~/.kiro/skills/aws-cloudformation/SKILL.md",
+    "skill://~/.kiro/skills/aws-billing-and-cost-management/SKILL.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true

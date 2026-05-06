@@ -169,6 +169,7 @@ Recommended:
 ## Troubleshooting
 
 ### User disagrees with a finding
+
 Best practices are not absolutes. If the user explains a deliberate deviation, You MUST record the reason and not keep re-flagging it in subsequent runs. Some exceptions are valid:
 
 - Hardcoded names for resources referenced by external systems
@@ -176,4 +177,5 @@ Best practices are not absolutes. If the user explains a deliberate deviation, Y
 - Missing DLQ on functions that are synchronously-invoked only
 
 ### Strictness tier feels off
+
 If the user finds `recommended` too noisy, offer `critical` mode. If they want more, offer `strict`. Adjust based on feedback.

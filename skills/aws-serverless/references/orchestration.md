@@ -17,29 +17,29 @@ AWS Step Functions, Amazon EventBridge, and Lambda Durable Functions patterns an
 
 ### Decision Matrix
 
-| Dimension | Standard | Express |
-|---|---|---|
-| Max duration | 1 year | 5 minutes |
-| Execution semantics | Exactly-once | At-least-once (async) / At-most-once (sync) |
-| Execution history | Stored 90 days (API/console) | CloudWatch Logs only (must enable) |
-| `.sync` integration | Supported | **Not supported** |
-| `.waitForTaskToken` | Supported | **Not supported** |
-| Distributed Map | Supported | **Not supported** |
-| Activities | Supported | **Not supported** |
-| Idempotency | Automatic (execution name unique for 90 days) | Not managed |
+| Dimension           | Standard                                      | Express                                     |
+| ------------------- | --------------------------------------------- | ------------------------------------------- |
+| Max duration        | 1 year                                        | 5 minutes                                   |
+| Execution semantics | Exactly-once                                  | At-least-once (async) / At-most-once (sync) |
+| Execution history   | Stored 90 days (API/console)                  | CloudWatch Logs only (must enable)          |
+| `.sync` integration | Supported                                     | **Not supported**                           |
+| `.waitForTaskToken` | Supported                                     | **Not supported**                           |
+| Distributed Map     | Supported                                     | **Not supported**                           |
+| Activities          | Supported                                     | **Not supported**                           |
+| Idempotency         | Automatic (execution name unique for 90 days) | Not managed                                 |
 
 Express sub-types:
 
 - **Asynchronous**: Fire-and-forget. Results via CloudWatch Logs.
 - **Synchronous**: Blocks until completion. Invokable from API Gateway, Lambda, or `StartSyncExecution`. 5-min max.
 
-| Use Case | Type |
-|---|---|
-| Long-running orchestration, `.sync`/callback patterns | Standard |
-| Non-idempotent operations (payments, exactly-once) | Standard |
-| Distributed Map (large-scale parallel) | Standard |
-| High-volume event processing (IoT, streaming) | Express |
-| API-backed synchronous microservice orchestration | Synchronous Express |
+| Use Case                                              | Type                |
+| ----------------------------------------------------- | ------------------- |
+| Long-running orchestration, `.sync`/callback patterns | Standard            |
+| Non-idempotent operations (payments, exactly-once)    | Standard            |
+| Distributed Map (large-scale parallel)                | Standard            |
+| High-volume event processing (IoT, streaming)         | Express             |
+| API-backed synchronous microservice orchestration     | Synchronous Express |
 
 ---
 
@@ -58,33 +58,39 @@ Each step has a corresponding undo step invoked on failure via `Catch`. Compensa
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:123456789012:function:book-hotel",
       "TimeoutSeconds": 30,
-      "Catch": [{
-        "ErrorEquals": ["States.ALL"],
-        "ResultPath": "$.BookHotelError",
-        "Next": "NotifyFailure"
-      }],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.BookHotelError",
+          "Next": "NotifyFailure"
+        }
+      ],
       "Next": "BookFlight"
     },
     "BookFlight": {
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:123456789012:function:book-flight",
       "TimeoutSeconds": 30,
-      "Catch": [{
-        "ErrorEquals": ["States.ALL"],
-        "ResultPath": "$.BookFlightError",
-        "Next": "CancelHotel"
-      }],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.BookFlightError",
+          "Next": "CancelHotel"
+        }
+      ],
       "Next": "BookCar"
     },
     "BookCar": {
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:123456789012:function:book-car",
       "TimeoutSeconds": 30,
-      "Catch": [{
-        "ErrorEquals": ["States.ALL"],
-        "ResultPath": "$.BookCarError",
-        "Next": "CancelFlight"
-      }],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.BookCarError",
+          "Next": "CancelFlight"
+        }
+      ],
       "Next": "ConfirmBooking"
     },
     "CancelFlight": {
@@ -232,17 +238,17 @@ Model outputs a structured response indicating a tool call or final answer. Choi
 
 ### Built-in Error Names
 
-| Error Name | Description | Retriable? |
-|---|---|---|
-| `States.ALL` | Wildcard — matches any error | Yes |
-| `States.TaskFailed` | Wildcard for task errors (except `States.Timeout`) | Yes |
-| `States.Timeout` | Task exceeded `TimeoutSeconds` or `HeartbeatSeconds` | Yes |
-| `States.HeartbeatTimeout` | No heartbeat within `HeartbeatSeconds` | Yes |
-| `States.Permissions` | Insufficient IAM privileges | Yes |
-| `States.DataLimitExceeded` | Payload exceeds 256 KiB — **terminal** | **No** |
-| `States.Runtime` | Invalid JSONPath, null payload — **terminal** | **No** |
-| `States.ItemReaderFailed` | Map couldn't read from ItemReader source | Yes |
-| `States.ResultWriterFailed` | Map couldn't write to ResultWriter destination | Yes |
+| Error Name                  | Description                                          | Retriable? |
+| --------------------------- | ---------------------------------------------------- | ---------- |
+| `States.ALL`                | Wildcard — matches any error                         | Yes        |
+| `States.TaskFailed`         | Wildcard for task errors (except `States.Timeout`)   | Yes        |
+| `States.Timeout`            | Task exceeded `TimeoutSeconds` or `HeartbeatSeconds` | Yes        |
+| `States.HeartbeatTimeout`   | No heartbeat within `HeartbeatSeconds`               | Yes        |
+| `States.Permissions`        | Insufficient IAM privileges                          | Yes        |
+| `States.DataLimitExceeded`  | Payload exceeds 256 KiB — **terminal**               | **No**     |
+| `States.Runtime`            | Invalid JSONPath, null payload — **terminal**        | **No**     |
+| `States.ItemReaderFailed`   | Map couldn't read from ItemReader source             | Yes        |
+| `States.ResultWriterFailed` | Map couldn't write to ResultWriter destination       | Yes        |
 
 `States.ALL` does **not** match `States.DataLimitExceeded` or `States.Runtime`.
 
@@ -275,14 +281,14 @@ Available on `Task`, `Parallel`, and `Map` states. Retries are attempted before 
 ]
 ```
 
-| Field | Default | Description |
-|---|---|---|
-| `ErrorEquals` | (required) | Array of error names to match |
-| `IntervalSeconds` | 1 | Initial wait before first retry |
-| `MaxAttempts` | 3 | Max retries; 0 = never retry |
-| `BackoffRate` | 2.0 | Multiplier for exponential backoff |
-| `MaxDelaySeconds` | — | Cap on computed backoff interval |
-| `JitterStrategy` | `"NONE"` | `"FULL"` randomizes wait between 0 and computed interval |
+| Field             | Default    | Description                                              |
+| ----------------- | ---------- | -------------------------------------------------------- |
+| `ErrorEquals`     | (required) | Array of error names to match                            |
+| `IntervalSeconds` | 1          | Initial wait before first retry                          |
+| `MaxAttempts`     | 3          | Max retries; 0 = never retry                             |
+| `BackoffRate`     | 2.0        | Multiplier for exponential backoff                       |
+| `MaxDelaySeconds` | —          | Cap on computed backoff interval                         |
+| `JitterStrategy`  | `"NONE"`   | `"FULL"` randomizes wait between 0 and computed interval |
 
 Rules:
 
@@ -339,15 +345,15 @@ All specified fields must match (AND). Values within an array are OR'd.
 
 ### Advanced Pattern Operators
 
-| Operator | Syntax | Description |
-|---|---|---|
-| Exact match | `["value"]` | Field equals value |
-| Prefix | `[{"prefix": "prod-"}]` | Starts with string |
-| Suffix | `[{"suffix": ".json"}]` | Ends with string |
-| Anything-but | `[{"anything-but": ["val"]}]` | Not in list |
-| Numeric range | `[{"numeric": [">", 0, "<=", 100]}]` | Numeric comparison |
-| Exists | `[{"exists": true}]` | Field must be present |
-| Wildcard | `[{"wildcard": "prod-*-east"}]` | Glob-style matching |
+| Operator      | Syntax                               | Description           |
+| ------------- | ------------------------------------ | --------------------- |
+| Exact match   | `["value"]`                          | Field equals value    |
+| Prefix        | `[{"prefix": "prod-"}]`              | Starts with string    |
+| Suffix        | `[{"suffix": ".json"}]`              | Ends with string      |
+| Anything-but  | `[{"anything-but": ["val"]}]`        | Not in list           |
+| Numeric range | `[{"numeric": [">", 0, "<=", 100]}]` | Numeric comparison    |
+| Exists        | `[{"exists": true}]`                 | Field must be present |
+| Wildcard      | `[{"wildcard": "prod-*-east"}]`      | Glob-style matching   |
 
 ### EventBridge best practices
 
@@ -379,12 +385,14 @@ Step Functions emits to the default bus automatically:
   "QueryLanguage": "JSONata",
   "Resource": "arn:aws:states:::events:putEvents",
   "Arguments": {
-    "Entries": [{
-      "Detail": { "orderId": "{% $states.input.orderId %}", "status": "PROCESSED" },
-      "DetailType": "OrderProcessed",
-      "EventBusName": "my-app-bus",
-      "Source": "my-app.orders"
-    }]
+    "Entries": [
+      {
+        "Detail": { "orderId": "{% $states.input.orderId %}", "status": "PROCESSED" },
+        "DetailType": "OrderProcessed",
+        "EventBusName": "my-app-bus",
+        "Source": "my-app.orders"
+      }
+    ]
   },
   "Next": "Done"
 }
@@ -408,13 +416,13 @@ Eliminates intermediary Lambda functions for point-to-point integrations.
 
 ### Supported Sources
 
-| Source | Notes |
-|---|---|
-| Amazon SQS | Standard and FIFO queues |
-| Amazon Kinesis Data Streams | Shard-level polling |
-| Amazon DynamoDB Streams | Change data capture |
-| Amazon MSK / Self-managed Kafka | Topic-level consumption |
-| Amazon MQ | ActiveMQ and RabbitMQ |
+| Source                          | Notes                    |
+| ------------------------------- | ------------------------ |
+| Amazon SQS                      | Standard and FIFO queues |
+| Amazon Kinesis Data Streams     | Shard-level polling      |
+| Amazon DynamoDB Streams         | Change data capture      |
+| Amazon MSK / Self-managed Kafka | Topic-level consumption  |
+| Amazon MQ                       | ActiveMQ and RabbitMQ    |
 
 ### Enrichment Options
 
@@ -428,12 +436,12 @@ Lambda, API Gateway, EventBridge API Destinations, Step Functions (Synchronous E
 
 ### Pipes vs Rules
 
-| Dimension | Pipes | Rules |
-|---|---|---|
-| Topology | Point-to-point (1→1) | Fan-out (1→N) |
-| Sources | SQS, Kinesis, DDB Streams, MSK, MQ | Any event on a bus |
-| Enrichment | Built-in | Not built-in |
-| Use case | Replace Lambda glue | Event routing and distribution |
+| Dimension  | Pipes                              | Rules                          |
+| ---------- | ---------------------------------- | ------------------------------ |
+| Topology   | Point-to-point (1→1)               | Fan-out (1→N)                  |
+| Sources    | SQS, Kinesis, DDB Streams, MSK, MQ | Any event on a bus             |
+| Enrichment | Built-in                           | Not built-in                   |
+| Use case   | Replace Lambda glue                | Event routing and distribution |
 
 ---
 
@@ -447,44 +455,42 @@ Lambda, API Gateway, EventBridge API Destinations, Step Functions (Synchronous E
 
 ### SDK Availability
 
-| Language | Package | Handler Pattern |
-|---|---|---|
-| JavaScript/TypeScript | `@aws/durable-execution-sdk-js` | `withDurableExecution(async (event, ctx) => ...)` |
-| Python | `aws-durable-execution-sdk-python` | `@durable_execution` decorator |
-| Java | `software.amazon.lambda.durable:aws-durable-execution-sdk-java` | Extends `DurableHandler` |
+| Language              | Package                                                         | Handler Pattern                                   |
+| --------------------- | --------------------------------------------------------------- | ------------------------------------------------- |
+| JavaScript/TypeScript | `@aws/durable-execution-sdk-js`                                 | `withDurableExecution(async (event, ctx) => ...)` |
+| Python                | `aws-durable-execution-sdk-python`                              | `@durable_execution` decorator                    |
+| Java                  | `software.amazon.lambda.durable:aws-durable-execution-sdk-java` | Extends `DurableHandler`                          |
 
 Go, Rust, and .NET are **not supported**.
 
 ### DurableContext Operations
 
-| Operation | Description |
-|---|---|
-| `step(name, fn)` | Execute a named step; result is checkpointed |
-| `wait(name, seconds)` | Suspend execution for a duration (zero compute during wait) |
-| `parallel(steps)` | Execute multiple steps concurrently |
-| `map(items, fn)` | Iterate over items with checkpointing |
-| `waitForCallback(name)` | Suspend until external callback resumes execution |
-| `invoke(name, fn, arn)` | Invoke another Lambda and checkpoint the result |
+| Operation               | Description                                                 |
+| ----------------------- | ----------------------------------------------------------- |
+| `step(name, fn)`        | Execute a named step; result is checkpointed                |
+| `wait(name, seconds)`   | Suspend execution for a duration (zero compute during wait) |
+| `parallel(steps)`       | Execute multiple steps concurrently                         |
+| `map(items, fn)`        | Iterate over items with checkpointing                       |
+| `waitForCallback(name)` | Suspend until external callback resumes execution           |
+| `invoke(name, fn, arn)` | Invoke another Lambda and checkpoint the result             |
 
 ### Example: Distributed Transaction
 
 ```typescript
-import { DurableContext, withDurableExecution } from "@aws/durable-execution-sdk-js";
+import { DurableContext, withDurableExecution } from '@aws/durable-execution-sdk-js';
 
-export const handler = withDurableExecution(
-  async (event: any, context: DurableContext) => {
-    const inventory = await context.step("reserve-inventory", async () => {
-      return await inventoryService.reserve(event.items);
-    });
-    const payment = await context.step("process-payment", async () => {
-      return await paymentService.charge(event.amount);
-    });
-    const shipment = await context.step("create-shipment", async () => {
-      return await shippingService.createShipment(event.orderId, inventory);
-    });
-    return { orderId: event.orderId, status: "completed", shipment };
-  }
-);
+export const handler = withDurableExecution(async (event: any, context: DurableContext) => {
+  const inventory = await context.step('reserve-inventory', async () => {
+    return await inventoryService.reserve(event.items);
+  });
+  const payment = await context.step('process-payment', async () => {
+    return await paymentService.charge(event.amount);
+  });
+  const shipment = await context.step('create-shipment', async () => {
+    return await shippingService.createShipment(event.orderId, inventory);
+  });
+  return { orderId: event.orderId, status: 'completed', shipment };
+});
 ```
 
 ### Limitations
@@ -498,12 +504,12 @@ export const handler = withDurableExecution(
 
 ### Decision Matrix: Durable Functions vs Step Functions
 
-| Question | Durable Functions | Step Functions |
-|---|---|---|
-| Primary focus? | Application logic in Lambda | Orchestration across AWS services |
-| Programming model? | Standard code (TS/Python/Java) | Amazon States Language (ASL) or visual designer |
-| AWS service integrations? | Primarily Lambda | 200+ native integrations |
-| Who reads the workflow? | Developers | Non-technical stakeholders |
-| Best for? | Distributed transactions, stateful logic, AI agent loops | Business process automation, multi-service orchestration |
+| Question                  | Durable Functions                                        | Step Functions                                           |
+| ------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
+| Primary focus?            | Application logic in Lambda                              | Orchestration across AWS services                        |
+| Programming model?        | Standard code (TS/Python/Java)                           | Amazon States Language (ASL) or visual designer          |
+| AWS service integrations? | Primarily Lambda                                         | 200+ native integrations                                 |
+| Who reads the workflow?   | Developers                                               | Non-technical stakeholders                               |
+| Best for?                 | Distributed transactions, stateful logic, AI agent loops | Business process automation, multi-service orchestration |
 
 **Hybrid pattern**: Durable functions for application-level logic within Lambda, Step Functions for high-level orchestration across multiple AWS services.

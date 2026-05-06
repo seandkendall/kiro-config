@@ -35,10 +35,10 @@ Before giving implementation advice, fetch the latest from the aws-samples repo:
 
 ### 3. Configure TTL
 
-| TTL | Supported Models | Use Case |
-|-----|-----------------|----------|
-| 5 min (default) | All supported models | Dynamic content, short conversations |
-| 1 hour | Claude Sonnet 4.6, Opus 4.6, Sonnet 4.5, Opus 4.5, Haiku 4.5 | System prompts, reference docs |
+| TTL             | Supported Models                                             | Use Case                             |
+| --------------- | ------------------------------------------------------------ | ------------------------------------ |
+| 5 min (default) | All supported models                                         | Dynamic content, short conversations |
+| 1 hour          | Claude Sonnet 4.6, Opus 4.6, Sonnet 4.5, Opus 4.5, Haiku 4.5 | System prompts, reference docs       |
 
 When mixing TTLs, longer durations MUST precede shorter ones.
 
@@ -69,14 +69,14 @@ For InvokeModel (Anthropic format): `cache_creation_input_tokens` and `cache_rea
 
 Content before a cache point must meet the model's minimum. Below threshold = silently ignored.
 
-| Model | Minimum Tokens |
-|-------|---------------|
-| Claude Sonnet 4.6 | 2,048 |
-| Claude Opus 4.6 / Opus 4.5 / Haiku 4.5 | 4,096 |
-| Claude Sonnet 4.5 / Opus 4.1 / Opus 4 / Sonnet 4 / 3.7 Sonnet / 3.5 Sonnet v2 | 1,024 |
-| Claude 3.5 Haiku | 2,048 |
-| Amazon Nova Pro | 1,024 |
-| Amazon Nova Lite / Micro | 1,536 |
+| Model                                                                         | Minimum Tokens |
+| ----------------------------------------------------------------------------- | -------------- |
+| Claude Sonnet 4.6                                                             | 2,048          |
+| Claude Opus 4.6 / Opus 4.5 / Haiku 4.5                                        | 4,096          |
+| Claude Sonnet 4.5 / Opus 4.1 / Opus 4 / Sonnet 4 / 3.7 Sonnet / 3.5 Sonnet v2 | 1,024          |
+| Claude 3.5 Haiku                                                              | 2,048          |
+| Amazon Nova Pro                                                               | 1,024          |
+| Amazon Nova Lite / Micro                                                      | 1,536          |
 
 ## Why Isn't My Cache Working?
 
@@ -106,12 +106,12 @@ python3 scripts/debug-prompt-cache.py --model-id <MODEL_ID> --region <REGION> --
 
 Cache writes cost **25% more** than standard input tokens. Cache reads cost **90% less**.
 
-| Requests per TTL Window | Savings |
-|------------------------|---------|
-| 1 (write only) | **-25% (costs MORE)** |
-| 2 | 32% |
-| 5 | 67% |
-| 10 | 78% |
+| Requests per TTL Window | Savings               |
+| ----------------------- | --------------------- |
+| 1 (write only)          | **-25% (costs MORE)** |
+| 2                       | 32%                   |
+| 5                       | 67%                   |
+| 10                      | 78%                   |
 
 You need at least **2 requests within the TTL window** to break even. For single-use content, do NOT enable caching.
 

@@ -12,11 +12,11 @@ Track, allocate, and manage Bedrock inference costs across teams, products, and 
 
 ## Cost Attribution Approaches
 
-| Approach | Best For | Setup Effort |
-|----------|----------|-------------|
-| Application inference profiles + cost allocation tags | Per-product or per-team cost tracking in Cost Explorer | Medium — create profiles, tag, activate in Billing |
-| IAM principal-based (CUR 2.0) | Per-developer or per-role attribution | Low — automatic in CUR 2.0, no Bedrock config needed |
-| Model invocation logging + custom analytics | Fine-grained per-request analysis (token counts, latency, model) | High — enable logging, build queries |
+| Approach                                              | Best For                                                         | Setup Effort                                         |
+| ----------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------- |
+| Application inference profiles + cost allocation tags | Per-product or per-team cost tracking in Cost Explorer           | Medium — create profiles, tag, activate in Billing   |
+| IAM principal-based (CUR 2.0)                         | Per-developer or per-role attribution                            | Low — automatic in CUR 2.0, no Bedrock config needed |
+| Model invocation logging + custom analytics           | Fine-grained per-request analysis (token counts, latency, model) | High — enable logging, build queries                 |
 
 For most teams, **application inference profiles with cost allocation tags** is the recommended approach. It provides clean cost breakdowns in Cost Explorer without custom analytics.
 
@@ -76,13 +76,13 @@ Limitation: only tracks who made the call, not which product or feature triggere
 
 Key metrics for cost monitoring (namespace `AWS/Bedrock`, dimension `ModelId`):
 
-| Metric | Cost Signal |
-|--------|------------|
-| `InputTokenCount` | Input token spend (charged per token) |
-| `OutputTokenCount` | Output token spend (higher per-token rate) |
-| `InvocationCount` | Request volume |
-| `CacheReadInputTokens` | Tokens served from cache (90% cheaper than standard input) |
-| `CacheWriteInputTokens` | Cache write tokens (25% surcharge over standard input) |
+| Metric                  | Cost Signal                                                |
+| ----------------------- | ---------------------------------------------------------- |
+| `InputTokenCount`       | Input token spend (charged per token)                      |
+| `OutputTokenCount`      | Output token spend (higher per-token rate)                 |
+| `InvocationCount`       | Request volume                                             |
+| `CacheReadInputTokens`  | Tokens served from cache (90% cheaper than standard input) |
+| `CacheWriteInputTokens` | Cache write tokens (25% surcharge over standard input)     |
 
 ### Cost Analysis Script
 

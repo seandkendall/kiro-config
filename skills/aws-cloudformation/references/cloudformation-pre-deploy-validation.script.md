@@ -90,6 +90,7 @@ Create the change set to trigger pre-deployment validation. Validation runs auto
   ```
 
   > **Notes:** Use `--template-url s3://...` instead of `--template-body` for templates exceeding 51,200 bytes. Include `--capabilities` only if the template creates IAM resources.
+
 - You MUST capture the returned change set ARN (Id) for the next step
 - You MUST explain to the user that creating a change set does NOT modify any resources because it only plans the changes and runs validation
 - You MUST wait for change set creation to reach a terminal status (`CREATE_COMPLETE`, `FAILED`) before checking validation results. Use `describe-change-set` to poll status.
@@ -199,19 +200,25 @@ Fix the template and create a new change set.
 ## Troubleshooting
 
 ### describe-events returns empty or unknown command
+
 The `describe-events` API (scoped to change sets with validation errors) is the newer API. If the installed AWS CLI is outdated, update it: `pip install --upgrade awscli` or `brew upgrade awscli`. If the command still returns nothing, confirm the change set ARN is correct and the change set has finished creating.
 
 ### User calls describe-stack-events instead
+
 `describe-stack-events` returns events after the stack begins provisioning. It does NOT include pre-deployment validation errors. You MUST redirect the user to `describe-events --change-set-id <arn>`.
 
 ### Change set stuck in CREATE_IN_PROGRESS
+
 Use `aws cloudformation describe-change-set --change-set-name <arn>` to check the status. Wait until it reaches `CREATE_COMPLETE` or `FAILED` before calling `describe-events`.
 
 ### Change set status FAILED but no validation events
+
 If `describe-change-set` shows `Status: FAILED` with a `StatusReason` unrelated to validation (e.g., "No updates are to be performed"), the failure is not a pre-deployment validation issue. Investigate the `StatusReason` directly.
 
 ### Missing s3:ListBucket permission
+
 S3 bucket emptiness validation requires `s3:ListBucket` permission on the buckets being deleted. If this validation is skipped or errors, verify the deploying role has this permission.
 
 ### Validation passed but deployment still fails
+
 Pre-deployment validation catches three common classes of issues but cannot detect all runtime failures (resource limits, service constraints, IAM permissions, invalid AMI IDs). If deployment fails after validation passes, use the `troubleshoot-cloudformation-deployment` tool or SOP to diagnose the runtime failure.

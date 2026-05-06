@@ -267,16 +267,21 @@ Successfully configured Route 53 to route traffic for www.example.com to CloudFr
 ## Troubleshooting
 
 ### Domain Not in CloudFront CNAMEs
+
 If the domain is not configured as an alternate domain name in CloudFront, you must add it to the distribution configuration before creating Route 53 records.
 
 ### Hosted Zone Not Found
+
 If no hosted zone exists for your domain, you'll need to create one or transfer DNS management to Route 53.
 
 ### SSL Certificate Issues
+
 If using HTTPS, ensure you have a valid SSL certificate in AWS Certificate Manager for your domain and it's associated with the CloudFront distribution.
 
 ### Private Hosted Zone Issues
+
 CloudFront distributions only work with public hosted zones. If you have a private hosted zone for your domain, you'll need to create a public hosted zone or transfer DNS management to Route 53 for public resolution.
 
 ### DNS Propagation Delays
+
 DNS changes can take time to propagate globally. Use multiple DNS checking tools and test from different locations to verify propagation.

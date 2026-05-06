@@ -1,6 +1,7 @@
 # EC2 Right-Sizing with Compute Optimizer
 
 ## Prerequisites
+
 Opt in first: `aws compute-optimizer update-enrollment-status --status Active`
 
 ## Metrics Analyzed
@@ -17,12 +18,12 @@ Memory metrics are critical — without them, instances with low memory may appe
 
 ## Finding Classifications
 
-| Finding | Meaning |
-|---------|---------|
-| `Overprovisioned` | Can be downsized while meeting workload needs |
-| `Underprovisioned` | Too small, risking performance issues |
-| `Optimized` | Appropriately sized |
-| `NotOptimized` | Could benefit from newer generation or family |
+| Finding            | Meaning                                       |
+| ------------------ | --------------------------------------------- |
+| `Overprovisioned`  | Can be downsized while meeting workload needs |
+| `Underprovisioned` | Too small, risking performance issues         |
+| `Optimized`        | Appropriately sized                           |
+| `NotOptimized`     | Could benefit from newer generation or family |
 
 ## Finding Reason Codes
 
@@ -30,24 +31,25 @@ Each finding includes reason codes explaining which metrics triggered it: `CPUOv
 
 ## Lookback Periods
 
-| Period | Datapoints | Cost |
-|--------|-----------|------|
-| 14-day (default) | ~4,032 | Free |
-| 32-day | ~9,216 | Free (enhanced) |
-| 93-day | ~26,784 | Paid (enhanced infrastructure metrics) |
+| Period           | Datapoints | Cost                                   |
+| ---------------- | ---------- | -------------------------------------- |
+| 14-day (default) | ~4,032     | Free                                   |
+| 32-day           | ~9,216     | Free (enhanced)                        |
+| 93-day           | ~26,784    | Paid (enhanced infrastructure metrics) |
 
 Uses P99.5 percentile by default (excludes top 0.5% outliers). Default 20% CPU/memory headroom buffer.
 
 ## Migration Effort Levels
 
-| Level | Example |
-|-------|---------|
+| Level    | Example                                        |
+| -------- | ---------------------------------------------- |
 | Very Low | Same family size change (c5.large → c5.xlarge) |
-| Low | Generation change (m5.xlarge → m6i.xlarge) |
-| Medium | Family change (c5.xlarge → m5.xlarge) |
-| High | Architecture change (x86 → Graviton/arm64) |
+| Low      | Generation change (m5.xlarge → m6i.xlarge)     |
+| Medium   | Family change (c5.xlarge → m5.xlarge)          |
+| High     | Architecture change (x86 → Graviton/arm64)     |
 
 ## Performance Risk Scale
+
 0-1: Very Low | >1-2: Low | >2-3: Medium | >3-4: High
 
 ## Savings Estimation Modes

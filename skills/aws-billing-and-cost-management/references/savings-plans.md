@@ -4,12 +4,12 @@
 
 ## Plan Types
 
-| Type | Discount | Flexibility | Covers |
-|------|----------|-------------|--------|
-| Compute SP | Up to 66% | Any family, size, region, OS | EC2, Fargate, Lambda |
-| EC2 Instance SP | Up to 72% | Any size, OS within family+region | EC2 only |
-| Database SP | Up to 35% | Any engine, family, size, region | Aurora, RDS, DynamoDB, ElastiCache, DocumentDB, Neptune, Keyspaces, Timestream, DMS, OpenSearch |
-| SageMaker SP | Up to 64% | Any family, size, region | SageMaker |
+| Type            | Discount  | Flexibility                       | Covers                                                                                          |
+| --------------- | --------- | --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Compute SP      | Up to 66% | Any family, size, region, OS      | EC2, Fargate, Lambda                                                                            |
+| EC2 Instance SP | Up to 72% | Any size, OS within family+region | EC2 only                                                                                        |
+| Database SP     | Up to 35% | Any engine, family, size, region  | Aurora, RDS, DynamoDB, ElastiCache, DocumentDB, Neptune, Keyspaces, Timestream, DMS, OpenSearch |
+| SageMaker SP    | Up to 64% | Any family, size, region          | SageMaker                                                                                       |
 
 Default recommendation: **Compute SP** for most users. The 6% discount gap vs EC2 Instance SP is not worth the inflexibility.
 
@@ -27,12 +27,12 @@ Savings compare to On-Demand prices only. The `estimatedMonthlyCost` and `estima
 
 ## SP vs Reserved Instances
 
-| Feature | Savings Plans | Reserved Instances |
-|---------|--------------|-------------------|
-| Flexibility | High (Compute SP covers EC2+Fargate+Lambda) | Low (service-specific) |
-| Capacity reservation | No | Yes (AZ-scoped RI — Standard or Convertible) |
-| Marketplace resale | No | Yes (Standard RI only) |
-| AWS recommendation | Preferred | Legacy, still supported |
+| Feature              | Savings Plans                               | Reserved Instances                           |
+| -------------------- | ------------------------------------------- | -------------------------------------------- |
+| Flexibility          | High (Compute SP covers EC2+Fargate+Lambda) | Low (service-specific)                       |
+| Capacity reservation | No                                          | Yes (AZ-scoped RI — Standard or Convertible) |
+| Marketplace resale   | No                                          | Yes (Standard RI only)                       |
+| AWS recommendation   | Preferred                                   | Legacy, still supported                      |
 
 SPs apply AFTER RI discounts. SPs do NOT apply to Spot usage.
 

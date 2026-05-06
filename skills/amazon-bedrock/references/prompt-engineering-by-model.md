@@ -30,7 +30,7 @@ Refer to the latest AWS documentation on Bedrock Converse additionalModelRequest
   "anthropic_version": "bedrock-2023-05-31",
   "max_tokens": 1024,
   "system": "You are a helpful assistant.",
-  "messages": [{"role": "user", "content": "Hello"}]
+  "messages": [{ "role": "user", "content": "Hello" }]
 }
 ```
 
@@ -123,9 +123,9 @@ Nova uses a Converse-compatible message format through InvokeModel, unlike other
 
 ```json
 {
-  "messages": [{"role": "user", "content": [{"text": "Hello"}]}],
-  "system": [{"text": "You are a helpful assistant."}],
-  "inferenceConfig": {"maxTokens": 1024, "temperature": 0.7}
+  "messages": [{ "role": "user", "content": [{ "text": "Hello" }] }],
+  "system": [{ "text": "You are a helpful assistant." }],
+  "inferenceConfig": { "maxTokens": 1024, "temperature": 0.7 }
 }
 ```
 
@@ -139,11 +139,11 @@ Bedrock-specific behaviors:
 
 ## Common Cross-Model Mistakes
 
-| Mistake | Symptom | Fix |
-|---------|---------|-----|
-| Sending Converse `messages` format to InvokeModel for Llama | `ValidationException` | Use raw `prompt` string with Llama 3 special tokens |
-| Using Anthropic API version instead of Bedrock version for Claude | `ValidationException` | Use `bedrock-2023-05-31` |
-| Omitting `max_tokens`/`max_gen_len`/`maxTokenCount` in InvokeModel | `ValidationException` (Claude/Llama) or model default (Titan) | Always set explicitly |
-| Putting system prompt in messages for Titan InvokeModel | Works but poor quality | Prepend to `inputText` |
-| Applying Claude InvokeModel format to Nova | `ValidationException` | Nova uses Converse-compatible format |
-| Using Llama special tokens in Converse API | Redundant, may confuse model | Converse handles formatting — send plain text |
+| Mistake                                                            | Symptom                                                       | Fix                                                 |
+| ------------------------------------------------------------------ | ------------------------------------------------------------- | --------------------------------------------------- |
+| Sending Converse `messages` format to InvokeModel for Llama        | `ValidationException`                                         | Use raw `prompt` string with Llama 3 special tokens |
+| Using Anthropic API version instead of Bedrock version for Claude  | `ValidationException`                                         | Use `bedrock-2023-05-31`                            |
+| Omitting `max_tokens`/`max_gen_len`/`maxTokenCount` in InvokeModel | `ValidationException` (Claude/Llama) or model default (Titan) | Always set explicitly                               |
+| Putting system prompt in messages for Titan InvokeModel            | Works but poor quality                                        | Prepend to `inputText`                              |
+| Applying Claude InvokeModel format to Nova                         | `ValidationException`                                         | Nova uses Converse-compatible format                |
+| Using Llama special tokens in Converse API                         | Redundant, may confuse model                                  | Converse handles formatting — send plain text       |

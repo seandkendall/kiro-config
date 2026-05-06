@@ -278,21 +278,27 @@ lambda_code: |
 ## Troubleshooting
 
 ### Function Not Found
+
 If the Lambda function doesn't exist, verify the function name and region. Use `aws lambda list-functions --region ${region}` to see available functions.
 
 ### No Logs Available
+
 If CloudWatch logs are empty or don't exist, the function may not have been invoked recently or logging may be disabled. Check the function's log group configuration.
 
 ### Access Denied Errors
+
 If you encounter access denied errors, verify that your AWS credentials have the necessary permissions for Lambda, CloudWatch, and related services.
 
 ### Query Timeouts
+
 If CloudWatch Logs Insights queries timeout, reduce the time window or check if the log group contains a large volume of data. Consider running analysis during off-peak hours.
 
 ### VPC Configuration Issues
+
 If the function is in a VPC and experiencing timeouts, check NAT gateway configuration, security group rules, and subnet routing to ensure proper internet access for external API calls.
 
 ### Log Group Time Range Issues
+
 If you encounter MalformedQueryException errors indicating the time range exceeds log retention or is before log group creation:
 
 - Check the log group's retention settings using `aws logs describe-log-groups`
@@ -301,6 +307,7 @@ If you encounter MalformedQueryException errors indicating the time range exceed
 - Consider that some log groups may have very short retention periods (0-111 days as shown in the error)
 
 ### Log Stream Not Found Errors
+
 If you encounter ResourceNotFoundException errors for log streams:
 
 - Verify that the Lambda function has been invoked recently using `aws logs describe-log-streams`
@@ -310,6 +317,7 @@ If you encounter ResourceNotFoundException errors for log streams:
 - If no log streams exist, the function may not have been invoked in the specified time range
 
 ### Timestamp Derivation Best Practices
+
 When calculating timestamps for log analysis:
 
 - **ALWAYS** use timestamps from existing AWS response data as your reference point

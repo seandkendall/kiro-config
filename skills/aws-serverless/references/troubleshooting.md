@@ -20,19 +20,24 @@ Actionable error lookup tables: exact error string → cause → fix with CLI co
 ## Quick fixes
 
 ### 502 Bad Gateway from API Gateway
+
 Lambda proxy integration requires `{ statusCode: int, headers: {}, body: "string" }`.
 The `body` must be a string (`JSON.stringify()`), not an object. API Gateway returns 502 when it cannot parse the Lambda response — the function ran successfully but the response shape was wrong. Note: string statusCode (e.g., "200") is silently coerced to integer, and missing statusCode defaults to 200.
 
 ### CORS errors
+
 With Lambda proxy integration, Lambda must return CORS headers — the API Gateway console "Enable CORS" button does not work for Lambda proxy integration. Add `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers` to every Lambda response including errors. For HTTP API, use the built-in `CorsConfiguration` instead. CORS is enforced by the browser, not the server — missing headers cause the browser to block the response even though the API call succeeded.
 
 ### Lambda timeout + API Gateway 504
+
 API Gateway has a hard integration timeout: REST API default 29s (configurable 50ms–29s; Regional/private APIs can request higher), HTTP API max 30s (can be lowered, cannot be raised). This is independent of Lambda's 15-min limit. The 504 means API Gateway gave up waiting, not that Lambda failed. For long operations, return 202 immediately, process via SQS or Step Functions, poll or use WebSocket for results.
 
 ### VPC Lambda cannot reach internet
+
 Lambda in a VPC needs a **private** subnet + NAT Gateway in a **public** subnet. Placing Lambda in a public subnet does NOT give it a public IP — Lambda never gets a public IP regardless of subnet type because Lambda's network interface is managed by the service and doesn't support public IP assignment. For AWS services only, use VPC endpoints (free for S3 and DynamoDB gateway endpoints).
 
 ### ImportModuleError / MODULE_NOT_FOUND
+
 Handler path doesn't match file structure, or dependencies weren't bundled. Lambda extracts code to `/var/task` and layers to `/opt` — if the handler path doesn't match the file's location relative to `/var/task`, the runtime can't find it. Python: `pip install -r requirements.txt -t ./package --platform manylinux2014_x86_64 --only-binary=:all:`. Node: verify `exports.handler` exists and `node_modules` is included. Use `sam build` to handle cross-platform packaging automatically.
 
 ---
@@ -217,7 +222,11 @@ return {"statusCode": 200, "headers": {"Content-Type": "application/json"}, "bod
 ```
 
 ```javascript
-return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ msg: "ok" }) };
+return {
+  statusCode: 200,
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ msg: 'ok' }),
+};
 ```
 
 ### Missing Authentication Token (403)
@@ -323,7 +332,13 @@ aws apigateway update-stage --rest-api-id abc123 --stage-name prod \
 **Cause:** Task exceeded `TimeoutSeconds` or missed `HeartbeatSeconds` deadline.
 
 ```json
-{"Type": "Task", "Resource": "arn:aws:lambda:...", "TimeoutSeconds": 300, "HeartbeatSeconds": 60, "Next": "NextState"}
+{
+  "Type": "Task",
+  "Resource": "arn:aws:lambda:...",
+  "TimeoutSeconds": 300,
+  "HeartbeatSeconds": 60,
+  "Next": "NextState"
+}
 ```
 
 ### States.DataLimitExceeded
@@ -445,7 +460,7 @@ cdk bootstrap aws://123456789012/us-east-1
 MyFunction:
   Type: AWS::Lambda::Function
   Properties:
-    FunctionName: my-function-name  # explicit name
+    FunctionName: my-function-name # explicit name
 
 MyRole:
   Type: AWS::IAM::Role
@@ -456,7 +471,7 @@ MyRole:
             - Effect: Allow
               Action: lambda:InvokeFunction
               # No ${MyFunction} reference — no implicit dependency
-              Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:my-function-name"
+              Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:my-function-name'
 # Or restructure to eliminate the cycle (extract IAM role/policy into a separate resource)
 ```
 
@@ -498,30 +513,30 @@ Runtime.OutOfMemory / signal: killed
 └── Fix: increase memory, stream large files, bound caches
 ```
 
-| Memory (MB) | vCPUs | Use Case |
-|-------------|-------|----------|
-| 128 | ~0.08 | Simple transforms |
-| 512 | ~0.3 | Moderate processing |
-| 1,769 | 1.0 | CPU-intensive single-threaded |
-| 3,538 | 2.0 | Multi-threaded |
-| 10,240 | ~5.8 | Heavy compute, ML inference |
+| Memory (MB) | vCPUs | Use Case                      |
+| ----------- | ----- | ----------------------------- |
+| 128         | ~0.08 | Simple transforms             |
+| 512         | ~0.3  | Moderate processing           |
+| 1,769       | 1.0   | CPU-intensive single-threaded |
+| 3,538       | 2.0   | Multi-threaded                |
+| 10,240      | ~5.8  | Heavy compute, ML inference   |
 
 ---
 
 ## Throttling Diagnosis
 
-| Concept | Default | Notes |
-|---------|---------|-------|
-| Account concurrency | 1,000/region | Request increase via Service Quotas |
-| Reserved concurrency | None | Guarantees AND caps function concurrency |
-| Concurrency scaling rate | 1,000 envs/10s | Per function, uniform across regions |
+| Concept                  | Default        | Notes                                    |
+| ------------------------ | -------------- | ---------------------------------------- |
+| Account concurrency      | 1,000/region   | Request increase via Service Quotas      |
+| Reserved concurrency     | None           | Guarantees AND caps function concurrency |
+| Concurrency scaling rate | 1,000 envs/10s | Per function, uniform across regions     |
 
-| Invocation Type | Throttle Behavior |
-|-----------------|-------------------|
+| Invocation Type      | Throttle Behavior                 |
+| -------------------- | --------------------------------- |
 | Synchronous (API GW) | Returns 429 (API GW may show 500) |
-| Async (S3, SNS) | Auto-retries up to 6 hours |
-| SQS trigger | Returns to queue, backs off |
-| Kinesis/DDB Streams | Retries batch, blocks shard |
+| Async (S3, SNS)      | Auto-retries up to 6 hours        |
+| SQS trigger          | Returns to queue, backs off       |
+| Kinesis/DDB Streams  | Retries batch, blocks shard       |
 
 ```bash
 aws lambda get-account-settings
@@ -656,14 +671,16 @@ Globals:
 
 ```typescript
 new lambda.Function(this, 'Fn', {
-  tracing: lambda.Tracing.ACTIVE,  // adds AWSXRayDaemonWriteAccess automatically
+  tracing: lambda.Tracing.ACTIVE, // adds AWSXRayDaemonWriteAccess automatically
 });
 ```
 
 ### Required IAM
+
 `AWSXRayDaemonWriteAccess` managed policy on the execution role. SAM/CDK add this automatically.
 
 ### Default Sampling
+
 1 request/second (reservoir) + 5% of additional requests.
 
 ### Instrument SDK Calls

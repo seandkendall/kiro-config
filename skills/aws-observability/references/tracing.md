@@ -17,14 +17,14 @@ X-Ray SDK is in maintenance mode. Use ADOT (OpenTelemetry) for all new projects.
 
 ## ADOT vs X-Ray SDK
 
-| Criteria | X-Ray SDK | ADOT (OpenTelemetry) |
-|----------|----------|---------------------|
-| Status | **Maintenance mode** | Actively developed |
-| Multi-backend | X-Ray only | CloudWatch, X-Ray, Prometheus, OpenSearch |
-| Auto-instrumentation | Limited | Java, Python (compute); Node.js (Lambda layer only) |
-| Vendor lock-in | AWS-specific | Vendor-neutral (OTel standard) |
-| Lambda support | Built-in daemon | Lambda layer (auto-instrumentation) |
-| **Recommendation** | **Legacy apps only** | **All new projects** |
+| Criteria             | X-Ray SDK            | ADOT (OpenTelemetry)                                |
+| -------------------- | -------------------- | --------------------------------------------------- |
+| Status               | **Maintenance mode** | Actively developed                                  |
+| Multi-backend        | X-Ray only           | CloudWatch, X-Ray, Prometheus, OpenSearch           |
+| Auto-instrumentation | Limited              | Java, Python (compute); Node.js (Lambda layer only) |
+| Vendor lock-in       | AWS-specific         | Vendor-neutral (OTel standard)                      |
+| Lambda support       | Built-in daemon      | Lambda layer (auto-instrumentation)                 |
+| **Recommendation**   | **Legacy apps only** | **All new projects**                                |
 
 **Migration path**: AWS provides migration guides from X-Ray SDK to OpenTelemetry SDK. The CloudWatch agent now also supports sending traces to X-Ray — no separate daemon needed.
 
@@ -54,13 +54,13 @@ Format: `1-{8 hex epoch}-{24 hex unique}`. W3C trace IDs are supported (reformat
 
 ## Annotations vs metadata
 
-| Feature | Annotations | Metadata |
-|---------|------------|----------|
-| **Indexed** | Yes — Searchable with filter expressions | No — Not indexed |
-| **Value types** | String, Number, Boolean only | Any type (objects, arrays) |
-| **Limit** | **50 indexed per trace** (API accepts more, but only 50 are searchable) | No limit (within segment size) |
-| **Key format** | Alphanumeric + underscore only | Any key (`AWS.` prefix reserved) |
-| **Use case** | Filtering/grouping traces | Storing debug data |
+| Feature         | Annotations                                                             | Metadata                         |
+| --------------- | ----------------------------------------------------------------------- | -------------------------------- |
+| **Indexed**     | Yes — Searchable with filter expressions                                | No — Not indexed                 |
+| **Value types** | String, Number, Boolean only                                            | Any type (objects, arrays)       |
+| **Limit**       | **50 indexed per trace** (API accepts more, but only 50 are searchable) | No limit (within segment size)   |
+| **Key format**  | Alphanumeric + underscore only                                          | Any key (`AWS.` prefix reserved) |
+| **Use case**    | Filtering/grouping traces                                               | Storing debug data               |
 
 **Rule of thumb**: If you need to search for it → annotation. If you just need to store it → metadata.
 
@@ -84,17 +84,18 @@ Format: `1-{8 hex epoch}-{24 hex unique}`. W3C trace IDs are supported (reformat
 
 ### Rule parameters
 
-| Parameter | Description |
-|-----------|-------------|
-| Priority | 1–9999 (lower = higher priority) |
-| Reservoir | Fixed traces/second before applying rate |
-| Rate | Percentage of additional requests (0–100 in console, 0.0–1.0 in API/JSON) |
-| Service name | Wildcards `*` and `?` supported |
-| Service type | e.g., `AWS::EC2::Instance`, `AWS::Lambda::Function` |
-| HTTP method | GET, POST, etc. |
-| URL path | Path portion of URL |
+| Parameter    | Description                                                               |
+| ------------ | ------------------------------------------------------------------------- |
+| Priority     | 1–9999 (lower = higher priority)                                          |
+| Reservoir    | Fixed traces/second before applying rate                                  |
+| Rate         | Percentage of additional requests (0–100 in console, 0.0–1.0 in API/JSON) |
+| Service name | Wildcards `*` and `?` supported                                           |
+| Service type | e.g., `AWS::EC2::Instance`, `AWS::Lambda::Function`                       |
+| HTTP method  | GET, POST, etc.                                                           |
+| URL path     | Path portion of URL                                                       |
 
 ### Parent-based sampling (critical concept)
+
 Sampling decision is made **once** by the root service. Downstream services honor the upstream decision regardless of their own rules. Custom rules only apply where no sampling decision exists yet.
 
 ### Adaptive sampling (newer)
@@ -197,6 +198,7 @@ const api = new apigateway.RestApi(this, 'MyApi', {
 Or via CLI: `aws apigateway update-stage --rest-api-id <id> --stage-name prod --patch-operations op=replace,path=/tracingEnabled,value=true`
 
 ### Trace-log correlation
+
 Inject trace ID into application logs for cross-pillar correlation:
 
 ```python
@@ -213,6 +215,7 @@ logging.info("Processing request", extra={"trace_id": trace_id})
 ## Migration constraints (X-Ray SDK → OTel)
 
 ### Annotations require explicit opt-in
+
 In OTel, all span attributes become X-Ray **metadata** by default. To make an attribute a searchable X-Ray annotation, add its key to the `aws.xray.annotations` list:
 
 ```python
@@ -223,6 +226,7 @@ span.set_attribute("order_id", "12345")
 Without this, you lose all annotation-based filtering after migration.
 
 ### Centralized sampling requires a proxy
+
 The ADOT collector config must include the `awsproxy` extension (or use the CloudWatch agent as a proxy) for X-Ray centralized sampling rules to work. Without a proxy, the SDK falls back to a default local rule (1 req/sec + 5%):
 
 ```yaml
@@ -238,6 +242,7 @@ SDK env vars: `OTEL_TRACES_SAMPLER=xray` and `OTEL_TRACES_SAMPLER_ARG=endpoint=h
 Centralized sampling language support: Java, .NET, Python, Node.js (ADOT). Vanilla OTel SDK: Java, .NET, Go.
 
 ### Mixed propagation during incremental migration
+
 OTel defaults to W3C Trace Context; X-Ray SDK uses X-Ray trace header. During migration, configure both:
 
 ```
@@ -247,12 +252,15 @@ OTEL_PROPAGATORS=xray,tracecontext
 Without this, traces break at service boundaries between old and new instrumentation.
 
 ### Port conflict: stop X-Ray daemon before starting ADOT
+
 Both use port 2000. Running both simultaneously causes silent data loss.
 
 ### Lambda ADOT layer adds cold start latency
+
 ADOT Lambda layers increase memory usage and cold start time. For latency-sensitive functions where you don't need OTel's multi-backend capabilities, X-Ray SDK may still be preferable.
 
 ### W3C trace ID version requirement
+
 ADOT Collector 0.34.0+ (X-Ray Exporter 0.86.0+) is required to accept W3C-format trace IDs. Older versions silently reject them.
 
 ---

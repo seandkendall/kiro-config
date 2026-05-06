@@ -58,11 +58,11 @@ For Lambda targets and cross-service communication:
 
 AgentCore has three distinct OAuth layers — agents confuse these:
 
-| Layer | Direction | Purpose |
-|-------|-----------|---------|
-| **Inbound JWT** | Caller → AgentCore | Validate tokens from callers (Cognito, external IdPs) |
-| **Outbound Credential Provider** | Agent → External API | Agent authenticating to external APIs via Gateway |
-| **Gateway OAuth** | Gateway → Upstream MCP | Gateway authenticating to upstream MCP servers |
+| Layer                            | Direction              | Purpose                                               |
+| -------------------------------- | ---------------------- | ----------------------------------------------------- |
+| **Inbound JWT**                  | Caller → AgentCore     | Validate tokens from callers (Cognito, external IdPs) |
+| **Outbound Credential Provider** | Agent → External API   | Agent authenticating to external APIs via Gateway     |
+| **Gateway OAuth**                | Gateway → Upstream MCP | Gateway authenticating to upstream MCP servers        |
 
 Each layer is configured independently. Getting the wrong layer causes auth failures that look identical (401/403) but have different root causes.
 
@@ -84,7 +84,7 @@ Cross-account Bedrock access requires IAM trust policies on both sides.
 ```json
 {
   "Effect": "Allow",
-  "Principal": {"AWS": "arn:aws:iam::<calling-account-id>:role/<role-name>"},
+  "Principal": { "AWS": "arn:aws:iam::<calling-account-id>:role/<role-name>" },
   "Action": "sts:AssumeRole",
   "Condition": {
     "StringEquals": {
@@ -106,24 +106,24 @@ Refer to the latest AWS documentation on Bedrock cross-account access for curren
 
 ## Security Best Practices
 
-| Practice | How |
-|----------|-----|
+| Practice                | How                                                    |
+| ----------------------- | ------------------------------------------------------ |
 | Resource-based policies | Restrict access to specific principals, accounts, VPCs |
-| VPC endpoints | Private AgentCore access without internet traversal |
-| IP restrictions | Limit access by source IP range |
-| Encryption | Data encrypted at rest and in transit by default |
-| Audit logging | Enable CloudTrail for all AgentCore API calls |
-| Least privilege | Grant only required permissions per service role |
+| VPC endpoints           | Private AgentCore access without internet traversal    |
+| IP restrictions         | Limit access by source IP range                        |
+| Encryption              | Data encrypted at rest and in transit by default       |
+| Audit logging           | Enable CloudTrail for all AgentCore API calls          |
+| Least privilege         | Grant only required permissions per service role       |
 
 ## Agent Persistence Patterns
 
 Deploying framework-specific agents on AgentCore Runtime:
 
-| Framework | Key Configuration |
-|-----------|------------------|
-| **Strands Agents** | S3 for file storage, session state via Memory service |
+| Framework               | Key Configuration                                       |
+| ----------------------- | ------------------------------------------------------- |
+| **Strands Agents**      | S3 for file storage, session state via Memory service   |
 | **LangChain/LangGraph** | Standard Python deployment, state management via Memory |
-| **Custom frameworks** | Implement the protocol contract (HTTP/MCP/A2A/AG-UI) |
+| **Custom frameworks**   | Implement the protocol contract (HTTP/MCP/A2A/AG-UI)    |
 
 Refer to the latest AWS documentation on AgentCore deployment for the relevant framework.
 

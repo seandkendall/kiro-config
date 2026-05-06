@@ -13,22 +13,22 @@
 
 AgentCore Runtime supports 4 protocols. You MUST select before building the container — each has a different contract.
 
-| Protocol | Container Contract | Best For |
-|----------|-------------------|----------|
-| **HTTP** | Health: `/health`, Port: 8080, JSON req/res | Existing web frameworks (FastAPI, Express, Flask). Simple request-response agents. |
-| **MCP** | Endpoint: `/mcp`, Streamable HTTP transport | Tool-centric agents exposing capabilities as MCP tools. MCP ecosystem integration. |
-| **A2A** | Agent Card: `/.well-known/agent.json`, task endpoints | Multi-agent systems with direct agent-to-agent communication. |
-| **AG-UI** | Health: `/ping`, Event stream: `/invocations`, Port: 8080, SSE standard event types | Frontend-connected agents with real-time UI updates. Chat interfaces. |
+| Protocol  | Container Contract                                                                  | Best For                                                                           |
+| --------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **HTTP**  | Health: `/health`, Port: 8080, JSON req/res                                         | Existing web frameworks (FastAPI, Express, Flask). Simple request-response agents. |
+| **MCP**   | Endpoint: `/mcp`, Streamable HTTP transport                                         | Tool-centric agents exposing capabilities as MCP tools. MCP ecosystem integration. |
+| **A2A**   | Agent Card: `/.well-known/agent.json`, task endpoints                               | Multi-agent systems with direct agent-to-agent communication.                      |
+| **AG-UI** | Health: `/ping`, Event stream: `/invocations`, Port: 8080, SSE standard event types | Frontend-connected agents with real-time UI updates. Chat interfaces.              |
 
 **Decision guide:**
 
-| Question | Answer → Protocol |
-|----------|------------------|
-| Existing REST API or web framework? | HTTP |
-| Agent provides tools to other agents? | MCP |
-| Agents communicate directly with each other? | A2A |
-| Agent streams results to a UI? | AG-UI |
-| Not sure? | Start with HTTP — simplest, most familiar |
+| Question                                     | Answer → Protocol                         |
+| -------------------------------------------- | ----------------------------------------- |
+| Existing REST API or web framework?          | HTTP                                      |
+| Agent provides tools to other agents?        | MCP                                       |
+| Agents communicate directly with each other? | A2A                                       |
+| Agent streams results to a UI?               | AG-UI                                     |
+| Not sure?                                    | Start with HTTP — simplest, most familiar |
 
 Refer to the latest AWS documentation on AgentCore Runtime protocols for current specifications.
 
@@ -36,15 +36,15 @@ Refer to the latest AWS documentation on AgentCore Runtime protocols for current
 
 Requirements that apply to ALL protocols:
 
-| Requirement | Detail |
-|-------------|--------|
-| **Architecture** | ARM64 (Graviton) — x86 images WILL NOT START |
-| **Health check** | Protocol-specific endpoint (see table above) |
-| **Port** | Default 8080, configurable |
-| **Startup** | Must signal readiness within timeout |
-| **Logging** | stdout/stderr → CloudWatch automatically |
-| **Shutdown** | Handle SIGTERM for graceful shutdown |
-| **Environment** | AgentCore provides: RUNTIME_ID, AWS_REGION, credentials |
+| Requirement      | Detail                                                  |
+| ---------------- | ------------------------------------------------------- |
+| **Architecture** | ARM64 (Graviton) — x86 images WILL NOT START            |
+| **Health check** | Protocol-specific endpoint (see table above)            |
+| **Port**         | Default 8080, configurable                              |
+| **Startup**      | Must signal readiness within timeout                    |
+| **Logging**      | stdout/stderr → CloudWatch automatically                |
+| **Shutdown**     | Handle SIGTERM for graceful shutdown                    |
+| **Environment**  | AgentCore provides: RUNTIME_ID, AWS_REGION, credentials |
 
 See [container build procedure](agentcore-runtime-container-build.md) for the full build workflow with Dockerfile examples.
 
@@ -72,10 +72,10 @@ Deployment Progress:
 
 ## Agent Lifecycle Models
 
-| Model | State | Memory Service | Use When |
-|-------|-------|---------------|----------|
-| Per-request | Stateless — new instance per request | Not needed | Simple Q&A, stateless tools |
-| Per-session | Stateful — persists across requests in session | Required | Multi-turn chat, context accumulation |
+| Model       | State                                          | Memory Service | Use When                              |
+| ----------- | ---------------------------------------------- | -------------- | ------------------------------------- |
+| Per-request | Stateless — new instance per request           | Not needed     | Simple Q&A, stateless tools           |
+| Per-session | Stateful — persists across requests in session | Required       | Multi-turn chat, context accumulation |
 
 Per-session agents use the Memory service for state persistence. See [memory & observability](agentcore-memory-observability.md).
 

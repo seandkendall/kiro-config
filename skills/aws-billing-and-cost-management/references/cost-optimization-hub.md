@@ -66,14 +66,14 @@ client.get_recommendation(recommendationId='<id>')
 
 ## Recommendation Types
 
-| Type | Source | What It Finds |
-|------|--------|--------------|
-| Rightsizing | Compute Optimizer | Over/under-provisioned EC2, Lambda, EBS, ECS, RDS |
-| Idle resources | Compute Optimizer | EC2, EBS, ELB, RDS with near-zero utilization |
-| Savings Plans | Cost Explorer | SP purchase recommendations |
-| Reserved Instances | Cost Explorer | RI purchase recommendations |
-| Graviton migration | Compute Optimizer | x86 → arm64 opportunities |
-| EBS optimization | Compute Optimizer | gp2→gp3, io1→io2 migrations |
+| Type               | Source            | What It Finds                                     |
+| ------------------ | ----------------- | ------------------------------------------------- |
+| Rightsizing        | Compute Optimizer | Over/under-provisioned EC2, Lambda, EBS, ECS, RDS |
+| Idle resources     | Compute Optimizer | EC2, EBS, ELB, RDS with near-zero utilization     |
+| Savings Plans      | Cost Explorer     | SP purchase recommendations                       |
+| Reserved Instances | Cost Explorer     | RI purchase recommendations                       |
+| Graviton migration | Compute Optimizer | x86 → arm64 opportunities                         |
+| EBS optimization   | Compute Optimizer | gp2→gp3, io1→io2 migrations                       |
 
 ## Filtering and Action Types
 

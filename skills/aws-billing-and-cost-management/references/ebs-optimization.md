@@ -12,6 +12,7 @@
 **gp2 → gp3 migration is almost always a win:** lower cost, consistent performance, no burst buffer management.
 
 ### io1 vs io2
+
 Same price ($0.125/GB + $0.065/PIOPS in us-east-1). io2 offers: higher durability (99.999% vs 99.8%), max IOPS up to 64K (or 256K with Block Express on Nitro instances) vs 64K for io1, Multi-Attach. Always prefer io2 over io1.
 
 ## Compute Optimizer for EBS
@@ -40,7 +41,7 @@ aws compute-optimizer get-ebs-volume-recommendations \
 Savings = (current_GB × $/GB + current_PIOPS × $/PIOPS) − (recommended_GB × $/GB + recommended_PIOPS × $/PIOPS)
 
 **gp2→gp3:**
-Savings = (current_GB × gp2_$/GB) − (current_GB × gp3_$/GB + max(0, needed_IOPS − 3000) × gp3_$/IOPS + max(0, needed_throughput_MBps − 125) × gp3_$/throughput_MBps)
+Savings = (current*GB × gp2*$/GB) − (current_GB × gp3_$/GB + max(0, needed*IOPS − 3000) × gp3*$/IOPS + max(0, needed_throughput_MBps − 125) × gp3_$/throughput_MBps)
 
 Look up regional prices via Price List API (see `references/pricing-lookup.md`). Prices vary significantly by region. `needed_IOPS` and `needed_throughput_MBps`: use Compute Optimizer recommended values when available, otherwise observed P99 from CloudWatch.
 

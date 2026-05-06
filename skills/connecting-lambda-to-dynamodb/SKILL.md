@@ -8,6 +8,7 @@ metadata:
   persona: [developer, devops]
   workload: [serverless, database]
 ---
+
 # Connecting Lambda to DynamoDB
 
 ## Overview
@@ -25,13 +26,16 @@ See [Lambda-DynamoDB connection procedure](references/lambda-dynamodb-connection
 ## Troubleshooting
 
 ### Lambda function not triggering
+
 Verify the event source mapping is active, DynamoDB streams are enabled with the
 correct view type, and the execution role has proper permissions. See the full
 [procedure](references/lambda-dynamodb-connection.md) for details.
 
 ### Permission denied errors
+
 Check the IAM role has `AWSLambdaDynamoDBExecutionRole` attached and the trust
 policy allows Lambda to assume it.
 
 ### Function timeout issues
+
 Increase the timeout setting or adjust the batch size in the event source mapping.

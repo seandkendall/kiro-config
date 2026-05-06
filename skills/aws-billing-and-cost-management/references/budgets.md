@@ -4,12 +4,12 @@
 
 ## Budget Types
 
-| Type | Use Case |
-|------|----------|
-| COST | Track spend against dollar amount (default) |
-| USAGE | Track usage quantity (e.g., EC2 hours) |
-| RI_UTILIZATION | Alert when RI utilization drops below threshold |
-| SAVINGS_PLANS_UTILIZATION | Alert when SP utilization drops |
+| Type                      | Use Case                                        |
+| ------------------------- | ----------------------------------------------- |
+| COST                      | Track spend against dollar amount (default)     |
+| USAGE                     | Track usage quantity (e.g., EC2 hours)          |
+| RI_UTILIZATION            | Alert when RI utilization drops below threshold |
+| SAVINGS_PLANS_UTILIZATION | Alert when SP utilization drops                 |
 
 Use `FORECASTED` notification type to catch runaway costs before they hit threshold.
 

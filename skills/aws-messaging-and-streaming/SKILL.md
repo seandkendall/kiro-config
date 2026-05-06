@@ -52,15 +52,15 @@ Streaming enables **ordered, durable, high-throughput continuous data flow**. Pr
 
 ### Key Differences
 
-| Dimension | Messaging | Streaming |
-|---|---|---|
-| **Data lifecycle** | Deleted after consumption | Retained for replay (hours to indefinitely) |
-| **Ordering** | Best-effort (Standard) or per-group (FIFO) | Strict per-partition/shard |
-| **Consumer model** | Competing consumers (work distribution) | Independent readers (fan-out by position) |
-| **Throughput pattern** | Bursty, variable | Sustained, high-volume |
-| **Replay** | Not supported (except DLQ redrive) | Native — seek to any position in retention |
-| **Typical latency** | Milliseconds (push or short-poll) | Milliseconds to low seconds |
-| **Scaling unit** | Concurrency (consumers/pollers) | Partitions or shards |
+| Dimension              | Messaging                                  | Streaming                                   |
+| ---------------------- | ------------------------------------------ | ------------------------------------------- |
+| **Data lifecycle**     | Deleted after consumption                  | Retained for replay (hours to indefinitely) |
+| **Ordering**           | Best-effort (Standard) or per-group (FIFO) | Strict per-partition/shard                  |
+| **Consumer model**     | Competing consumers (work distribution)    | Independent readers (fan-out by position)   |
+| **Throughput pattern** | Bursty, variable                           | Sustained, high-volume                      |
+| **Replay**             | Not supported (except DLQ redrive)         | Native — seek to any position in retention  |
+| **Typical latency**    | Milliseconds (push or short-poll)          | Milliseconds to low seconds                 |
+| **Scaling unit**       | Concurrency (consumers/pollers)            | Partitions or shards                        |
 
 ### Messaging Use Cases
 
@@ -83,27 +83,27 @@ Streaming enables **ordered, durable, high-throughput continuous data flow**. Pr
 These services are generally used for messaging workloads.
 Sometimes streaming services (Kinesis Data Streams, Managed Streaming for Apache Kafka) are also used for messaging workloads, depending on exact use case and requirements.
 
-| Service | Best For | Key Differentiator |
-|---|---|---|
-| **Amazon SQS** | Task queues, decoupling, buffering | Fully managed, unlimited throughput (Standard), exactly-once (FIFO), fair queues for multi-tenant workloads |
-| **Amazon SNS** | Fan-out, pub/sub notifications | Push to multiple subscribers (SQS, Lambda, HTTP, email, SMS) |
-| **Amazon EventBridge** | Event routing, cross-account/SaaS integration | Content-based filtering, schema registry, 200+ AWS source integrations |
-| **Amazon MQ** | Lift-and-shift of existing JMS/AMQP/MQTT apps | Protocol compatibility (ActiveMQ, RabbitMQ) for legacy migration |
+| Service                | Best For                                      | Key Differentiator                                                                                          |
+| ---------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Amazon SQS**         | Task queues, decoupling, buffering            | Fully managed, unlimited throughput (Standard), exactly-once (FIFO), fair queues for multi-tenant workloads |
+| **Amazon SNS**         | Fan-out, pub/sub notifications                | Push to multiple subscribers (SQS, Lambda, HTTP, email, SMS)                                                |
+| **Amazon EventBridge** | Event routing, cross-account/SaaS integration | Content-based filtering, schema registry, 200+ AWS source integrations                                      |
+| **Amazon MQ**          | Lift-and-shift of existing JMS/AMQP/MQTT apps | Protocol compatibility (ActiveMQ, RabbitMQ) for legacy migration                                            |
 
 ### Streaming Services
 
 These services are generally used for streaming workloads.
 
-| Service | Best For | Key Differentiator |
-|---|---|---|
-| **Amazon Kinesis Data Streams** | Real-time ingestion with AWS-native consumers | On-demand Advantage mode (instant scaling, no shard management), 1–365 day retention |
-| **Amazon Data Firehose** | Zero-admin delivery to storage/analytics | Auto-scales, buffers, batches, and delivers to destinations |
-| **Amazon Managed Service for Apache Flink** | Complex stream processing (joins, windows, state) | Full Apache Flink runtime — SQL, Java, Python APIs for stateful computation |
-| **Amazon MSK** | Kafka-native workloads, ecosystem compatibility | Apache Kafka API, Express brokers (3x throughput, 20x faster scaling compared to Standard brokers), broad connector ecosystem |
+| Service                                     | Best For                                          | Key Differentiator                                                                                                            |
+| ------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon Kinesis Data Streams**             | Real-time ingestion with AWS-native consumers     | On-demand Advantage mode (instant scaling, no shard management), 1–365 day retention                                          |
+| **Amazon Data Firehose**                    | Zero-admin delivery to storage/analytics          | Auto-scales, buffers, batches, and delivers to destinations                                                                   |
+| **Amazon Managed Service for Apache Flink** | Complex stream processing (joins, windows, state) | Full Apache Flink runtime — SQL, Java, Python APIs for stateful computation                                                   |
+| **Amazon MSK**                              | Kafka-native workloads, ecosystem compatibility   | Apache Kafka API, Express brokers (3x throughput, 20x faster scaling compared to Standard brokers), broad connector ecosystem |
 
 ## Common Integration Gotchas
 
-- **SQS system vs. user message attributes:** Attributes like `AWSTraceHeader` (set by X-Ray / EventBridge / Pipes when sending to an SQS DLQ) and `SenderId`, `SentTimestamp` are SQS *system* attributes, NOT user message attributes. They are never returned by default from `ReceiveMessage` — request them explicitly via `AttributeNames=[...]` (or `MessageSystemAttributeNames`), separate from `MessageAttributeNames` which fetches user attributes. This matters for DLQs, where the trace header rides on the system attribute and the user-attributes slot carries the service's failure metadata (e.g. EventBridge's `RULE_ARN`, `ERROR_CODE`).
+- **SQS system vs. user message attributes:** Attributes like `AWSTraceHeader` (set by X-Ray / EventBridge / Pipes when sending to an SQS DLQ) and `SenderId`, `SentTimestamp` are SQS _system_ attributes, NOT user message attributes. They are never returned by default from `ReceiveMessage` — request them explicitly via `AttributeNames=[...]` (or `MessageSystemAttributeNames`), separate from `MessageAttributeNames` which fetches user attributes. This matters for DLQs, where the trace header rides on the system attribute and the user-attributes slot carries the service's failure metadata (e.g. EventBridge's `RULE_ARN`, `ERROR_CODE`).
 
 - **SNS → Firehose → S3 record separator:** For SNS subscriptions using the `firehose` protocol that land in S3, records are already newline-delimited by default (NDJSON). Do NOT turn on Firehose's `AppendDelimiterToRecord` — SNS emits the newline itself, and enabling the processor produces double newlines.
 

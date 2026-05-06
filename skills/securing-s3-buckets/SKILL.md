@@ -37,13 +37,13 @@ See [references/iam-permissions.md](references/iam-permissions.md) for IAM permi
 
 ### 1. Classify the Request
 
-| User intent | Workflow |
-|---|---|
-| Secure a new bucket | A: Secure New Bucket |
+| User intent                    | Workflow                 |
+| ------------------------------ | ------------------------ |
+| Secure a new bucket            | A: Secure New Bucket     |
 | Audit / review existing bucket | B: Audit Existing Bucket |
-| Fix a specific finding | C: Remediate Issue |
-| Configure encryption | D: Configure Encryption |
-| Enable logging / monitoring | E: Enable Monitoring |
+| Fix a specific finding         | C: Remediate Issue       |
+| Configure encryption           | D: Configure Encryption  |
+| Enable logging / monitoring    | E: Enable Monitoring     |
 
 **Constraints:**
 

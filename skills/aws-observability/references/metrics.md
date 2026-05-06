@@ -17,14 +17,14 @@ Publishing, querying, and managing custom metrics — EMF, PutMetricData, metric
 
 ## EMF vs PutMetricData
 
-| Criteria | EMF | PutMetricData |
-|----------|-----|---------------|
-| Latency impact | None (async via logs) | Synchronous API call |
-| Log correlation | Yes — Metrics + logs in same event | No — Separate |
-| Max metrics per call | 100 per MetricDirective | 1,000 MetricDatum per request |
-| High-resolution | Yes — StorageResolution=1 | Yes — StorageResolution=1 |
-| Cost model | Log ingestion pricing | Per-metric API charges |
-| Best for | **Lambda, containers** | Batch jobs, custom agents |
+| Criteria             | EMF                                | PutMetricData                 |
+| -------------------- | ---------------------------------- | ----------------------------- |
+| Latency impact       | None (async via logs)              | Synchronous API call          |
+| Log correlation      | Yes — Metrics + logs in same event | No — Separate                 |
+| Max metrics per call | 100 per MetricDirective            | 1,000 MetricDatum per request |
+| High-resolution      | Yes — StorageResolution=1          | Yes — StorageResolution=1     |
+| Cost model           | Log ingestion pricing              | Per-metric API charges        |
+| Best for             | **Lambda, containers**             | Batch jobs, custom agents     |
 
 **Default recommendation**: Use EMF for Lambda and containerized workloads. Use PutMetricData for batch jobs or when you need synchronous confirmation.
 
@@ -38,14 +38,16 @@ Publishing, querying, and managing custom metrics — EMF, PutMetricData, metric
 {
   "_aws": {
     "Timestamp": 1574109732004,
-    "CloudWatchMetrics": [{
-      "Namespace": "MyService",
-      "Dimensions": [["ServiceName", "Environment"]],
-      "Metrics": [
-        { "Name": "Latency", "Unit": "Milliseconds", "StorageResolution": 60 },
-        { "Name": "RequestCount", "Unit": "Count" }
-      ]
-    }]
+    "CloudWatchMetrics": [
+      {
+        "Namespace": "MyService",
+        "Dimensions": [["ServiceName", "Environment"]],
+        "Metrics": [
+          { "Name": "Latency", "Unit": "Milliseconds", "StorageResolution": 60 },
+          { "Name": "RequestCount", "Unit": "Count" }
+        ]
+      }
+    ]
   },
   "ServiceName": "OrderService",
   "Environment": "Production",
@@ -83,6 +85,7 @@ For Lambda/containers, use a library that handles EMF serialization (e.g., Lambd
 - Namespace: max 255 characters, should not start with `AWS/`
 
 ### StatisticSets (batch optimization)
+
 Instead of publishing individual data points, aggregate into StatisticSets:
 
 ```json
@@ -125,12 +128,12 @@ Publishes a metric with value 1 for each matching log event.
 
 ### Automatic aggregation cascade
 
-| Data point period | Available for | Then aggregated to |
-|-------------------|---------------|--------------------|
-| < 60s (high-res) | **3 hours** | 1-minute |
-| 60s (1 min) | **15 days** | 5-minute |
-| 300s (5 min) | **63 days** | 1-hour |
-| 3600s (1 hr) | **455 days (15 months)** | — |
+| Data point period | Available for            | Then aggregated to |
+| ----------------- | ------------------------ | ------------------ |
+| < 60s (high-res)  | **3 hours**              | 1-minute           |
+| 60s (1 min)       | **15 days**              | 5-minute           |
+| 300s (5 min)      | **63 days**              | 1-hour             |
+| 3600s (1 hr)      | **455 days (15 months)** | —                  |
 
 **Key insight**: You cannot query 1-minute data from 2 months ago. It has been automatically aggregated to 5-minute resolution. High-resolution (1-second) data is only available for 3 hours.
 
@@ -167,6 +170,7 @@ Publishes a metric with value 1 for each matching log event.
 Combine metrics using expressions in alarms and dashboards.
 
 ### Functions
+
 `SUM`, `AVG`, `MIN`, `MAX`, `STDDEV`, `PERIOD`, `SEARCH`, `IF`, `FILL`, `ANOMALY_DETECTION_BAND`
 
 ### Error rate pattern

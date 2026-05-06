@@ -85,13 +85,13 @@ const alias = new lambda.Alias(this, 'ProdAlias', {
 
 ### Strategy Selection
 
-| Scenario | Strategy |
-|---|---|
-| Java/Python/.NET with heavy init | SnapStart |
-| Strict <50ms cold start | Provisioned Concurrency |
-| Tolerant of occasional cold starts | On-demand + minimize package |
-| Predictable traffic | Provisioned Concurrency + auto-scaling |
-| General optimization | arm64 (Graviton) |
+| Scenario                           | Strategy                               |
+| ---------------------------------- | -------------------------------------- |
+| Java/Python/.NET with heavy init   | SnapStart                              |
+| Strict <50ms cold start            | Provisioned Concurrency                |
+| Tolerant of occasional cold starts | On-demand + minimize package           |
+| Predictable traffic                | Provisioned Concurrency + auto-scaling |
+| General optimization               | arm64 (Graviton)                       |
 
 ---
 
@@ -112,22 +112,22 @@ Need > 250 MB uncompressed?
 
 ### Size Limits
 
-| Package Type | Limit |
-|---|---|
-| .zip compressed | 50 MB |
+| Package Type                         | Limit  |
+| ------------------------------------ | ------ |
+| .zip compressed                      | 50 MB  |
 | .zip uncompressed (including layers) | 250 MB |
-| Container image | 10 GB |
-| Layers per function | 5 |
+| Container image                      | 10 GB  |
+| Layers per function                  | 5      |
 
 ### Layer Paths by Runtime
 
-| Runtime | Layer Path |
-|---|---|
-| Python | `python/` or `python/lib/python3.x/site-packages/` |
-| Node.js | `nodejs/node_modules/` |
-| Java | `java/lib/` |
-| Ruby | `ruby/gems/3.4.0/` or `ruby/lib/` |
-| All runtimes | `bin/` (PATH), `lib/` (LD_LIBRARY_PATH) |
+| Runtime      | Layer Path                                         |
+| ------------ | -------------------------------------------------- |
+| Python       | `python/` or `python/lib/python3.x/site-packages/` |
+| Node.js      | `nodejs/node_modules/`                             |
+| Java         | `java/lib/`                                        |
+| Ruby         | `ruby/gems/3.4.0/` or `ruby/lib/`                  |
+| All runtimes | `bin/` (PATH), `lib/` (LD_LIBRARY_PATH)            |
 
 **Layer constraints:**
 
@@ -178,14 +178,14 @@ Use `manylinux2014_aarch64` for arm64. Exclude `__pycache__`, `.pyc`, tests, doc
 
 ### Memory
 
-| Parameter | Value |
-|---|---|
-| Minimum | 128 MB |
-| Maximum | 10,240 MB (10 GB) |
-| Increment | 1 MB |
-| Default | 128 MB |
-| 1 vCPU at | 1,769 MB |
-| ~5.8 vCPUs at | 10,240 MB |
+| Parameter     | Value             |
+| ------------- | ----------------- |
+| Minimum       | 128 MB            |
+| Maximum       | 10,240 MB (10 GB) |
+| Increment     | 1 MB              |
+| Default       | 128 MB            |
+| 1 vCPU at     | 1,769 MB          |
+| ~5.8 vCPUs at | 10,240 MB         |
 
 CPU scales linearly with memory. Doubling memory doubles CPU. **Over-provisioning memory can improve performance** — faster execution = less total duration.
 
@@ -208,11 +208,11 @@ aws stepfunctions start-execution \
 
 ### Ephemeral Storage (/tmp)
 
-| Parameter | Value |
-|---|---|
-| Minimum / Default | 512 MB |
-| Maximum | 10,240 MB (10 GB) |
-| Extra cost | Above 512 MB |
+| Parameter         | Value             |
+| ----------------- | ----------------- |
+| Minimum / Default | 512 MB            |
+| Maximum           | 10,240 MB (10 GB) |
+| Extra cost        | Above 512 MB      |
 
 - Content **persists across warm invocations** (use as transient cache)
 - Content is NOT cleared after invoke failures
@@ -220,11 +220,11 @@ aws stepfunctions start-execution \
 
 ### Timeout
 
-| Parameter | Value |
-|---|---|
-| Minimum | 1 second |
-| Maximum | 900 seconds (15 minutes) |
-| Default | 3 seconds |
+| Parameter | Value                    |
+| --------- | ------------------------ |
+| Minimum   | 1 second                 |
+| Maximum   | 900 seconds (15 minutes) |
+| Default   | 3 seconds                |
 
 **Critical integration limits:**
 
@@ -234,17 +234,17 @@ aws stepfunctions start-execution \
 
 ### Other Limits
 
-| Resource | Limit |
-|---|---|
-| Environment variables (total) | 4 KB |
-| Sync invocation payload (request/response) | 6 MB each |
-| Async invocation payload | 1 MB |
-| Streamed response | 200 MB (first 6 MB uncapped, then 2 MBps) |
-| File descriptors | 1,024 |
-| Processes/threads | 1,024 |
-| Concurrent executions (default) | 1,000 per region (soft limit) |
-| Scaling rate | 1,000 new environments every 10s per function |
-| Function code storage (.zip) | 75 GB per region (soft limit) |
+| Resource                                   | Limit                                         |
+| ------------------------------------------ | --------------------------------------------- |
+| Environment variables (total)              | 4 KB                                          |
+| Sync invocation payload (request/response) | 6 MB each                                     |
+| Async invocation payload                   | 1 MB                                          |
+| Streamed response                          | 200 MB (first 6 MB uncapped, then 2 MBps)     |
+| File descriptors                           | 1,024                                         |
+| Processes/threads                          | 1,024                                         |
+| Concurrent executions (default)            | 1,000 per region (soft limit)                 |
+| Scaling rate                               | 1,000 new environments every 10s per function |
+| Function code storage (.zip)               | 75 GB per region (soft limit)                 |
 
 ---
 
@@ -310,13 +310,13 @@ VPC-attached functions need `AWSLambdaVPCAccessExecutionRole` managed policy or 
 
 One execution role per function. Key Lambda-specific managed policies:
 
-| Policy | Grants |
-|---|---|
-| `AWSLambdaBasicExecutionRole` | CloudWatch Logs only |
-| `AWSLambdaVPCAccessExecutionRole` | VPC ENI management |
-| `AWSLambdaDynamoDBExecutionRole` | DynamoDB Streams |
-| `AWSLambdaSQSQueueExecutionRole` | SQS polling |
-| `AWSLambdaKinesisExecutionRole` | Kinesis Streams |
+| Policy                            | Grants               |
+| --------------------------------- | -------------------- |
+| `AWSLambdaBasicExecutionRole`     | CloudWatch Logs only |
+| `AWSLambdaVPCAccessExecutionRole` | VPC ENI management   |
+| `AWSLambdaDynamoDBExecutionRole`  | DynamoDB Streams     |
+| `AWSLambdaSQSQueueExecutionRole`  | SQS polling          |
+| `AWSLambdaKinesisExecutionRole`   | Kinesis Streams      |
 
 ---
 
@@ -386,25 +386,25 @@ from aws_lambda_powertools import Logger
 
 ### Core Utilities
 
-| Utility | Purpose |
-|---|---|
-| Logger | Structured JSON logging with correlation IDs |
-| Tracer | X-Ray tracing with decorators/middleware |
-| Metrics | CloudWatch metrics via Embedded Metric Format (EMF) |
-| Idempotency | Make handlers idempotent using DynamoDB |
-| Batch Processing | Partial failure handling for SQS, Kinesis, DynamoDB Streams |
-| Event Handler | Routing for API Gateway, ALB, Function URLs, AppSync |
-| Parameters | Retrieve/cache SSM, Secrets Manager, AppConfig, DynamoDB values |
+| Utility          | Purpose                                                         |
+| ---------------- | --------------------------------------------------------------- |
+| Logger           | Structured JSON logging with correlation IDs                    |
+| Tracer           | X-Ray tracing with decorators/middleware                        |
+| Metrics          | CloudWatch metrics via Embedded Metric Format (EMF)             |
+| Idempotency      | Make handlers idempotent using DynamoDB                         |
+| Batch Processing | Partial failure handling for SQS, Kinesis, DynamoDB Streams     |
+| Event Handler    | Routing for API Gateway, ALB, Function URLs, AppSync            |
+| Parameters       | Retrieve/cache SSM, Secrets Manager, AppConfig, DynamoDB values |
 
 ### Environment Variables
 
-| Variable | Purpose |
-|---|---|
-| `POWERTOOLS_SERVICE_NAME` | Service name for logs, metrics, traces |
-| `POWERTOOLS_METRICS_NAMESPACE` | CloudWatch metrics namespace |
-| `POWERTOOLS_LOG_LEVEL` | Logging level (DEBUG, INFO, WARNING, ERROR) |
-| `POWERTOOLS_TRACE_DISABLED` | Disable tracing (useful for tests) |
-| `POWERTOOLS_DEV` | Dev mode (pretty-print JSON, verbose errors) |
+| Variable                       | Purpose                                      |
+| ------------------------------ | -------------------------------------------- |
+| `POWERTOOLS_SERVICE_NAME`      | Service name for logs, metrics, traces       |
+| `POWERTOOLS_METRICS_NAMESPACE` | CloudWatch metrics namespace                 |
+| `POWERTOOLS_LOG_LEVEL`         | Logging level (DEBUG, INFO, WARNING, ERROR)  |
+| `POWERTOOLS_TRACE_DISABLED`    | Disable tracing (useful for tests)           |
+| `POWERTOOLS_DEV`               | Dev mode (pretty-print JSON, verbose errors) |
 
 ### Python: Logger + Tracer + Metrics
 
@@ -522,11 +522,7 @@ def handler(event, context):
 ### TypeScript: Batch Processing (SQS Partial Failures)
 
 ```typescript
-import {
-  BatchProcessor,
-  EventType,
-  processPartialResponse,
-} from '@aws-lambda-powertools/batch';
+import { BatchProcessor, EventType, processPartialResponse } from '@aws-lambda-powertools/batch';
 import type { SQSRecord, SQSHandler } from 'aws-lambda';
 
 const processor = new BatchProcessor(EventType.SQS);

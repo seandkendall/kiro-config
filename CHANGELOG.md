@@ -2,6 +2,31 @@
 
 All notable changes to this Kiro CLI configuration.
 
+## [2026.05.06] - 2026-05-06
+
+### Added
+
+- **AWS Agent Toolkit adopted** — `mcp-proxy-for-aws` (managed AWS MCP Server) added to all 18 agents
+- **Google Workspace agent** — read-only Google Docs, Sheets, Drive access via `@piotr-agier/google-drive-mcp`
+- **15 AWS toolkit skills** from `aws/agent-toolkit-for-aws`: Lambda+API GW, Lambda+DynamoDB, debugging timeouts, CloudFront routing, serverless decision guide, S3 security, IAM, Secrets Manager, observability, CloudWatch alarms, app failure troubleshooting, Bedrock, billing/cost, CloudFormation, messaging/streaming
+- **Steering doc** `aws-agent-toolkit.md` — prefer MCP server, discover skills before acting, verify docs
+- `google-workspace` added as master subagent
+- `import.sh`: Google Workspace setup guidance, BROWSER_LENS_API_KEY handling
+
+### Removed
+
+- `aws-documentation-mcp-server` from 15 agents (replaced by `aws___search_documentation`)
+- `aws-serverless-mcp-server` from accounting, reinvent, serverless
+- `aws-iac-mcp-server` from accounting, agentcore, shopify, web-builder, serverless, architect
+- `aws-pricing-mcp-server`, `cost-explorer-mcp-server`, `billing-cost-management-mcp-server` from architect
+- `awsknowledge` HTTP server from architect
+- `postgres-mcp-server` from data and db agents (unused — no Postgres databases)
+
+### Changed
+
+- All agents now use single `aws-mcp-server` for AWS interactions (us-east-1)
+- Skills count: 7 → 22 (7 custom + 15 from AWS Agent Toolkit)
+
 ## [2026.04.30] - 2026-04-30
 
 ### Added

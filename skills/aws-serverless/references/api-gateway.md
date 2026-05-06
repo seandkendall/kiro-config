@@ -36,40 +36,40 @@ None of the above? → HTTP API (lower latency, simpler)
 
 ### Feature Comparison
 
-| Feature | REST API | HTTP API |
-|---|---|---|
-| **Latency** | Higher | Lower |
-| **Endpoint types** | Edge, Regional, Private | Regional only |
-| **AWS WAF** | Yes | No |
-| **API keys / usage plans** | Yes | No |
-| **Per-client throttling** | Yes | No |
-| **Request validation** | Yes | No |
-| **Body transformation (VTL)** | Yes | No |
-| **Parameter mapping** | Yes | Yes |
-| **Caching (built-in)** | Yes | No |
-| **Custom domains** | Yes | Yes |
-| **Lambda authorizers** | Yes (TOKEN + REQUEST) | Yes (REQUEST only) |
-| **JWT authorizers (native)** | No | Yes |
-| **IAM auth** | Yes | Yes |
-| **Cognito (native)** | Yes | Yes (via JWT) |
-| **Resource policies** | Yes | No |
-| **Mutual TLS** | Yes | Yes |
-| **CORS setup** | Manual OPTIONS method | Built-in config |
-| **Automatic deployments** | No | Yes |
-| **Canary deployments** | Yes | No |
-| **Custom gateway responses** | Yes | No |
-| **Execution logs** | Yes | No |
-| **Access logs (CloudWatch)** | Yes | Yes |
-| **Access logs (Firehose)** | Yes | No |
-| **X-Ray tracing** | Yes | No |
-| **Mock integrations** | Yes | No |
-| **Private integrations (NLB)** | Yes | Yes |
-| **Private integrations (ALB)** | Yes | Yes |
-| **Private integrations (Cloud Map)** | No | Yes |
-| **Response streaming** | Yes | No |
-| **Console test invocations** | Yes | No |
-| **Integration timeout** | 50ms–29s (configurable) | 30s hard max |
-| **Payload size** | 10 MB | 10 MB |
+| Feature                              | REST API                | HTTP API           |
+| ------------------------------------ | ----------------------- | ------------------ |
+| **Latency**                          | Higher                  | Lower              |
+| **Endpoint types**                   | Edge, Regional, Private | Regional only      |
+| **AWS WAF**                          | Yes                     | No                 |
+| **API keys / usage plans**           | Yes                     | No                 |
+| **Per-client throttling**            | Yes                     | No                 |
+| **Request validation**               | Yes                     | No                 |
+| **Body transformation (VTL)**        | Yes                     | No                 |
+| **Parameter mapping**                | Yes                     | Yes                |
+| **Caching (built-in)**               | Yes                     | No                 |
+| **Custom domains**                   | Yes                     | Yes                |
+| **Lambda authorizers**               | Yes (TOKEN + REQUEST)   | Yes (REQUEST only) |
+| **JWT authorizers (native)**         | No                      | Yes                |
+| **IAM auth**                         | Yes                     | Yes                |
+| **Cognito (native)**                 | Yes                     | Yes (via JWT)      |
+| **Resource policies**                | Yes                     | No                 |
+| **Mutual TLS**                       | Yes                     | Yes                |
+| **CORS setup**                       | Manual OPTIONS method   | Built-in config    |
+| **Automatic deployments**            | No                      | Yes                |
+| **Canary deployments**               | Yes                     | No                 |
+| **Custom gateway responses**         | Yes                     | No                 |
+| **Execution logs**                   | Yes                     | No                 |
+| **Access logs (CloudWatch)**         | Yes                     | Yes                |
+| **Access logs (Firehose)**           | Yes                     | No                 |
+| **X-Ray tracing**                    | Yes                     | No                 |
+| **Mock integrations**                | Yes                     | No                 |
+| **Private integrations (NLB)**       | Yes                     | Yes                |
+| **Private integrations (ALB)**       | Yes                     | Yes                |
+| **Private integrations (Cloud Map)** | No                      | Yes                |
+| **Response streaming**               | Yes                     | No                 |
+| **Console test invocations**         | Yes                     | No                 |
+| **Integration timeout**              | 50ms–29s (configurable) | 30s hard max       |
+| **Payload size**                     | 10 MB                   | 10 MB              |
 
 > **REST API streaming caveats:** Response streaming via REST API proxy integration does not support built-in caching, response transforms (VTL), or WAF inspection of streamed content. Idle timeouts apply, and a 2 MBps bandwidth cap applies after the first 10 MB (Function URLs apply the cap after 6 MB).
 
@@ -79,11 +79,11 @@ None of the above? → HTTP API (lower latency, simpler)
 
 ### Proxy vs Non-Proxy
 
-| Aspect | Proxy integration | Non-proxy integration |
-|---|---|---|
+| Aspect                    | Proxy integration        | Non-proxy integration             |
+| ------------------------- | ------------------------ | --------------------------------- |
 | Who returns CORS headers? | **Your Lambda function** | **API Gateway** (method response) |
-| OPTIONS method needed? | Yes (or use mock) | Yes (mock integration) |
-| Where to configure? | In your code | In API Gateway console/IaC |
+| OPTIONS method needed?    | Yes (or use mock)        | Yes (mock integration)            |
+| Where to configure?       | In your code             | In API Gateway console/IaC        |
 
 ### Debugging Flowchart
 
@@ -112,15 +112,15 @@ None of the above? → HTTP API (lower latency, simpler)
 
 ### Common CORS Mistakes
 
-| # | Mistake | Fix |
-|---|---|---|
-| 1 | No CORS headers in Lambda (proxy integration) | Add headers to every Lambda response |
-| 2 | Missing OPTIONS method (REST API, non-proxy) | Create OPTIONS with mock integration |
-| 3 | Binary media types `*/*` breaks OPTIONS | Set `contentHandling: CONVERT_TO_TEXT` on OPTIONS |
-| 4 | `Allow-Origin: *` with `credentials: include` | Specify exact origin, not wildcard |
-| 5 | Not redeploying API after CORS changes | Redeploy the stage |
-| 6 | Missing `Allow-Headers` for custom headers | List all headers the client sends |
-| 7 | Gateway 4XX/5XX responses lack CORS headers | Add CORS headers to gateway responses |
+| #   | Mistake                                       | Fix                                               |
+| --- | --------------------------------------------- | ------------------------------------------------- |
+| 1   | No CORS headers in Lambda (proxy integration) | Add headers to every Lambda response              |
+| 2   | Missing OPTIONS method (REST API, non-proxy)  | Create OPTIONS with mock integration              |
+| 3   | Binary media types `*/*` breaks OPTIONS       | Set `contentHandling: CONVERT_TO_TEXT` on OPTIONS |
+| 4   | `Allow-Origin: *` with `credentials: include` | Specify exact origin, not wildcard                |
+| 5   | Not redeploying API after CORS changes        | Redeploy the stage                                |
+| 6   | Missing `Allow-Headers` for custom headers    | List all headers the client sends                 |
+| 7   | Gateway 4XX/5XX responses lack CORS headers   | Add CORS headers to gateway responses             |
 
 ### Lambda CORS Headers — Python
 
@@ -143,11 +143,12 @@ def handler(event, context):
 export const handler = async (event: any) => ({
   statusCode: 200,
   headers: {
-    "Access-Control-Allow-Origin": "https://example.com",
-    "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
-    "Access-Control-Allow-Headers": "Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token",
+    'Access-Control-Allow-Origin': 'https://example.com',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+    'Access-Control-Allow-Headers':
+      'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token',
   },
-  body: JSON.stringify({ message: "success" }),
+  body: JSON.stringify({ message: 'success' }),
 });
 ```
 
@@ -173,26 +174,26 @@ aws apigateway update-integration-response \
 
 ### TOKEN vs REQUEST Authorizer
 
-| Feature | TOKEN | REQUEST |
-|---|---|---|
-| Identity source | Single header (bearer token) | Headers, query strings, stage vars, `$context` |
-| Cache key | Token header value | All specified identity sources |
-| Token validation regex | Yes | No |
-| Fine-grained policies | Limited | Yes (multiple sources) |
-| Available on | REST API only | REST API + HTTP API |
-| **Recommendation** | Legacy | **Preferred** |
+| Feature                | TOKEN                        | REQUEST                                        |
+| ---------------------- | ---------------------------- | ---------------------------------------------- |
+| Identity source        | Single header (bearer token) | Headers, query strings, stage vars, `$context` |
+| Cache key              | Token header value           | All specified identity sources                 |
+| Token validation regex | Yes                          | No                                             |
+| Fine-grained policies  | Limited                      | Yes (multiple sources)                         |
+| Available on           | REST API only                | REST API + HTTP API                            |
+| **Recommendation**     | Legacy                       | **Preferred**                                  |
 
 > **Use REQUEST authorizers for new APIs.** TOKEN is legacy.
 
 ### Caching Behavior
 
-| Setting | Detail |
-|---|---|
-| Default TTL | 300 seconds |
-| Range | 0 (disabled) – 3600 seconds |
-| Cache key (TOKEN) | Header value from token source |
-| Cache key (REQUEST) | All specified identity sources combined |
-| **Critical** | Cached policy applies to **ALL methods/resources** |
+| Setting             | Detail                                             |
+| ------------------- | -------------------------------------------------- |
+| Default TTL         | 300 seconds                                        |
+| Range               | 0 (disabled) – 3600 seconds                        |
+| Cache key (TOKEN)   | Header value from token source                     |
+| Cache key (REQUEST) | All specified identity sources combined            |
+| **Critical**        | Cached policy applies to **ALL methods/resources** |
 
 If any specified identity source is missing/null/empty → 401 returned **without** invoking Lambda.
 
@@ -220,25 +221,27 @@ def lambda_handler(event, context):
 ### REQUEST Authorizer — TypeScript
 
 ```typescript
-import { APIGatewayAuthorizerResult, APIGatewayRequestAuthorizerEvent } from "aws-lambda";
+import { APIGatewayAuthorizerResult, APIGatewayRequestAuthorizerEvent } from 'aws-lambda';
 
 export const handler = async (
-  event: APIGatewayRequestAuthorizerEvent
+  event: APIGatewayRequestAuthorizerEvent,
 ): Promise<APIGatewayAuthorizerResult> => {
-  const token = event.headers?.Authorization ?? "";
+  const token = event.headers?.Authorization ?? '';
   const isAuthorized = verifyToken(token); // Your auth logic
 
   return {
-    principalId: "user",
+    principalId: 'user',
     policyDocument: {
-      Version: "2012-10-17",
-      Statement: [{
-        Action: "execute-api:Invoke",
-        Effect: isAuthorized ? "Allow" : "Deny",
-        Resource: event.methodArn,
-      }],
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Action: 'execute-api:Invoke',
+          Effect: isAuthorized ? 'Allow' : 'Deny',
+          Resource: event.methodArn,
+        },
+      ],
     },
-    context: { userId: "user", scope: "read:items" },
+    context: { userId: 'user', scope: 'read:items' },
   };
 };
 ```
@@ -292,38 +295,38 @@ Most specific → Least specific:
 
 ### Account-Level Defaults
 
-| Quota | Default | Adjustable? |
-|---|---|---|
-| Steady-state RPS (per Region) | 10,000 | Yes |
-| Burst capacity | 5,000 | Set by AWS based on RPS |
-| Smaller Regions (Cape Town, Milan, Jakarta…) | 2,500 RPS / 1,250 burst | Yes |
+| Quota                                        | Default                 | Adjustable?             |
+| -------------------------------------------- | ----------------------- | ----------------------- |
+| Steady-state RPS (per Region)                | 10,000                  | Yes                     |
+| Burst capacity                               | 5,000                   | Set by AWS based on RPS |
+| Smaller Regions (Cape Town, Milan, Jakarta…) | 2,500 RPS / 1,250 burst | Yes                     |
 
 ### REST API Quotas
 
-| Resource | Default | Adjustable? |
-|---|---|---|
-| Integration timeout | 50ms–29s (default 29s) | Yes (Regional/private only) |
-| Payload size | 10 MB | No |
-| Header value size | 10,240 bytes | No |
-| Cache TTL | 0–3600s | No |
-| Resources per API | 300 | Yes |
-| Stages per API | 10 | Yes |
-| API keys per account | 10,000 | No |
-| Usage plans per account | 300 | Yes |
-| Custom domains per Region | 120 | Yes |
-| Mapping template size | 300 KB | No |
+| Resource                  | Default                | Adjustable?                 |
+| ------------------------- | ---------------------- | --------------------------- |
+| Integration timeout       | 50ms–29s (default 29s) | Yes (Regional/private only) |
+| Payload size              | 10 MB                  | No                          |
+| Header value size         | 10,240 bytes           | No                          |
+| Cache TTL                 | 0–3600s                | No                          |
+| Resources per API         | 300                    | Yes                         |
+| Stages per API            | 10                     | Yes                         |
+| API keys per account      | 10,000                 | No                          |
+| Usage plans per account   | 300                    | Yes                         |
+| Custom domains per Region | 120                    | Yes                         |
+| Mapping template size     | 300 KB                 | No                          |
 
 ### HTTP API Quotas
 
-| Resource | Default | Adjustable? |
-|---|---|---|
-| Integration timeout | 30s max | No |
-| Payload size | 10 MB | No |
-| Routes per API | 300 | Yes |
-| Stages per API | 10 | Yes |
-| Integrations per API | 300 | No |
-| Custom domains per Region | 120 | Yes |
-| VPC links per Region | 10 | Yes |
+| Resource                  | Default | Adjustable? |
+| ------------------------- | ------- | ----------- |
+| Integration timeout       | 30s max | No          |
+| Payload size              | 10 MB   | No          |
+| Routes per API            | 300     | Yes         |
+| Stages per API            | 10      | Yes         |
+| Integrations per API      | 300     | No          |
+| Custom domains per Region | 120     | Yes         |
+| VPC links per Region      | 10      | Yes         |
 
 ### Usage Plans (REST API Only)
 
@@ -357,11 +360,11 @@ Client disconnects → $disconnect (cleanup connectionId)
 
 ### Predefined Routes
 
-| Route | When | Required? | Notes |
-|---|---|---|---|
-| `$connect` | Connection initiated | No | Auth here; connection pending until integration completes |
-| `$disconnect` | Connection closed | No | Best-effort; connection already closed |
-| `$default` | No matching route / non-JSON | No | Catch-all fallback |
+| Route         | When                         | Required? | Notes                                                     |
+| ------------- | ---------------------------- | --------- | --------------------------------------------------------- |
+| `$connect`    | Connection initiated         | No        | Auth here; connection pending until integration completes |
+| `$disconnect` | Connection closed            | No        | Best-effort; connection already closed                    |
+| `$default`    | No matching route / non-JSON | No        | Catch-all fallback                                        |
 
 ### Connection Management — Python
 
@@ -386,37 +389,42 @@ def send_to_client(endpoint_url, connection_id, data):
 ### Connection Management — TypeScript
 
 ```typescript
-import { ApiGatewayManagementApiClient, PostToConnectionCommand } from "@aws-sdk/client-apigatewaymanagementapi";
+import {
+  ApiGatewayManagementApiClient,
+  PostToConnectionCommand,
+} from '@aws-sdk/client-apigatewaymanagementapi';
 
 async function sendToClient(endpoint: string, connectionId: string, data: object) {
   const client = new ApiGatewayManagementApiClient({ endpoint });
-  await client.send(new PostToConnectionCommand({
-    ConnectionId: connectionId,
-    Data: Buffer.from(JSON.stringify(data)),
-  }));
+  await client.send(
+    new PostToConnectionCommand({
+      ConnectionId: connectionId,
+      Data: Buffer.from(JSON.stringify(data)),
+    }),
+  );
 }
 ```
 
 ### WebSocket Quotas
 
-| Resource | Limit |
-|---|---|
-| Idle connection timeout | 10 minutes |
-| Max connection duration | 2 hours |
-| Message payload | 128 KB (hard limit) |
+| Resource                | Limit               |
+| ----------------------- | ------------------- |
+| Idle connection timeout | 10 minutes          |
+| Max connection duration | 2 hours             |
+| Message payload         | 128 KB (hard limit) |
 
 ### WebSocket Close Codes
 
-| Code | Meaning |
-|---|---|
-| 1001 | Idle timeout or max duration exceeded |
-| 1003 | Unsupported binary media type |
+| Code | Meaning                                             |
+| ---- | --------------------------------------------------- |
+| 1001 | Idle timeout or max duration exceeded               |
+| 1003 | Unsupported binary media type                       |
 | 1005 | No status code present (reserved, not sent on wire) |
-| 1006 | Abnormal closure — no close frame received |
-| 1008 | Throttled (too many requests) |
-| 1009 | Message exceeds size limit |
-| 1011 | Internal server error |
-| 1012 | Service restart |
+| 1006 | Abnormal closure — no close frame received          |
+| 1008 | Throttled (too many requests)                       |
+| 1009 | Message exceeds size limit                          |
+| 1011 | Internal server error                               |
+| 1012 | Service restart                                     |
 
 ---
 
@@ -474,8 +482,8 @@ def handler(event, context):
 export const handler = async (event: any) => ({
   isBase64Encoded: false,
   statusCode: 200,
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ key: "val" }),  // MUST be string
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ key: 'val' }), // MUST be string
 });
 ```
 

@@ -49,13 +49,13 @@ Review application code for Bedrock calls without explicit `maxTokens`. Each uns
 
 Key metrics in the `AWS/Bedrock` namespace (dimension: `ModelId`):
 
-| Metric | What It Tells You |
-|--------|------------------|
-| `InvocationCount` | RPM usage — compare against RPM quota |
-| `InvocationThrottles` | Throttled requests — any value > 0 needs attention |
-| `InputTokenCount` | Input token consumption per request |
-| `OutputTokenCount` | Actual output tokens — use to right-size `maxTokens` |
-| `InvocationLatency` | Latency distribution — spikes may correlate with throttling |
+| Metric                | What It Tells You                                           |
+| --------------------- | ----------------------------------------------------------- |
+| `InvocationCount`     | RPM usage — compare against RPM quota                       |
+| `InvocationThrottles` | Throttled requests — any value > 0 needs attention          |
+| `InputTokenCount`     | Input token consumption per request                         |
+| `OutputTokenCount`    | Actual output tokens — use to right-size `maxTokens`        |
+| `InvocationLatency`   | Latency distribution — spikes may correlate with throttling |
 
 **Sample CloudWatch Logs Insights query** (requires model invocation logging enabled):
 
@@ -70,14 +70,14 @@ fields @timestamp, @message
 
 Decision table for resolving `ThrottlingException`:
 
-| Situation | Action |
-|-----------|--------|
-| `maxTokens` not explicitly set | Set it to expected output length — biggest single impact |
-| Traffic is bursty | Use cross-region inference profiles (`us.`, `eu.`, `global.` prefix) to distribute across regions |
-| Steady-state traffic exceeds quota | Request a quota increase (see below) |
-| Latency-sensitive workload | Use `priority` service tier for preferential processing |
-| Non-time-critical workload | Use `flex` service tier (may queue during peak, lower cost) |
-| Consistent high-volume | Request quota increase + use cross-region inference for headroom |
+| Situation                          | Action                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `maxTokens` not explicitly set     | Set it to expected output length — biggest single impact                                          |
+| Traffic is bursty                  | Use cross-region inference profiles (`us.`, `eu.`, `global.` prefix) to distribute across regions |
+| Steady-state traffic exceeds quota | Request a quota increase (see below)                                                              |
+| Latency-sensitive workload         | Use `priority` service tier for preferential processing                                           |
+| Non-time-critical workload         | Use `flex` service tier (may queue during peak, lower cost)                                       |
+| Consistent high-volume             | Request quota increase + use cross-region inference for headroom                                  |
 
 ## Quota Increase Requests
 

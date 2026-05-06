@@ -56,20 +56,24 @@ Wraps specific content in `guardContent` blocks so the guardrail evaluates only 
 
 ```json
 {
-  "messages": [{
-    "role": "user",
-    "content": [
-      {"text": "System context not evaluated by guardrail"},
-      {"guardContent": {"text": {"text": "User input to evaluate"}}}
-    ]
-  }]
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        { "text": "System context not evaluated by guardrail" },
+        { "guardContent": { "text": { "text": "User input to evaluate" } } }
+      ]
+    }
+  ]
 }
 ```
 
 For contextual grounding checks, add `qualifiers` (`"grounding_source"` or `"query"`):
 
 ```json
-{"guardContent": {"text": {"text": "Source document text", "qualifiers": ["grounding_source"]}}}
+{
+  "guardContent": { "text": { "text": "Source document text", "qualifiers": ["grounding_source"] } }
+}
 ```
 
 **Constraints:**
@@ -92,20 +96,20 @@ Apply standalone: `aws bedrock-runtime apply-guardrail --guardrail-identifier <i
 
 ### Decision guide
 
-| Scenario | Mode |
-|----------|------|
-| Protect all conversations | `guardrailConfig` |
+| Scenario                                                                      | Mode                  |
+| ----------------------------------------------------------------------------- | --------------------- |
+| Protect all conversations                                                     | `guardrailConfig`     |
 | Granular control — exclude trusted system prompts, wrap all untrusted content | `guardContent` blocks |
-| Pre-screen before model call | `ApplyGuardrail` API |
-| Batch content evaluation | `ApplyGuardrail` API |
+| Pre-screen before model call                                                  | `ApplyGuardrail` API  |
+| Batch content evaluation                                                      | `ApplyGuardrail` API  |
 
 ## PII Masking: BLOCK vs ANONYMIZE
 
 Two actions per PII type — agents confuse these:
 
-| Action | Behavior | Use When |
-|--------|----------|----------|
-| `BLOCK` | Reject entire response if PII detected | Zero-tolerance for PII leakage |
+| Action      | Behavior                                                                              | Use When                            |
+| ----------- | ------------------------------------------------------------------------------------- | ----------------------------------- |
+| `BLOCK`     | Reject entire response if PII detected                                                | Zero-tolerance for PII leakage      |
 | `ANONYMIZE` | Replace PII with placeholder (e.g., `{CREDIT_DEBIT_CARD_NUMBER}`) and return response | Need response but with PII redacted |
 
 Configure per PII type — you can BLOCK credit cards but ANONYMIZE email addresses.
@@ -130,10 +134,10 @@ Guardrails PII masking only applies to the **API response**. The original unmask
 
 Prevents hallucination by checking model response against source documents. Two thresholds:
 
-| Threshold | What It Checks | Impact |
-|-----------|---------------|--------|
-| Grounding threshold | How closely response matches source documents | Too strict → blocks legitimate responses. Too loose → passes hallucinations. |
-| Relevance threshold | How relevant response is to the user query | Too strict → blocks tangential but useful answers. Too loose → passes off-topic responses. |
+| Threshold           | What It Checks                                | Impact                                                                                     |
+| ------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Grounding threshold | How closely response matches source documents | Too strict → blocks legitimate responses. Too loose → passes hallucinations.               |
+| Relevance threshold | How relevant response is to the user query    | Too strict → blocks tangential but useful answers. Too loose → passes off-topic responses. |
 
 **Starting values**: Begin with 0.7 for both. Tune based on evaluation:
 
@@ -202,14 +206,14 @@ Without enforcement, developers can bypass guardrails by omitting `guardrailConf
 
 ```json
 {
-    "Effect": "Deny",
-    "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
-    "Resource": ["arn:aws:bedrock:<region>::foundation-model/*"],
-    "Condition": {
-        "StringNotEquals": {
-            "bedrock:GuardrailIdentifier": "arn:aws:bedrock:<region>:<account-id>:guardrail/<guardrail-id>:<version>"
-        }
+  "Effect": "Deny",
+  "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+  "Resource": ["arn:aws:bedrock:<region>::foundation-model/*"],
+  "Condition": {
+    "StringNotEquals": {
+      "bedrock:GuardrailIdentifier": "arn:aws:bedrock:<region>:<account-id>:guardrail/<guardrail-id>:<version>"
     }
+  }
 }
 ```
 

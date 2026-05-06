@@ -1,6 +1,7 @@
 # Setup CloudWatch Alarm Notifications
 
 ## Overview
+
 This SOP guides you through setting up notification channels for CloudWatch alarms using Amazon SNS (Simple Notification Service). It will create SNS topics, configure subscriptions for various notification methods (email, SMS, webhooks), and link them to existing or new CloudWatch alarms.
 
 ## Parameters
@@ -14,6 +15,7 @@ This SOP guides you through setting up notification channels for CloudWatch alar
 ## Steps
 
 ### 1. Verify Dependencies
+
 Check for required tools and warn the user if any are missing.
 
 **Constraints:**
@@ -25,6 +27,7 @@ Check for required tools and warn the user if any are missing.
 - You MUST respect the user's decision to proceed or abort
 
 ### 2. Validate Existing CloudWatch Alarm
+
 Verify that the specified CloudWatch alarm exists and gather its current configuration.
 
 **Constraints:**
@@ -36,6 +39,7 @@ Verify that the specified CloudWatch alarm exists and gather its current configu
 - You MUST display the current alarm configuration to the customer for confirmation
 
 ### 3. Create SNS Topic
+
 Create an SNS topic that will be used to send notifications when the alarm is triggered.
 
 **Constraints:**
@@ -47,6 +51,7 @@ Create an SNS topic that will be used to send notifications when the alarm is tr
 - You SHOULD use a descriptive topic name that includes the alarm name if no custom name is provided
 
 ### 4. Enable SNS Topic Encryption
+
 Configure encryption at rest for the SNS topic to protect sensitive notification data.
 
 **Constraints:**
@@ -58,6 +63,7 @@ Configure encryption at rest for the SNS topic to protect sensitive notification
 - You MUST verify that encryption was successfully enabled by describing the topic attributes
 
 ### 5. Configure SNS Topic Policy
+
 Set up appropriate permissions for the SNS topic to allow CloudWatch to publish messages.
 
 **Constraints:**
@@ -69,6 +75,7 @@ Set up appropriate permissions for the SNS topic to allow CloudWatch to publish 
 - You MUST NOT prompt to set, retrieve or use passwords as the SOP uses IAM roles and policies for authentication
 
 ### 6. Create SNS Subscription
+
 Create a subscription to the SNS topic based on the specified notification type and endpoint.
 
 **Constraints:**
@@ -81,6 +88,7 @@ Create a subscription to the SNS topic based on the specified notification type 
 - For SMS subscriptions, You MUST validate that the phone number is in the correct format (+1234567890)
 
 ### 7. Update CloudWatch Alarm with SNS Action
+
 Configure the CloudWatch alarm to send notifications to the SNS topic when triggered.
 
 **Constraints:**
@@ -92,6 +100,7 @@ Configure the CloudWatch alarm to send notifications to the SNS topic when trigg
 - You MUST verify the alarm update was successful by describing the alarm again
 
 ### 8. Test Notification Setup
+
 Verify that the notification system is working by testing the alarm state change.
 
 **Constraints:**
@@ -104,6 +113,7 @@ Verify that the notification system is working by testing the alarm state change
 - You SHOULD provide guidance on what to do if notifications are not received
 
 ### 9. Provide Integration Examples
+
 At the end of the setup, provide examples of testing and integrating the notification system.
 
 **Constraints:**
@@ -162,21 +172,21 @@ def create_alarm_with_notifications(alarm_name, metric_name, threshold, sns_topi
 
 ```javascript
 const AWS = require('aws-sdk');
-const cloudwatch = new AWS.CloudWatch({region: 'us-east-1'});
+const cloudwatch = new AWS.CloudWatch({ region: 'us-east-1' });
 
 async function triggerTestNotification(alarmName) {
-    const params = {
-        AlarmName: alarmName,
-        StateValue: 'ALARM',
-        StateReason: 'Testing notification from JavaScript'
-    };
+  const params = {
+    AlarmName: alarmName,
+    StateValue: 'ALARM',
+    StateReason: 'Testing notification from JavaScript',
+  };
 
-    try {
-        await cloudwatch.setAlarmState(params).promise();
-        console.log('Test notification triggered');
-    } catch (error) {
-        console.error('Error triggering notification:', error);
-    }
+  try {
+    await cloudwatch.setAlarmState(params).promise();
+    console.log('Test notification triggered');
+  } catch (error) {
+    console.error('Error triggering notification:', error);
+  }
 }
 ```
 

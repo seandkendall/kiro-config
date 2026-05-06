@@ -13,14 +13,14 @@ Migration checklist for upgrading between Claude model generations on Bedrock. E
 
 ### Breaking Changes
 
-| Change | 4.5 Behavior | 4.6 Behavior | Impact |
-|--------|-------------|-------------|--------|
-| **Prefill** | Supported | Hard 400 error | MUST remove all prefill before switching. Use structured outputs or system prompt instructions instead. |
-| **Structured outputs** | `output_format` param | `output_config.format` param (old name deprecated) | Update param name, or use `tool_use` for structured output (works on both). On Bedrock Converse API: `outputConfig.textFormat`. |
-| **Thinking config** | `thinking: {type: "enabled", budget_tokens: N}` | `thinking: {type: "adaptive"}` | Failover logic MUST swap the config (not just strip it) to maintain thinking on both sides. |
-| **Effort parameter** | Works on Opus 4.5 only. Errors on Sonnet 4.5 and Haiku 4.5. | GA on all 4.6 models (Opus, Sonnet, Haiku) | Failover to 4.5 Sonnet/Haiku MUST strip the effort parameter. |
-| **Context window** | 200K tokens (Sonnet 4.5 1M deprecated April 30, 2026) | 1M tokens (GA) | Prompts sized for 1M WILL fail on 4.5 failover. This is the biggest silent risk. |
-| **Cache thresholds** | Sonnet 4.5: 1,024 tokens. Opus 4.5: 4,096. | Sonnet 4.6: 2,048 tokens. Opus 4.6: 4,096. | Content cached on 4.5 (1,024–2,047 tokens) will NOT cache on Sonnet 4.6. |
+| Change                 | 4.5 Behavior                                                | 4.6 Behavior                                       | Impact                                                                                                                          |
+| ---------------------- | ----------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Prefill**            | Supported                                                   | Hard 400 error                                     | MUST remove all prefill before switching. Use structured outputs or system prompt instructions instead.                         |
+| **Structured outputs** | `output_format` param                                       | `output_config.format` param (old name deprecated) | Update param name, or use `tool_use` for structured output (works on both). On Bedrock Converse API: `outputConfig.textFormat`. |
+| **Thinking config**    | `thinking: {type: "enabled", budget_tokens: N}`             | `thinking: {type: "adaptive"}`                     | Failover logic MUST swap the config (not just strip it) to maintain thinking on both sides.                                     |
+| **Effort parameter**   | Works on Opus 4.5 only. Errors on Sonnet 4.5 and Haiku 4.5. | GA on all 4.6 models (Opus, Sonnet, Haiku)         | Failover to 4.5 Sonnet/Haiku MUST strip the effort parameter.                                                                   |
+| **Context window**     | 200K tokens (Sonnet 4.5 1M deprecated April 30, 2026)       | 1M tokens (GA)                                     | Prompts sized for 1M WILL fail on 4.5 failover. This is the biggest silent risk.                                                |
+| **Cache thresholds**   | Sonnet 4.5: 1,024 tokens. Opus 4.5: 4,096.                  | Sonnet 4.6: 2,048 tokens. Opus 4.6: 4,096.         | Content cached on 4.5 (1,024–2,047 tokens) will NOT cache on Sonnet 4.6.                                                        |
 
 ### Migration Steps
 

@@ -2,12 +2,13 @@
 
 ## RI Types
 
-| Type | Discount | Flexibility | Marketplace |
-|------|----------|-------------|-------------|
-| Standard | Up to 72% | Size flexibility within family (regional) | Can sell |
+| Type        | Discount  | Flexibility                               | Marketplace |
+| ----------- | --------- | ----------------------------------------- | ----------- |
+| Standard    | Up to 72% | Size flexibility within family (regional) | Can sell    |
 | Convertible | Up to 66% | Can exchange for different family/size/OS | Cannot sell |
 
 ## Payment Options
+
 All Upfront (highest discount) > Partial Upfront > No Upfront (lowest discount).
 
 ## Break-Even Points
@@ -20,6 +21,7 @@ All Upfront (highest discount) > Partial Upfront > No Upfront (lowest discount).
 Regional RIs (both Standard and Convertible) automatically apply across instance sizes within the same family using normalization factors. Example: 1 c5.xlarge RI covers 2 c5.large instances. AZ-scoped RIs provide capacity reservation but NO size flexibility.
 
 ## Application Order
+
 RIs apply first, then Savings Plans cover remaining eligible usage.
 
 ## Service-Specific Considerations

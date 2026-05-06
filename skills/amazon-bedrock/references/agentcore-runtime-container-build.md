@@ -45,12 +45,12 @@ building.
 - You MUST confirm the protocol with the user before writing the Dockerfile
 - Each protocol has a different contract:
 
-| Protocol | Health Endpoint | Port | Key Requirement |
-|----------|----------------|------|-----------------|
-| HTTP | `/health` | 8080 | JSON request/response |
-| MCP | `/mcp` | 8080 | Streamable HTTP transport, tool registration |
-| A2A | `/.well-known/agent.json` | 8080 | Agent Card discovery, task management |
-| AG-UI | `/ping` | 8080 | SSE event stream via `/invocations`, health via `/ping` |
+| Protocol | Health Endpoint           | Port | Key Requirement                                         |
+| -------- | ------------------------- | ---- | ------------------------------------------------------- |
+| HTTP     | `/health`                 | 8080 | JSON request/response                                   |
+| MCP      | `/mcp`                    | 8080 | Streamable HTTP transport, tool registration            |
+| A2A      | `/.well-known/agent.json` | 8080 | Agent Card discovery, task management                   |
+| AG-UI    | `/ping`                   | 8080 | SSE event stream via `/invocations`, health via `/ping` |
 
 - You MUST NOT mix protocol contracts — an HTTP health check won't work for MCP
 

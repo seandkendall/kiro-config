@@ -123,13 +123,17 @@ Fix (line 6):
 ## Troubleshooting
 
 ### Template fails to parse
+
 If the tool or CLI returns a parsing error, the template has invalid YAML or JSON syntax. Check for indentation issues, missing colons, or unquoted special characters. Fix the syntax and re-run validation.
 
 ### Unexpected rule violations
+
 If cfn-lint reports errors you believe are incorrect, suppress specific rules using `ignore_checks`. Verify the rule ID from the output (e.g., `W2001`) and pass it in the parameter.
 
 ### Region-specific failures
+
 Some resource properties are only valid in certain regions. If you see region-related errors, pass the target deployment region in the `regions` parameter to get accurate validation.
 
 ### cfn-lint not installed
+
 Install with `pip install cfn-lint`. The tool is maintained at https://github.com/aws-cloudformation/cfn-lint.

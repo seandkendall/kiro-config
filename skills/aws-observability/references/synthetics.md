@@ -14,24 +14,24 @@ Runtime constraints, blueprint compatibility, and common pitfalls for CloudWatch
 
 ## Runtime and blueprint compatibility
 
-| Blueprint | Puppeteer | Playwright | Python/Selenium | Java |
-|-----------|-----------|------------|-----------------|------|
-| Heartbeat | Yes | Yes | Yes | No |
-| API canary | Yes | No | Yes | Yes |
-| Broken link checker | Yes | No | Yes | No |
-| Visual monitoring | Yes | No | No | No |
-| Canary recorder | Yes | No | No | No |
-| GUI workflow | Yes | Yes | Yes | No |
-| Multi checks | Yes | Yes | Yes | Yes |
+| Blueprint           | Puppeteer | Playwright | Python/Selenium | Java |
+| ------------------- | --------- | ---------- | --------------- | ---- |
+| Heartbeat           | Yes       | Yes        | Yes             | No   |
+| API canary          | Yes       | No         | Yes             | Yes  |
+| Broken link checker | Yes       | No         | Yes             | No   |
+| Visual monitoring   | Yes       | No         | No              | No   |
+| Canary recorder     | Yes       | No         | No              | No   |
+| GUI workflow        | Yes       | Yes        | Yes             | No   |
+| Multi checks        | Yes       | Yes        | Yes             | Yes  |
 
 Playwright cannot use 4 of 7 blueprints. Java has no browser — API-only.
 
-| Family | Latest | Node/Python | X-Ray tracing |
-|--------|--------|-------------|---------------|
-| `syn-nodejs-puppeteer-*` | 15.0 | Node 22 | Yes (not with Firefox) |
-| `syn-nodejs-playwright-*` | 6.0 | Node 22 | Yes (not with Firefox) |
-| `syn-python-selenium-*` | 10.0 | Python 3.11 | Yes |
-| `syn-java-*` | 1.0 | Java 21 | Yes |
+| Family                    | Latest | Node/Python | X-Ray tracing          |
+| ------------------------- | ------ | ----------- | ---------------------- |
+| `syn-nodejs-puppeteer-*`  | 15.0   | Node 22     | Yes (not with Firefox) |
+| `syn-nodejs-playwright-*` | 6.0    | Node 22     | Yes (not with Firefox) |
+| `syn-python-selenium-*`   | 10.0   | Python 3.11 | Yes                    |
+| `syn-java-*`              | 1.0    | Java 21     | Yes                    |
 
 > Run `aws synthetics describe-runtime-versions` for the latest runtime versions.
 
@@ -46,7 +46,7 @@ CDK:
 ```typescript
 const canary = new synthetics.Canary(this, 'ApiCanary', {
   // ... standard props ...
-  activeTracing: true,              // X-Ray — adds 2.5-7% to run time
+  activeTracing: true, // X-Ray — adds 2.5-7% to run time
   provisionedResourceCleanup: true, // delete Lambda on canary delete
   artifactsBucketLifecycleRules: [{ expiration: Duration.days(30) }], // prevent S3 accumulation
 });
@@ -113,30 +113,30 @@ Canaries in VPCs must run in **private subnets** (Lambda ENIs don't get public I
 
 ## Common failures
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| "Cannot find module" | Wrong ZIP structure | Node.js: `nodejs/node_modules/<folder>/<file>.js`. Python: `python/<file>.py` |
+| Symptom                                             | Cause                                                           | Fix                                                                                 |
+| --------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| "Cannot find module"                                | Wrong ZIP structure                                             | Node.js: `nodejs/node_modules/<folder>/<file>.js`. Python: `python/<file>.py`       |
 | "Unable to fetch S3 bucket location: Access Denied" | Missing `s3:ListAllMyBuckets` on role (must be `Resource: "*"`) | Add `s3:ListAllMyBuckets`, `s3:GetBucketLocation`, `s3:PutObject` to execution role |
-| `net::ERR_NAME_NOT_RESOLVED` in VPC | No DNS resolution or no route to AWS endpoints | Enable DNS Resolution + DNS Hostnames on VPC; add NAT Gateway or VPC endpoints |
-| "No test result returned" | Canary in public subnet | Move to private subnet — Lambda ENIs don't get public IPs |
-| Timeout with no artifacts | Lambda timeout < canary timeout | Ensure Lambda timeout ≥ canary timeout; set canary timeout ≥ 15s for cold starts |
-| Canary stops running | `DurationInSeconds` set to non-zero value | Set `DurationInSeconds: 0` for continuous running |
-| Can't update canary | Runtime deprecated | Upgrade runtime first — deprecated runtimes block all config changes |
-| Visual monitoring fails after upgrade | Chromium version changed | Re-baseline screenshots after runtime upgrades |
-| CORS failures with X-Ray | Active tracing adds trace headers triggering preflight | Disable active tracing or configure CORS to allow X-Ray headers |
-| `SuccessPercent` alarm in INSUFFICIENT_DATA | Canary timed out — no metric published for that run | Use `treatMissingData: BREACHING` so timeouts trigger the alarm |
+| `net::ERR_NAME_NOT_RESOLVED` in VPC                 | No DNS resolution or no route to AWS endpoints                  | Enable DNS Resolution + DNS Hostnames on VPC; add NAT Gateway or VPC endpoints      |
+| "No test result returned"                           | Canary in public subnet                                         | Move to private subnet — Lambda ENIs don't get public IPs                           |
+| Timeout with no artifacts                           | Lambda timeout < canary timeout                                 | Ensure Lambda timeout ≥ canary timeout; set canary timeout ≥ 15s for cold starts    |
+| Canary stops running                                | `DurationInSeconds` set to non-zero value                       | Set `DurationInSeconds: 0` for continuous running                                   |
+| Can't update canary                                 | Runtime deprecated                                              | Upgrade runtime first — deprecated runtimes block all config changes                |
+| Visual monitoring fails after upgrade               | Chromium version changed                                        | Re-baseline screenshots after runtime upgrades                                      |
+| CORS failures with X-Ray                            | Active tracing adds trace headers triggering preflight          | Disable active tracing or configure CORS to allow X-Ray headers                     |
+| `SuccessPercent` alarm in INSUFFICIENT_DATA         | Canary timed out — no metric published for that run             | Use `treatMissingData: BREACHING` so timeouts trigger the alarm                     |
 
 ---
 
 ## Limits
 
-| Limit | Value | Consequence |
-|-------|-------|-------------|
-| Canaries per region | 200 (default, adjustable via Service Quotas) | At scale with retries, can exhaust Lambda concurrent execution (1000 default) |
-| Timeout | Max 840s (14 min) | Cannot be longer than the canary's schedule frequency |
-| Memory | 960-3008 MiB (default 1024) | Not the standard Lambda 128-10240 range |
-| Canary name | Max 255 chars, lowercase alphanumeric plus `_` and `-` | Pattern: `^[0-9a-z_\-]+$` |
-| Groups | 20 per account, 10 canaries/group | Cross-region grouping supported |
-| X-Ray tracing | Not supported in ap-southeast-3 | Also not supported with Firefox browser |
-| Minimum timeout | 15 seconds recommended | Below this, cold starts cause silent failures |
-| Orphaned resources on delete | Lambda, logs, S3, IAM role NOT auto-deleted | Set `provisionedResourceCleanup: true` (CDK) or `AUTOMATIC` (CFN); manually clean the rest |
+| Limit                        | Value                                                  | Consequence                                                                                |
+| ---------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| Canaries per region          | 200 (default, adjustable via Service Quotas)           | At scale with retries, can exhaust Lambda concurrent execution (1000 default)              |
+| Timeout                      | Max 840s (14 min)                                      | Cannot be longer than the canary's schedule frequency                                      |
+| Memory                       | 960-3008 MiB (default 1024)                            | Not the standard Lambda 128-10240 range                                                    |
+| Canary name                  | Max 255 chars, lowercase alphanumeric plus `_` and `-` | Pattern: `^[0-9a-z_\-]+$`                                                                  |
+| Groups                       | 20 per account, 10 canaries/group                      | Cross-region grouping supported                                                            |
+| X-Ray tracing                | Not supported in ap-southeast-3                        | Also not supported with Firefox browser                                                    |
+| Minimum timeout              | 15 seconds recommended                                 | Below this, cold starts cause silent failures                                              |
+| Orphaned resources on delete | Lambda, logs, S3, IAM role NOT auto-deleted            | Set `provisionedResourceCleanup: true` (CDK) or `AUTOMATIC` (CFN); manually clean the rest |

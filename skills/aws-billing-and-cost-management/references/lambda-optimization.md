@@ -26,11 +26,11 @@ aws compute-optimizer get-lambda-function-recommendations \
 
 ## Optimization Levers
 
-| Strategy | Savings | Effort |
-|----------|---------|--------|
-| Switch to arm64 (Graviton) | ~20% cost + ~10-15% faster | Low — config change |
-| Right-size memory with Power Tuning | 10-50% | Medium |
-| Use SnapStart (Java/Python/.NET) | Eliminates provisioned concurrency cost | Low |
+| Strategy                            | Savings                                 | Effort              |
+| ----------------------------------- | --------------------------------------- | ------------------- |
+| Switch to arm64 (Graviton)          | ~20% cost + ~10-15% faster              | Low — config change |
+| Right-size memory with Power Tuning | 10-50%                                  | Medium              |
+| Use SnapStart (Java/Python/.NET)    | Eliminates provisioned concurrency cost | Low                 |
 
 ```bash
 # Switch to arm64

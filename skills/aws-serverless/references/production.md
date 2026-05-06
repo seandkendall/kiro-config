@@ -77,29 +77,29 @@ Walk through every item before the first production deployment.
 
 ### Monolith Lambda vs micro-Lambda
 
-| Aspect | Lambdalith (single function) | Micro-Lambda (function per route) |
-|---|---|---|
-| Cold starts | One function to warm; larger package | Many functions; smaller, faster init |
-| IAM granularity | Single broad role | Per-function least-privilege |
-| Deployment | Everything together; simpler CI/CD | Independent; more pipeline complexity |
-| Observability | One log group; harder per-route metrics | Per-function metrics, alarms, logs |
-| Scaling | Single concurrency pool | Independent scaling + reserved concurrency per function |
-| DX | Familiar Express/FastAPI style | More AWS-native; requires IaC discipline |
+| Aspect          | Lambdalith (single function)            | Micro-Lambda (function per route)                       |
+| --------------- | --------------------------------------- | ------------------------------------------------------- |
+| Cold starts     | One function to warm; larger package    | Many functions; smaller, faster init                    |
+| IAM granularity | Single broad role                       | Per-function least-privilege                            |
+| Deployment      | Everything together; simpler CI/CD      | Independent; more pipeline complexity                   |
+| Observability   | One log group; harder per-route metrics | Per-function metrics, alarms, logs                      |
+| Scaling         | Single concurrency pool                 | Independent scaling + reserved concurrency per function |
+| DX              | Familiar Express/FastAPI style          | More AWS-native; requires IaC discipline                |
 
 **Guidance**: Prefer micro-Lambda for greenfield (least privilege, independent scaling, granular observability). Use Lambdalith when migrating existing Express/FastAPI apps or when team size makes deployment simplicity more valuable than granularity.
 
 ### Function URLs vs API Gateway
 
-| Feature | Function URLs | API Gateway (HTTP API) | API Gateway (REST API) |
-|---|---|---|---|
-| Auth | IAM only (or in-code) | IAM, JWT, Lambda authorizers | IAM, Cognito, Lambda authorizers, API keys |
-| Rate limiting | None built-in | Built-in throttling | Throttling + usage plans |
-| Response streaming | Yes (native) | No | Yes (proxy integration) |
-| Custom domains | Via CloudFront | Built-in | Built-in |
-| WAF | No (use CloudFront) | No (use CloudFront) | Yes |
-| Request validation | None | None | JSON Schema |
-| Caching | Via CloudFront | None | Built-in |
-| WebSocket | No | No | No (separate WebSocket API required) |
+| Feature            | Function URLs         | API Gateway (HTTP API)       | API Gateway (REST API)                     |
+| ------------------ | --------------------- | ---------------------------- | ------------------------------------------ |
+| Auth               | IAM only (or in-code) | IAM, JWT, Lambda authorizers | IAM, Cognito, Lambda authorizers, API keys |
+| Rate limiting      | None built-in         | Built-in throttling          | Throttling + usage plans                   |
+| Response streaming | Yes (native)          | No                           | Yes (proxy integration)                    |
+| Custom domains     | Via CloudFront        | Built-in                     | Built-in                                   |
+| WAF                | No (use CloudFront)   | No (use CloudFront)          | Yes                                        |
+| Request validation | None                  | None                         | JSON Schema                                |
+| Caching            | Via CloudFront        | None                         | Built-in                                   |
+| WebSocket          | No                    | No                           | No (separate WebSocket API required)       |
 
 **Use Function URLs** for: internal service-to-service (IAM auth), Lambdalith + CloudFront, streaming, webhook receivers.
 
@@ -107,12 +107,12 @@ Walk through every item before the first production deployment.
 
 ### Reserved vs Provisioned Concurrency
 
-| Aspect | Reserved Concurrency | Provisioned Concurrency |
-|---|---|---|
-| Purpose | Guarantee capacity + protect downstream | Eliminate cold starts |
-| Cold starts | Still possible | Eliminated (pre-warmed) |
-| Throttling | Throttles at the limit | Spills to on-demand beyond provisioned |
-| Use case | Protect a database; guarantee capacity | Latency-sensitive APIs; payment processing |
+| Aspect      | Reserved Concurrency                    | Provisioned Concurrency                    |
+| ----------- | --------------------------------------- | ------------------------------------------ |
+| Purpose     | Guarantee capacity + protect downstream | Eliminate cold starts                      |
+| Cold starts | Still possible                          | Eliminated (pre-warmed)                    |
+| Throttling  | Throttles at the limit                  | Spills to on-demand beyond provisioned     |
+| Use case    | Protect a database; guarantee capacity  | Latency-sensitive APIs; payment processing |
 
 Decision flow:
 
@@ -134,24 +134,24 @@ Decision flow:
 
 ### EMF vs PutMetricData
 
-| | EMF (Powertools Metrics) | `PutMetricData` API |
-|---|---|---|
-| Latency impact | Zero — writes to stdout | Synchronous API call (~5–20 ms) |
-| Complexity | One-liner with Powertools | Manual batching, error handling |
-| Recommendation | **Use this** | Avoid in hot paths |
+|                | EMF (Powertools Metrics)  | `PutMetricData` API             |
+| -------------- | ------------------------- | ------------------------------- |
+| Latency impact | Zero — writes to stdout   | Synchronous API call (~5–20 ms) |
+| Complexity     | One-liner with Powertools | Manual batching, error handling |
+| Recommendation | **Use this**              | Avoid in hot paths              |
 
 ### Minimum alarm set
 
 Set these six alarms on every production function:
 
-| Alarm | Metric | Threshold | Period | Why |
-|---|---|---|---|---|
-| Error rate | `Errors / Invocations` | > 1 % | 5 min | Catch bugs and upstream failures |
-| Throttles | `Throttles` | > 0 | 5 min | Concurrency limit hit |
-| Duration P99 | `Duration` P99 | > 80 % of timeout | 5 min | Catch slow functions before timeout |
-| Iterator age | `IteratorAge` | > 60 s | 5 min | Stream processing falling behind |
-| Concurrent executions | `ConcurrentExecutions` | > 80 % of reserved | 5 min | Approaching throttle threshold |
-| DLQ depth | SQS `ApproximateNumberOfMessagesVisible` | > 0 | 5 min | Failed messages accumulating |
+| Alarm                 | Metric                                   | Threshold          | Period | Why                                 |
+| --------------------- | ---------------------------------------- | ------------------ | ------ | ----------------------------------- |
+| Error rate            | `Errors / Invocations`                   | > 1 %              | 5 min  | Catch bugs and upstream failures    |
+| Throttles             | `Throttles`                              | > 0                | 5 min  | Concurrency limit hit               |
+| Duration P99          | `Duration` P99                           | > 80 % of timeout  | 5 min  | Catch slow functions before timeout |
+| Iterator age          | `IteratorAge`                            | > 60 s             | 5 min  | Stream processing falling behind    |
+| Concurrent executions | `ConcurrentExecutions`                   | > 80 % of reserved | 5 min  | Approaching throttle threshold      |
+| DLQ depth             | SQS `ApproximateNumberOfMessagesVisible` | > 0                | 5 min  | Failed messages accumulating        |
 
 ### Log retention
 
@@ -190,11 +190,11 @@ Use IAM Access Analyzer to identify unused permissions and generate least-privil
 
 Validate at the handler boundary before business logic runs:
 
-| Language | Library |
-|---|---|
-| TypeScript | Zod, io-ts, JSON Schema |
-| Python | Pydantic, Powertools Validation (JSON Schema) |
-| Java | Bean Validation (JSR 380), JSON Schema |
+| Language   | Library                                       |
+| ---------- | --------------------------------------------- |
+| TypeScript | Zod, io-ts, JSON Schema                       |
+| Python     | Pydantic, Powertools Validation (JSON Schema) |
+| Java       | Bean Validation (JSR 380), JSON Schema        |
 
 Powertools Validation supports envelope extraction for API Gateway, SQS, EventBridge, etc.
 
@@ -202,8 +202,8 @@ Powertools Validation supports envelope extraction for API Gateway, SQS, EventBr
 
 If your function must be in a VPC, use **VPC endpoints** for AWS service access instead of NAT Gateway:
 
-| | VPC Endpoint | NAT Gateway |
-|---|---|---|
+|         | VPC Endpoint                  | NAT Gateway        |
+| ------- | ----------------------------- | ------------------ |
 | Latency | Lower (stays on AWS backbone) | Higher (extra hop) |
 
 Create endpoints for: DynamoDB (gateway), S3 (gateway), SQS, Secrets Manager, SSM, KMS.
@@ -238,11 +238,11 @@ handler (thin adapter)
 
 ### What to test where
 
-| Layer | What | How |
-|---|---|---|
-| Unit | Business logic (calculations, transforms, validation) | Local, fast, mocked dependencies |
-| Integration | Service contracts (DynamoDB reads/writes, SQS send/receive, IAM permissions) | Deploy to AWS, test against real services |
-| E2E | Full workflows (API → Lambda → DynamoDB → Stream → Lambda → SQS) | Dedicated staging environment; poll for async side effects |
+| Layer       | What                                                                         | How                                                        |
+| ----------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Unit        | Business logic (calculations, transforms, validation)                        | Local, fast, mocked dependencies                           |
+| Integration | Service contracts (DynamoDB reads/writes, SQS send/receive, IAM permissions) | Deploy to AWS, test against real services                  |
+| E2E         | Full workflows (API → Lambda → DynamoDB → Stream → Lambda → SQS)             | Dedicated staging environment; poll for async side effects |
 
 ### Fast iteration
 
@@ -284,15 +284,18 @@ def handler(event, context):
 **TypeScript:**
 
 ```typescript
-import { makeIdempotent } from "@aws-lambda-powertools/idempotency";
-import { DynamoDBPersistenceLayer } from "@aws-lambda-powertools/idempotency/dynamodb";
+import { makeIdempotent } from '@aws-lambda-powertools/idempotency';
+import { DynamoDBPersistenceLayer } from '@aws-lambda-powertools/idempotency/dynamodb';
 
-const persistence = new DynamoDBPersistenceLayer({ tableName: "IdempotencyTable" });
+const persistence = new DynamoDBPersistenceLayer({ tableName: 'IdempotencyTable' });
 
-export const handler = makeIdempotent(async (event) => {
-  const payment = await processPayment(event);
-  return { statusCode: 200, body: JSON.stringify(payment) };
-}, { persistenceStore: persistence });
+export const handler = makeIdempotent(
+  async (event) => {
+    const payment = await processPayment(event);
+    return { statusCode: 200, body: JSON.stringify(payment) };
+  },
+  { persistenceStore: persistence },
+);
 ```
 
 ### DynamoDB table design
@@ -309,13 +312,13 @@ Table: IdempotencyTable
 
 ### Choosing the idempotency key
 
-| Event source | Key |
-|---|---|
-| SQS | `messageId` |
-| EventBridge | `detail.id` or composite of event fields |
-| DynamoDB Streams | `eventID` |
+| Event source               | Key                                           |
+| -------------------------- | --------------------------------------------- |
+| SQS                        | `messageId`                                   |
+| EventBridge                | `detail.id` or composite of event fields      |
+| DynamoDB Streams           | `eventID`                                     |
 | API Gateway / Function URL | `Idempotency-Key` header or request body hash |
-| Step Functions | Execution ID + task token |
+| Step Functions             | Execution ID + task token                     |
 
 ### TTL for cleanup
 
@@ -333,13 +336,13 @@ DynamoDB automatically deletes expired items (typically within a few days of TTL
 
 ### When to use
 
-| Use case | Why streaming helps |
-|---|---|
-| Large payloads (> 6 MB) | Buffered limit is 6 MB; streaming supports up to 200 MB |
+| Use case                 | Why streaming helps                                             |
+| ------------------------ | --------------------------------------------------------------- |
+| Large payloads (> 6 MB)  | Buffered limit is 6 MB; streaming supports up to 200 MB         |
 | TTFB-sensitive responses | Client sees partial data immediately (HTML shell, then content) |
-| Server-sent events (SSE) | Real-time updates to browser clients |
-| LLM / AI token streaming | Stream tokens as generated (conversational AI-style) |
-| Large file generation | CSV/PDF rows streamed as produced |
+| Server-sent events (SSE) | Real-time updates to browser clients                            |
+| LLM / AI token streaming | Stream tokens as generated (conversational AI-style)            |
+| Large file generation    | CSV/PDF rows streamed as produced                               |
 
 ### Constraints
 
@@ -353,22 +356,20 @@ DynamoDB automatically deletes expired items (typically within a few days of TTL
 ### Node.js example
 
 ```javascript
-export const handler = awslambda.streamifyResponse(
-  async (event, responseStream, context) => {
-    const metadata = {
-      statusCode: 200,
-      headers: { "Content-Type": "text/html" },
-    };
-    responseStream = awslambda.HttpResponseStream.from(responseStream, metadata);
+export const handler = awslambda.streamifyResponse(async (event, responseStream, context) => {
+  const metadata = {
+    statusCode: 200,
+    headers: { 'Content-Type': 'text/html' },
+  };
+  responseStream = awslambda.HttpResponseStream.from(responseStream, metadata);
 
-    responseStream.write("<html><body>");
-    for (const chunk of generateContent()) {
-      responseStream.write(chunk);
-    }
-    responseStream.write("</body></html>");
-    responseStream.end();
+  responseStream.write('<html><body>');
+  for (const chunk of generateContent()) {
+    responseStream.write(chunk);
   }
-);
+  responseStream.write('</body></html>');
+  responseStream.end();
+});
 ```
 
 ### When NOT to use

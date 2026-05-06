@@ -16,38 +16,38 @@
 
 The Converse API is the unified interface. Key fields:
 
-| Field | Required | Purpose |
-|-------|----------|---------|
-| `modelId` | Yes | Model ID, cross-region ID (`us.` prefix), or prompt ARN |
-| `messages` | Conditional | Conversation history: `[{role, content}]`. Required unless using a prompt ARN, where messages are optional (appended after prompt's messages) |
-| `system` | No | System prompt: `[{text: "..."}]` |
-| `inferenceConfig` | No | `maxTokens`, `temperature`, `topP`, `stopSequences` |
-| `toolConfig` | No | Tool definitions for function calling |
-| `guardrailConfig` | No | Guardrail ID + version |
-| `additionalModelRequestFields` | No | Provider-specific fields not in Converse |
-| `additionalModelResponseFieldPaths` | No | JSON Pointer paths for extra model response fields to return |
-| `outputConfig` | No | Output format configuration (e.g., structured text format) |
-| `performanceConfig` | No | Latency optimization settings |
-| `promptVariables` | No | Variable values for prompt management templates (`{{variable}}` placeholders) |
-| `requestMetadata` | No | Key-value pairs for filtering invocation logs |
-| `serviceTier` | No | Processing tier object: `{"type": "<value>"}` where value is `"reserved"`, `"priority"`, `"default"`, or `"flex"` |
+| Field                               | Required    | Purpose                                                                                                                                       |
+| ----------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `modelId`                           | Yes         | Model ID, cross-region ID (`us.` prefix), or prompt ARN                                                                                       |
+| `messages`                          | Conditional | Conversation history: `[{role, content}]`. Required unless using a prompt ARN, where messages are optional (appended after prompt's messages) |
+| `system`                            | No          | System prompt: `[{text: "..."}]`                                                                                                              |
+| `inferenceConfig`                   | No          | `maxTokens`, `temperature`, `topP`, `stopSequences`                                                                                           |
+| `toolConfig`                        | No          | Tool definitions for function calling                                                                                                         |
+| `guardrailConfig`                   | No          | Guardrail ID + version                                                                                                                        |
+| `additionalModelRequestFields`      | No          | Provider-specific fields not in Converse                                                                                                      |
+| `additionalModelResponseFieldPaths` | No          | JSON Pointer paths for extra model response fields to return                                                                                  |
+| `outputConfig`                      | No          | Output format configuration (e.g., structured text format)                                                                                    |
+| `performanceConfig`                 | No          | Latency optimization settings                                                                                                                 |
+| `promptVariables`                   | No          | Variable values for prompt management templates (`{{variable}}` placeholders)                                                                 |
+| `requestMetadata`                   | No          | Key-value pairs for filtering invocation logs                                                                                                 |
+| `serviceTier`                       | No          | Processing tier object: `{"type": "<value>"}` where value is `"reserved"`, `"priority"`, `"default"`, or `"flex"`                             |
 
 **Content block types** in messages:
 
-| Type | Use For |
-|------|---------|
-| `text` | Text content |
-| `image` | Image input (base64 or S3) |
-| `document` | PDF, DOCX, etc. |
-| `video` | Video input |
-| `audio` | Audio content in conversation |
-| `toolUse` | Model requesting tool execution (in assistant messages) |
-| `toolResult` | Tool execution result (in user messages) |
-| `guardContent` | Content to evaluate with guardrail selectively |
-| `cachePoint` | Prompt caching marker |
-| `reasoningContent` | Chain of Thought reasoning from extended thinking models |
+| Type               | Use For                                                     |
+| ------------------ | ----------------------------------------------------------- |
+| `text`             | Text content                                                |
+| `image`            | Image input (base64 or S3)                                  |
+| `document`         | PDF, DOCX, etc.                                             |
+| `video`            | Video input                                                 |
+| `audio`            | Audio content in conversation                               |
+| `toolUse`          | Model requesting tool execution (in assistant messages)     |
+| `toolResult`       | Tool execution result (in user messages)                    |
+| `guardContent`     | Content to evaluate with guardrail selectively              |
+| `cachePoint`       | Prompt caching marker                                       |
+| `reasoningContent` | Chain of Thought reasoning from extended thinking models    |
 | `citationsContent` | Generated text with associated citation/source traceability |
-| `searchResult` | Search result content block |
+| `searchResult`     | Search result content block                                 |
 
 Refer to the latest AWS documentation on Bedrock Converse API for supported content types and fields.
 
@@ -115,7 +115,7 @@ Verify the Correct ID format:
 Insert `cachePoint` blocks in the content to mark cache boundaries:
 
 ```json
-{"cachePoint": {"type": "default"}}
+{ "cachePoint": { "type": "default" } }
 ```
 
 Placement rules:
@@ -127,12 +127,12 @@ Placement rules:
 
 ## Service Tiers
 
-| Tier | API Value | Behavior | Use When |
-|------|-----------|----------|----------|
-| Reserved | `reserved` | Guaranteed capacity, committed pricing | Mission-critical apps, no downtime tolerance |
-| Priority | `priority` | Preferential processing, lower latency | Customer-facing apps sensitive to latency |
-| Standard | `default` | Standard processing | Most workloads (used when `serviceTier` is omitted) |
-| Flex | `flex` | Best-effort, may queue during peak | Non-time-critical: evaluations, batch summarization |
+| Tier     | API Value  | Behavior                               | Use When                                            |
+| -------- | ---------- | -------------------------------------- | --------------------------------------------------- |
+| Reserved | `reserved` | Guaranteed capacity, committed pricing | Mission-critical apps, no downtime tolerance        |
+| Priority | `priority` | Preferential processing, lower latency | Customer-facing apps sensitive to latency           |
+| Standard | `default`  | Standard processing                    | Most workloads (used when `serviceTier` is omitted) |
+| Flex     | `flex`     | Best-effort, may queue during peak     | Non-time-critical: evaluations, batch summarization |
 
 Set via `serviceTier` object in Converse API request: `"serviceTier": {"type": "priority"}`. If omitted, Bedrock routes to the Standard tier (API value `"default"`).
 

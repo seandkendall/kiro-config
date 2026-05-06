@@ -64,12 +64,12 @@ This is the key non-obvious requirement. AgentCore Evaluations service reads spe
 
 AgentCore publishes these metrics automatically (you don't need to instrument):
 
-| Metric | What It Measures |
-|--------|-----------------|
-| Invocation count | Number of agent invocations |
+| Metric             | What It Measures                       |
+| ------------------ | -------------------------------------- |
+| Invocation count   | Number of agent invocations            |
 | Invocation latency | End-to-end response time (p50/p90/p99) |
-| Error rate | Percentage of failed invocations |
-| Token usage | Input/output tokens consumed |
+| Error rate         | Percentage of failed invocations       |
+| Token usage        | Input/output tokens consumed           |
 
 **Recommended alarms:**
 

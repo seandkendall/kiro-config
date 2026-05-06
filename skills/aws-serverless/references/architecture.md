@@ -52,13 +52,13 @@ Client → API Gateway (HTTP API) → Lambda → DynamoDB
 
 **Service selection:**
 
-| Decision | Default | Alternative |
-|---|---|---|
-| API type | HTTP API (simpler) | REST API if you need WAF, caching, request validation, API keys |
-| Auth | JWT authorizer (HTTP API native) | Cognito (REST: native Cognito authorizer; HTTP: JWT authorizer), Lambda authorizer (custom logic) |
-| Database | DynamoDB (on-demand) | RDS Proxy + RDS if relational data needed |
-| File storage | S3 with presigned URLs | Direct upload via API Gateway (10 MB limit) |
-| Function pattern | One function per route | Lambdalith if team prefers Express/FastAPI style |
+| Decision         | Default                          | Alternative                                                                                       |
+| ---------------- | -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| API type         | HTTP API (simpler)               | REST API if you need WAF, caching, request validation, API keys                                   |
+| Auth             | JWT authorizer (HTTP API native) | Cognito (REST: native Cognito authorizer; HTTP: JWT authorizer), Lambda authorizer (custom logic) |
+| Database         | DynamoDB (on-demand)             | RDS Proxy + RDS if relational data needed                                                         |
+| File storage     | S3 with presigned URLs           | Direct upload via API Gateway (10 MB limit)                                                       |
+| Function pattern | One function per route           | Lambdalith if team prefers Express/FastAPI style                                                  |
 
 **Key constraints:**
 
@@ -79,15 +79,15 @@ Event source → SQS → Lambda → DynamoDB / S3
 
 **Service selection:**
 
-| Decision | Default | Alternative |
-|---|---|---|
-| Buffer | SQS standard queue | SQS FIFO if ordering matters (10 msg batch limit) |
-| Trigger | SQS event source mapping | S3 event notification → Lambda (file uploads) |
-| Change data capture | DynamoDB Streams → Lambda | EventBridge Pipes → Lambda (no ESM needed) |
-| Stream ingestion | SQS (simpler) | Kinesis (ordered replay, multiple consumers, high-throughput) |
-| Error handling | SQS redrive policy (DLQ) | On-failure destination (SQS/SNS/S3) for streams |
-| Concurrency control | MaximumConcurrency on ESM | Reserved concurrency on function |
-| Batch processing | ReportBatchItemFailures | Powertools Batch Processor utility |
+| Decision            | Default                   | Alternative                                                   |
+| ------------------- | ------------------------- | ------------------------------------------------------------- |
+| Buffer              | SQS standard queue        | SQS FIFO if ordering matters (10 msg batch limit)             |
+| Trigger             | SQS event source mapping  | S3 event notification → Lambda (file uploads)                 |
+| Change data capture | DynamoDB Streams → Lambda | EventBridge Pipes → Lambda (no ESM needed)                    |
+| Stream ingestion    | SQS (simpler)             | Kinesis (ordered replay, multiple consumers, high-throughput) |
+| Error handling      | SQS redrive policy (DLQ)  | On-failure destination (SQS/SNS/S3) for streams               |
+| Concurrency control | MaximumConcurrency on ESM | Reserved concurrency on function                              |
+| Batch processing    | ReportBatchItemFailures   | Powertools Batch Processor utility                            |
 
 **Key constraints:**
 
@@ -124,14 +124,14 @@ Trigger → Step Functions → Lambda (validate)
 
 **Service selection:**
 
-| Decision | Default | Alternative |
-|---|---|---|
-| Workflow type | Standard (exactly-once, up to 1 year) | Express (<5 min, high-volume; async=at-least-once, sync=at-most-once) |
-| Simple data transforms | JSONata (inline, no Lambda needed) | Lambda task (complex logic) |
-| Service calls | Direct SDK integration (200+ services) | Lambda intermediary (only if business logic needed) |
-| Human approval | .waitForTaskToken | Durable Functions waitForCallback |
-| AI agent loops | Step Functions + Bedrock | Durable Functions (code-first, checkpointed) |
-| Error handling | Retry + Catch in ASL | Durable Functions try/catch in code |
+| Decision               | Default                                | Alternative                                                           |
+| ---------------------- | -------------------------------------- | --------------------------------------------------------------------- |
+| Workflow type          | Standard (exactly-once, up to 1 year)  | Express (<5 min, high-volume; async=at-least-once, sync=at-most-once) |
+| Simple data transforms | JSONata (inline, no Lambda needed)     | Lambda task (complex logic)                                           |
+| Service calls          | Direct SDK integration (200+ services) | Lambda intermediary (only if business logic needed)                   |
+| Human approval         | .waitForTaskToken                      | Durable Functions waitForCallback                                     |
+| AI agent loops         | Step Functions + Bedrock               | Durable Functions (code-first, checkpointed)                          |
+| Error handling         | Retry + Catch in ASL                   | Durable Functions try/catch in code                                   |
 
 **Key constraints:**
 
@@ -159,12 +159,12 @@ Client → Lambda Function URL (streaming) → Bedrock ConverseStream
 
 **Service selection:**
 
-| Decision | Default | Alternative |
-|---|---|---|
-| Bidirectional | API Gateway WebSocket | AppSync subscriptions (GraphQL) |
-| LLM streaming | Lambda Function URL + ConverseStream | REST API proxy with STREAM mode |
-| Connection state | DynamoDB (connectionId → metadata) | ElastiCache (higher throughput) |
-| Auth | $connect route authorizer | Cognito + custom auth in Lambda |
+| Decision         | Default                              | Alternative                     |
+| ---------------- | ------------------------------------ | ------------------------------- |
+| Bidirectional    | API Gateway WebSocket                | AppSync subscriptions (GraphQL) |
+| LLM streaming    | Lambda Function URL + ConverseStream | REST API proxy with STREAM mode |
+| Connection state | DynamoDB (connectionId → metadata)   | ElastiCache (higher throughput) |
+| Auth             | $connect route authorizer            | Cognito + custom auth in Lambda |
 
 **Key constraints:**
 
@@ -186,13 +186,13 @@ Producer → EventBridge → Rule A → Lambda (process)
 
 **Service selection:**
 
-| Decision | Default | Alternative |
-|---|---|---|
-| Event router | EventBridge (content-based routing) | SNS (simpler fan-out, attribute/body filtering) |
-| Point-to-point | EventBridge Pipes (source→target, no Lambda intermediary) | SQS → Lambda ESM |
-| Schema management | EventBridge Schema Registry + Discovery | Manual schema documentation |
-| Cross-account | EventBridge cross-account rules | SNS cross-account subscriptions |
-| Scheduling | EventBridge Scheduler (cron/rate) | EventBridge rules (simpler but less flexible) |
+| Decision          | Default                                                   | Alternative                                     |
+| ----------------- | --------------------------------------------------------- | ----------------------------------------------- |
+| Event router      | EventBridge (content-based routing)                       | SNS (simpler fan-out, attribute/body filtering) |
+| Point-to-point    | EventBridge Pipes (source→target, no Lambda intermediary) | SQS → Lambda ESM                                |
+| Schema management | EventBridge Schema Registry + Discovery                   | Manual schema documentation                     |
+| Cross-account     | EventBridge cross-account rules                           | SNS cross-account subscriptions                 |
+| Scheduling        | EventBridge Scheduler (cron/rate)                         | EventBridge rules (simpler but less flexible)   |
 
 **Key constraints:**
 
@@ -214,12 +214,12 @@ EventBridge Scheduler → Lambda (task)
 
 **Service selection:**
 
-| Decision | Default | Alternative |
-|---|---|---|
-| Scheduler | EventBridge Scheduler (flexible, one-time + recurring) | EventBridge rules with schedule expression (simpler) |
-| Short task (<15 min) | Lambda directly | — |
-| Long task (>15 min) | Step Functions (up to 1 year) | Durable Functions |
-| High frequency (<1 min) | Not supported natively | SQS delay queue + Lambda |
+| Decision                | Default                                                | Alternative                                          |
+| ----------------------- | ------------------------------------------------------ | ---------------------------------------------------- |
+| Scheduler               | EventBridge Scheduler (flexible, one-time + recurring) | EventBridge rules with schedule expression (simpler) |
+| Short task (<15 min)    | Lambda directly                                        | —                                                    |
+| Long task (>15 min)     | Step Functions (up to 1 year)                          | Durable Functions                                    |
+| High frequency (<1 min) | Not supported natively                                 | SQS delay queue + Lambda                             |
 
 **Key constraints:**
 
@@ -251,12 +251,12 @@ Client ─── CloudFront ─┤
 
 **Common combinations:**
 
-| Application | Patterns used |
-|---|---|
-| SaaS API backend | REST API + Event processing + Scheduled jobs |
-| E-commerce | REST API + Orchestration (order saga) + Fan-out (notifications) |
-| Data pipeline | Scheduled jobs + Event processing + Orchestration |
-| AI chatbot | Real-time streaming + Orchestration (agent loop) |
-| IoT processing | Event processing + Fan-out + Scheduled jobs (aggregation) |
+| Application      | Patterns used                                                   |
+| ---------------- | --------------------------------------------------------------- |
+| SaaS API backend | REST API + Event processing + Scheduled jobs                    |
+| E-commerce       | REST API + Orchestration (order saga) + Fan-out (notifications) |
+| Data pipeline    | Scheduled jobs + Event processing + Orchestration               |
+| AI chatbot       | Real-time streaming + Orchestration (agent loop)                |
+| IoT processing   | Event processing + Fan-out + Scheduled jobs (aggregation)       |
 
 **Begin with a single pattern and add more as requirements grow.** A CRUD API with DynamoDB covers most initial implementations. Add event processing when you need async work. Add orchestration when you need multi-step workflows. Add fan-out when you need cross-service communication.

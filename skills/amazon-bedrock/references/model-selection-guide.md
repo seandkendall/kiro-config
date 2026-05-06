@@ -12,12 +12,12 @@
 
 Agents consistently get these wrong. Four patterns:
 
-| Access Type | Format | Example Pattern |
-|------------|--------|---------|
-| On-demand (single region) | `provider.model-name-version` | `anthropic.claude-<model>-<date>-v<N>:0` |
-| Cross-region (system-defined) | `geographic-prefix.provider.model-name-version` | `us.anthropic.claude-<model>-<date>-v<N>:0` |
-| Application inference profile | ARN | `arn:aws:bedrock:<region>:<account-id>:inference-profile/<id>` |
-| Provisioned throughput | ARN | `arn:aws:bedrock:<region>:<account-id>:provisioned-model/<id>` |
+| Access Type                   | Format                                          | Example Pattern                                                |
+| ----------------------------- | ----------------------------------------------- | -------------------------------------------------------------- |
+| On-demand (single region)     | `provider.model-name-version`                   | `anthropic.claude-<model>-<date>-v<N>:0`                       |
+| Cross-region (system-defined) | `geographic-prefix.provider.model-name-version` | `us.anthropic.claude-<model>-<date>-v<N>:0`                    |
+| Application inference profile | ARN                                             | `arn:aws:bedrock:<region>:<account-id>:inference-profile/<id>` |
+| Provisioned throughput        | ARN                                             | `arn:aws:bedrock:<region>:<account-id>:provisioned-model/<id>` |
 
 Always look up current model IDs: `aws bedrock list-foundation-models --region <region>` and `aws bedrock list-inference-profiles --region <region>`, or refer to the latest [Bedrock supported models](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
 
@@ -61,23 +61,23 @@ Quick defaults (verify current availability — new models are added frequently,
 
 Decision framework — choose based on:
 
-| Criterion | What to Check |
-|-----------|--------------|
-| Reasoning depth | Claude Opus/Sonnet for complex tasks, Haiku/Nova for simple |
-| Cost sensitivity | Nova Micro or Haiku for lowest cost; batch inference for discounted bulk processing |
-| Multimodal needs | Nova Pro/Lite for text + image + video; Claude Sonnet for text + image |
-| Open-source requirement | Llama (fine-tuning available) |
-| Latency sensitivity | Haiku or Nova Micro for fastest inference |
-| Context window | Check: `aws bedrock get-foundation-model --model-identifier``<model-id>``` |
+| Criterion               | What to Check                                                                       |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| Reasoning depth         | Claude Opus/Sonnet for complex tasks, Haiku/Nova for simple                         |
+| Cost sensitivity        | Nova Micro or Haiku for lowest cost; batch inference for discounted bulk processing |
+| Multimodal needs        | Nova Pro/Lite for text + image + video; Claude Sonnet for text + image              |
+| Open-source requirement | Llama (fine-tuning available)                                                       |
+| Latency sensitivity     | Haiku or Nova Micro for fastest inference                                           |
+| Context window          | Check: `aws bedrock get-foundation-model --model-identifier``<model-id>```          |
 
 ## Embedding Models for Knowledge Bases
 
 This is a non-obvious choice that affects KB quality. The table below shows common options — additional embedding models (including multimodal embeddings) are available. Check `aws bedrock list-foundation-models --by-output-modality EMBEDDING --region <region>` for the current list.
 
-| Model | Dimensions | Best For |
-|-------|-----------|----------|
+| Model               | Dimensions          | Best For                                  |
+| ------------------- | ------------------- | ----------------------------------------- |
 | Titan Embeddings V2 | 1024 (configurable) | Default choice, good multilingual support |
-| Cohere Embed | 1024 | Strong multilingual, 100+ languages |
+| Cohere Embed        | 1024                | Strong multilingual, 100+ languages       |
 
 **Critical**: The embedding model dimensions MUST match the vector store index dimensions. Mismatched dimensions cause ingestion failure.
 
@@ -85,13 +85,13 @@ Refer to the latest AWS documentation on Bedrock embedding models for current op
 
 ## Pricing Models
 
-| Model | Description | When to Use |
-|-------|-------------|-------------|
-| On-demand | Pay per input/output token | Default, unpredictable traffic |
-| Batch inference | Discounted async processing | Bulk processing, not real-time |
-| Provisioned throughput | Reserved capacity, predictable pricing | High-volume, predictable workloads |
-| Cross-region inference | Broader availability via geographic routing (uses on-demand pricing). Geographic profiles (`us.`, `eu.`, `apac.`) stay within their geography; `global.` profiles route across all commercial regions | Traffic distribution; use geographic profiles when data residency matters |
-| Service tiers (on-demand) | Priority (fastest, premium price) / Standard (default) / Flex (discounted, may queue) | Match latency and cost to workload needs |
-| Reserved tier | Dedicated capacity reservation (1 or 3 month commitment, 99.5% uptime target) | Mission-critical apps that cannot tolerate downtime |
+| Model                     | Description                                                                                                                                                                                           | When to Use                                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| On-demand                 | Pay per input/output token                                                                                                                                                                            | Default, unpredictable traffic                                            |
+| Batch inference           | Discounted async processing                                                                                                                                                                           | Bulk processing, not real-time                                            |
+| Provisioned throughput    | Reserved capacity, predictable pricing                                                                                                                                                                | High-volume, predictable workloads                                        |
+| Cross-region inference    | Broader availability via geographic routing (uses on-demand pricing). Geographic profiles (`us.`, `eu.`, `apac.`) stay within their geography; `global.` profiles route across all commercial regions | Traffic distribution; use geographic profiles when data residency matters |
+| Service tiers (on-demand) | Priority (fastest, premium price) / Standard (default) / Flex (discounted, may queue)                                                                                                                 | Match latency and cost to workload needs                                  |
+| Reserved tier             | Dedicated capacity reservation (1 or 3 month commitment, 99.5% uptime target)                                                                                                                         | Mission-critical apps that cannot tolerate downtime                       |
 
 Refer to the latest AWS documentation on Bedrock pricing for current rates and discount percentages. Pricing changes without notice — do not hardcode pricing assumptions.

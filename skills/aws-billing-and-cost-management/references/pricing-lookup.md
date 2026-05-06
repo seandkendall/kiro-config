@@ -4,18 +4,18 @@ Price List API service codes differ from Cost Explorer service names. Use these 
 
 ## Common Service Codes
 
-| Service | Price List Code | Cost Explorer Name |
-|---------|----------------|-------------------|
-| EC2 | `AmazonEC2` | `Amazon Elastic Compute Cloud - Compute` |
-| Lambda | `AWSLambda` | `AWS Lambda` |
-| S3 | `AmazonS3` | `Amazon Simple Storage Service` |
-| RDS | `AmazonRDS` | `Amazon Relational Database Service` |
-| DynamoDB | `AmazonDynamoDB` | `Amazon DynamoDB` |
-| ElastiCache | `AmazonElastiCache` | `Amazon ElastiCache` |
-| Redshift | `AmazonRedshift` | `Amazon Redshift` |
-| ECS | `AmazonECS` | `Amazon Elastic Container Service` |
-| CloudFront | `AmazonCloudFront` | `Amazon CloudFront` |
-| Bedrock | `AmazonBedrock` | `Amazon Bedrock` |
+| Service     | Price List Code     | Cost Explorer Name                       |
+| ----------- | ------------------- | ---------------------------------------- |
+| EC2         | `AmazonEC2`         | `Amazon Elastic Compute Cloud - Compute` |
+| Lambda      | `AWSLambda`         | `AWS Lambda`                             |
+| S3          | `AmazonS3`          | `Amazon Simple Storage Service`          |
+| RDS         | `AmazonRDS`         | `Amazon Relational Database Service`     |
+| DynamoDB    | `AmazonDynamoDB`    | `Amazon DynamoDB`                        |
+| ElastiCache | `AmazonElastiCache` | `Amazon ElastiCache`                     |
+| Redshift    | `AmazonRedshift`    | `Amazon Redshift`                        |
+| ECS         | `AmazonECS`         | `Amazon Elastic Container Service`       |
+| CloudFront  | `AmazonCloudFront`  | `Amazon CloudFront`                      |
+| Bedrock     | `AmazonBedrock`     | `Amazon Bedrock`                         |
 
 ## EC2 Pricing Attributes
 
@@ -27,15 +27,15 @@ Price List API service codes differ from Cost Explorer service names. Use these 
 
 Filter storage: `productFamily: "Storage"`. Use `volumeType` (NOT `storageClass`):
 
-| Storage Class | volumeType Value |
-|--------------|-----------------|
-| Standard | `"Standard"` |
-| Infrequent Access | `"Standard - Infrequent Access"` |
-| One Zone IA | `"One Zone - Infrequent Access"` |
-| Glacier Instant Retrieval | `"Glacier Instant Retrieval"` |
-| Glacier Flexible | `"Amazon Glacier"` |
-| Glacier Deep Archive | `"Glacier Deep Archive"` |
-| Intelligent-Tiering | `"Intelligent-Tiering"` |
+| Storage Class             | volumeType Value                 |
+| ------------------------- | -------------------------------- |
+| Standard                  | `"Standard"`                     |
+| Infrequent Access         | `"Standard - Infrequent Access"` |
+| One Zone IA               | `"One Zone - Infrequent Access"` |
+| Glacier Instant Retrieval | `"Glacier Instant Retrieval"`    |
+| Glacier Flexible          | `"Amazon Glacier"`               |
+| Glacier Deep Archive      | `"Glacier Deep Archive"`         |
+| Intelligent-Tiering       | `"Intelligent-Tiering"`          |
 
 **Intelligent-Tiering has 5 sub-tiers** with distinct volumeType values: `"Intelligent-Tiering Frequent Access"`, `"Intelligent-Tiering Infrequent Access"`, `"Intelligent-Tiering Archive Instant Access"`, `"IntelligentTieringArchiveAccess"`, `"IntelligentTieringDeepArchiveAccess"`. For complete IT cost analysis, also query monitoring fee (`feeCode: "S3-Monitoring and Automation-ObjectCount"`) and transition costs (`operation: "S3-INTTransition"`).
 

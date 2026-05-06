@@ -6,22 +6,22 @@ Quick wins that don't require commitment purchases. Prioritize by estimated savi
 
 ## S3: Storage Class Optimization
 
-| Strategy | Savings | When |
-|----------|---------|------|
-| Intelligent-Tiering | Auto-optimized | Unknown access patterns, objects ≥128KB |
-| Lifecycle to S3-IA | ~45% storage | Known infrequent access after 30+ days |
-| Lifecycle to Glacier IR | ~68% storage | Archive after 90+ days, retrieval in minutes |
-| Lifecycle to Deep Archive | ~95% storage | Compliance retention, 12+ hour retrieval OK |
+| Strategy                  | Savings        | When                                         |
+| ------------------------- | -------------- | -------------------------------------------- |
+| Intelligent-Tiering       | Auto-optimized | Unknown access patterns, objects ≥128KB      |
+| Lifecycle to S3-IA        | ~45% storage   | Known infrequent access after 30+ days       |
+| Lifecycle to Glacier IR   | ~68% storage   | Archive after 90+ days, retrieval in minutes |
+| Lifecycle to Deep Archive | ~95% storage   | Compliance retention, 12+ hour retrieval OK  |
 
 **Gotchas:** Objects <128KB NOT auto-tiered in IT. Minimum storage durations: S3-IA 30 days, Glacier IR 90 days, Deep Archive 180 days — early deletion incurs prorated charge. Always add `NoncurrentVersionExpiration` — old versions accumulate silently.
 
 ## Lambda: Memory and Architecture
 
-| Strategy | Savings | Effort |
-|----------|---------|--------|
-| Switch to arm64 (Graviton) | ~20% cost | Low — config change |
-| Right-size memory | 10-50% | Medium — use Power Tuning |
-| SnapStart (Java/Python/.NET) | Eliminates provisioned concurrency cost | Low |
+| Strategy                     | Savings                                 | Effort                    |
+| ---------------------------- | --------------------------------------- | ------------------------- |
+| Switch to arm64 (Graviton)   | ~20% cost                               | Low — config change       |
+| Right-size memory            | 10-50%                                  | Medium — use Power Tuning |
+| SnapStart (Java/Python/.NET) | Eliminates provisioned concurrency cost | Low                       |
 
 **Gotchas:** Reserved concurrency (free) ≠ Provisioned concurrency (paid). 1,769 MB = 1 full vCPU — more memory = more CPU = potentially lower total cost.
 

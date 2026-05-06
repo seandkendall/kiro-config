@@ -10,7 +10,8 @@ description: |
   anomaly, CUR, cost audit, billing view, billing view ARN.
 version: 1
 metadata:
-  service: [cost-explorer, budgets, compute-optimizer, cost-optimization-hub, pricing, savings-plans, cur]
+  service:
+    [cost-explorer, budgets, compute-optimizer, cost-optimization-hub, pricing, savings-plans, cur]
   task: [analyze-cost, optimize, budget, right-size, pricing-lookup, audit]
   persona: [developer, finops-practitioner, cloud-engineer]
   workload: [cost-management]
@@ -64,21 +65,21 @@ Read `references/deterministic-calculations.md` for patterns and examples.
 
 ## Decision Guide
 
-| Question | Tool | Reference |
-|----------|------|-----------|
-| What am I spending? Where are costs going up? | Cost Explorer | `references/cost-explorer.md` |
-| How much does a service cost? | Price List API | `references/pricing-lookup.md` |
-| Where can I save money? (start here) | Cost Optimization Hub | `references/cost-optimization-hub.md` |
-| Should I buy Savings Plans? | CE SP Recommendations | `references/savings-plans.md` |
-| Should I buy Reserved Instances? | CE RI Recommendations | `references/reserved-instances.md` |
-| Deep-dive on a specific EC2/Lambda/EBS/RDS rec? | Compute Optimizer | `references/ec2-rightsizing.md`, `references/lambda-optimization.md`, `references/rds-optimization.md`, `references/ebs-optimization.md` |
-| How do I set up budget alerts? | Budgets | `references/budgets.md` |
-| What's causing a cost spike? | Cost Anomaly Detection | `references/cost-explorer.md` |
-| Am I within Free Tier? | Free Tier API | `references/free-tier.md` |
-| How do I reduce my bill? | Cost Audit workflow | `references/cost-audit.md` |
-| How do I query detailed billing data? | CUR 2.0 + Athena | `references/cur-athena.md` |
-| How do I optimize specific services? | Per-service patterns | `references/service-optimization.md` |
-| How do I scope costs to a billing view? | Billing Views | See [Billing Views](#billing-views) below |
+| Question                                        | Tool                   | Reference                                                                                                                                |
+| ----------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| What am I spending? Where are costs going up?   | Cost Explorer          | `references/cost-explorer.md`                                                                                                            |
+| How much does a service cost?                   | Price List API         | `references/pricing-lookup.md`                                                                                                           |
+| Where can I save money? (start here)            | Cost Optimization Hub  | `references/cost-optimization-hub.md`                                                                                                    |
+| Should I buy Savings Plans?                     | CE SP Recommendations  | `references/savings-plans.md`                                                                                                            |
+| Should I buy Reserved Instances?                | CE RI Recommendations  | `references/reserved-instances.md`                                                                                                       |
+| Deep-dive on a specific EC2/Lambda/EBS/RDS rec? | Compute Optimizer      | `references/ec2-rightsizing.md`, `references/lambda-optimization.md`, `references/rds-optimization.md`, `references/ebs-optimization.md` |
+| How do I set up budget alerts?                  | Budgets                | `references/budgets.md`                                                                                                                  |
+| What's causing a cost spike?                    | Cost Anomaly Detection | `references/cost-explorer.md`                                                                                                            |
+| Am I within Free Tier?                          | Free Tier API          | `references/free-tier.md`                                                                                                                |
+| How do I reduce my bill?                        | Cost Audit workflow    | `references/cost-audit.md`                                                                                                               |
+| How do I query detailed billing data?           | CUR 2.0 + Athena       | `references/cur-athena.md`                                                                                                               |
+| How do I optimize specific services?            | Per-service patterns   | `references/service-optimization.md`                                                                                                     |
+| How do I scope costs to a billing view?         | Billing Views          | See [Billing Views](#billing-views) below                                                                                                |
 
 ## Common Tasks
 
@@ -95,12 +96,15 @@ aws ce get-cost-and-usage \
 Default to `UnblendedCost`. Exclude Credits/Refunds with `--filter '{"Not":{"Dimensions":{"Key":"RECORD_TYPE","Values":["Credit","Refund"]}}}'`. End date is exclusive.
 
 ### Run a cost audit
+
 Read `references/cost-audit.md` for the full 7-step workflow: top cost drivers → month-over-month comparison → optimization recommendations → idle resources → commitment coverage → per-service quick wins → report.
 
 ### Get right-sizing recommendations
+
 Compute Optimizer requires opt-in first: `aws compute-optimizer update-enrollment-status --status Active`. Then read `references/ec2-rightsizing.md` for EC2 or the relevant resource-specific reference.
 
 ### Look up service pricing
+
 Read `references/pricing-lookup.md` for service codes and attribute filters. Common trap: Price List API service codes differ from Cost Explorer service names.
 
 ## Billing Views
@@ -128,6 +132,7 @@ aws ce get-cost-and-usage \
 ```
 
 ### Create a budget scoped to a billing view
+
 In the `--budget` JSON, include the `BillingViewArn` field:
 
 ```bash
@@ -143,30 +148,30 @@ aws budgets create-budget --account-id ACCOUNT_ID \
 
 ### API support for `--billing-view-arn`
 
-| Supports `--billing-view-arn` | Does NOT support it |
-|-------------------------------|---------------------|
-| `ce get-cost-and-usage` | `ce get-reservation-coverage` |
-| `ce get-cost-and-usage-with-resources` | `ce get-reservation-utilization` |
-| `ce get-cost-forecast` | `ce get-savings-plans-coverage` |
-| `ce get-usage-forecast` | `ce get-savings-plans-utilization` |
-| `ce get-dimension-values` | |
-| `ce get-tags` | |
-| `ce get-cost-comparison-drivers` | |
-| `budgets create-budget` (in budget JSON) | |
+| Supports `--billing-view-arn`            | Does NOT support it                |
+| ---------------------------------------- | ---------------------------------- |
+| `ce get-cost-and-usage`                  | `ce get-reservation-coverage`      |
+| `ce get-cost-and-usage-with-resources`   | `ce get-reservation-utilization`   |
+| `ce get-cost-forecast`                   | `ce get-savings-plans-coverage`    |
+| `ce get-usage-forecast`                  | `ce get-savings-plans-utilization` |
+| `ce get-dimension-values`                |                                    |
+| `ce get-tags`                            |                                    |
+| `ce get-cost-comparison-drivers`         |                                    |
+| `budgets create-budget` (in budget JSON) |                                    |
 
 ## Troubleshooting
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `ValidationException` on Cost Explorer | Wrong dimension key (e.g., `CHARGE_TYPE` instead of `RECORD_TYPE`) | Use `RECORD_TYPE` for charge type filtering |
-| Empty results with filter | Filter value doesn't match exactly | Call `GetDimensionValues` first to get valid values |
-| `AccessDeniedException` on hourly data | Hourly granularity not enabled | Enable in Cost Explorer preferences |
-| `Account not registered` on Compute Optimizer | Not opted in | Run `update-enrollment-status --status Active` |
-| Budgets API fails outside us-east-1 | Budgets requires us-east-1 | Set `--region us-east-1` |
-| Cost Explorer `Total` empty with GroupBy | By design — totals excluded when grouping | Make separate call without GroupBy, or sum grouped results using a script |
-| `AccessDeniedException` on `list-billing-views` | Missing permission | User needs `billing:ListBillingViews` permissions |
-| `ValidationException` with `--billing-view-arn` | API doesn't support billing views, or malformed ARN | Check the API support table above; ARN format is `arn:aws:billing::ACCOUNT_ID:billingview/VIEW_ID` |
-| Budget shows `UNHEALTHY` health status | Billing view access revoked or view deleted | Check `HealthStatus.StatusReason` in `describe-budget` output; ensure `billing:GetBillingViewData` is granted |
+| Error                                           | Cause                                                              | Fix                                                                                                           |
+| ----------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `ValidationException` on Cost Explorer          | Wrong dimension key (e.g., `CHARGE_TYPE` instead of `RECORD_TYPE`) | Use `RECORD_TYPE` for charge type filtering                                                                   |
+| Empty results with filter                       | Filter value doesn't match exactly                                 | Call `GetDimensionValues` first to get valid values                                                           |
+| `AccessDeniedException` on hourly data          | Hourly granularity not enabled                                     | Enable in Cost Explorer preferences                                                                           |
+| `Account not registered` on Compute Optimizer   | Not opted in                                                       | Run `update-enrollment-status --status Active`                                                                |
+| Budgets API fails outside us-east-1             | Budgets requires us-east-1                                         | Set `--region us-east-1`                                                                                      |
+| Cost Explorer `Total` empty with GroupBy        | By design — totals excluded when grouping                          | Make separate call without GroupBy, or sum grouped results using a script                                     |
+| `AccessDeniedException` on `list-billing-views` | Missing permission                                                 | User needs `billing:ListBillingViews` permissions                                                             |
+| `ValidationException` with `--billing-view-arn` | API doesn't support billing views, or malformed ARN                | Check the API support table above; ARN format is `arn:aws:billing::ACCOUNT_ID:billingview/VIEW_ID`            |
+| Budget shows `UNHEALTHY` health status          | Billing view access revoked or view deleted                        | Check `HealthStatus.StatusReason` in `describe-budget` output; ensure `billing:GetBillingViewData` is granted |
 
 ## Additional Resources
 

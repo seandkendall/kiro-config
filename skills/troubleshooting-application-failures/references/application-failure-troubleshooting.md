@@ -218,31 +218,31 @@ time_window_hours: 4
 
 ### Specific Error Messages Found
 1. **Connection Pool Exhaustion** (567 occurrences - 67%):
-   ```
+```
 
-   ERROR: could not obtain a database connection within 30 seconds
-   java.sql.SQLException: Connection pool exhausted
-   at com.payment.db.ConnectionManager.getConnection(ConnectionManager.java:45)
+ERROR: could not obtain a database connection within 30 seconds
+java.sql.SQLException: Connection pool exhausted
+at com.payment.db.ConnectionManager.getConnection(ConnectionManager.java:45)
 
-   ```
+```
 
 2. **Null Pointer Exception in Validation** (198 occurrences - 23%):
-   ```
+```
 
-   ERROR: NullPointerException in payment validation
-   java.lang.NullPointerException: Cannot invoke "PaymentRequest.getAmount()" because "request" is null
-   at com.payment.validator.PaymentValidator.validate(PaymentValidator.java:23)
+ERROR: NullPointerException in payment validation
+java.lang.NullPointerException: Cannot invoke "PaymentRequest.getAmount()" because "request" is null
+at com.payment.validator.PaymentValidator.validate(PaymentValidator.java:23)
 
-   ```
+```
 
 3. **External Service Timeout** (82 occurrences - 10%):
-   ```
+```
 
-   ERROR: Payment gateway timeout after 30 seconds
-   java.net.SocketTimeoutException: Read timed out
-   at com.payment.gateway.StripeClient.processPayment(StripeClient.java:67)
+ERROR: Payment gateway timeout after 30 seconds
+java.net.SocketTimeoutException: Read timed out
+at com.payment.gateway.StripeClient.processPayment(StripeClient.java:67)
 
-   ```
+````
 
 ## Root Cause Analysis
 ### Primary Cause: Connection Pool Exhaustion
@@ -267,20 +267,20 @@ time_window_hours: 4
 
 ### Immediate Actions
 1. **Increase Connection Pool Size**:
-   - Update ConnectionManager configuration to increase max connections from 20 to 50
-   - Add connection pool monitoring and alerting
-   - Deploy configuration change immediately
+- Update ConnectionManager configuration to increase max connections from 20 to 50
+- Add connection pool monitoring and alerting
+- Deploy configuration change immediately
 
 2. **Add Null Check in Validator**:
-   ```java
-   // Fix in PaymentValidator.java:23
-   public void validate(PaymentRequest request) {
-       if (request == null) {
-           throw new IllegalArgumentException("PaymentRequest cannot be null");
-       }
-       // existing validation logic...
-   }
-   ```
+```java
+// Fix in PaymentValidator.java:23
+public void validate(PaymentRequest request) {
+    if (request == null) {
+        throw new IllegalArgumentException("PaymentRequest cannot be null");
+    }
+    // existing validation logic...
+}
+````
 
 1. **Increase External Service Timeout**:
    - Update client timeout from 30 to 60 seconds
@@ -300,6 +300,7 @@ time_window_hours: 4
 3. **Monitoring Enhancement**: Add detailed application metrics and alerting
 
 ## Monitoring & Prevention
+
 ### Immediate Monitoring Setup
 
 1. **CloudWatch Log Alarms**:
@@ -348,3 +349,4 @@ For applications spanning multiple regions, run the analysis in each region sepa
 
 ### Log Retention Issues
 If the requested time window exceeds log retention settings, adjust the analysis period to fit within the available log data range.
+```

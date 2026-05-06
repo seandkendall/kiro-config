@@ -3,7 +3,15 @@ name: amazon-bedrock
 description: Builds generative AI applications on Amazon Bedrock. Covers model invocation (Converse API, InvokeModel), RAG with Knowledge Bases, Bedrock Agents, Guardrails, and AgentCore. Use when invoking models, setting up Knowledge Bases, creating agents, applying guardrails, deploying to AgentCore, troubleshooting Bedrock errors (ThrottlingException, AccessDeniedException), or choosing models (Claude, Llama, Nova, Titan). ALSO USE for prompt caching setup and debugging, quota health checks and throttling diagnosis, cost attribution and tracking, migrating between Claude model generations (4.5 to 4.6 to 4.7), chunking strategies, API selection (Converse vs InvokeModel), guardrail capabilities, and model selection. NOT for custom model training, Rekognition, or Comprehend.
 version: 1
 metadata:
-  service: [bedrock, bedrock-runtime, bedrock-mantle, bedrock-agent, bedrock-agent-runtime, bedrock-agentcore-control]
+  service:
+    [
+      bedrock,
+      bedrock-runtime,
+      bedrock-mantle,
+      bedrock-agent,
+      bedrock-agent-runtime,
+      bedrock-agentcore-control,
+    ]
   task: [deploy, debug, optimize, design]
   persona: [developer, devops, architect]
   workload: [generative-ai, rag, agents]
@@ -42,21 +50,21 @@ All commands use standard AWS CLI syntax.
 
 Bedrock has **5 separate API endpoints**. Using the wrong one is a common cause of errors. This list may not be exhaustive — refer to the [Bedrock endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/bedrock.html) and [Bedrock supported endpoints](https://docs.aws.amazon.com/bedrock/latest/userguide/endpoints.html) for the latest. Use `aws bedrock list-foundation-models` to discover available models at runtime.
 
-| Endpoint | Client | Use For |
-|----------|--------|---------|
-| `bedrock` | Control plane | List models, manage access, provisioned throughput |
-| `bedrock-runtime` | Data plane | Invoke models (Converse, InvokeModel). Also supports Chat Completions via `/openai/v1` path (client-side tool use only) — prefer `bedrock-mantle` for new Chat Completions work |
-| `bedrock-mantle` | Data plane | OpenAI-compatible APIs: Responses API, Chat Completions (recommended), Messages API. Supports server-side tool use with built-in tools. Recommended for new users |
-| `bedrock-agent` | Agent control | Create/configure agents, KBs, action groups |
-| `bedrock-agent-runtime` | Agent data | Invoke agents, query KBs |
+| Endpoint                | Client        | Use For                                                                                                                                                                         |
+| ----------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bedrock`               | Control plane | List models, manage access, provisioned throughput                                                                                                                              |
+| `bedrock-runtime`       | Data plane    | Invoke models (Converse, InvokeModel). Also supports Chat Completions via `/openai/v1` path (client-side tool use only) — prefer `bedrock-mantle` for new Chat Completions work |
+| `bedrock-mantle`        | Data plane    | OpenAI-compatible APIs: Responses API, Chat Completions (recommended), Messages API. Supports server-side tool use with built-in tools. Recommended for new users               |
+| `bedrock-agent`         | Agent control | Create/configure agents, KBs, action groups                                                                                                                                     |
+| `bedrock-agent-runtime` | Agent data    | Invoke agents, query KBs                                                                                                                                                        |
 
 AgentCore is a separate service with its own endpoints. Refer to [AgentCore endpoints and quotas](https://docs.aws.amazon.com/general/latest/gr/bedrock_agentcore.html) for the latest.
 
-| Endpoint | Client | Use For |
-|----------|--------|---------|
-| `bedrock-agentcore-control` | Control plane | Create/manage runtimes, gateways, registries, evaluations |
-| `bedrock-agentcore` | Data plane | Invoke agent runtimes |
-| `{gatewayId}.gateway.bedrock-agentcore` | Gateway data plane | Invoke a specific gateway |
+| Endpoint                                | Client             | Use For                                                   |
+| --------------------------------------- | ------------------ | --------------------------------------------------------- |
+| `bedrock-agentcore-control`             | Control plane      | Create/manage runtimes, gateways, registries, evaluations |
+| `bedrock-agentcore`                     | Data plane         | Invoke agent runtimes                                     |
+| `{gatewayId}.gateway.bedrock-agentcore` | Gateway data plane | Invoke a specific gateway                                 |
 
 ## Critical Warnings
 
@@ -95,19 +103,19 @@ For full API details and provider-specific body formats, read [model invocation 
 
 ## Which Bedrock Capability Do You Need?
 
-| Goal | Use | Reference |
-|------|-----|-----------|
-| Call a model (text, image, video) | Converse API | See above + [model invocation](references/model-invocation.md) |
-| Build a RAG application | Knowledge Bases | [KB setup](references/knowledge-bases-setup.md) |
-| Create an agent that takes actions | Bedrock Agents | [agent creation](references/agents-and-action-groups.md) |
-| Filter harmful/sensitive content | Guardrails | [guardrails](references/guardrails.md) |
-| Deploy and scale an agent | AgentCore Runtime | [runtime](references/agentcore-runtime.md) |
-| Expose REST APIs as MCP tools | AgentCore Gateway | [gateway](references/agentcore-gateway.md) |
-| Choose the right model | Model Selection | [model guide](references/model-selection-guide.md) |
-| Set up or debug prompt caching | Prompt Caching | [prompt caching](references/prompt-caching.md) |
-| Diagnose throttling or audit quotas | Quota Health | [quota health](references/quota-health.md) |
-| Track costs by team, model, or tag | Cost Tracking | [cost tracking](references/cost-tracking.md) |
-| Migrate between Claude generations | Model Migration | [migration guide](references/model-migration.md) |
+| Goal                                | Use               | Reference                                                      |
+| ----------------------------------- | ----------------- | -------------------------------------------------------------- |
+| Call a model (text, image, video)   | Converse API      | See above + [model invocation](references/model-invocation.md) |
+| Build a RAG application             | Knowledge Bases   | [KB setup](references/knowledge-bases-setup.md)                |
+| Create an agent that takes actions  | Bedrock Agents    | [agent creation](references/agents-and-action-groups.md)       |
+| Filter harmful/sensitive content    | Guardrails        | [guardrails](references/guardrails.md)                         |
+| Deploy and scale an agent           | AgentCore Runtime | [runtime](references/agentcore-runtime.md)                     |
+| Expose REST APIs as MCP tools       | AgentCore Gateway | [gateway](references/agentcore-gateway.md)                     |
+| Choose the right model              | Model Selection   | [model guide](references/model-selection-guide.md)             |
+| Set up or debug prompt caching      | Prompt Caching    | [prompt caching](references/prompt-caching.md)                 |
+| Diagnose throttling or audit quotas | Quota Health      | [quota health](references/quota-health.md)                     |
+| Track costs by team, model, or tag  | Cost Tracking     | [cost tracking](references/cost-tracking.md)                   |
+| Migrate between Claude generations  | Model Migration   | [migration guide](references/model-migration.md)               |
 
 ## Knowledge Bases (RAG)
 
@@ -192,10 +200,10 @@ Action: Read [model migration reference](references/model-migration.md) for the 
 
 > **Note — Streaming responses:** The AWS CLI does not support streaming operations including `ConverseStream`. Use the SDK (`converse_stream()` in boto3, `ConverseStreamCommand` in JS SDK).
 >
-> | Mode | When to use |
-> |------|-------------|
-> | **Converse** | Batch/backend pipelines — single complete response, no stream handling required |
-> | **ConverseStream** | Chat UIs/interactive apps — tokens delivered as they generate |
+> | Mode               | When to use                                                                     |
+> | ------------------ | ------------------------------------------------------------------------------- |
+> | **Converse**       | Batch/backend pipelines — single complete response, no stream handling required |
+> | **ConverseStream** | Chat UIs/interactive apps — tokens delivered as they generate                   |
 
 ### Create a Knowledge Base
 
@@ -205,11 +213,11 @@ You MUST read [KB setup procedure](references/knowledge-bases-setup.md) before r
 
 These three modes are mutually exclusive — select the one that matches the user's intent:
 
-| Mode | When to Use | Command |
-|------|------------|----------|
-| **Retrieve & Generate** | Quick answer with citations — most common RAG pattern | `aws bedrock-agent-runtime retrieve-and-generate --input '{"text":"<query>"}' --retrieve-and-generate-configuration '{"type":"KNOWLEDGE_BASE","knowledgeBaseConfiguration":{"knowledgeBaseId":"<kb-id>","modelArn":"<model-arn>"}}'` |
-| **Retrieve only** | Raw chunks for custom post-processing or feeding to a different model | `aws bedrock-agent-runtime retrieve --knowledge-base-id <kb-id> --retrieval-query '{"text":"<query>"}'` |
-| **Full control** | Custom prompt, reranking, or multi-KB | Retrieve chunks first, then build prompt and call `aws bedrock-runtime converse` |
+| Mode                    | When to Use                                                           | Command                                                                                                                                                                                                                              |
+| ----------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Retrieve & Generate** | Quick answer with citations — most common RAG pattern                 | `aws bedrock-agent-runtime retrieve-and-generate --input '{"text":"<query>"}' --retrieve-and-generate-configuration '{"type":"KNOWLEDGE_BASE","knowledgeBaseConfiguration":{"knowledgeBaseId":"<kb-id>","modelArn":"<model-arn>"}}'` |
+| **Retrieve only**       | Raw chunks for custom post-processing or feeding to a different model | `aws bedrock-agent-runtime retrieve --knowledge-base-id <kb-id> --retrieval-query '{"text":"<query>"}'`                                                                                                                              |
+| **Full control**        | Custom prompt, reranking, or multi-KB                                 | Retrieve chunks first, then build prompt and call `aws bedrock-runtime converse`                                                                                                                                                     |
 
 ### Create an Agent with action groups
 
@@ -258,84 +266,101 @@ You MUST read [model migration reference](references/model-migration.md) before 
 When the user reports a Bedrock error, exception, or unexpected behavior, you MUST check this section and the Critical Warnings section before responding. Bedrock has service-specific root causes (e.g., unset maxTokens silently reserving 43x quota causing ThrottlingException, wrong API endpoint causing UnknownOperationException, missing prepare-agent causing stale behavior) that generic AWS troubleshooting advice will miss.
 
 ### AccessDeniedException
+
 Multiple possible causes: (1) IAM user/role lacks `bedrock:InvokeModel` or `bedrock:InvokeModelWithResponseStream` permissions, (2) model access not enabled in the target region, (3) a service control policy (SCP) is blocking access (common with cross-region inference routing to a restricted region), (4) expired temporary credentials, or (5) IAM role propagation delay — if you just created an IAM role and immediately used it in a Bedrock API call, the role may not have propagated yet, as IAM changes are eventually consistent (see [IAM eventual consistency](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_general.html#troubleshoot_general_eventual-consistency)). Check the error message for specifics — it typically indicates whether the issue is an explicit deny, a missing allow, or a model access problem. See [Resolve InvokeModel API errors](https://repost.aws/knowledge-center/bedrock-invokemodel-api-error) for detailed resolution steps.
 
 ### Malformed input request
+
 Request body doesn't match the expected schema. Common causes: wrong provider-specific body format for InvokeModel (e.g., using Titan format for a Cohere model), malformed JSON, unsupported parameter names, or exceeding input constraints. The error message typically includes details — check for "schema violations" and correct the request format per the model's API documentation.
 
 ### ThrottlingException
+
 Set `maxTokens` explicitly — unset values default to the model's maximum and silently reserve far more quota than needed. Use adaptive retry mode. Use cross-region inference profiles (e.g., `us.`, `eu.`, `apac.`, or `global.` prefix — see [Supported inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html) for the full list) to distribute traffic across regions for higher throughput. Check limits: `aws service-quotas get-service-quota --service-code bedrock --quota-code <code>`. Request quota increases if needed. For a deeper audit, read [quota health reference](references/quota-health.md).
 
 ### Prompt cache not working (zero cacheReadInputTokens)
+
 Read [prompt caching reference](references/prompt-caching.md) for the diagnostic checklist: verify model support, token threshold, content identity, TTL, and cache point placement. Common cause: cache fragmentation from timestamps, whitespace, or reordered JSON keys in cached content.
 
 ### 400 error on prefill with Claude 4.6
+
 Prefill was removed in Claude 4.6 and causes a hard 400 error. Read [model migration reference](references/model-migration.md) for the full list of breaking changes between Claude generations.
 
 ### Error retry classification
 
-| Retry | Do NOT retry |
-|-------|-------------|
-| ThrottlingException | ValidationException |
-| ModelTimeoutException | AccessDeniedException |
+| Retry                       | Do NOT retry              |
+| --------------------------- | ------------------------- |
+| ThrottlingException         | ValidationException       |
+| ModelTimeoutException       | AccessDeniedException     |
 | ServiceUnavailableException | ResourceNotFoundException |
-| InternalServerException | |
+| InternalServerException     |                           |
 
 Use adaptive retry: `Config(retries={"max_attempts": 5, "mode": "adaptive"})`.
 
 ### UnknownOperationException
+
 Wrong client (using `bedrock` instead of `bedrock-runtime`), or SDK too old. Check the API landscape table above.
 
 ### Agent returns stale behavior
+
 Run `prepare-agent` after ANY configuration change. This is mandatory.
 
 ### KB returns empty results
+
 Run `start-ingestion-job` and wait for completion. Query before ingestion completes returns empty.
 
 ### KB retrieval quality is poor
+
 Review chunking strategy. Use advanced parsing (FM-based) for documents with tables. Configure metadata filtering.
 
 ### Cross-region model not found
+
 The model may not be available in the region you're calling from. Check availability at [Supported foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html). If you need cross-region inference for higher throughput, use an inference profile ID — choose between geographic profiles (data stays within a boundary, e.g. US, EU) or global profiles (any commercial region). The profile prefix is a data residency decision. See [Supported inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html) for available profiles and source/destination region mappings.
 
 ### On-demand throughput isn't supported
-Error: *"Invocation of model ID `<model-id>` with on-demand throughput isn't supported. Retry your request with the ID or ARN of an inference profile that contains this model."* Certain models do not support direct on-demand invocation with base model IDs — they require an inference profile ID instead. Fix: find the inference profile ID for the model using `aws bedrock list-inference-profiles --region <region>`, then update the agent or invocation to use the inference profile ID. See [Supported inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html) for available profiles. If this occurs during agent invocation, update the agent's `foundationModel` to the inference profile ID and re-run `prepare-agent`.
+
+Error: _"Invocation of model ID `<model-id>` with on-demand throughput isn't supported. Retry your request with the ID or ARN of an inference profile that contains this model."_ Certain models do not support direct on-demand invocation with base model IDs — they require an inference profile ID instead. Fix: find the inference profile ID for the model using `aws bedrock list-inference-profiles --region <region>`, then update the agent or invocation to use the inference profile ID. See [Supported inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html) for available profiles. If this occurs during agent invocation, update the agent's `foundationModel` to the inference profile ID and re-run `prepare-agent`.
 
 ### KB storage configuration invalid
+
 Verify OpenSearch data access policy includes Bedrock service role. Verify vector index field names match KB config.
 
 ### Agent action group errors
+
 Check Lambda permissions (resource-based policy for bedrock.amazonaws.com). Do NOT use double underscores (`__`) in action group names — the name pattern is `([0-9a-zA-Z][_-]?){1,100}`.
 
 ### Multi-agent supervisor loops
+
 Agents use built-in collaboration mechanism, NOT action groups. Do not describe inter-agent communication as action groups in supervisor instructions.
 
 ### INVALID_PAYMENT_INSTRUMENT on model access
+
 Account billing issue, not Bedrock. Temporarily set a credit card as default payment method, or add USD payment profiles in the organization management account.
 
 ### Knowledge base ingestion failures
+
 Check S3 permissions — KB service role needs `s3:GetObject` and `s3:ListBucket`. Unsupported file formats are silently skipped. Files exceeding size limits are skipped without error.
 
 ### SharePoint data source sync failures
+
 Sync completes but files fail. For OAuth 2.0 auth (not recommended): requires SharePoint AllSites.Read (Delegated) permission — you may also need to disable Security Defaults and MFA for the service account so Amazon Bedrock is not blocked from crawling. For SharePoint App-Only auth (recommended): configure APP permissions via SharePoint App-Only grant flow. See the [SharePoint connector docs](https://docs.aws.amazon.com/bedrock/latest/userguide/sharepoint-data-source-connector.html) for current requirements.
 
 ## AgentCore Services
 
 You MUST read the linked reference file for the relevant service before responding to any AgentCore question. Follow procedures in the reference step by step.
 
-| Service | Use For | Reference |
-|---------|---------|-----------|
-| **Gateway** | Expose APIs, Lambda functions, or existing MCP servers as tools for agents | [gateway procedure](references/agentcore-gateway.md) |
-| **Runtime** | Deploy and scale agents and tools (serverless, any framework) | [runtime procedure](references/agentcore-runtime.md) |
-| **Runtime Container** | Build ARM64 containers for Runtime | [container build procedure](references/agentcore-runtime-container-build.md) |
-| **Memory** | Short-term (multi-turn) and long-term (cross-session) agent memory; share memory across agents | [memory & observability](references/agentcore-memory-observability.md) |
-| **Identity** | Agent authentication with external IdPs (Okta, Entra ID, Cognito); act on behalf of users | [credentials & security](references/agentcore-credentials-and-security.md) |
-| **Policy** | Enforce agent boundaries with natural language or Cedar rules; intercepts Gateway tool calls | Refer to the latest [AWS documentation on AgentCore Policy](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy.html) |
-| **Observability** | Trace, debug, and monitor agent execution (OTEL, CloudWatch) | [memory & observability](references/agentcore-memory-observability.md) |
-| **Registry** | Catalog and discover agents, MCP servers, tools, and skills across your org | [registry & evaluations](references/agentcore-registry-evaluations.md) |
-| **Evaluations** | Automated agent quality assessment (LLM-as-a-Judge) | [registry & evaluations](references/agentcore-registry-evaluations.md) |
-| Code Interpreter | Secure sandbox code execution for agents | Refer to the latest AWS documentation on AgentCore Code Interpreter |
-| Browser | Web automation (navigate, fill forms, extract data) | Refer to the latest AWS documentation on AgentCore Browser |
+| Service               | Use For                                                                                        | Reference                                                                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gateway**           | Expose APIs, Lambda functions, or existing MCP servers as tools for agents                     | [gateway procedure](references/agentcore-gateway.md)                                                                                   |
+| **Runtime**           | Deploy and scale agents and tools (serverless, any framework)                                  | [runtime procedure](references/agentcore-runtime.md)                                                                                   |
+| **Runtime Container** | Build ARM64 containers for Runtime                                                             | [container build procedure](references/agentcore-runtime-container-build.md)                                                           |
+| **Memory**            | Short-term (multi-turn) and long-term (cross-session) agent memory; share memory across agents | [memory & observability](references/agentcore-memory-observability.md)                                                                 |
+| **Identity**          | Agent authentication with external IdPs (Okta, Entra ID, Cognito); act on behalf of users      | [credentials & security](references/agentcore-credentials-and-security.md)                                                             |
+| **Policy**            | Enforce agent boundaries with natural language or Cedar rules; intercepts Gateway tool calls   | Refer to the latest [AWS documentation on AgentCore Policy](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy.html) |
+| **Observability**     | Trace, debug, and monitor agent execution (OTEL, CloudWatch)                                   | [memory & observability](references/agentcore-memory-observability.md)                                                                 |
+| **Registry**          | Catalog and discover agents, MCP servers, tools, and skills across your org                    | [registry & evaluations](references/agentcore-registry-evaluations.md)                                                                 |
+| **Evaluations**       | Automated agent quality assessment (LLM-as-a-Judge)                                            | [registry & evaluations](references/agentcore-registry-evaluations.md)                                                                 |
+| Code Interpreter      | Secure sandbox code execution for agents                                                       | Refer to the latest AWS documentation on AgentCore Code Interpreter                                                                    |
+| Browser               | Web automation (navigate, fill forms, extract data)                                            | Refer to the latest AWS documentation on AgentCore Browser                                                                             |
 
 ## Model Selection
 

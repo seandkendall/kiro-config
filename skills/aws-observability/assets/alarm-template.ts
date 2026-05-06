@@ -1,9 +1,18 @@
 // Best-practice CloudWatch alarm patterns for CDK
 
 import {
-  Alarm, CompositeAlarm, AlarmRule, AlarmState,
-  ComparisonOperator, MathExpression, TreatMissingData,
-  Dashboard, AlarmWidget, GraphWidget, TextWidget, PeriodOverride,
+  Alarm,
+  CompositeAlarm,
+  AlarmRule,
+  AlarmState,
+  ComparisonOperator,
+  MathExpression,
+  TreatMissingData,
+  Dashboard,
+  AlarmWidget,
+  GraphWidget,
+  TextWidget,
+  PeriodOverride,
 } from 'aws-cdk-lib/aws-cloudwatch';
 import { SnsAction } from 'aws-cdk-lib/aws-cloudwatch-actions';
 import { Duration } from 'aws-cdk-lib';
@@ -27,7 +36,7 @@ export function createLambdaMonitoring(
   fn: IFunction,
   snsTopic: ITopic,
   options?: {
-    errorRateThreshold?: number;  // default: 5 (percent)
+    errorRateThreshold?: number; // default: 5 (percent)
     durationThresholdMs?: number; // default: 3000 (ms)
   },
 ) {
@@ -94,7 +103,8 @@ export function createLambdaMonitoring(
     new AlarmWidget({ width: 8, height: 6, title: 'Duration P99', alarm: durationAlarm }),
     new AlarmWidget({ width: 8, height: 6, title: 'Throttles', alarm: throttleAlarm }),
     new GraphWidget({
-      width: 24, height: 6,
+      width: 24,
+      height: 6,
       title: 'Invocations & Errors',
       left: [fn.metricInvocations({ period: Duration.minutes(1) })],
       right: [fn.metricErrors({ period: Duration.minutes(1) })],

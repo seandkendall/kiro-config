@@ -147,13 +147,17 @@ ObjectLock and Replication rules also flagged. Evaluate based on your use case b
 ## Troubleshooting
 
 ### High violation count on simple templates
+
 Some rules check multiple sub-properties independently. A single missing `PublicAccessBlockConfiguration` block can produce 4 separate violations (one per sub-property). Group them mentally and fix the parent property.
 
 ### False positives for optional features
+
 Rules like `S3_BUCKET_REPLICATION_ENABLED` and `S3_BUCKET_DEFAULT_LOCK_ENABLED` enforce best practices that may not apply to every bucket. Evaluate whether the feature is needed for your use case before adding it.
 
 ### Custom rules not found
+
 If using a custom `rules_file_path`, ensure the file exists and follows cfn-guard rule syntax. Standalone CLI and `guardpycfn` usage both require obtaining rules separately (e.g., from the aws-guard-rules-registry).
 
 ### cfn-guard not installed
+
 Install from https://docs.aws.amazon.com/cfn-guard/latest/ug/setting-up.html.

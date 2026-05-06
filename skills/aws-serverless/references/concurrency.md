@@ -17,6 +17,7 @@ Four concurrency controls operate at different levels, solve different problems,
 ## The 4 concurrency types
 
 ### 1. Reserved Concurrency
+
 Sets the **maximum** concurrent instances for a function and **reserves** that capacity from the account pool so no other function can consume it.
 
 - **Scope:** Function.
@@ -25,6 +26,7 @@ Sets the **maximum** concurrent instances for a function and **reserves** that c
 - Use for: protecting critical functions, capping to protect downstream, emergency shutoff.
 
 ### 2. Provisioned Concurrency
+
 Pre-initializes execution environments so they are **ready before requests arrive**.
 
 - **Scope:** Published version or alias (**NOT** `$LATEST`).
@@ -36,6 +38,7 @@ Pre-initializes execution environments so they are **ready before requests arriv
 - Use for: user-facing APIs, functions with heavy init (ML models, DB pools).
 
 ### 3. Maximum Concurrency
+
 Limits how many concurrent instances a **specific SQS event source mapping (ESM)** can invoke.
 
 - **Scope:** Per ESM. **Range:** 2–1,000. **Sources:** SQS only.
@@ -43,6 +46,7 @@ Limits how many concurrent instances a **specific SQS event source mapping (ESM)
 - Use for: multiple SQS queues on one function, rate-limiting a specific queue.
 
 ### 4. Provisioned Mode — ESM (Kafka 2024, SQS 2025)
+
 Allocates **dedicated event pollers** for an SQS or Kafka ESM with configurable min/max.
 
 - **Scope:** Per ESM.
@@ -54,15 +58,15 @@ Allocates **dedicated event pollers** for an SQS or Kafka ESM with configurable 
 
 ## Interaction matrix
 
-| Combination | OK? | Notes |
-|-------------|:---:|-------|
-| Reserved + Provisioned | Yes | Provisioned ≤ Reserved |
-| Reserved + Max Concurrency (ESM) | Yes | Reserved ≥ Σ(max concurrency across ESMs) |
-| Reserved + Provisioned Mode (ESM) | Yes | Independent layers |
-| Provisioned + Max Concurrency (ESM) | Yes | Different layers |
-| Provisioned + Provisioned Mode (ESM) | Yes | Warms envs vs warms pollers |
-| **Max Concurrency + Provisioned Mode (same ESM)** | No | **Mutually exclusive** |
-| **Provisioned Concurrency + SnapStart** | No | **Mutually exclusive** |
+| Combination                                       | OK? | Notes                                     |
+| ------------------------------------------------- | :-: | ----------------------------------------- |
+| Reserved + Provisioned                            | Yes | Provisioned ≤ Reserved                    |
+| Reserved + Max Concurrency (ESM)                  | Yes | Reserved ≥ Σ(max concurrency across ESMs) |
+| Reserved + Provisioned Mode (ESM)                 | Yes | Independent layers                        |
+| Provisioned + Max Concurrency (ESM)               | Yes | Different layers                          |
+| Provisioned + Provisioned Mode (ESM)              | Yes | Warms envs vs warms pollers               |
+| **Max Concurrency + Provisioned Mode (same ESM)** | No  | **Mutually exclusive**                    |
+| **Provisioned Concurrency + SnapStart**           | No  | **Mutually exclusive**                    |
 
 **Key rules:** Account limit is the hard ceiling. Reserved carves from the pool — Lambda
 always keeps **100 unreserved**. Provisioned ≤ Reserved when both set. Max Concurrency is
@@ -87,17 +91,17 @@ advisory to the ESM, not the function.
 
 ## Decision scenarios
 
-| Scenario | Reserved | Provisioned | Max Conc (ESM) | Prov Mode (ESM) |
-|----------|:--------:|:-----------:|:--------------:|:---------------:|
-| Protect critical API from starvation | Yes | — | — | — |
-| Cap function to protect downstream DB | Yes | — | — | — |
-| Eliminate cold starts for user-facing API | Optional | Yes | — | — |
-| Multiple SQS queues, prevent hogging | Yes | — | Yes | — |
-| High-throughput SQS, low-latency | Optional | Optional | — | Yes |
-| Kafka ESM with spiky traffic | — | — | — | Yes |
-| Predictable daily traffic | — | Yes+AutoScale | — | — |
-| Emergency shutoff | Yes (=0) | — | — | — |
-| Java/.NET heavy init | — | Yes or SnapStart | — | — |
+| Scenario                                  | Reserved |   Provisioned    | Max Conc (ESM) | Prov Mode (ESM) |
+| ----------------------------------------- | :------: | :--------------: | :------------: | :-------------: |
+| Protect critical API from starvation      |   Yes    |        —         |       —        |        —        |
+| Cap function to protect downstream DB     |   Yes    |        —         |       —        |        —        |
+| Eliminate cold starts for user-facing API | Optional |       Yes        |       —        |        —        |
+| Multiple SQS queues, prevent hogging      |   Yes    |        —         |      Yes       |        —        |
+| High-throughput SQS, low-latency          | Optional |     Optional     |       —        |       Yes       |
+| Kafka ESM with spiky traffic              |    —     |        —         |       —        |       Yes       |
+| Predictable daily traffic                 |    —     |  Yes+AutoScale   |       —        |        —        |
+| Emergency shutoff                         | Yes (=0) |        —         |       —        |        —        |
+| Java/.NET heavy init                      |    —     | Yes or SnapStart |       —        |        —        |
 
 **A — Checkout API:** Reserved=200 + Provisioned=150 + Auto Scaling for peak.
 **B — 3 SQS queues → 1 function:** Reserved=300, Max Concurrency=100 per ESM.
@@ -108,12 +112,12 @@ advisory to the ESM, not the function.
 
 ## Account limits and scaling
 
-| Quota | Default | Adjustable? |
-|-------|---------|:-----------:|
-| Account concurrency | 1,000 / Region | Yes |
-| Reservable concurrency | Account − 100 | Scales |
-| RPS limit | 10 × concurrency | Scales |
-| Scaling rate | 1,000 envs / 10s / function | No |
+| Quota                  | Default                     | Adjustable? |
+| ---------------------- | --------------------------- | :---------: |
+| Account concurrency    | 1,000 / Region              |     Yes     |
+| Reservable concurrency | Account − 100               |   Scales    |
+| RPS limit              | 10 × concurrency            |   Scales    |
+| Scaling rate           | 1,000 envs / 10s / function |     No      |
 
 Scaling is per-function, continuously refilled, unused capacity does not accumulate.
 ~50 seconds to reach 5,000 concurrency from zero.
@@ -159,17 +163,17 @@ aws service-quotas request-service-quota-increase \
 9. **Forgetting 100-unit buffer** — Max reservable = account limit − 100.
 
 10. **Not tracking ClaimedAccountConcurrency** — Provisioned counts against account limit
-   even when idle. Monitor the metric.
+    even when idle. Monitor the metric.
 
 ---
 
 ## SnapStart interaction
 
-| Aspect | SnapStart | Provisioned Concurrency |
-|--------|-----------|------------------------|
-| Cold start | Seconds → sub-second | Seconds → ~0 |
-| Runtimes | Java 11+, Python 3.12+, .NET 8+ | All |
-| Scales with traffic | Yes (snapshot restore) | Only up to provisioned count |
+| Aspect              | SnapStart                       | Provisioned Concurrency      |
+| ------------------- | ------------------------------- | ---------------------------- |
+| Cold start          | Seconds → sub-second            | Seconds → ~0                 |
+| Runtimes            | Java 11+, Python 3.12+, .NET 8+ | All                          |
+| Scales with traffic | Yes (snapshot restore)          | Only up to provisioned count |
 
 > **SnapStart and Provisioned Concurrency are mutually exclusive on the same function.**
 
@@ -189,12 +193,12 @@ re-validate network connections on restore.
 
 ## SAM/CDK property reference
 
-| Concurrency type | SAM property | CDK property |
-|---|---|---|
-| Reserved | `ReservedConcurrentExecutions: 100` | `reservedConcurrentExecutions: 100` |
-| Provisioned | `AutoPublishAlias: live` + `ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions: 50` | `new lambda.Alias({ provisionedConcurrentExecutions: 50 })` — must use alias, not `$LATEST` |
-| Maximum Concurrency (ESM) | `ScalingConfig.MaximumConcurrency: 50` | `maxConcurrency: 50` on `EventSourceMapping` |
-| Provisioned Mode (ESM) | `ProvisionedPollerConfig.MinimumPollers` / `MaximumPollers` | `provisionedPollerConfig: { minimumPollers, maximumPollers }` on `EventSourceMapping` |
-| SnapStart | `SnapStart.ApplyOn: PublishedVersions` + `AutoPublishAlias` | `snapStart: lambda.SnapStartConf.ON_PUBLISHED_VERSIONS` |
+| Concurrency type          | SAM property                                                                                  | CDK property                                                                                |
+| ------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Reserved                  | `ReservedConcurrentExecutions: 100`                                                           | `reservedConcurrentExecutions: 100`                                                         |
+| Provisioned               | `AutoPublishAlias: live` + `ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions: 50` | `new lambda.Alias({ provisionedConcurrentExecutions: 50 })` — must use alias, not `$LATEST` |
+| Maximum Concurrency (ESM) | `ScalingConfig.MaximumConcurrency: 50`                                                        | `maxConcurrency: 50` on `EventSourceMapping`                                                |
+| Provisioned Mode (ESM)    | `ProvisionedPollerConfig.MinimumPollers` / `MaximumPollers`                                   | `provisionedPollerConfig: { minimumPollers, maximumPollers }` on `EventSourceMapping`       |
+| SnapStart                 | `SnapStart.ApplyOn: PublishedVersions` + `AutoPublishAlias`                                   | `snapStart: lambda.SnapStartConf.ON_PUBLISHED_VERSIONS`                                     |
 
 Auto scaling for Provisioned Concurrency: `alias.addAutoScaling({ minCapacity, maxCapacity })` then `scaling.scaleOnUtilization({ utilizationTarget: 0.7 })`.

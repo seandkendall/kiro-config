@@ -19,15 +19,15 @@ Lambda polls SQS using long polling and invokes your function **synchronously** 
 
 ### Configuration parameters
 
-| Parameter | Default | Range / Notes |
-|-----------|---------|---------------|
-| `BatchSize` | 10 | Standard: max 10,000. FIFO: max 10 |
-| `MaximumBatchingWindowInSeconds` | 0 | 0–300. Not supported for FIFO. Requires ≥ 1s when BatchSize > 10 |
-| `MaximumConcurrency` | — | 2–1,000. Per-ESM concurrency cap |
-| `ProvisionedPollerConfig.MinimumPollers` | 2 | 2–200 |
-| `ProvisionedPollerConfig.MaximumPollers` | 200 | 2–2,000 |
-| `FilterCriteria` | — | Filters on `body` key only |
-| `FunctionResponseTypes` | — | Set to `ReportBatchItemFailures` |
+| Parameter                                | Default | Range / Notes                                                    |
+| ---------------------------------------- | ------- | ---------------------------------------------------------------- |
+| `BatchSize`                              | 10      | Standard: max 10,000. FIFO: max 10                               |
+| `MaximumBatchingWindowInSeconds`         | 0       | 0–300. Not supported for FIFO. Requires ≥ 1s when BatchSize > 10 |
+| `MaximumConcurrency`                     | —       | 2–1,000. Per-ESM concurrency cap                                 |
+| `ProvisionedPollerConfig.MinimumPollers` | 2       | 2–200                                                            |
+| `ProvisionedPollerConfig.MaximumPollers` | 200     | 2–2,000                                                          |
+| `FilterCriteria`                         | —       | Filters on `body` key only                                       |
+| `FunctionResponseTypes`                  | —       | Set to `ReportBatchItemFailures`                                 |
 
 > **MaximumConcurrency and Provisioned Mode are mutually exclusive.** You cannot set both on the same ESM.
 
@@ -96,12 +96,14 @@ const queue = new sqs.Queue(this, 'MyQueue', {
   deadLetterQueue: { queue: dlq, maxReceiveCount: 3 },
 });
 
-fn.addEventSource(new SqsEventSource(queue, {
-  batchSize: 10,
-  maxBatchingWindow: Duration.seconds(5),
-  reportBatchItemFailures: true,
-  maxConcurrency: 50,
-}));
+fn.addEventSource(
+  new SqsEventSource(queue, {
+    batchSize: 10,
+    maxBatchingWindow: Duration.seconds(5),
+    reportBatchItemFailures: true,
+    maxConcurrency: 50,
+  }),
+);
 ```
 
 ---
@@ -112,19 +114,19 @@ Lambda polls DynamoDB stream shards at **4 times per second**. Invokes synchrono
 
 ### Configuration parameters
 
-| Parameter | Default | Range / Notes |
-|-----------|---------|---------------|
-| `BatchSize` | 100 | Max 10,000 |
-| `MaximumBatchingWindowInSeconds` | 0 | 0–300 |
-| `StartingPosition` | — | `TRIM_HORIZON` (recommended) or `LATEST` |
-| `ParallelizationFactor` | 1 | 1–10. Concurrent batches per shard |
-| `BisectBatchOnFunctionError` | false | Split failed batch in half |
-| `MaximumRetryAttempts` | -1 (infinite) | 0–10,000 |
-| `MaximumRecordAgeInSeconds` | -1 (infinite) | -1 to 604,800 (7 days) |
-| `DestinationConfig.OnFailure` | — | SQS, SNS, S3, or Kafka topic |
-| `FilterCriteria` | — | Filters on `dynamodb` key and metadata fields (e.g., `eventName`) |
-| `FunctionResponseTypes` | — | `ReportBatchItemFailures` |
-| `TumblingWindowInSeconds` | — | 0–900 for stateful aggregation |
+| Parameter                        | Default       | Range / Notes                                                     |
+| -------------------------------- | ------------- | ----------------------------------------------------------------- |
+| `BatchSize`                      | 100           | Max 10,000                                                        |
+| `MaximumBatchingWindowInSeconds` | 0             | 0–300                                                             |
+| `StartingPosition`               | —             | `TRIM_HORIZON` (recommended) or `LATEST`                          |
+| `ParallelizationFactor`          | 1             | 1–10. Concurrent batches per shard                                |
+| `BisectBatchOnFunctionError`     | false         | Split failed batch in half                                        |
+| `MaximumRetryAttempts`           | -1 (infinite) | 0–10,000                                                          |
+| `MaximumRecordAgeInSeconds`      | -1 (infinite) | -1 to 604,800 (7 days)                                            |
+| `DestinationConfig.OnFailure`    | —             | SQS, SNS, S3, or Kafka topic                                      |
+| `FilterCriteria`                 | —             | Filters on `dynamodb` key and metadata fields (e.g., `eventName`) |
+| `FunctionResponseTypes`          | —             | `ReportBatchItemFailures`                                         |
+| `TumblingWindowInSeconds`        | —             | 0–900 for stateful aggregation                                    |
 
 ### Key behaviors
 
@@ -175,17 +177,19 @@ const table = new dynamodb.Table(this, 'MyTable', {
   stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 });
 
-fn.addEventSource(new DynamoEventSource(table, {
-  startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-  batchSize: 100,
-  maxBatchingWindow: Duration.seconds(5),
-  parallelizationFactor: 5,
-  bisectBatchOnError: true,
-  retryAttempts: 3,
-  maxRecordAge: Duration.hours(1),
-  reportBatchItemFailures: true,
-  onFailure: new SqsDlq(dlq),
-}));
+fn.addEventSource(
+  new DynamoEventSource(table, {
+    startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+    batchSize: 100,
+    maxBatchingWindow: Duration.seconds(5),
+    parallelizationFactor: 5,
+    bisectBatchOnError: true,
+    retryAttempts: 3,
+    maxRecordAge: Duration.hours(1),
+    reportBatchItemFailures: true,
+    onFailure: new SqsDlq(dlq),
+  }),
+);
 ```
 
 ---
@@ -205,16 +209,16 @@ SNS invokes Lambda **asynchronously** — it is a **direct trigger, NOT an event
 
 Filter policies are managed by **SNS** (not Lambda `FilterCriteria`). Set `FilterPolicyScope` to control what is filtered:
 
-| Scope | Filters on |
-|-------|-----------|
+| Scope                         | Filters on             |
+| ----------------------------- | ---------------------- |
 | `MessageAttributes` (default) | SNS message attributes |
-| `MessageBody` | JSON body content |
+| `MessageBody`                 | JSON body content      |
 
 ```json
 {
   "event_type": ["order_placed"],
-  "price_usd": [{"numeric": [">=", 100]}],
-  "store": [{"anything-but": "test_store"}]
+  "price_usd": [{ "numeric": [">=", 100] }],
+  "store": [{ "anything-but": "test_store" }]
 }
 ```
 
@@ -243,16 +247,18 @@ ProcessorFunction:
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 
-topic.addSubscription(new subscriptions.LambdaSubscription(fn, {
-  filterPolicy: {
-    event_type: sns.SubscriptionFilter.stringFilter({
-      allowlist: ['order_placed'],
-    }),
-    price: sns.SubscriptionFilter.numericFilter({
-      greaterThanOrEqualTo: 100,
-    }),
-  },
-}));
+topic.addSubscription(
+  new subscriptions.LambdaSubscription(fn, {
+    filterPolicy: {
+      event_type: sns.SubscriptionFilter.stringFilter({
+        allowlist: ['order_placed'],
+      }),
+      price: sns.SubscriptionFilter.numericFilter({
+        greaterThanOrEqualTo: 100,
+      }),
+    },
+  }),
+);
 ```
 
 ---
@@ -263,13 +269,13 @@ Lambda `FilterCriteria` applies to event source mappings only (not SNS or other 
 
 ### Supported sources and filter keys
 
-| Source | Filter key | Notes |
-|--------|-----------|-------|
-| SQS | `body` | Unmatched messages **automatically deleted** |
-| DynamoDB Streams | `dynamodb` and metadata fields | Does **NOT** support numeric operators |
-| Kinesis | `data` | Base64-decoded before filtering |
-| MSK / Kafka | `value` | — |
-| Amazon MQ | `data` | — |
+| Source           | Filter key                     | Notes                                        |
+| ---------------- | ------------------------------ | -------------------------------------------- |
+| SQS              | `body`                         | Unmatched messages **automatically deleted** |
+| DynamoDB Streams | `dynamodb` and metadata fields | Does **NOT** support numeric operators       |
+| Kinesis          | `data`                         | Base64-decoded before filtering              |
+| MSK / Kafka      | `value`                        | —                                            |
+| Amazon MQ        | `data`                         | —                                            |
 
 ### Filter rules
 
@@ -279,30 +285,30 @@ Lambda `FilterCriteria` applies to event source mappings only (not SNS or other 
 
 ### Filter rule operators
 
-| Operator | Syntax | Example |
-|----------|--------|---------|
-| Equals | `["value"]` | `"City": ["Seattle"]` |
-| Equals (ignore case) | `[{"equals-ignore-case": "value"}]` | `"City": [{"equals-ignore-case": "seattle"}]` |
-| Null | `[null]` | `"UserID": [null]` |
-| Empty | `[""]` | `"Name": [""]` |
-| Not | `[{"anything-but": ["value"]}]` | `"Weather": [{"anything-but": ["Raining"]}]` |
-| Numeric equals | `[{"numeric": ["=", 100]}]` | `"Price": [{"numeric": ["=", 100]}]` |
-| Numeric range | `[{"numeric": [">", 10, "<=", 20]}]` | `"Price": [{"numeric": [">", 10, "<=", 20]}]` |
-| Exists | `[{"exists": true}]` | `"Field": [{"exists": true}]` |
-| Prefix | `[{"prefix": "us-"}]` | `"Region": [{"prefix": "us-"}]` |
-| Suffix | `[{"suffix": ".png"}]` | `"FileName": [{"suffix": ".png"}]` |
-| Or (fields) | `"$or": [{...}, {...}]` | `"$or": [{"City": ["NY"]}, {"Day": ["Mon"]}]` |
+| Operator             | Syntax                               | Example                                       |
+| -------------------- | ------------------------------------ | --------------------------------------------- |
+| Equals               | `["value"]`                          | `"City": ["Seattle"]`                         |
+| Equals (ignore case) | `[{"equals-ignore-case": "value"}]`  | `"City": [{"equals-ignore-case": "seattle"}]` |
+| Null                 | `[null]`                             | `"UserID": [null]`                            |
+| Empty                | `[""]`                               | `"Name": [""]`                                |
+| Not                  | `[{"anything-but": ["value"]}]`      | `"Weather": [{"anything-but": ["Raining"]}]`  |
+| Numeric equals       | `[{"numeric": ["=", 100]}]`          | `"Price": [{"numeric": ["=", 100]}]`          |
+| Numeric range        | `[{"numeric": [">", 10, "<=", 20]}]` | `"Price": [{"numeric": [">", 10, "<=", 20]}]` |
+| Exists               | `[{"exists": true}]`                 | `"Field": [{"exists": true}]`                 |
+| Prefix               | `[{"prefix": "us-"}]`                | `"Region": [{"prefix": "us-"}]`               |
+| Suffix               | `[{"suffix": ".png"}]`               | `"FileName": [{"suffix": ".png"}]`            |
+| Or (fields)          | `"$or": [{...}, {...}]`              | `"$or": [{"City": ["NY"]}, {"Day": ["Mon"]}]` |
 
 > **DynamoDB filtering does NOT support numeric operators.** Numbers are stored as strings in the DynamoDB JSON record.
 
 ### Body/data format matching
 
-| Incoming format | Filter format | Result |
-|----------------|---------------|--------|
-| Plain string | Plain string | Filters normally |
-| Plain string | Valid JSON | Lambda drops the message |
-| Valid JSON | Plain string | Lambda drops the message |
-| Valid JSON | Valid JSON | Filters normally |
+| Incoming format | Filter format | Result                   |
+| --------------- | ------------- | ------------------------ |
+| Plain string    | Plain string  | Filters normally         |
+| Plain string    | Valid JSON    | Lambda drops the message |
+| Valid JSON      | Plain string  | Lambda drops the message |
+| Valid JSON      | Valid JSON    | Filters normally         |
 
 ### Filter examples
 
@@ -400,13 +406,13 @@ def lambda_handler(event, context):
 
 ### Success/failure conditions
 
-| Response | Interpretation |
-|----------|---------------|
-| Empty `batchItemFailures` list | Complete success |
-| Null `batchItemFailures` or empty `EventResponse` | Complete success |
-| `itemIdentifier` is empty string or null | **Complete failure** (entire batch retried) |
-| Bad key name in `itemIdentifier` | **Complete failure** |
-| Unhandled exception | **Complete failure** |
+| Response                                          | Interpretation                              |
+| ------------------------------------------------- | ------------------------------------------- |
+| Empty `batchItemFailures` list                    | Complete success                            |
+| Null `batchItemFailures` or empty `EventResponse` | Complete success                            |
+| `itemIdentifier` is empty string or null          | **Complete failure** (entire batch retried) |
+| Bad key name in `itemIdentifier`                  | **Complete failure**                        |
+| Unhandled exception                               | **Complete failure**                        |
 
 ### Interaction with BisectBatchOnFunctionError (streams)
 
@@ -419,33 +425,33 @@ def lambda_handler(event, context):
 
 ### SQS
 
-| Strategy | Configuration | When to use |
-|----------|--------------|-------------|
-| SQS redrive policy (DLQ) | `maxReceiveCount` on the queue | Always — catches poison messages |
-| Partial batch failures | `ReportBatchItemFailures` | Batches with mix of good/bad messages |
-| Visibility timeout | Set to ≥ 6× function timeout | Always — prevents premature retry |
-| MaximumConcurrency | `ScalingConfig` on ESM | Protect downstream resources |
+| Strategy                 | Configuration                  | When to use                           |
+| ------------------------ | ------------------------------ | ------------------------------------- |
+| SQS redrive policy (DLQ) | `maxReceiveCount` on the queue | Always — catches poison messages      |
+| Partial batch failures   | `ReportBatchItemFailures`      | Batches with mix of good/bad messages |
+| Visibility timeout       | Set to ≥ 6× function timeout   | Always — prevents premature retry     |
+| MaximumConcurrency       | `ScalingConfig` on ESM         | Protect downstream resources          |
 
 ### DynamoDB Streams / Kinesis
 
-| Strategy | Configuration | When to use |
-|----------|--------------|-------------|
-| BisectBatchOnFunctionError | `true` | Isolate bad records in large batches |
-| Partial batch failures | `ReportBatchItemFailures` | Avoid reprocessing successful records |
-| Maximum retry attempts | `MaximumRetryAttempts` | Limit retries to prevent shard blocking |
-| Maximum record age | `MaximumRecordAgeInSeconds` | Skip stale records |
-| On-failure destination | `DestinationConfig.OnFailure` | Capture failed records for analysis |
-| Parallelization factor | `ParallelizationFactor` | Reduce blast radius per shard |
+| Strategy                   | Configuration                 | When to use                             |
+| -------------------------- | ----------------------------- | --------------------------------------- |
+| BisectBatchOnFunctionError | `true`                        | Isolate bad records in large batches    |
+| Partial batch failures     | `ReportBatchItemFailures`     | Avoid reprocessing successful records   |
+| Maximum retry attempts     | `MaximumRetryAttempts`        | Limit retries to prevent shard blocking |
+| Maximum record age         | `MaximumRecordAgeInSeconds`   | Skip stale records                      |
+| On-failure destination     | `DestinationConfig.OnFailure` | Capture failed records for analysis     |
+| Parallelization factor     | `ParallelizationFactor`       | Reduce blast radius per shard           |
 
 ### ESM (polling) vs direct trigger (push)
 
-| Aspect | ESM (SQS, DDB, Kinesis) | Async push (SNS, S3) | Sync push (API Gateway) |
-|--------|--------------------------|----------------------|-------------------------|
-| Invocation | Synchronous (Lambda polls) | Asynchronous (service pushes) | Synchronous (service pushes) |
-| Batching | Yes (configurable) | No (single event) | No (single event) |
-| Event filtering | Lambda `FilterCriteria` | SNS filter policies (SNS-managed) | N/A |
-| Error handling | Partial batch, bisect, retry config | 2 automatic retries, DLQ/destination | Error returned directly to caller, no automatic retry |
-| Ordering | Supported (streams, FIFO) | Not guaranteed | N/A (request/response) |
+| Aspect          | ESM (SQS, DDB, Kinesis)             | Async push (SNS, S3)                 | Sync push (API Gateway)                               |
+| --------------- | ----------------------------------- | ------------------------------------ | ----------------------------------------------------- |
+| Invocation      | Synchronous (Lambda polls)          | Asynchronous (service pushes)        | Synchronous (service pushes)                          |
+| Batching        | Yes (configurable)                  | No (single event)                    | No (single event)                                     |
+| Event filtering | Lambda `FilterCriteria`             | SNS filter policies (SNS-managed)    | N/A                                                   |
+| Error handling  | Partial batch, bisect, retry config | 2 automatic retries, DLQ/destination | Error returned directly to caller, no automatic retry |
+| Ordering        | Supported (streams, FIFO)           | Not guaranteed                       | N/A (request/response)                                |
 
 ### Concurrency formulas
 

@@ -176,39 +176,40 @@ def log_dynamodb_record(record):
 
 ```json
 {
-   "Records":[
-      {
-         "eventID":"1",
-         "eventName":"INSERT",
-         "eventVersion":"1.0",
-         "eventSource":"aws:dynamodb",
-         "awsRegion":"us-east-1",
-         "dynamodb":{
-            "Keys":{
-               "id":{
-                  "S":"test-item-1"
-               }
-            },
-            "NewImage":{
-               "id":{
-                  "S":"test-item-1"
-               },
-               "message":{
-                  "S":"Hello from DynamoDB!"
-               }
-            },
-            "SequenceNumber":"111",
-            "SizeBytes":26,
-            "StreamViewType":"NEW_AND_OLD_IMAGES"
-         }
+  "Records": [
+    {
+      "eventID": "1",
+      "eventName": "INSERT",
+      "eventVersion": "1.0",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "Keys": {
+          "id": {
+            "S": "test-item-1"
+          }
+        },
+        "NewImage": {
+          "id": {
+            "S": "test-item-1"
+          },
+          "message": {
+            "S": "Hello from DynamoDB!"
+          }
+        },
+        "SequenceNumber": "111",
+        "SizeBytes": 26,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
       }
-   ]
+    }
+  ]
 }
 ```
 
 ## Troubleshooting
 
 ### Lambda Function Not Triggering
+
 If the Lambda function is not being triggered by DynamoDB events:
 
 - Verify the event source mapping is active using `aws lambda list-event-source-mappings`
@@ -216,6 +217,7 @@ If the Lambda function is not being triggered by DynamoDB events:
 - Ensure the Lambda function has the correct execution role permissions
 
 ### Permission Denied Errors
+
 If you encounter permission errors:
 
 - Verify the IAM role has the AWSLambdaDynamoDBExecutionRole policy attached
@@ -223,6 +225,7 @@ If you encounter permission errors:
 - Ensure your AWS credentials have sufficient permissions to create resources
 
 ### Function Timeout Issues
+
 If the Lambda function times out:
 
 - Increase the function timeout setting (default is 3 seconds)

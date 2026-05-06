@@ -4,11 +4,11 @@
 
 AWS has three billing data formats. Determine which the customer is using before writing queries:
 
-| Format | Table Name | Status | Key Differences |
-|--------|-----------|--------|-----------------|
-| **CUR 2.0** | `COST_AND_USAGE_REPORT` | Recommended | Fixed schema, nested columns (`resource_tags`, `cost_category`, `product`, `discount` are key-value maps), Parquet/GZIP only. Created via AWS Data Exports. |
-| **Legacy CUR** | User-defined | Still supported, no deprecation planned | Dynamic schema (columns vary monthly based on usage), tags/categories as separate columns (e.g., `resource_tags_user_creator`), supports CSV/ZIP/GZIP/Parquet. Created via CUR console or API. |
-| **FOCUS 1.2** | `FOCUS_1_2_AWS` | GA | FinOps Open Cost and Usage Specification — cloud-agnostic schema for multi-cloud FinOps. Different column names entirely (e.g., `BilledCost`, `EffectiveCost`, `ServiceName`). Created via AWS Data Exports. |
+| Format         | Table Name              | Status                                  | Key Differences                                                                                                                                                                                              |
+| -------------- | ----------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **CUR 2.0**    | `COST_AND_USAGE_REPORT` | Recommended                             | Fixed schema, nested columns (`resource_tags`, `cost_category`, `product`, `discount` are key-value maps), Parquet/GZIP only. Created via AWS Data Exports.                                                  |
+| **Legacy CUR** | User-defined            | Still supported, no deprecation planned | Dynamic schema (columns vary monthly based on usage), tags/categories as separate columns (e.g., `resource_tags_user_creator`), supports CSV/ZIP/GZIP/Parquet. Created via CUR console or API.               |
+| **FOCUS 1.2**  | `FOCUS_1_2_AWS`         | GA                                      | FinOps Open Cost and Usage Specification — cloud-agnostic schema for multi-cloud FinOps. Different column names entirely (e.g., `BilledCost`, `EffectiveCost`, `ServiceName`). Created via AWS Data Exports. |
 
 **How to tell which format a customer has:** Ask, or check the Data Exports console. If they reference `billing_period` as a string column, they're likely on Legacy CUR. If they reference `bill_billing_period_start_date` as a timestamp, they're on CUR 2.0.
 
@@ -35,12 +35,12 @@ Always use PARQUET — 10-100x cheaper Athena queries than CSV. Set `INCLUDE_RES
 
 ## Key Column Groups
 
-| Group | Key Columns | Use |
-|-------|-------------|-----|
-| line_item | `unblended_cost`, `resource_id`, `product_code`, `usage_amount` | Core cost data |
-| savings_plan | `savings_plan_effective_cost`, `savings_plan_a_r_n` | SP analysis |
-| reservation | `reservation_a_r_n`, `effective_cost`, `unused_quantity` | RI analysis |
-| pricing | `public_on_demand_cost`, `public_on_demand_rate` | On-demand comparison |
+| Group         | Key Columns                                                                                                                           | Use                  |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| line_item     | `unblended_cost`, `resource_id`, `product_code`, `usage_amount`                                                                       | Core cost data       |
+| savings_plan  | `savings_plan_effective_cost`, `savings_plan_a_r_n`                                                                                   | SP analysis          |
+| reservation   | `reservation_a_r_n`, `effective_cost`, `unused_quantity`                                                                              | RI analysis          |
+| pricing       | `public_on_demand_cost`, `public_on_demand_rate`                                                                                      | On-demand comparison |
 | resource_tags | **Legacy CUR:** `resource_tags_user_<tagname>` columns; **CUR 2.0:** `resource_tags` map — query with `resource_tags['user:tagname']` | Tag-based allocation |
 
 ## Common Athena Queries

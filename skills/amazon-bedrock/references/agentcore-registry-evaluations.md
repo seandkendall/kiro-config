@@ -13,10 +13,10 @@ Catalog, discover, and govern AI agents and tools across an organization.
 
 The key non-obvious behavior — two modes:
 
-| Mode | Behavior | Use For |
-|------|----------|---------|
-| **Auto-approve** | Records become discoverable immediately | Development environments (isolated accounts only) |
-| **Manual approval** | Records require explicit approval before discovery | Production environments |
+| Mode                | Behavior                                           | Use For                                           |
+| ------------------- | -------------------------------------------------- | ------------------------------------------------- |
+| **Auto-approve**    | Records become discoverable immediately            | Development environments (isolated accounts only) |
+| **Manual approval** | Records require explicit approval before discovery | Production environments                           |
 
 Status transitions: `PENDING` → `APPROVED` → `ACTIVE` (or `REJECTED`)
 
@@ -58,11 +58,11 @@ Evaluation Setup:
 
 ### Built-in Evaluators
 
-| Evaluator | What It Measures |
-|-----------|-----------------|
-| `Builtin.Helpfulness` | Does the response help the user? |
+| Evaluator              | What It Measures                              |
+| ---------------------- | --------------------------------------------- |
+| `Builtin.Helpfulness`  | Does the response help the user?              |
 | `Builtin.Faithfulness` | Is the response grounded in provided context? |
-| `Builtin.Harmfulness` | Does the response contain harmful content? |
+| `Builtin.Harmfulness`  | Does the response contain harmful content?    |
 
 Refer to the latest AWS documentation on AgentCore Evaluations built-in evaluators for the full current list.
 
@@ -78,10 +78,10 @@ Create custom evaluators: `aws bedrock-agentcore-control create-evaluator --eval
 
 ### Online vs On-Demand Evaluation
 
-| Type | When | Use For |
-|------|------|---------|
-| **Online** | Continuous, samples production traffic | Monitoring quality over time |
-| **On-demand** | Batch, against a test dataset | Regression testing, A/B comparison |
+| Type          | When                                   | Use For                            |
+| ------------- | -------------------------------------- | ---------------------------------- |
+| **Online**    | Continuous, samples production traffic | Monitoring quality over time       |
+| **On-demand** | Batch, against a test dataset          | Regression testing, A/B comparison |
 
 **Online evaluation constraints:**
 

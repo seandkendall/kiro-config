@@ -121,10 +121,13 @@ property list.
 ## Troubleshooting
 
 ### Documentation URL returns 404
+
 Some resource types use `aws-properties-` instead of `aws-resource-` in the URL path (historical naming). Try both variants before falling back to search.
 
 ### Property schema differs from what I see in the Console
+
 The Console sometimes exposes additional UI-only fields that do not exist in the CloudFormation schema. The documentation is authoritative for CloudFormation property names.
 
 ### Ambiguous service name
+
 Some service names are not obvious (e.g., `AWS::IAM::Role` is `iam-role`, but `AWS::EC2::SecurityGroup` is `ec2-securitygroup` — CamelCase words are not split). If the URL derivation fails, search the CloudFormation User Guide for the resource type by its full name.

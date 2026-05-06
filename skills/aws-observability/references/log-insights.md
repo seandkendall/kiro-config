@@ -17,26 +17,26 @@ Complete query syntax reference, performance tips, and reusable query library.
 
 ## Commands
 
-| Command | Description | Infrequent Access |
-|---------|-------------|:-----------------:|
-| `fields` | Select/transform fields, supports functions | Yes |
-| `filter` | Match conditions with boolean/regex | Yes |
-| `stats` | Aggregate statistics | Yes |
-| `sort` | Order results `asc` or `desc` | Yes |
-| `limit` | Specify max returned events (default 10,000 if omitted) | Yes |
-| `parse` | Extract fields via glob or regex | Yes |
-| `display` | Choose which fields to show | Yes |
-| `dedup` | Remove duplicates by field | Yes |
-| `unnest` | Flatten arrays into rows | Yes |
-| `lookup` | Enrich with lookup table data | Yes |
-| `join` | Combine events across log groups by key | Yes |
-| `subqueries` | Nested queries as input | Yes |
-| `anomaly` | ML anomaly detection | No |
-| `pattern` | ML-based log clustering | No |
-| `diff` | Compare current vs previous time period | No |
-| `unmask` | Reveal data-protection masked content | No |
-| `filterIndex` | Force field-index scan optimization | No |
-| `SOURCE` | Programmatic log group selection (CLI/API only) | Yes |
+| Command       | Description                                             | Infrequent Access |
+| ------------- | ------------------------------------------------------- | :---------------: |
+| `fields`      | Select/transform fields, supports functions             |        Yes        |
+| `filter`      | Match conditions with boolean/regex                     |        Yes        |
+| `stats`       | Aggregate statistics                                    |        Yes        |
+| `sort`        | Order results `asc` or `desc`                           |        Yes        |
+| `limit`       | Specify max returned events (default 10,000 if omitted) |        Yes        |
+| `parse`       | Extract fields via glob or regex                        |        Yes        |
+| `display`     | Choose which fields to show                             |        Yes        |
+| `dedup`       | Remove duplicates by field                              |        Yes        |
+| `unnest`      | Flatten arrays into rows                                |        Yes        |
+| `lookup`      | Enrich with lookup table data                           |        Yes        |
+| `join`        | Combine events across log groups by key                 |        Yes        |
+| `subqueries`  | Nested queries as input                                 |        Yes        |
+| `anomaly`     | ML anomaly detection                                    |        No         |
+| `pattern`     | ML-based log clustering                                 |        No         |
+| `diff`        | Compare current vs previous time period                 |        No         |
+| `unmask`      | Reveal data-protection masked content                   |        No         |
+| `filterIndex` | Force field-index scan optimization                     |        No         |
+| `SOURCE`      | Programmatic log group selection (CLI/API only)         |        Yes        |
 
 Auto-discovered fields: `@timestamp`, `@message`, `@logStream`, `@log` (account-id:log-group-name), `@ingestionTime`, `@entity`. JSON fields auto-flattened with dot notation.
 
@@ -131,6 +131,7 @@ stats avg(duration) as avg_ms, pct(duration, 99) as p99 by serviceName, bin(1h)
 ## Advanced commands
 
 ### JOIN
+
 Correlate events across log groups by a shared key:
 
 ```
@@ -141,6 +142,7 @@ filter status >= 500
 ```
 
 ### Subqueries
+
 Use nested queries to filter the outer query:
 
 ```
@@ -161,6 +163,7 @@ fields @timestamp, @message
 ```
 
 ### Scheduled queries
+
 Recurring queries with results delivered to S3 and EventBridge. Configure via console or API.
 
 ---

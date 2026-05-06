@@ -13,11 +13,11 @@
 
 Three APIs — agents pick the wrong one. Use this table:
 
-| Use Case | API | Endpoint | When |
-|----------|-----|----------|------|
-| Synthesize answer from docs | `RetrieveAndGenerate` | `bedrock-agent-runtime` | Most common RAG pattern. Model reads chunks and generates answer with citations. |
-| Get raw chunks for custom processing | `Retrieve` | `bedrock-agent-runtime` | You want to rank, filter, or feed chunks to a different model. |
-| Full prompt control | `Converse` with manual context | `bedrock-runtime` | You retrieve chunks yourself, build a custom prompt, and call the model directly. |
+| Use Case                             | API                            | Endpoint                | When                                                                              |
+| ------------------------------------ | ------------------------------ | ----------------------- | --------------------------------------------------------------------------------- |
+| Synthesize answer from docs          | `RetrieveAndGenerate`          | `bedrock-agent-runtime` | Most common RAG pattern. Model reads chunks and generates answer with citations.  |
+| Get raw chunks for custom processing | `Retrieve`                     | `bedrock-agent-runtime` | You want to rank, filter, or feed chunks to a different model.                    |
+| Full prompt control                  | `Converse` with manual context | `bedrock-runtime`       | You retrieve chunks yourself, build a custom prompt, and call the model directly. |
 
 Most common pattern: `aws bedrock-agent-runtime retrieve-and-generate --input '{"text":"<query>"}' --retrieve-and-generate-configuration '{"type":"KNOWLEDGE_BASE","knowledgeBaseConfiguration":{"knowledgeBaseId":"<kb-id>","modelArn":"<model-arn>"}}'`
 
@@ -29,19 +29,19 @@ Bedrock-specific filter syntax — not in model training data. Filters narrow re
 
 **Operators:**
 
-| Operator | Type | Example |
-|----------|------|---------|
-| `equals` | Exact match | `{"equals": {"key": "department", "value": "engineering"}}` |
-| `notEquals` | Exclude | `{"notEquals": {"key": "status", "value": "archived"}}` |
-| `greaterThan` | Number | `{"greaterThan": {"key": "year", "value": 2024}}` |
-| `greaterThanOrEquals` | Number (inclusive) | `{"greaterThanOrEquals": {"key": "year", "value": 2024}}` |
-| `lessThan` | Number | `{"lessThan": {"key": "year", "value": 2026}}` |
-| `lessThanOrEquals` | Number (inclusive) | `{"lessThanOrEquals": {"key": "year", "value": 2026}}` |
-| `in` | Match any in list | `{"in": {"key": "category", "value": ["guide", "tutorial"]}}` |
-| `notIn` | Exclude list | `{"notIn": {"key": "type", "value": ["draft", "deprecated"]}}` |
-| `startsWith` | Prefix match (string) | `{"startsWith": {"key": "path", "value": "/docs/api"}}` |
-| `stringContains` | Substring (string) | `{"stringContains": {"key": "title", "value": "setup"}}` |
-| `listContains` | List attribute contains value (string) | `{"listContains": {"key": "tags", "value": "security"}}` |
+| Operator              | Type                                   | Example                                                        |
+| --------------------- | -------------------------------------- | -------------------------------------------------------------- |
+| `equals`              | Exact match                            | `{"equals": {"key": "department", "value": "engineering"}}`    |
+| `notEquals`           | Exclude                                | `{"notEquals": {"key": "status", "value": "archived"}}`        |
+| `greaterThan`         | Number                                 | `{"greaterThan": {"key": "year", "value": 2024}}`              |
+| `greaterThanOrEquals` | Number (inclusive)                     | `{"greaterThanOrEquals": {"key": "year", "value": 2024}}`      |
+| `lessThan`            | Number                                 | `{"lessThan": {"key": "year", "value": 2026}}`                 |
+| `lessThanOrEquals`    | Number (inclusive)                     | `{"lessThanOrEquals": {"key": "year", "value": 2026}}`         |
+| `in`                  | Match any in list                      | `{"in": {"key": "category", "value": ["guide", "tutorial"]}}`  |
+| `notIn`               | Exclude list                           | `{"notIn": {"key": "type", "value": ["draft", "deprecated"]}}` |
+| `startsWith`          | Prefix match (string)                  | `{"startsWith": {"key": "path", "value": "/docs/api"}}`        |
+| `stringContains`      | Substring (string)                     | `{"stringContains": {"key": "title", "value": "setup"}}`       |
+| `listContains`        | List attribute contains value (string) | `{"listContains": {"key": "tags", "value": "security"}}`       |
 
 **Vector store limitations for operators:** `startsWith` and `stringContains` are currently best supported with Amazon OpenSearch Serverless vector stores. Neptune Analytics GraphRAG supports the `stringContains` string variant but not the list variant. `listContains` is currently best supported with Amazon OpenSearch Serverless. S3 vector buckets do NOT support `startsWith` or `stringContains`. If you use these operators with an unsupported vector store, the filter is silently ignored.
 
@@ -52,8 +52,8 @@ Refer to the latest AWS documentation on Bedrock Knowledge Base RetrievalFilter 
 ```json
 {
   "andAll": [
-    {"equals": {"key": "department", "value": "engineering"}},
-    {"greaterThan": {"key": "epoch_modification_time", "value": 1704067200}}
+    { "equals": { "key": "department", "value": "engineering" } },
+    { "greaterThan": { "key": "epoch_modification_time", "value": 1704067200 } }
   ]
 }
 ```
@@ -61,8 +61,8 @@ Refer to the latest AWS documentation on Bedrock Knowledge Base RetrievalFilter 
 ```json
 {
   "orAll": [
-    {"equals": {"key": "type", "value": "guide"}},
-    {"equals": {"key": "type", "value": "tutorial"}}
+    { "equals": { "key": "type", "value": "guide" } },
+    { "equals": { "key": "type", "value": "tutorial" } }
   ]
 }
 ```
@@ -78,10 +78,10 @@ Refer to the latest AWS documentation on Bedrock Knowledge Base RetrievalFilter 
 
 Non-obvious defaults agents get wrong:
 
-| Parameter | Default | Guidance |
-|-----------|---------|----------|
+| Parameter            | Default                   | Guidance                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `overrideSearchType` | Not set (Bedrock decides) | When omitted, Bedrock automatically selects the search strategy best suited for your vector store configuration. For OpenSearch Serverless, RDS (including Aurora PostgreSQL), or MongoDB Atlas with a filterable text field, you can explicitly set to `HYBRID` (keyword + semantic) or `SEMANTIC` (vector only). For all other vector stores, only `SEMANTIC` is available. Consider `HYBRID` when supported for keyword-heavy queries. |
-| `numberOfResults` | 5 | Increase for broad questions (10-20), decrease for specific lookups (3-5). More results = higher latency. |
+| `numberOfResults`    | 5                         | Increase for broad questions (10-20), decrease for specific lookups (3-5). More results = higher latency.                                                                                                                                                                                                                                                                                                                                 |
 
 **Score confidence threshold**: Set to filter low-relevance results.
 

@@ -32,15 +32,15 @@ processors:
   filter:
     error_mode: ignore
     metric_conditions:
-      - 'IsMatch(metric.name, ".*_bucket$")'  # Histogram bucket metrics can explode cardinality
+      - 'IsMatch(metric.name, ".*_bucket$")' # Histogram bucket metrics can explode cardinality
 
 exporters:
   awsxray:
-    region: us-east-1  # TODO: Replace with your target region
+    region: us-east-1 # TODO: Replace with your target region
 
   awsemf:
     namespace: MyApplication
-    region: us-east-1  # TODO: Replace with your target region
+    region: us-east-1 # TODO: Replace with your target region
     dimension_rollup_option: NoDimensionRollup
     resource_to_telemetry_conversion:
       enabled: false

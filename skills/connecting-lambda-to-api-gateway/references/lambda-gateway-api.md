@@ -1,6 +1,7 @@
 # Connect Lambda Function to API Gateway
 
 ## Overview
+
 This SOP creates a REST API using Amazon API Gateway and connects it to an existing Lambda function, enabling HTTP-based invocation of the Lambda function through API endpoints.
 
 ## Parameters
@@ -27,6 +28,7 @@ This SOP creates a REST API using Amazon API Gateway and connects it to an exist
 ## Steps
 
 ### 1. Verify Dependencies
+
 Check for required tools and warn the user if any are missing.
 
 **Constraints:**
@@ -39,6 +41,7 @@ Check for required tools and warn the user if any are missing.
 - You MUST respect the user's decision to proceed or abort
 
 ### 2. Validate Lambda Function Exists
+
 Verify that the specified Lambda function exists and is accessible.
 
 **Constraints:**
@@ -49,6 +52,7 @@ Verify that the specified Lambda function exists and is accessible.
 - You SHOULD display the Lambda function's runtime and description for confirmation
 
 ### 3. Create REST API Gateway
+
 Create a new REST API Gateway with the specified name.
 
 **Constraints:**
@@ -59,6 +63,7 @@ Create a new REST API Gateway with the specified name.
 - You SHOULD verify the API was created successfully
 
 ### 4. Create API Resource
+
 Create a new resource under the root resource with the specified path.
 
 **Constraints:**
@@ -69,6 +74,7 @@ Create a new resource under the root resource with the specified path.
 - You MAY skip this step if using the root resource directly
 
 ### 5. Create HTTP Method
+
 Create the specified HTTP method for the resource.
 
 **Constraints:**
@@ -80,6 +86,7 @@ Create the specified HTTP method for the resource.
 - You MUST configure the method to accept requests
 
 ### 6. Configure Lambda Integration
+
 Set up the integration between the API method and Lambda function.
 
 **Constraints:**
@@ -119,6 +126,7 @@ Configure additional security measures for production deployments.
   ```
 
 ### 8. Configure CORS (Conditional)
+
 If CORS is enabled, configure Cross-Origin Resource Sharing settings for the API.
 
 **Constraints:**
@@ -131,6 +139,7 @@ If CORS is enabled, configure Cross-Origin Resource Sharing settings for the API
 - If CORS is not enabled, You MUST skip this step entirely
 
 ### 9. Grant API Gateway Permission to Invoke Lambda
+
 Add the necessary permissions for API Gateway to invoke the Lambda function.
 
 **Constraints:**
@@ -142,6 +151,7 @@ Add the necessary permissions for API Gateway to invoke the Lambda function.
 - You SHOULD verify the permission was added successfully
 
 ### 10. Deploy the API
+
 Deploy the API to the specified stage to make it accessible.
 
 **Constraints:**
@@ -152,6 +162,7 @@ Deploy the API to the specified stage to make it accessible.
 - You SHOULD verify the deployment was successful
 
 ### 11. Retrieve API Endpoint URL
+
 Get the invoke URL for the deployed API.
 
 **Constraints:**
@@ -162,6 +173,7 @@ Get the invoke URL for the deployed API.
 - You MUST include the HTTP method in the usage instructions
 
 ### 12. Verify Lambda Response Format
+
 Inform the user about the required response format for Lambda proxy integration.
 
 **Constraints:**
@@ -183,6 +195,7 @@ Inform the user about the required response format for Lambda proxy integration.
 - You MUST warn that incorrect response format will result in API Gateway errors
 
 ### 13. Test the Integration
+
 Verify that the API Gateway can successfully invoke the Lambda function.
 
 **Constraints:**
@@ -220,12 +233,15 @@ aws apigateway test-invoke-method --rest-api-id abc123def4 --resource-id xyz789 
 ## Troubleshooting
 
 ### Lambda Function Not Found
+
 If you receive an error that the Lambda function doesn't exist, verify the function name is correct and that you have permission to access it.
 
 ### Permission Denied Errors
+
 If API Gateway cannot invoke the Lambda function, ensure the `lambda:InvokeFunction` permission was added correctly with the proper source ARN.
 
 ### API Gateway 502 Bad Gateway
+
 This typically indicates an issue with the Lambda integration. Check that:
 
 - The integration URI is correctly formatted
@@ -234,6 +250,7 @@ This typically indicates an issue with the Lambda integration. Check that:
 - The `body` field must be a string (use `JSON.stringify()` for JSON responses)
 
 ### Malformed Lambda Proxy Response
+
 If you receive errors about malformed responses, ensure your Lambda function returns:
 
 ```json
@@ -249,6 +266,7 @@ If you receive errors about malformed responses, ensure your Lambda function ret
 Note that `body` must be a string, not an object.
 
 ### CORS Errors in Browser
+
 If you're getting CORS errors when calling the API from a web browser:
 
 - Ensure you set `enable_cors: true` when creating the API
@@ -257,4 +275,5 @@ If you're getting CORS errors when calling the API from a web browser:
 - Ensure your Lambda function also returns CORS headers in its response if needed
 
 ### Deployment Issues
+
 If the API deployment fails, ensure all method and integration configurations are complete before attempting to deploy.

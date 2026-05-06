@@ -4,11 +4,11 @@
 
 AWS transitioned from time-based to credit-based free tier on July 15, 2025:
 
-| Account Type | Model | Details |
-|-------------|-------|---------|
-| Legacy (before July 15, 2025) | 12-month free tier + Always Free | Original offers, complete naturally. Always Free services available. |
-| Free Plan (after July 15, 2025) | $200 credits for 6 months | No charges during free period. Upgrade to Paid Plan after. Always Free services available. |
-| Paid Plan (after July 15, 2025) | $200 credits for 6 months | Charged for usage exceeding credits. Always Free services available. |
+| Account Type                    | Model                            | Details                                                                                    |
+| ------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------ |
+| Legacy (before July 15, 2025)   | 12-month free tier + Always Free | Original offers, complete naturally. Always Free services available.                       |
+| Free Plan (after July 15, 2025) | $200 credits for 6 months        | No charges during free period. Upgrade to Paid Plan after. Always Free services available. |
+| Paid Plan (after July 15, 2025) | $200 credits for 6 months        | Charged for usage exceeding credits. Always Free services available.                       |
 
 ~30 Always Free services remain available indefinitely for all account types.
 

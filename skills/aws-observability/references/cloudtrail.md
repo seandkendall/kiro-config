@@ -14,12 +14,12 @@ Using CloudTrail for operational debugging: who changed what, when. Not for secu
 
 ## Event types
 
-| Type | Description | Default logging | Cost |
-|------|-------------|:-:|------|
-| **Management events** | Control plane (CreateBucket, RunInstances, IAM changes) | Yes | First copy included |
-| **Data events** | Data plane (S3 GetObject, Lambda Invoke, DynamoDB GetItem) | No | Additional cost |
-| **Network activity events** | VPC endpoint activity | No | Additional cost |
-| **Insights events** | Unusual API call rate or error rate | No | Additional cost |
+| Type                        | Description                                                | Default logging | Cost                |
+| --------------------------- | ---------------------------------------------------------- | :-------------: | ------------------- |
+| **Management events**       | Control plane (CreateBucket, RunInstances, IAM changes)    |       Yes       | First copy included |
+| **Data events**             | Data plane (S3 GetObject, Lambda Invoke, DynamoDB GetItem) |       No        | Additional cost     |
+| **Network activity events** | VPC endpoint activity                                      |       No        | Additional cost     |
+| **Insights events**         | Unusual API call rate or error rate                        |       No        | Additional cost     |
 
 ---
 
@@ -70,6 +70,7 @@ aws cloudtrail lookup-events \
 3. Correlate with CloudWatch metrics/logs for the same time window
 
 ### "Who accessed my data?" (requires data events)
+
 Data events must be explicitly enabled on the trail:
 
 ```bash

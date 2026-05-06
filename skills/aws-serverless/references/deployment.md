@@ -15,19 +15,19 @@ Serverless-specific deployment patterns, resource types, and fast iteration tool
 
 SAM templates extend CloudFormation with `Transform: AWS::Serverless-2016-10-31`. Only `Transform` and `Resources` are required.
 
-| Resource Type | Purpose |
-|---|---|
-| `AWS::Serverless::Function` | Lambda + IAM role + event source mappings |
-| `AWS::Serverless::HttpApi` | HTTP API (API Gateway v2) — recommended |
-| `AWS::Serverless::Api` | REST API (v1) — WAF, usage plans, request validation |
-| `AWS::Serverless::SimpleTable` | DynamoDB with minimal config |
-| `AWS::Serverless::LayerVersion` | Lambda layer |
-| `AWS::Serverless::StateMachine` | Step Functions state machine |
-| `AWS::Serverless::Connector` | Simplified permissions between resources |
-| `AWS::Serverless::Application` | Nested serverless application (SAR or local) |
-| `AWS::Serverless::GraphQLApi` | AppSync GraphQL API |
-| `AWS::Serverless::WebSocketApi` | WebSocket API (API Gateway v2) |
-| `AWS::Serverless::CapacityProvider` | Lambda Managed Instances on customer-owned EC2 |
+| Resource Type                       | Purpose                                              |
+| ----------------------------------- | ---------------------------------------------------- |
+| `AWS::Serverless::Function`         | Lambda + IAM role + event source mappings            |
+| `AWS::Serverless::HttpApi`          | HTTP API (API Gateway v2) — recommended              |
+| `AWS::Serverless::Api`              | REST API (v1) — WAF, usage plans, request validation |
+| `AWS::Serverless::SimpleTable`      | DynamoDB with minimal config                         |
+| `AWS::Serverless::LayerVersion`     | Lambda layer                                         |
+| `AWS::Serverless::StateMachine`     | Step Functions state machine                         |
+| `AWS::Serverless::Connector`        | Simplified permissions between resources             |
+| `AWS::Serverless::Application`      | Nested serverless application (SAR or local)         |
+| `AWS::Serverless::GraphQLApi`       | AppSync GraphQL API                                  |
+| `AWS::Serverless::WebSocketApi`     | WebSocket API (API Gateway v2)                       |
+| `AWS::Serverless::CapacityProvider` | Lambda Managed Instances on customer-owned EC2       |
 
 ---
 
@@ -37,11 +37,11 @@ Eliminates duplication across functions/APIs. Supported types: `Function`, `Api`
 
 **Override rules:**
 
-| Type | Behavior |
-|---|---|
-| Primitives (string, number, boolean) | Resource value **replaces** global |
-| Maps (dictionaries) | **Merged** — resource keys override matching global keys |
-| Lists (arrays) | Global entries **prepended** to resource entries |
+| Type                                 | Behavior                                                 |
+| ------------------------------------ | -------------------------------------------------------- |
+| Primitives (string, number, boolean) | Resource value **replaces** global                       |
+| Maps (dictionaries)                  | **Merged** — resource keys override matching global keys |
+| Lists (arrays)                       | Global entries **prepended** to resource entries         |
 
 ---
 
@@ -49,12 +49,12 @@ Eliminates duplication across functions/APIs. Supported types: `Function`, `Api`
 
 Prefer L2 constructs — they provide sensible defaults and least-privilege IAM via `grant*` methods.
 
-| Construct | Module | Use for |
-|---|---|---|
-| `NodejsFunction` | `aws-cdk-lib/aws-lambda-nodejs` | Node.js/TypeScript — bundles with esbuild automatically |
-| `PythonFunction` | `@aws-cdk/aws-lambda-python-alpha` | Python — requires Docker for bundling |
-| `HttpApi` | `aws-cdk-lib/aws-apigatewayv2` | HTTP API with CORS, JWT auth |
-| `HttpLambdaIntegration` | `aws-cdk-lib/aws-apigatewayv2-integrations` | Connect Lambda to HttpApi |
+| Construct               | Module                                      | Use for                                                 |
+| ----------------------- | ------------------------------------------- | ------------------------------------------------------- |
+| `NodejsFunction`        | `aws-cdk-lib/aws-lambda-nodejs`             | Node.js/TypeScript — bundles with esbuild automatically |
+| `PythonFunction`        | `@aws-cdk/aws-lambda-python-alpha`          | Python — requires Docker for bundling                   |
+| `HttpApi`               | `aws-cdk-lib/aws-apigatewayv2`              | HTTP API with CORS, JWT auth                            |
+| `HttpLambdaIntegration` | `aws-cdk-lib/aws-apigatewayv2-integrations` | Connect Lambda to HttpApi                               |
 
 ---
 
@@ -84,11 +84,11 @@ Hotswap supports: Lambda code/config/versions/aliases, Step Functions definition
 
 ### Comparison
 
-| Feature | SAM Sync | CDK Hotswap |
-|---|---|---|
-| Watch mode | `sam sync --watch` | `cdk watch` |
-| Code-only sync | `sam sync --code` | `cdk deploy --hotswap` |
-| Fallback to full deploy | Automatic | `--hotswap-fallback` |
-| Selective resource sync | `--resource-id` | Not supported |
-| Code change speed | Seconds | Seconds |
-| Production safe | **No** | **No** |
+| Feature                 | SAM Sync           | CDK Hotswap            |
+| ----------------------- | ------------------ | ---------------------- |
+| Watch mode              | `sam sync --watch` | `cdk watch`            |
+| Code-only sync          | `sam sync --code`  | `cdk deploy --hotswap` |
+| Fallback to full deploy | Automatic          | `--hotswap-fallback`   |
+| Selective resource sync | `--resource-id`    | Not supported          |
+| Code change speed       | Seconds            | Seconds                |
+| Production safe         | **No**             | **No**                 |
