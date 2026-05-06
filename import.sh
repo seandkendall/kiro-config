@@ -485,6 +485,47 @@ else
   fi
 fi
 
+# --- Step 4.6: Google Workspace MCP setup ---
+echo ""
+echo "Checking Google Workspace MCP (Google Docs/Sheets/Drive read-only)..."
+GOOGLE_MCP_DIR="$HOME/.config/google-drive-mcp"
+if [[ -f "$GOOGLE_MCP_DIR/gcp-oauth.keys.json" ]]; then
+  echo -e "  ${GREEN}✓${NC} Google OAuth credentials found"
+  if [[ -f "$GOOGLE_MCP_DIR/tokens.json" ]]; then
+    echo -e "  ${GREEN}✓${NC} Google auth tokens found"
+  else
+    echo -e "  ${YELLOW}⚠${NC} Tokens not found — running auth..."
+    npx -y @piotr-agier/google-drive-mcp auth
+  fi
+else
+  echo -e "  ${YELLOW}⚠${NC} Google Workspace MCP not configured (optional)"
+  echo ""
+  echo "  To enable Google Docs/Sheets/Drive access:"
+  echo "    1. Go to https://console.cloud.google.com"
+  echo "    2. Create a project (or use existing)"
+  echo "    3. Enable: Google Drive API, Google Docs API, Google Sheets API"
+  echo "    4. Configure OAuth consent screen (External, add your email as test user)"
+  echo "    5. Create OAuth credentials → Desktop app → Download JSON"
+  echo "    6. Place the file at: $GOOGLE_MCP_DIR/gcp-oauth.keys.json"
+  echo "    7. Run: npx -y @piotr-agier/google-drive-mcp auth"
+  echo ""
+  echo "  The google-workspace agent will be disabled until credentials are configured."
+  echo ""
+  # Disable the google-workspace agent's MCP server since no credentials
+  if [[ -f "$KIRO_DIR/agents/google-workspace.json" ]]; then
+    python3 -c "
+import json
+with open('$KIRO_DIR/agents/google-workspace.json') as f:
+    d = json.load(f)
+d['mcpServers']['google-drive']['disabled'] = True
+with open('$KIRO_DIR/agents/google-workspace.json', 'w') as f:
+    json.dump(d, f, indent=2, ensure_ascii=False)
+    f.write('\n')
+print('    Disabled google-drive MCP server (no credentials)')
+"
+  fi
+fi
+
 # Strip MCP servers from installed agents if keys are missing
 if ! $GITHUB_SET || ! $BRAVE_SET || ! $TWENTY_FIRST_SET || ! $FIGMA_SET || ! $BROWSER_LENS_SET; then
   echo ""
