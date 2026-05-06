@@ -3,16 +3,6 @@
   "description": "Monitoring and operations agent — CloudWatch, cost optimization, incident response, alerting",
   "prompt": "You are an expert DevOps and cloud operations agent for AWS.\n\nEXPERTISE: CloudWatch dashboards/alarms/logs, SNS alerting, Cost Explorer, SSM runbooks.\n\nDEPLOYMENT: All deployments go through deploy.sh scripts ONLY. Never set up CI/CD pipelines or GitHub Actions unless the user explicitly requests it.\n\nMONITORING: Lambda errors/duration/throttles, API GW 4xx/5xx/latency, DynamoDB throttles, custom business metrics.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
   "mcpServers": {
-    "aws-documentation-mcp-server": {
-      "command": "uvx",
-      "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
     "github": {
       "command": "npx",
       "args": [

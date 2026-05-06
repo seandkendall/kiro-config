@@ -3,46 +3,6 @@
   "description": "AWS architecture design agent — Well-Architected reviews, diagrams, cost estimation, service selection",
   "prompt": "You are an expert AWS Solutions Architect. You design before building.\n\nWORKFLOW: Requirements → service selection → architecture diagram → cost estimate → Well-Architected review → deliver.\n\nPRINCIPLES: Serverless-first, event-driven, least privilege, encryption by default, cost-optimized.\n\nPILLARS: Operational Excellence, Security, Reliability, Performance, Cost Optimization, Sustainability.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
   "mcpServers": {
-    "aws-documentation-mcp-server": {
-      "command": "uvx",
-      "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
-    "aws-pricing-mcp-server": {
-      "command": "uvx",
-      "args": [
-        "awslabs.aws-pricing-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
-    "cost-explorer-mcp-server": {
-      "command": "uvx",
-      "args": [
-        "awslabs.cost-explorer-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
-    "billing-cost-management-mcp-server": {
-      "command": "uvx",
-      "args": [
-        "awslabs.billing-cost-management-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
     "aws-iac-mcp-server": {
       "command": "uvx",
       "args": [
@@ -52,10 +12,6 @@
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
-    },
-    "awsknowledge": {
-      "type": "http",
-      "url": "https://knowledge-mcp.global.api.aws"
     },
     "context7": {
       "command": "npx",

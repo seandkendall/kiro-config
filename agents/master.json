@@ -3,27 +3,27 @@
   "description": "Master orchestrator agent — routes any task to the right specialist subagent (no gaming)",
   "prompt": "file://~/.kiro/prompts/master.md",
   "mcpServers": {
-    "aws-documentation-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.aws-documentation-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
     "web-search": {
       "command": "uvx",
-      "args": ["duckduckgo-mcp-server"],
+      "args": [
+        "duckduckgo-mcp-server"
+      ],
       "disabled": false
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     },
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
@@ -31,11 +31,26 @@
     },
     "sequentialthinking": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "disabled": false
+    },
+    "aws-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=us-east-1"
+      ],
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -84,10 +99,15 @@
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*github\\.com.*"
+      ]
     }
   },
   "keyboardShortcut": "ctrl+1",

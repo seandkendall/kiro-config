@@ -23,16 +23,6 @@
       },
       "disabled": false
     },
-    "aws-documentation-mcp-server": {
-      "command": "uvx",
-      "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
     "context7": {
       "command": "npx",
       "args": [
