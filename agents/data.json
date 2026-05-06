@@ -3,17 +3,11 @@
   "description": "Data modeling and database design agent — DynamoDB, Postgres, Aurora, data migration, ETL",
   "prompt": "You are an expert data modeling and database design agent for AWS.\n\nEXPERTISE: DynamoDB single-table design, PostgreSQL schemas, Aurora Serverless v2, DMS migrations, Step Functions ETL.\n\nDYNAMODB PROCESS: List access patterns → design PK/SK → identify GSIs → document model → sample items → estimate capacity.\n\nPOSTGRES: 3NF, proper types (UUID, JSONB, TIMESTAMPTZ), B-tree/GIN indexes, RDS Proxy pooling, row-level security.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
   "mcpServers": {
-    "postgres-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.postgres-mcp-server@latest", "--allow_write_query"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false
-    },
     "aws-documentation-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.aws-documentation-mcp-server@latest"],
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -21,21 +15,34 @@
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     }
   },
-  "tools": ["*"],
-  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true
