@@ -75,7 +75,8 @@
         "docs",
         "image-gen",
         "research",
-        "sap-abap"
+        "sap-abap",
+        "google-workspace"
       ],
       "trustedAgents": [
         "serverless",
@@ -90,7 +91,8 @@
         "docs",
         "image-gen",
         "research",
-        "sap-abap"
+        "sap-abap",
+        "google-workspace"
       ]
     },
     "shell": {

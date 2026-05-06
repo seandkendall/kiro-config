@@ -1,0 +1,26 @@
+{
+  "name": "google-workspace",
+  "description": "Google Docs, Sheets, and Drive read-only agent — search, read, and summarize Google Workspace content",
+  "prompt": "file://~/.kiro/prompts/google-workspace.md",
+  "mcpServers": {
+    "google-drive": {
+      "command": "npx",
+      "args": ["-y", "@piotr-agier/google-drive-mcp"],
+      "env": {
+        "GOOGLE_DRIVE_MCP_SCOPES": "drive.readonly"
+      },
+      "disabled": false
+    }
+  },
+  "tools": ["*"],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true,
+      "deniedCommands": ["git-defender.*"]
+    }
+  },
+  "welcomeMessage": "Google Workspace agent ready (read-only). I can search Drive, read Docs, and pull data from Sheets. What would you like to look up?"
+}
