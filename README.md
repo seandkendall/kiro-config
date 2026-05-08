@@ -4,6 +4,93 @@
 
 Multi-agent AWS development environment for the Kiro CLI with specialized subagents, steering docs, and skills.
 
+## Prerequisites
+
+- [Kiro CLI](https://kiro.dev) installed
+- Python 3.13+ with `uv` and `uvx`
+- Node.js 20+ with `npx`
+- AWS CLI v2 configured with named profiles
+- Git
+
+<details open>
+<summary><strong>🚀 Quick Install Using Your AI Agent (Kiro)</strong></summary>
+
+<br>
+
+Navigate to your Kiro config directory:
+
+```bash
+cd ~/.kiro
+```
+
+Start Kiro CLI:
+
+```bash
+kiro-cli chat -a -r
+```
+
+Then paste this prompt:
+
+```text
+Please review my Kiro/Kiro CLI config in this directory including all agents,
+subagents, configurations, steering docs, skills, prompts, and all MCP servers
+we have configured in the various files.
+
+First, research all changes AWS has made to Kiro CLI in this changelog:
+https://kiro.dev/changelog/cli/
+and the IDE in this changelog:
+https://kiro.dev/changelog/ide/
+available models in this changelog:
+https://kiro.dev/changelog/models/
+and other general changes in this changelog:
+https://kiro.dev/changelog/general/
+
+Next, research the AWS AIDLC GitHub page to see if there is anything valuable
+from this project to port into our Kiro configuration:
+https://github.com/awslabs/aidlc-workflows/tree/main
+
+Next, AWS has released the Agent Toolkit for AWS which you can find here:
+https://aws.amazon.com/products/developer-tools/agent-toolkit-for-aws/
+and the GitHub for this here:
+https://github.com/aws/agent-toolkit-for-aws
+
+Deep research these projects to see what we should be pulling into our Kiro
+configuration. Also make sure you are looking at the changelogs to see what
+is new and how that can make our Kiro environment better.
+
+Finally, Sean Kendall has released his personal configuration for agents and
+subagents located here:
+https://github.com/seandkendall/kiro-config
+
+I want to make sure I am following Sean's guidance as he is capable of
+building production-ready single-shot prompt apps with this setup. You will
+see that he has a master agent that is configured with multiple subagents
+for delegation. Make sure we also configure a master agent with subagents,
+just like what Sean has created. Then make sure the master agent is the
+default selected agent for whenever I start my Kiro CLI in a new session.
+
+For any MCP server Sean uses where it requires an API key, check to see if
+I have a key. If I do not have a key on my machine, then ask me for it, and
+if I decline, then simply remove that MCP server from the configuration.
+```
+
+</details>
+
+<details>
+<summary><strong>📦 Manual Installation</strong></summary>
+
+<br>
+
+```bash
+# Copy all files into your Kiro config directory
+cp -r agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
+
+# Or to preserve existing files and only add new ones:
+cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
+```
+
+</details>
+
 ## What's New
 
 ### 2026.05.06
@@ -29,44 +116,6 @@ Multi-agent AWS development environment for the Kiro CLI with specialized subage
 - **AWS AppRegistry** — all CDK apps must register via `ApplicationAssociator` (auto-associates stacks + propagates `awsApplication` tag)
 - **Full keyboard shortcuts** — all builder agents now have shortcuts (ctrl+0-9 for primary, shift+key for specialists)
 - **Apache-2.0 license** added
-
-## Prerequisites
-
-- [Kiro CLI](https://kiro.dev) installed
-- Python 3.13+ with `uv` and `uvx`
-- Node.js 20+ with `npx`
-- AWS CLI v2 configured with named profiles
-- Git
-
-## Quick Install Using Your AI Agent (Kiro)
-
-Navigate to your Kiro config directory:
-
-```bash
-cd ~/.kiro
-```
-
-Start Kiro CLI:
-
-```bash
-kiro-cli chat -a -r
-```
-
-Then paste this prompt:
-
-```
-Please review my Kiro/Kiro CLI config in this directory including all agents, subagents, configurations, steering docs, skills, prompts, and all MCP servers we have configured in the various files. First, research all changes AWS has made to Kiro CLI in this changelog: https://kiro.dev/changelog/cli/ and the IDE in this changelog: https://kiro.dev/changelog/ide/, available models in this changelog: https://kiro.dev/changelog/models/, and other general changes in this changelog: https://kiro.dev/changelog/general/. Next, research the AWS AIDLC GitHub page to see if there is anything valuable from this project to port into our Kiro configuration: https://github.com/awslabs/aidlc-workflows/tree/main. Next, AWS has released the Agent Toolkit for AWS which you can find here: https://aws.amazon.com/products/developer-tools/agent-toolkit-for-aws/ and the GitHub for this here: https://github.com/aws/agent-toolkit-for-aws. Deep research these projects to see what we should be pulling into our Kiro configuration. Also make sure you are looking at the changelogs to see what is new and how that can make our Kiro environment better. Finally, Sean Kendall has released his personal configuration for agents and subagents located here: https://github.com/seandkendall/kiro-config. I want to make sure I am following Sean's guidance as he is capable of building production-ready single-shot prompt apps with this setup. You will see that he has a master agent that is configured with multiple subagents for delegation. Make sure we also configure a master agent with subagents, just like what Sean has created. Then make sure the master agent is the default selected agent for whenever I start my Kiro CLI in a new session. For any MCP server Sean uses where it requires an API key, check to see if I have a key. If I do not have a key on my machine, then ask me for it, and if I decline, then simply remove that MCP server from the configuration.
-```
-
-## Installation
-
-```bash
-# Copy all files into your Kiro config directory
-cp -r agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
-
-# Or to preserve existing files and only add new ones:
-cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
-```
 
 ## What's Included
 
