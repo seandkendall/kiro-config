@@ -30,6 +30,7 @@ inclusion: always
 
 - Encryption at rest: KMS for DynamoDB, S3, SQS, SNS, EBS
 - Encryption in transit: TLS everywhere, ACM certificates
+- **ALWAYS use AWS managed KMS keys** (`aws/service-name`) over customer-managed keys unless there is a specific compliance requirement for key rotation control or cross-account access. Managed keys are simpler, cheaper, and sufficient for most workloads.
 - S3: Block all public access, use CloudFront with OAC for public content
 - DynamoDB: Enable point-in-time recovery
 

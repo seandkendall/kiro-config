@@ -131,6 +131,22 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
 managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN
 ```
 
+**Custom Login UI (MANDATORY)** - NEVER use the Cognito Hosted UI. Always build custom pages:
+
+- Custom **login page** with email/password + passkey support
+- Custom **registration page** with email verification
+- Custom **password reset page** (forgot password flow)
+- Use the Cognito Identity SDK or `amazon-cognito-identity-js` / `@aws-amplify/auth` for all auth flows
+
+**Passkeys (MANDATORY)** - ALWAYS enable WebAuthn/passkeys for login:
+
+- Passkeys MUST be offered as a primary login method — not hidden behind email entry
+- Users should see a "Sign in with passkey" button immediately on the login page (no email-first flow)
+- After login, users MUST be able to add multiple passkeys from their account settings (any number of devices)
+- Use Cognito's WebAuthn support with `USER_AUTH` flow and `WEB_AUTHN` challenge
+- Passkey registration: allow users to name each passkey (e.g., "MacBook Pro", "iPhone 15")
+- Passkey management: list, rename, and delete registered passkeys from account settings
+
 **API Gateway Integration** - Configure Bearer token auth with JWT validation
 
 ## Security

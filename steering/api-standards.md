@@ -14,6 +14,13 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 - Use query params for filtering: `/transactions?status=pending&from=2025-01-01`
 - Version via path prefix when needed: `/v1/invoices`
 
+## API Routing (MANDATORY)
+
+- **ALL backend APIs MUST be served through the same root domain as the web app**, under a `/api` or `/rest` path prefix (e.g., `https://myapp.example.com/api/invoices`)
+- Use CloudFront with path-based routing: `/api/*` → API Gateway origin, `/*` → S3/frontend origin
+- This eliminates cross-origin requests entirely — CORS policy becomes `same-origin` (simplest, most secure)
+- Never host APIs on a separate subdomain (e.g., `api.myapp.example.com`) unless there is a specific technical requirement
+
 ## HTTP Methods
 
 - GET: Read (never mutate state)
