@@ -413,6 +413,7 @@ if check_env_var "GITHUB_PERSONAL_ACCESS_TOKEN"; then
   GITHUB_SET=true
 else
   echo -e "  ${YELLOW}⚠${NC} GITHUB_PERSONAL_ACCESS_TOKEN not found"
+  echo "     Get one at: https://github.com/settings/tokens (needs repo + read:org scopes)"
   read -rp "  Paste your GitHub token (or press Enter to skip): " GH_TOKEN
   if [[ -n "$GH_TOKEN" ]]; then
     echo '' >> ~/.zshrc
@@ -428,6 +429,7 @@ if check_env_var "TWENTY_FIRST_API_KEY"; then
   TWENTY_FIRST_SET=true
 else
   echo -e "  ${YELLOW}⚠${NC} TWENTY_FIRST_API_KEY not found (21st.dev Magic UI generation)"
+  echo "     Get one at: https://21st.dev/magic/console (sign in with GitHub)"
   read -rp "  Paste your 21st.dev API key (or press Enter to skip): " TF_KEY
   if [[ -n "$TF_KEY" ]]; then
     echo '' >> ~/.zshrc
@@ -443,6 +445,7 @@ if check_env_var "FIGMA_API_KEY"; then
   FIGMA_SET=true
 else
   echo -e "  ${YELLOW}⚠${NC} FIGMA_API_KEY not found (Figma design-to-code)"
+  echo "     Get one at: https://www.figma.com/settings → Security → Personal access tokens"
   read -rp "  Paste your Figma API key (or press Enter to skip): " FIGMA_KEY
   if [[ -n "$FIGMA_KEY" ]]; then
     echo '' >> ~/.zshrc
@@ -589,9 +592,9 @@ echo "╚═══════════════════════�
 echo ""
 if ! $GITHUB_SET || ! $TWENTY_FIRST_SET || ! $FIGMA_SET; then
   echo "To enable all features later, add missing API keys to ~/.zshrc:"
-  ! $GITHUB_SET && echo "  export GITHUB_PERSONAL_ACCESS_TOKEN=\"ghp_your_token_here\""
-  ! $TWENTY_FIRST_SET && echo "  export TWENTY_FIRST_API_KEY=\"your_21st_dev_key_here\""
-  ! $FIGMA_SET && echo "  export FIGMA_API_KEY=\"your_figma_api_key_here\""
+  ! $GITHUB_SET && echo "  export GITHUB_PERSONAL_ACCESS_TOKEN=\"ghp_...\"      # https://github.com/settings/tokens"
+  ! $TWENTY_FIRST_SET && echo "  export TWENTY_FIRST_API_KEY=\"your_key_here\"  # https://21st.dev/magic/console"
+  ! $FIGMA_SET && echo "  export FIGMA_API_KEY=\"your_key_here\"         # https://www.figma.com/settings (Security → Personal access tokens)"
   echo "Then re-run ./import.sh to restore the MCP servers."
   echo ""
 fi

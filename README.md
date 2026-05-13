@@ -175,18 +175,23 @@ Agents configure their own MCP servers. Key servers used across agents:
 
 ## Environment Variables
 
-Set these before using agents that need them:
+The setup uses 3 optional API keys. If a key is missing when you run `./import.sh`, the installer will prompt you for it and disable the related MCP server if you skip.
+
+| Variable                       | Purpose                                                             | Get one at                                                                                                                                  |
+| ------------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | GitHub MCP server — repo, PR, issue access (5 agents)               | [github.com/settings/tokens](https://github.com/settings/tokens) — create a classic or fine-grained token with `repo` and `read:org` scopes |
+| `TWENTY_FIRST_API_KEY`         | 21st.dev Magic — AI UI component generation (frontend, web-builder) | [21st.dev/magic/console](https://21st.dev/magic/console) — sign in with GitHub, generate a key                                              |
+| `FIGMA_API_KEY`                | Figma Framelink — design-to-code from Figma URLs (frontend)         | [figma.com/settings](https://www.figma.com/settings) → Security → Personal access tokens                                                    |
+
+Add them to `~/.zshrc`:
 
 ```bash
-# Required for GitHub MCP server
 export GITHUB_PERSONAL_ACCESS_TOKEN="ghp_your_token_here"
-
-# Required for 21st.dev Magic UI generation
 export TWENTY_FIRST_API_KEY="your_key_here"
-
-# Required for Figma design-to-code
 export FIGMA_API_KEY="your_key_here"
 ```
+
+Then `source ~/.zshrc` (or open a new terminal) before starting Kiro CLI.
 
 ## Configuration
 
