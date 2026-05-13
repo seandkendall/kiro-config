@@ -133,24 +133,29 @@ Diagram:
 
 ## Common Resource Types
 
+> **Note:** Prefer the base service type (e.g., `AWS::CloudFront`) when a specific variant isn't defined in awsdac's icon file. Variants like `AWS::CloudFront::Distribution` fall back to the base icon with a warning. The types below are all verified to render cleanly with zero warnings.
+
 | Service        | Type                                                                                   |
 | -------------- | -------------------------------------------------------------------------------------- |
 | Lambda         | `AWS::Lambda::Function`                                                                |
-| API Gateway    | `AWS::ApiGateway::RestApi` / `AWS::ApiGatewayV2::Api`                                  |
+| API Gateway    | `AWS::ApiGateway` (REST) / `AWS::ApiGatewayV2::Api` (HTTP)                             |
 | DynamoDB       | `AWS::DynamoDB::Table`                                                                 |
 | S3             | `AWS::S3::Bucket`                                                                      |
-| CloudFront     | `AWS::CloudFront::Distribution`                                                        |
+| CloudFront     | `AWS::CloudFront`                                                                      |
 | Cognito        | `AWS::Cognito::UserPool`                                                               |
 | SQS            | `AWS::SQS::Queue`                                                                      |
 | SNS            | `AWS::SNS::Topic`                                                                      |
-| Step Functions | `AWS::StepFunctions::StateMachine`                                                     |
-| EventBridge    | `AWS::Events::EventBus`                                                                |
+| Step Functions | `AWS::StepFunctions`                                                                   |
+| EventBridge    | `AWS::Events`                                                                          |
 | EC2 Instance   | `AWS::EC2::Instance`                                                                   |
 | RDS            | `AWS::RDS::DBInstance`                                                                 |
 | ECS            | `AWS::ECS::Service`                                                                    |
 | ALB            | `AWS::ElasticLoadBalancingV2::LoadBalancer` (with `Preset: Application Load Balancer`) |
 | VPC            | `AWS::EC2::VPC`                                                                        |
 | Subnet         | `AWS::EC2::Subnet` (with `Preset: PublicSubnet` or `PrivateSubnet`)                    |
+| CloudWatch     | `AWS::CloudWatch::Alarm`                                                               |
+| X-Ray          | `AWS::XRay`                                                                            |
+| Secrets Mgr    | `AWS::SecretsManager::Secret`                                                          |
 | User / Client  | `AWS::Diagram::Resource` with `Preset: User`                                           |
 
 See the full list at: https://github.com/awslabs/diagram-as-code/blob/main/doc/resource-types.md
