@@ -186,9 +186,6 @@ export TWENTY_FIRST_API_KEY="your_key_here"
 
 # Required for Figma design-to-code
 export FIGMA_API_KEY="your_key_here"
-
-# Required for Browser Lens CSS debugging
-export BROWSER_LENS_API_KEY="your_key_here"
 ```
 
 ## Configuration

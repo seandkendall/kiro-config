@@ -95,3 +95,27 @@ description: REST and GraphQL API design patterns, error response formats, endpo
 - REST: Use API Gateway request models to reject malformed requests before Lambda
 - GraphQL: Use AppSync input type validation and VTL/JS resolver input checks
 - Defense in depth: validate again in Lambda with pydantic (Python) or zod (TypeScript)
+
+## Python ↔ TypeScript Contract (MANDATORY)
+
+JSON serialisation turns Python `None` into JSON `null`, not `undefined`. On the TypeScript side, `z.X().optional()` accepts `undefined` but REJECTS `null`. A schema with `z.string().optional()` therefore fails to parse any payload where the Lambda emits `"field": null`, which silently breaks every consumer of that endpoint.
+
+**Rules:**
+
+- For any Python field typed `Optional[X]` (or `X | None`) that is **always present in the JSON response** (e.g., not stripped via `exclude_none`), the matching zod field MUST be `.nullable()`, not `.optional()`.
+- Prefer `.nullable()` over `.optional()` by default for any field backed by an `Optional[X]` Python value. Use `.optional()` only when the Python side deliberately omits the key from the dict via `model_dump(exclude_none=True)` or similar.
+- When in doubt: `.nullable().optional()` accepts `null`, `undefined`, and present-as-X, so it's the safest choice for fields that might be omitted OR emitted as null.
+
+**Python → TypeScript mapping table:**
+
+| Python type (pydantic)                                     | JSON emitted                | TypeScript (zod)                   |
+| ---------------------------------------------------------- | --------------------------- | ---------------------------------- |
+| `str`                                                      | `"value"`                   | `z.string()`                       |
+| `Optional[str]` + `exclude_none=True`                      | key absent                  | `z.string().optional()`            |
+| `Optional[str]` (default, key always present)              | `null` or `"value"`         | `z.string().nullable()`            |
+| `Optional[str]` (mixed — sometimes absent, sometimes null) | `null` / absent / `"value"` | `z.string().nullable().optional()` |
+
+**Enforcement:**
+
+- Every `/api/*` Lambda MUST have a contract test that loads the real response fixture and runs it through the matching zod schema — mismatches break the build.
+- In dev mode, `apiFetch` logs the first three zod issues to `console.warn` with full JSON paths so schema drift is obvious at first render rather than invisible behind a generic "Could not load" error.
