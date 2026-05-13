@@ -139,11 +139,11 @@ else
 fi
 
 # Formatters (optional but recommended)
-for tool in ruff prettier shfmt delta; do
+for tool in ruff prettier shfmt delta awsdac; do
   if command -v "$tool" &>/dev/null; then
     echo -e "  ${GREEN}✓${NC} $tool found"
   else
-    echo -e "  ${YELLOW}⚠${NC} $tool not found (optional — used by formatting hooks)"
+    echo -e "  ${YELLOW}⚠${NC} $tool not found (optional — formatters + diagram tooling)"
     MISSING+=("$tool")
   fi
 done
@@ -193,6 +193,10 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
           delta)
             echo "  Installing delta..."
             NONINTERACTIVE=1 brew install git-delta 2>&1 | tail -1
+            ;;
+          awsdac)
+            echo "  Installing awsdac (AWS diagram-as-code)..."
+            NONINTERACTIVE=1 brew install awsdac 2>&1 | tail -1
             ;;
         esac
       done

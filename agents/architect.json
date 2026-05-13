@@ -30,7 +30,8 @@
     "skill://~/.kiro/skills/aws-serverless/SKILL.md",
     "skill://~/.kiro/skills/routing-traffic-with-route53-and-cloudfront/SKILL.md",
     "skill://~/.kiro/skills/aws-cloudformation/SKILL.md",
-    "skill://~/.kiro/skills/aws-billing-and-cost-management/SKILL.md"
+    "skill://~/.kiro/skills/aws-billing-and-cost-management/SKILL.md",
+    "skill://~/.kiro/skills/aws-diagram-png.md"
   ],
   "toolsSettings": {
     "shell": {
