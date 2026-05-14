@@ -8,6 +8,20 @@ description: 'Generate validated AWS architecture diagrams as draw.io XML using 
 
 Generate draw.io XML files with official AWS4 icons matching the style of AWS Reference Architecture diagrams.
 
+## When to Use This Skill vs. aws-diagram-png
+
+- Use **this skill** (`aws-architecture-diagram`) when the user wants **editable draw.io XML** they can refine in [app.diagrams.net](https://app.diagrams.net) before exporting
+- Use **`aws-diagram-png`** (the awsdac-based skill) when the user wants a **PNG image directly** for slides, docs, or PRs
+
+The two skills use different AWS icon libraries:
+
+| Skill                             | Icon namespace                                 | Output        |
+| --------------------------------- | ---------------------------------------------- | ------------- |
+| `aws-architecture-diagram` (this) | `mxgraph.aws4.*` (draw.io's bundled AWS4 set)  | `.drawio` XML |
+| `aws-diagram-png`                 | awsdac's `definition-for-aws-icons-light.yaml` | `.png` image  |
+
+Resource type names differ between the two — this skill uses draw.io's `resIcon=mxgraph.aws4.<service>`, while `aws-diagram-png` uses CloudFormation-style `AWS::<Service>::<Resource>` with awsdac-specific fallback rules. Don't mix the two.
+
 ## Modes
 
 ### Mode A — Codebase Analysis

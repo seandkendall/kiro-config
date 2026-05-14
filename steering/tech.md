@@ -52,3 +52,12 @@ inclusion: always
 - cdk-nag for security validation
 - ESLint and Prettier for code quality
 - Testing: pytest + moto (Python), Vitest + React Testing Library (React), Cypress (E2E)
+- `awsdac` (CLI) for generating PNG architecture diagrams with official AWS icons (`brew install awsdac`)
+
+## Kiro CLI Tooling
+
+- Kiro CLI 2.3.0+ with Claude Opus 4.7 (adaptive thinking) as default model
+- Master agent (`ctrl+1`) is the entry point — delegates to specialist subagents via `subagent` tool
+- Use `subagent` for synchronous orchestration; `delegate` only for long-running async background tasks
+- `deploy.sh` scripts route verbose output via `$AGENT_DISPLAY_OUT` and structured summaries via `$AGENT_CONTEXT_OUT` so the agent context stays lean
+- AWS MCP Server (`mcp-proxy-for-aws`) is the single AWS interaction point — no per-service awslabs MCP servers

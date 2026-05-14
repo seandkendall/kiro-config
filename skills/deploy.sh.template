@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+#
+# deploy.sh — Deploy/teardown an AWS CDK stack with frontend
+#
+# Usage:
+#   ./deploy.sh --profile <aws-profile>           # Deploy
+#   ./deploy.sh --profile <aws-profile> --delete  # Tear down
+#
+# Designed to work with Kiro CLI's agent output side channels (2.3.0+):
+#   $AGENT_DISPLAY_OUT — verbose logs go to user TUI but NOT into agent context
+#   $AGENT_CONTEXT_OUT — structured summary lines go to agent_notes
+#
+
+set -euo pipefail
+
+# ----------------------------------------------------------------------------
+# Argument parsing
+# ----------------------------------------------------------------------------
+
+PROFILE=""
+DELETE=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --profile)
+      PROFILE="$2"
+      shift 2
+      ;;
+    --delete)
+      DELETE=true
+      shift
+      ;;
+    -h|--help)
+      grep "^#" "$0" | head -20 | sed 's/^# \?//'
+      exit 0
+      ;;
+    *)
+      echo "Unknown flag: $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [[ -z "$PROFILE" ]]; then
+  echo "ERROR: --profile is required" >&2
+  echo "Usage: ./deploy.sh --profile <aws-profile> [--delete]" >&2
+  exit 1
+fi
+
+# ----------------------------------------------------------------------------
+# Output channel detection
+# ----------------------------------------------------------------------------
+
+# When run by Kiro agent, route verbose output to TUI-only channel.
+# When run interactively, fall back to terminal directly.
+DISPLAY_OUT="${AGENT_DISPLAY_OUT:-/dev/stderr}"
+CONTEXT_OUT="${AGENT_CONTEXT_OUT:-/dev/null}"
+
+# Helper to log "verbose" output (to user TUI, not agent context)
+verbose() {
+  tee "$DISPLAY_OUT" > /dev/null
+}
+
+# Helper to log "facts" the agent should remember
+note() {
+  echo "$1" >> "$CONTEXT_OUT"
+}
+
+# ----------------------------------------------------------------------------
+# Project paths (customize per project)
+# ----------------------------------------------------------------------------
+
+PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+CDK_DIR="$PROJECT_ROOT/cdk-backend"
+FRONTEND_DIR="$PROJECT_ROOT/frontend"
+
+# ----------------------------------------------------------------------------
+# Tear down
+# ----------------------------------------------------------------------------
+
+if $DELETE; then
+  echo "==> Tearing down stack with profile: $PROFILE"
+  cd "$CDK_DIR"
+  cdk destroy --all --profile "$PROFILE" --force 2>&1 | verbose
+  note "Stack DESTROYED for profile $PROFILE"
+  echo "✓ Teardown complete"
+  exit 0
+fi
+
+# ----------------------------------------------------------------------------
+# Pre-deployment quality gate
+# ----------------------------------------------------------------------------
+
+echo "==> Running pre-deployment quality gate"
+
+# Lint
+if [[ -d "$FRONTEND_DIR" ]] && [[ -f "$FRONTEND_DIR/package.json" ]]; then
+  echo "  Linting frontend..."
+  (cd "$FRONTEND_DIR" && npm run lint 2>&1) | verbose
+fi
+
+if [[ -d "$CDK_DIR" ]]; then
+  echo "  Linting Python..."
+  (cd "$CDK_DIR" && ruff check . 2>&1) | verbose || {
+    echo "✗ ruff failed" >&2
+    exit 1
+  }
+fi
+
+# Tests
+if [[ -d "$CDK_DIR/tests" ]] || [[ -d "$CDK_DIR/lambda" ]]; then
+  echo "  Running pytest..."
+  (cd "$CDK_DIR" && pytest -q 2>&1) | verbose || {
+    echo "✗ pytest failed" >&2
+    exit 1
+  }
+fi
+
+if [[ -d "$FRONTEND_DIR" ]] && grep -q "vitest\|jest" "$FRONTEND_DIR/package.json" 2>/dev/null; then
+  echo "  Running frontend tests..."
+  (cd "$FRONTEND_DIR" && npm test -- --run 2>&1) | verbose || {
+    echo "✗ frontend tests failed" >&2
+    exit 1
+  }
+fi
+
+echo "✓ Quality gate passed"
+
+# ----------------------------------------------------------------------------
+# Frontend build (if present)
+# ----------------------------------------------------------------------------
+
+if [[ -d "$FRONTEND_DIR" ]] && [[ -f "$FRONTEND_DIR/package.json" ]]; then
+  echo "==> Building frontend"
+  (cd "$FRONTEND_DIR" && npm run build 2>&1) | verbose
+  echo "✓ Frontend built"
+fi
+
+# ----------------------------------------------------------------------------
+# CDK synth + deploy
+# ----------------------------------------------------------------------------
+
+cd "$CDK_DIR"
+
+echo "==> cdk synth"
+cdk synth --profile "$PROFILE" 2>&1 | verbose
+
+echo "==> cdk diff"
+cdk diff --profile "$PROFILE" 2>&1 | verbose || true  # diff exits non-zero when there are changes
+
+echo "==> cdk deploy"
+cdk deploy --all --profile "$PROFILE" --require-approval never 2>&1 | verbose
+
+# ----------------------------------------------------------------------------
+# Capture key outputs
+# ----------------------------------------------------------------------------
+
+STACK_NAME=$(cdk list --profile "$PROFILE" 2>/dev/null | head -1)
+REGION="${AWS_REGION:-us-east-1}"
+
+# Pull common outputs (CloudFront URL, API endpoint, etc.) — adjust per project
+CF_URL=$(aws cloudformation describe-stacks \
+  --stack-name "$STACK_NAME" \
+  --profile "$PROFILE" \
+  --region "$REGION" \
+  --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontUrl` || OutputKey==`DistributionDomainName`].OutputValue | [0]' \
+  --output text 2>/dev/null || echo "")
+
+API_URL=$(aws cloudformation describe-stacks \
+  --stack-name "$STACK_NAME" \
+  --profile "$PROFILE" \
+  --region "$REGION" \
+  --query 'Stacks[0].Outputs[?OutputKey==`ApiEndpoint` || OutputKey==`ApiUrl`].OutputValue | [0]' \
+  --output text 2>/dev/null || echo "")
+
+# ----------------------------------------------------------------------------
+# Summary (visible to agent + user)
+# ----------------------------------------------------------------------------
+
+note "Stack: $STACK_NAME — DEPLOYED"
+note "Profile: $PROFILE"
+note "Region: $REGION"
+[[ -n "$CF_URL" && "$CF_URL" != "None" ]] && note "CloudFront URL: https://$CF_URL"
+[[ -n "$API_URL" && "$API_URL" != "None" ]] && note "API endpoint: $API_URL"
+
+echo ""
+echo "✓ Deploy complete"
+echo "  Stack:       $STACK_NAME"
+echo "  Profile:     $PROFILE"
+echo "  Region:      $REGION"
+[[ -n "$CF_URL" && "$CF_URL" != "None" ]] && echo "  CloudFront:  https://$CF_URL"
+[[ -n "$API_URL" && "$API_URL" != "None" ]] && echo "  API:         $API_URL"
