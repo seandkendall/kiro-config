@@ -3,15 +3,6 @@
   "description": "Canadian accounting SaaS builder — Wave/QuickBooks alternative for Canadian small businesses, Alberta-focused, React + AWS serverless + Bedrock AI",
   "prompt": "file://~/.kiro/prompts/accounting.md",
   "mcpServers": {
-    "cdk-mcp-server": {
-      "command": "uvx",
-      "args": ["awslabs.cdk-mcp-server@latest"],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      },
-      "disabled": false,
-      "timeout": 300000
-    },
     "strands-agents": {
       "command": "uvx",
       "args": ["strands-agents-mcp-server@latest"],
@@ -129,5 +120,6 @@
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
-  }
+  },
+  "version": "2026.05.14"
 }

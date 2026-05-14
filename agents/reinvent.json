@@ -15,10 +15,6 @@
     }
   },
   "tools": ["*"],
-  "toolAliases": {
-    "docs": "aws-documentation-mcp-server",
-    "sam": "aws-serverless-mcp-server"
-  },
   "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
   "toolsSettings": {
     "shell": {
@@ -29,5 +25,6 @@
     "web_fetch": {
       "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
-  }
+  },
+  "version": "2026.05.14"
 }

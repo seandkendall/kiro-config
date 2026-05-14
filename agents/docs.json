@@ -41,5 +41,6 @@
       }
     ]
   },
-  "keyboardShortcut": "shift+o"
+  "keyboardShortcut": "shift+o",
+  "version": "2026.05.14"
 }

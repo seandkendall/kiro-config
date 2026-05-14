@@ -19,5 +19,6 @@
         "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
-  }
+  },
+  "version": "2026.05.14"
 }

@@ -38,5 +38,6 @@
       }
     ]
   },
-  "keyboardShortcut": "shift+c"
+  "keyboardShortcut": "shift+c",
+  "version": "2026.05.14"
 }

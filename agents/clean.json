@@ -23,5 +23,6 @@
       "fallbackAction": "deny"
     }
   },
-  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"]
+  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
+  "version": "2026.05.14"
 }

@@ -67,6 +67,32 @@
     },
     "aws": {
       "autoAllowReadonly": true
+    },
+    "subagent": {
+      "availableAgents": [
+        "frontend",
+        "serverless",
+        "testing",
+        "cypress",
+        "architect",
+        "security",
+        "devops",
+        "data",
+        "docs",
+        "image-gen"
+      ],
+      "trustedAgents": [
+        "frontend",
+        "serverless",
+        "testing",
+        "cypress",
+        "architect",
+        "security",
+        "devops",
+        "data",
+        "docs",
+        "image-gen"
+      ]
     }
   },
   "hooks": {
@@ -84,5 +110,8 @@
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
-  }
+  },
+  "keyboardShortcut": "shift+w",
+  "welcomeMessage": "Web builder ready. React + AWS full-stack apps with CDK, S3, CloudFront, Cognito (custom UI + passkeys), API Gateway, Lambda, DynamoDB. I delegate UI work to the frontend subagent and backend to serverless. What are we building?",
+  "version": "2026.05.14"
 }

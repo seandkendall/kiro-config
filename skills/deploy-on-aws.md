@@ -18,7 +18,8 @@ Take any application and deploy it to AWS with minimal user decisions.
 2. **Recommend** - Select AWS services, concisely explain rationale
 3. **Estimate** - Show monthly cost before proceeding
 4. **Generate** - Write IaC code with security defaults applied
-5. **Deploy** - Run security checks, then execute via `deploy.sh`
+5. **Quality Gate** - Run the [Pre-Deployment Quality Gate from `development-workflow.md`](../steering/development-workflow.md#pre-deployment-quality-gate): lint (zero warnings), build (zero warnings), unit tests (≥90% coverage), Cypress E2E (target 100%), no deprecation notices, no critical/high vulnerabilities
+6. **Deploy** - Run security checks (cdk-nag), then execute via `deploy.sh`
 
 ## Defaults
 

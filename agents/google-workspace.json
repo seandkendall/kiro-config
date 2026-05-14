@@ -23,5 +23,6 @@
       "deniedCommands": ["git-defender.*"]
     }
   },
-  "welcomeMessage": "Google Workspace agent ready (read-only). I can search Drive, read Docs, and pull data from Sheets. What would you like to look up?"
+  "welcomeMessage": "Google Workspace agent ready (read-only). I can search Drive, read Docs, and pull data from Sheets. What would you like to look up?",
+  "version": "2026.05.14"
 }

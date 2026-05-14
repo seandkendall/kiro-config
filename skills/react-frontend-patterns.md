@@ -89,7 +89,38 @@ function TransactionForm() {
 - Desktop: `lg:` (1280px)
 - Touch targets: minimum 44x44px on mobile
 
-## data-cy Selectors (for Cypress)
+## data-cy Selectors (MANDATORY — for Cypress)
 
-- Every interactive element needs `data-cy`
-- Pattern: `data-cy="entity-action"` (e.g., `data-cy="invoice-submit"`)
+`data-cy` attributes are **REQUIRED** on every interactive element. Cypress tests are non-negotiable in this codebase, and CSS/class selectors break tests when styles change.
+
+**Required on:**
+
+- Every `<button>` / `<a>` (clickable)
+- Every `<input>` / `<select>` / `<textarea>` (user input)
+- Every `<form>` (submission target)
+- Every page-level container (test entry point)
+- Every error/success message (assertion target)
+- Every modal / dialog (visibility check)
+- Every loading indicator (race-condition guard)
+
+**Naming pattern:** `data-cy="<entity>-<action>"` or `data-cy="<entity>-<role>"`
+
+| Element        | Pattern                  | Example                          |
+| -------------- | ------------------------ | -------------------------------- |
+| Submit button  | `<entity>-submit`        | `data-cy="invoice-submit"`       |
+| Cancel button  | `<entity>-cancel`        | `data-cy="invoice-cancel"`       |
+| Form input     | `<entity>-<field>-input` | `data-cy="invoice-amount-input"` |
+| Error message  | `<entity>-error`         | `data-cy="invoice-error"`        |
+| Page container | `<page>-page`            | `data-cy="dashboard-page"`       |
+| List item      | `<entity>-row-<id>`      | `data-cy="invoice-row-123"`      |
+| Modal          | `<entity>-modal`         | `data-cy="delete-confirm-modal"` |
+
+**Rules:**
+
+- Never use class selectors, IDs, or tag selectors in Cypress — `cy.get('[data-cy=...]')` only
+- Keep selectors **stable** — only change them when the element's purpose changes, not when styles or DOM hierarchy change
+- Avoid dynamic IDs like `data-cy="btn-${randomId}"` — use stable entity identifiers
+- One `data-cy` per element — don't reuse the same value on multiple elements (Cypress will be ambiguous)
+- For lists, include the row's unique identifier so individual rows can be selected
+
+**Code review enforcement:** PRs that add interactive elements WITHOUT `data-cy` selectors should be rejected. The Cypress agent will flag missing selectors automatically when it sees a component without coverage.

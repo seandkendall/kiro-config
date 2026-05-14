@@ -74,5 +74,6 @@
       }
     ]
   },
-  "keyboardShortcut": "shift+s"
+  "keyboardShortcut": "shift+s",
+  "version": "2026.05.14"
 }
