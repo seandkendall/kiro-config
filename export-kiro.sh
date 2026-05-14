@@ -75,8 +75,14 @@ done
 
 # --- Skills ---
 mkdir -p "$EXPORT_DIR/skills"
-for f in "$KIRO_DIR/skills"/*.md; do
-  [[ -f "$f" ]] && cp "$f" "$EXPORT_DIR/skills/"
+# Copy all files (including .md, .template, etc.) and all subdirectories
+# (toolkit skills come as folders with SKILL.md + references/)
+for item in "$KIRO_DIR/skills"/*; do
+  if [[ -f "$item" ]]; then
+    cp "$item" "$EXPORT_DIR/skills/"
+  elif [[ -d "$item" ]]; then
+    cp -r "$item" "$EXPORT_DIR/skills/"
+  fi
 done
 
 # --- Prompts ---
@@ -120,7 +126,7 @@ echo "Export complete: $EXPORT_DIR"
 echo ""
 AGENT_COUNT=$(ls -1 "$EXPORT_DIR/agents/"*.json 2>/dev/null | wc -l | tr -d ' ')
 STEERING_COUNT=$(ls -1 "$EXPORT_DIR/steering/"*.md 2>/dev/null | wc -l | tr -d ' ')
-SKILL_COUNT=$(ls -1 "$EXPORT_DIR/skills/"*.md 2>/dev/null | wc -l | tr -d ' ')
+SKILL_COUNT=$(find "$EXPORT_DIR/skills" -mindepth 1 -maxdepth 1 \( -name "*.md" -o -type d -o -name "*.template" \) 2>/dev/null | wc -l | tr -d ' ')
 PROMPT_COUNT=$(ls -1 "$EXPORT_DIR/prompts/"*.md 2>/dev/null | wc -l | tr -d ' ')
 echo "  Agents:   $AGENT_COUNT"
 echo "  Steering: $STEERING_COUNT"

@@ -93,7 +93,7 @@
     }
   },
   "keyboardShortcut": "ctrl+1",
-  "welcomeMessage": "Master orchestrator ready. I route tasks to specialist subagents — serverless, frontend, testing, architect, AI, devops, data, security, docs, and more. What are we building?",
+  "welcomeMessage": "Master orchestrator ready. I route tasks to specialist subagents — serverless, frontend, testing, architect, AI, devops, data, security, docs, image-gen, research, sap-abap, google-workspace. I can also generate AWS architecture diagrams (PNG via awsdac, draw.io XML for editing) and full deploy.sh scripts. What are we building?",
   "hooks": {
     "postToolUse": [
       {

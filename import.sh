@@ -374,13 +374,19 @@ copy_dir() {
   mkdir -p "$dest"
   local count=0
 
+  # Copy files (any extension)
   for f in "$SCRIPT_DIR/$src"/*; do
-    [[ ! -f "$f" ]] && continue
-    cp "$f" "$dest/"
-    ((count++))
+    if [[ -f "$f" ]]; then
+      cp "$f" "$dest/"
+      ((count++))
+    elif [[ -d "$f" ]]; then
+      # Recursively copy subdirectories (e.g., toolkit skill packages with SKILL.md + references/)
+      cp -r "$f" "$dest/"
+      ((count++))
+    fi
   done
 
-  [[ $count -gt 0 ]] && echo -e "  ${GREEN}✓${NC} $dir_name/ — $count files"
+  [[ $count -gt 0 ]] && echo -e "  ${GREEN}✓${NC} $dir_name/ — $count items"
 }
 
 echo "Installing configuration..."
@@ -586,6 +592,19 @@ for key, value in settings.items():
 print("  Applied settings: defaultAgent, defaultModel, subagent, thinking, todoList, etc.")
 SETTINGS_EOF
   echo -e "  ${GREEN}✓${NC} Kiro CLI settings configured"
+fi
+
+# --- Step 5.5: MCP server smoke test ---
+if command -v kiro-cli &>/dev/null; then
+  echo ""
+  echo "Verifying MCP servers can boot..."
+  MCP_OUTPUT=$(timeout 30 kiro-cli mcp list 2>&1 || true)
+  if echo "$MCP_OUTPUT" | grep -qi "error\|failed\|not found"; then
+    echo -e "  ${YELLOW}⚠${NC}  Some MCP servers reported errors — review with: kiro-cli mcp list"
+  else
+    SERVER_COUNT=$(echo "$MCP_OUTPUT" | grep -cE "^[a-zA-Z0-9_-]+:" 2>/dev/null || echo "?")
+    echo -e "  ${GREEN}✓${NC} MCP servers configured (run ${YELLOW}kiro-cli mcp list${NC} to inspect)"
+  fi
 fi
 
 # --- Step 6: Done ---

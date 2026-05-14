@@ -2,6 +2,37 @@
 
 All notable changes to this Kiro CLI configuration.
 
+## [2026.05.14] - 2026-05-14
+
+### Added
+
+- **awsdac PNG diagrams** — `aws-diagram-png` skill (uses `awslabs/diagram-as-code`) for direct PNG generation with real AWS icons. Complements `aws-architecture-diagram` (draw.io XML)
+- **`deploy.sh.template`** — full deployment template under `skills/` with side-channel routing wired in
+- **Agent output side channels** documented in `deploy-on-aws` skill (Kiro CLI 2.3.0): `$AGENT_DISPLAY_OUT` for verbose logs (TUI only), `$AGENT_CONTEXT_OUT` for facts (`agent_notes`)
+- **`subagent` vs `delegate`** decision table added to `AGENTS.md`
+- **Kiro CLI 2.3.0 features** documented in `tech.md` and `AGENTS.md`
+- **`/code overview` onboarding guidance** in `development-workflow.md`
+- **MCP smoke test** in `import.sh` runs `kiro-cli mcp list` after install
+- **`kiro-cli-troubleshooting.md`** steering doc (auto-loaded) with common fixes
+- **Local install guidance** in README explains what AI agents (Kiro, Cursor, etc.) must install autonomously
+
+### Changed
+
+- **Post-task recommendations** split into "for the user" (optional, omitted unless required) and "for the AI Agent" (mandatory, ≥10 items). Adds `Continue` interaction — type `Continue` to run all, or `Continue with 2, 5, 8` for a subset
+- **`development-workflow.md`** response-format rule defers to `post-task-recommendations.md`
+- **`import.sh` + `export-kiro.sh`** now copy non-`.md` files and recurse into skill subdirectories (toolkit skills are folders, `deploy.sh.template` was being missed)
+- **`deploy-on-aws` skill** description matches "deploy.sh" requests
+- **`aws-architecture-diagram` skill** cross-references `aws-diagram-png` (XML vs PNG)
+- **Master welcome message** mentions diagram generation and deploy.sh
+- **`aws-diagram-png` skill** uses base service types (e.g., `AWS::CloudFront`) instead of variants that trigger awsdac fallback warnings
+
+### Fixed
+
+- `BROWSER_LENS_API_KEY` removed from configs (Browser Lens MCP doesn't use it — was vestigial)
+- `BRAVE_API_KEY` removed from `import.sh` (switched to DuckDuckGo)
+- Stray `settings/mcp.json` removed (agents are self-contained)
+- Skills directory was losing `deploy.sh.template` and toolkit subdirectories during export
+
 ## [2026.05.06] - 2026-05-06
 
 ### Added
