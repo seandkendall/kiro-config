@@ -5,7 +5,9 @@
   "mcpServers": {
     "bedrock-agentcore-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.amazon-bedrock-agentcore-mcp-server@latest"],
+      "args": [
+        "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -13,7 +15,9 @@
     },
     "strands-agents": {
       "command": "uvx",
-      "args": ["strands-agents-mcp-server@latest"],
+      "args": [
+        "strands-agents-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "INFO"
       },
@@ -21,7 +25,9 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": ["bedrock-image-mcp-server@latest"],
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -38,14 +44,22 @@
       "disabled": false
     }
   },
-  "tools": ["*"],
-  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true
@@ -72,6 +86,5 @@
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
-  },
-  "version": "2026.05.14"
+  }
 }

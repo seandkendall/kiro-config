@@ -5,7 +5,10 @@
   "mcpServers": {
     "shopify-dev-mcp": {
       "command": "npx",
-      "args": ["-y", "@shopify/dev-mcp@latest"]
+      "args": [
+        "-y",
+        "@shopify/dev-mcp@latest"
+      ]
     },
     "aws-mcp-server": {
       "command": "uvx",
@@ -18,14 +21,22 @@
       "disabled": false
     }
   },
-  "tools": ["*"],
-  "resources": ["file://AGENTS.md", "file://README.md", "file://~/.kiro/steering/*.md"],
+  "tools": [
+    "*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md"
+  ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     }
   },
   "hooks": {
@@ -35,6 +46,5 @@
         "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
-  },
-  "version": "2026.05.14"
+  }
 }
