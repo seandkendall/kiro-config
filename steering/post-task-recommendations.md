@@ -87,3 +87,12 @@ When the user replies with anything else: treat their reply as a new instruction
 - The ONLY deployment method is the `deploy.sh` script — always recommend and enforce this
 - If a user explicitly asks for CI/CD, only then may you help implement it
 - This rule applies to ALL agents, ALL subagents, and ALL sessions
+
+## Git Hook Ban (STRICT)
+
+- **NEVER** recommend adding git hooks (pre-commit, pre-push, post-merge, etc.)
+- **NEVER** suggest installing hook frameworks like `pre-commit`, `husky`, or `lefthook`
+- **NEVER** suggest auto-running validators, linters, or formatters via hooks
+- If a user explicitly asks for a git hook, only then may you help implement it
+- This rule applies to ALL agents, ALL subagents, and ALL sessions
+- Validation should be done manually by the user (e.g., `./test-import.sh`) or as part of the `deploy.sh` quality gate, never enforced through hooks

@@ -22,3 +22,5 @@ Use these tools proactively — don't guess when you can look up or inspect:
 - **Browser Lens**: Connect to the user's live browser for deep CSS/layout debugging. Inspect computed styles, box model, flex/grid, design tokens, colors, typography. Compare live CSS against Figma specs (0–100 score). Run accessibility audits. Take on-demand screenshots.
 - **Sequential Thinking**: Break down complex multi-step tasks into structured reasoning chains before acting. Use for architecture decisions, complex refactors, or multi-component features.
 - **Fetch**: Pull any URL on demand — API docs, package READMEs, JSON schemas, OpenAPI specs. Use when you need context not covered by other servers.
+
+MCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (repos, PRs, issues, branches, file contents). ALWAYS use `aws-mcp-server` for AWS operations. Local git (status/diff/log/add/commit/push) is fine via shell. See steering/mcp-server-preference.md.

@@ -92,3 +92,5 @@ You have access to subagents via the use_subagent tool. Use them for parallel wo
 - CDK: cdk-backend/cdk/
 - Agents: cdk-backend/agents/ (Strands Agent definitions)
 - Steering: .kiro/steering/
+
+MCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (repos, PRs, issues, branches, file contents). ALWAYS use `aws-mcp-server` for AWS operations. Local git (status/diff/log/add/commit/push) is fine via shell. See steering/mcp-server-preference.md.

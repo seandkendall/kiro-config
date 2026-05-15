@@ -2,6 +2,23 @@
 
 All notable changes to this Kiro CLI configuration.
 
+## [2026.05.15] - 2026-05-15
+
+### Added
+
+- **MCP-over-CLI rule wired into ALL 25 agents** — every agent prompt (13 external `.md` + 7 inline + previously-updated master/devops/research/testing/cypress) now explicitly tells the agent to prefer MCP servers over `gh`/`aws` CLI commands
+- **`mcp-tool-discovery.md` skill** — explains how to use `tool_search` to find the right MCP tool when unsure, with a decision tree, common-mappings cheat sheet, and anti-patterns
+- **Git Hook Ban (STRICT)** in `post-task-recommendations.md` — never recommend pre-commit/pre-push hooks, husky, lefthook, or hook frameworks. Mirrors the existing CI/CD ban
+- **Pre-push Checklist** section in README pointing developers at `./test-import.sh`
+- **Side channels documented** in testing + cypress prompts (`$AGENT_DISPLAY_OUT` / `$AGENT_CONTEXT_OUT` for verbose test runs)
+- **`test-import.sh`** — local fresh-install validation script: exports → simulated install → validates every agent JSON → JSON/bash syntax. Run before every push.
+- **`agentcore` agent** now has full subagent toolsSettings (11 trusted subagents)
+
+### Changed
+
+- `aws-agent-toolkit.md` cross-references `mcp-server-preference.md` as the umbrella rule
+- `cypress.md` enforces the `data-cy` selector pattern from `react-frontend-patterns.md`
+
 ## [2026.05.14] - 2026-05-14
 
 ### Added
