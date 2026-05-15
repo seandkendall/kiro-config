@@ -96,7 +96,7 @@
       "autoAllowReadonly": true
     }
   },
-  "welcomeMessage": "AI builder ready. Default stack: Strands Agents + AgentCore + Bedrock. SageMaker only for custom models not on Bedrock. Model selection, prompts, RAG, full app builds — what are we building?",
+  "welcomeMessage": "AI builder ready. Default: Strands + AgentCore + Bedrock. SageMaker only for custom models not on Bedrock. Model selection, prompts, RAG, full app builds — what are we building?",
   "keyboardShortcut": "ctrl+0",
   "hooks": {
     "postToolUse": [

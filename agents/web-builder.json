@@ -70,28 +70,30 @@
     },
     "subagent": {
       "availableAgents": [
-        "frontend",
-        "serverless",
-        "testing",
-        "cypress",
+        "ai-builder",
         "architect",
-        "security",
-        "devops",
+        "cypress",
         "data",
+        "devops",
         "docs",
-        "image-gen"
+        "frontend",
+        "image-gen",
+        "security",
+        "serverless",
+        "testing"
       ],
       "trustedAgents": [
-        "frontend",
-        "serverless",
-        "testing",
-        "cypress",
+        "ai-builder",
         "architect",
-        "security",
-        "devops",
+        "cypress",
         "data",
+        "devops",
         "docs",
-        "image-gen"
+        "frontend",
+        "image-gen",
+        "security",
+        "serverless",
+        "testing"
       ]
     }
   },

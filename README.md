@@ -145,8 +145,9 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 - **Documentation Sync rule** — agents MUST update CHANGELOG.md and README.md in the same commit as any change that affects them
 - **Python 3.14** — Lambda runtime upgraded across all agents and skills (GA on Lambda Nov 2025)
 - **Image agents merged** — `image-gen` and `image-editor` consolidated into a single `image-gen` agent that handles UI assets, marketing, virtual try-on, and ambient art (e.g., Frame TV)
+- **AI agents merged** — `agentcore` consolidated into `ai-builder`. Single AI agent now covers both AI integration patterns (model selection, prompts, RAG) and full agentic app builds. Default stack: Strands Agents + AgentCore + Bedrock; SageMaker fallback only for custom models not on Bedrock.
 - **Removed `db` and `clean` agents** — no longer needed
-- **18 agents total** in shareable export (was 19), all validated end-to-end
+- **16 agents total** in shareable export (was 19), all validated end-to-end
 - **Privacy audit clean** — no credentials, personal info, or project names in tracked files
 
 ### 2026.05.14
