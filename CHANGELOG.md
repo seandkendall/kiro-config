@@ -4,56 +4,39 @@ All notable changes to this Kiro CLI configuration.
 
 ## [2026.05.15] - 2026-05-15
 
-### Added
+This release consolidates AI agents, locks down MCP-over-CLI usage across the board, adds a local pre-push validation script, and ships a reusable `mcp-tool-discovery` skill. Public-ready.
 
-- **Documentation Sync rule** in `development-workflow.md`: agents MUST update `CHANGELOG.md` and `README.md` in the same commit as any change that affects them
-- **MCP-over-CLI rule wired into ALL 25 agents** — every agent prompt (13 external `.md` + 7 inline + previously-updated master/devops/research/testing/cypress) now explicitly tells the agent to prefer MCP servers over `gh`/`aws` CLI commands
-- **`mcp-tool-discovery.md` skill** — explains how to use `tool_search` to find the right MCP tool when unsure, with a decision tree, common-mappings cheat sheet, and anti-patterns
-- **Git Hook Ban (STRICT)** in `post-task-recommendations.md` — never recommend pre-commit/pre-push hooks, husky, lefthook, or hook frameworks. Mirrors the existing CI/CD ban
-- **Pre-push Checklist** section in README pointing developers at `./test-import.sh`
-- **Side channels documented** in testing + cypress prompts (`$AGENT_DISPLAY_OUT` / `$AGENT_CONTEXT_OUT` for verbose test runs)
-- **`test-import.sh`** — local fresh-install validation script: exports → simulated install → validates every agent JSON → JSON/bash syntax. Run before every push.
-- **`agentcore` agent** now has full subagent toolsSettings (11 trusted subagents)
-- **mcp-tool-discovery skill** added to master agent's resources for auto-load
-- **GitHub badges** in README (latest tag + last commit)
-- **MCP Server Issues** section in `troubleshooting.md` (server unavailable, timeout, name collision)
-- **Tips for AI Agents** callout block at top of README
-- **Steering descriptions** added to 8 docs that lacked them (AGENTS, aws-standards, development-workflow, product, python-standards, security-policies, structure, tech)
-- **`agents/agent_config.json.example`** added to `.gitignore` (Kiro CLI auto-recreates this stray file)
+### Highlights
 
-### Changed
+- **AI agents merged into one** — `agentcore` is gone; `ai-builder` now handles both AI integration patterns (model selection, prompts, RAG) AND full agentic app builds (Strands + AgentCore + Bedrock as default; SageMaker fallback only for custom models not on Bedrock).
+- **Image agents merged into one** — `image-editor` is gone; `image-gen` now covers UI assets, marketing, virtual try-on, sketch-to-2D, and ambient art (Frame TV).
+- **MCP-over-CLI rule** is now mandatory — every agent prompt instructs the agent to use the `github` MCP server for github.com operations, never `gh` CLI. Local git operations (`status`, `diff`, `log`, `add`, `commit`, `push`) still go through shell.
+- **Lambda runtime** bumped from Python 3.13 to **Python 3.14** across every doc, prompt, and template (Lambda 3.14 GA was Nov 2025).
+- **Pre-push validation** — new `./test-import.sh` runs export → simulated install → agent JSON validation → JSON/bash syntax. Catches schema drift and broken configs before they hit the public repo.
+- **CI/CD and git hook bans** — `post-task-recommendations.md` now forbids both. The only deployment path is `deploy.sh`; the only validation path is `./test-import.sh`.
 
-- **AI agents merged** — `agentcore` consolidated into `ai-builder`. Single AI agent now covers AI integration patterns AND full agentic app builds. Default stack: Strands Agents + AgentCore + Bedrock; SageMaker fallback only for custom models not on Bedrock. ai-builder now has 5 MCP servers (aws-mcp-server, bedrock-agentcore-mcp-server, bedrock-image-mcp-server, context7, strands-agents) + subagent orchestration with 10 trusted subagents.
-- **`web-builder` can delegate to `ai-builder`** — added `ai-builder` to web-builder's availableAgents/trustedAgents (now 11 trusted subagents) so React + AWS apps with AI features can route the AI integration layer to ai-builder
-- **`accounting` agent**: added explicit `availableAgents` list (mirrors trustedAgents) for clarity
-- **`ai-builder` welcomeMessage** trimmed 190 → 177 chars while preserving default-stack and SageMaker-fallback messaging
-- **Image agents merged** — `image-gen` and `image-editor` consolidated into a single `image-gen` agent that handles UI assets, marketing graphics, virtual try-on, sketch-to-2D, and ambient art (Frame TV). Prompt externalized to `prompts/image-gen.md`.
-- **`image-gen` alpha-channel caveat** — prompt now explicitly warns that Nova Canvas often returns 8-bit RGB without alpha; instructs the agent to verify with `file <output>.png` and follow up with `remove_background` for true transparent PNGs
-- **`ai-builder` boundary clarified** — description and master prompt no longer claim "AgentCore deployment" (that's the dedicated `agentcore` agent's territory). `ai-builder` now scoped to: model selection, prompt engineering, RAG.
-- **Accounting prompt sanitized** — removed Wave/QuickBooks competitive framing and "PRIMARY MARKET" language. Now positioned as a generic Canadian accounting SaaS template with comprehensive Alberta tax handling and full all-Canada support.
-- **Python 3.14 across the board** — Lambda runtime upgraded from 3.13 to 3.14 (GA on Lambda since Nov 2025). Updated 8 files: `tech.md`, `aws-standards.md`, `aws-serverless-patterns.md`, `accounting.md` prompt, `serverless.md` prompt, `README.md`, plus toolkit-skill copies in `aws-serverless/references/lambda.md` and `troubleshooting.md`
-- `aws-agent-toolkit.md` cross-references `mcp-server-preference.md` as the umbrella rule
-- `cypress.md` enforces the `data-cy` selector pattern from `react-frontend-patterns.md`
-- `aws-standards.md` and `aws-serverless-patterns.md` + `cdk-infrastructure-patterns.md` cross-reference `mcp-tool-discovery.md`
-- `development-workflow.md` response-format rule defers to `post-task-recommendations.md`
-- **Stronger** test-import.sh requirement: "NEVER push directly to main without running it first" (was a softer "before pushing")
-- **README aligned with shareable export** — agent table updated to 17 (was 18), removed `accounting` row (personal), removed `image-editor` row (merged into image-gen), updated MCP server agent counts
+### New
+
+- `skills/mcp-tool-discovery.md` — decision tree + cheat sheet for finding the right MCP tool when you're unsure
+- `steering/kiro-cli-troubleshooting.md` — auto-loaded fix-it doc for missing tools, MCP failures, side-channel issues
+- `skills/deploy.sh.template` — full deployment script using Kiro 2.3.0 side channels (`$AGENT_DISPLAY_OUT`, `$AGENT_CONTEXT_OUT`)
+- `Documentation Sync` rule — agents must update `CHANGELOG.md` and `README.md` in the same commit as any change that affects them
+- README "Tips for AI Agents" callout, GitHub badges, "Pre-push Checklist" section
 
 ### Removed
 
-- **`db` agent** (Postgres DBA — no longer needed)
-- **`clean` agent** (macOS disk cleanup — no longer needed)
-- **`image-editor` agent** (merged into `image-gen` — single image agent now handles all generation + editing use cases)
-- **`agentcore` agent** (merged into `ai-builder` — `ai-builder` now covers AI integration patterns AND full AgentCore app building. Strands Agents + AgentCore + Bedrock is the default stack; SageMaker only when you genuinely need a custom model not on Bedrock)
-- **Broken `fetch` MCP server** from frontend and research agents (npm package `@modelcontextprotocol/server-fetch` doesn't exist; built-in `web_fetch` covers the use case)
-- Dead `elevenlabs-mcp` stripping code from `export-kiro.sh` (no agent has it anymore)
-- "ai-builder vs agentcore" decision table from `AGENTS.md` (no longer needed after the merge)
+- `db` agent (Postgres DBA — not needed)
+- `clean` agent (macOS disk cleanup — not needed)
+- `agentcore` agent (merged into `ai-builder`)
+- `image-editor` agent (merged into `image-gen`)
+- Broken `fetch` MCP server (npm package didn't exist; built-in `web_fetch` covers it)
 
-### Fixed
+### Other
 
-- All shareable agents pass `kiro-cli agent validate` after schema review
-- 6 of 6 critical MCP servers verified working end-to-end (aws-mcp-server, context7, sequentialthinking, duckduckgo, github, google-drive)
-- Privacy audit: confirmed no credentials, personal info, project names, or business specifics in tracked files
+- `web-builder` orchestrator now delegates AI features to `ai-builder` (added to its trusted subagents list)
+- `accounting` prompt sanitized to a generic Canadian SaaS template (Alberta-focused tax handling preserved)
+- Steering descriptions added to 8 always-on docs so the auto-loader matches keywords reliably
+- Privacy audit: no credentials, personal info, or business specifics in tracked files
 
 ## [2026.05.14] - 2026-05-14
 

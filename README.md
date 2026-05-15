@@ -138,17 +138,16 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ### 2026.05.15
 
-- **MCP-over-CLI rule** wired into all agents — every agent prompt now mandates the github MCP server for github.com operations, never `gh` CLI. Local git is still fine via shell.
-- **`mcp-tool-discovery` skill** — explains how to use `tool_search` to find the right MCP tool, with decision tree and common-mappings cheat sheet
+- **AI agents consolidated** — single `ai-builder` agent now covers both AI integration patterns (model selection, prompts, RAG) and full agentic app builds. Default stack: Strands Agents + AgentCore + Bedrock; SageMaker fallback only for custom models not on Bedrock.
+- **Image agent supercharged** — `image-gen` now handles UI assets, marketing graphics, virtual try-on, sketch-to-2D, and ambient art (Frame TV) with proper alpha-channel handling.
+- **MCP-over-CLI rule** wired into every agent prompt — github MCP server for github.com operations, never `gh` CLI. Local git is still fine via shell.
+- **`mcp-tool-discovery` skill** — decision tree and cheat sheet for finding the right MCP tool when unsure.
 - **`test-import.sh`** local pre-push validation — exports → simulated install → validates every agent JSON. Run before every push.
-- **Git Hook Ban** — never recommend pre-commit, husky, lefthook, or any hook framework (mirrors CI/CD ban)
-- **Documentation Sync rule** — agents MUST update CHANGELOG.md and README.md in the same commit as any change that affects them
-- **Python 3.14** — Lambda runtime upgraded across all agents and skills (GA on Lambda Nov 2025)
-- **Image agents merged** — `image-gen` and `image-editor` consolidated into a single `image-gen` agent that handles UI assets, marketing, virtual try-on, and ambient art (e.g., Frame TV)
-- **AI agents merged** — `agentcore` consolidated into `ai-builder`. Single AI agent now covers both AI integration patterns (model selection, prompts, RAG) and full agentic app builds. Default stack: Strands Agents + AgentCore + Bedrock; SageMaker fallback only for custom models not on Bedrock.
-- **Removed `db` and `clean` agents** — no longer needed
-- **16 agents total** in shareable export (was 19), all validated end-to-end
-- **Privacy audit clean** — no credentials, personal info, or project names in tracked files
+- **Python 3.14** — Lambda runtime upgraded across all agents, skills, and templates.
+- **Bans clarified** — no CI/CD pipelines, no git hooks. Only deployment path is `deploy.sh`. Only validation path is `./test-import.sh`.
+- **`Documentation Sync` rule** — agents must update `CHANGELOG.md` and `README.md` in the same commit as any change that affects them.
+- **Removed**: `db`, `clean`, `agentcore`, `image-editor` agents (merged or no longer needed). 16 agents total in shareable export, all validated end-to-end.
+- **Privacy audit clean** — no credentials, personal info, or business specifics in tracked files.
 
 ### 2026.05.14
 
