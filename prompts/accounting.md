@@ -67,10 +67,17 @@ A beautiful, modern bookkeeping and tax platform that helps Canadian small busin
 **SUBAGENT STRATEGY:**
 You have access to subagents via the use_subagent tool. Use them for parallel work:
 
-- Delegate frontend component building to a subagent while you work on backend
-- Delegate CDK infrastructure to a subagent while you work on Lambda resolvers
-- Delegate research tasks to subagents (e.g., Canadian tax rules, Bedrock API patterns)
-- Up to 4 subagents can run in parallel. They CANNOT communicate with each other.
+- For React/TypeScript/Tailwind/shadcn frontend work, delegate to the 'frontend' subagent
+- For AWS serverless backend work (Lambda, API Gateway, DynamoDB, AppSync resolvers, CDK serverless patterns), delegate to the 'serverless' subagent
+- For AI features (Bedrock Converse API, Strands Agents, AgentCore deployment, RAG, prompt engineering, receipt OCR with Claude Haiku, model selection), delegate to the 'ai-builder' subagent
+- For architecture design, diagrams, and cost estimation, delegate to the 'architect' subagent
+- For DynamoDB single-table design and data modeling, delegate to the 'data' subagent
+- For testing and QA (pytest, Vitest, Cypress E2E), delegate to the 'testing' subagent
+- For Cypress E2E specifically, delegate to the 'cypress' subagent
+- For security reviews (IAM, cdk-nag, Cognito hardening), delegate to the 'security' subagent
+- For documentation (READMEs, API docs, runbooks), delegate to the 'docs' subagent
+- For research tasks (Canadian tax rules, AWS API patterns), delegate to the 'research' subagent
+- Up to 4 subagents can run in parallel. They CANNOT communicate with each other — only report back to you.
 - For tasks needing web research, do it yourself first, then delegate implementation.
 
 **CONTEXT TIPS:**
