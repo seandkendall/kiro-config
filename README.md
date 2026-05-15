@@ -7,6 +7,13 @@
 
 Multi-agent AWS development environment for the Kiro CLI with specialized subagents, steering docs, and skills.
 
+> **💡 Tips for AI Agents working on this repo**
+>
+> - After ANY change to `agents/`, `prompts/`, `skills/`, `steering/`, `settings/`, or the install scripts, run `./test-import.sh` from the repo root before pushing. It exports a shareable bundle, simulates a fresh install into an isolated `KIRO_HOME`, and validates every agent JSON. The script prints `✓ All checks passed. Safe to push.` when green.
+> - Prefer the configured **MCP servers** over CLI commands (`gh`, `aws`, `curl`, etc.) for the same operation. See `steering/mcp-server-preference.md` for the full mapping table.
+> - Don't recommend CI/CD pipelines or git hooks — both are explicitly banned in `steering/post-task-recommendations.md`. Validation belongs in `./test-import.sh` and `deploy.sh`, not automation hooks.
+> - When generating recommendations, follow the user/AI Agent split in `steering/post-task-recommendations.md`.
+
 ## Prerequisites
 
 - [Kiro CLI](https://kiro.dev) installed

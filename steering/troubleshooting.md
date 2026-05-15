@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: troubleshooting
-description: CDK deployment errors, Lambda cold starts, API Gateway CORS, Cognito auth failures, React build issues. Use when debugging errors, failures, or unexpected behavior.
+description: CDK deployment errors, Lambda cold starts, API Gateway CORS, Cognito auth failures, React build issues, MCP server failures (server unavailable, timeout, tool not found, name collision). Use when debugging errors, failures, or unexpected behavior.
 ---
 
 # Troubleshooting Guide

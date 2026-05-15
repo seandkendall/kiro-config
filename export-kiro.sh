@@ -12,7 +12,7 @@
 #   README.md     — Setup instructions for recipients
 #
 # What's excluded:
-#   sessions/, extensions/, powers/, .cli_bash_history, elevenlabskey.txt,
+#   sessions/, extensions/, powers/, .cli_bash_history,
 #   steering-backup-Dec42025/, argv.json, .DS_Store
 
 set -e
@@ -50,18 +50,7 @@ for f in "$KIRO_DIR/agents"/*.json; do
       fi
     done
     $skip && continue
-    # Strip personal MCP server entries from agent configs
-    python3 -c "
-import json, sys
-with open('$f') as fh:
-    d = json.load(fh)
-servers = d.get('mcpServers', {})
-for key in ['elevenlabs-mcp']:
-    servers.pop(key, None)
-with open(sys.argv[1], 'w') as out:
-    json.dump(d, out, indent=2, ensure_ascii=False)
-    out.write('\n')
-" "$EXPORT_DIR/agents/$filename"
+    cp "$f" "$EXPORT_DIR/agents/$filename"
   else
     cp "$f" "$EXPORT_DIR/agents/$filename"
   fi

@@ -5,6 +5,8 @@ description: AWS CDK Python patterns for stacks, constructs, tagging, cdk-nag, C
 
 # CDK Infrastructure Patterns
 
+> When uncertain about a CloudFormation/CDK construct, IAM action, or service limit, use `aws___search_documentation` and `aws___retrieve_skill` from the `aws-mcp-server` MCP server. If unsure which MCP tool to invoke, see `skills/mcp-tool-discovery.md` for the discovery flow.
+
 ## Stack Template
 
 ```python
