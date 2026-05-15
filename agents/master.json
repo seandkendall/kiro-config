@@ -45,7 +45,8 @@
     "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
     "skill://~/.kiro/skills/react-frontend-patterns.md",
     "skill://~/.kiro/skills/aws-serverless-patterns.md",
-    "skill://~/.kiro/skills/testing-patterns.md"
+    "skill://~/.kiro/skills/testing-patterns.md",
+    "skill://~/.kiro/skills/mcp-tool-discovery.md"
   ],
   "toolsSettings": {
     "subagent": {

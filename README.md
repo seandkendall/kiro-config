@@ -2,6 +2,9 @@
 
 **Version:** 2026.05.06
 
+[![Latest release](https://img.shields.io/github/v/tag/seandkendall/kiro-config?label=release&sort=semver)](https://github.com/seandkendall/kiro-config/releases)
+[![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
+
 Multi-agent AWS development environment for the Kiro CLI with specialized subagents, steering docs, and skills.
 
 ## Prerequisites

@@ -83,3 +83,23 @@ description: CDK deployment errors, Lambda cold starts, API Gateway CORS, Cognit
 - Replace `cy.wait(ms)` with `cy.wait('@alias')` using intercept aliases
 - Use `.should()` assertions which auto-retry
 - Add `{ timeout: 10000 }` to slow-loading element queries
+
+## MCP Server Issues
+
+**MCP server unavailable / not configured**:
+
+When you need to perform an action and the relevant MCP server isn't responding or isn't configured:
+
+1. **First, run discovery** — Use the `tool_search` tool to find any matching MCP tool (see `skills/mcp-tool-discovery.md` for the workflow). Don't assume an MCP server is missing without checking.
+2. **Check `kiro-cli mcp list`** to see which servers are actually loaded for the current agent. A server may be listed but not yet booted.
+3. **Verify required env vars** — Some MCP servers (`github`, `21st-dev-magic`, `figma`) need API keys in `~/.zshrc`. Missing keys = server fails silently. Re-run `./import.sh` to re-prompt.
+4. **Check the agent config** — Open `~/.kiro/agents/<agent-name>.json` and confirm the MCP server is listed in `mcpServers` and not `disabled: true`.
+5. **Fall back gracefully** — If a relevant MCP server genuinely doesn't exist for the operation, fall back to a CLI command. The MCP-first rule (see `steering/mcp-server-preference.md`) is "prefer MCP", not "MCP only" — `gh`, `aws`, `curl` etc. are acceptable fallbacks when no MCP tool covers the operation.
+
+**Server timed out at startup**:
+
+`uvx`/`npx` MCP servers download packages on first run (15-60s). Increase `mcp.noInteractiveTimeout` in `settings/cli.json` to `180000` (already set in this config).
+
+**MCP tool name conflict / "tool not found"**:
+
+If the agent gets `No MCP server named 'X'`, the server key may collide with Tool Search's deferred tool registration. Rename the server key to a different identifier (e.g., `sequentialthinking` instead of `sequential-thinking`).
