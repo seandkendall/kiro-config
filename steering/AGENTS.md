@@ -1,5 +1,7 @@
 ---
 inclusion: always
+name: AGENTS
+description: Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, Kiro CLI 2.3.0+ features. Use when building or routing across agents.
 ---
 
 # AGENTS.md

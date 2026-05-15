@@ -1,9 +1,13 @@
 ---
 inclusion: fileMatch
 fileMatchPattern: '{cdk/**/*,**/lambda/**/*,**/*.py}'
+name: aws-standards
+description: AWS development standards: CDK Python (never TypeScript), resource tagging, cdk-nag, AppRegistry, Lambda Powertools, Cognito custom UI + passkeys, S3 OAC, Lambda resilience (DLQ + idempotency), API routing through CloudFront /api path. Use when writing or reviewing CDK, Lambda, or AWS infrastructure code.
 ---
 
 # AWS Development Standards
+
+> When uncertain about an AWS service, API, IAM action, or limit, use `aws___search_documentation` and `aws___retrieve_skill` from the `aws-mcp-server` MCP server. If unsure which MCP tool covers your task, see `skills/mcp-tool-discovery.md` for the discovery flow.
 
 ## CDK Infrastructure
 

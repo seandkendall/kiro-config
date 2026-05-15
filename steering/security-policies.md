@@ -1,5 +1,7 @@
 ---
 inclusion: always
+name: security-policies
+description: Security policies: Cognito + MFA + passkeys, Secrets Manager (never env vars), IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls.
 ---
 
 # Security Policies

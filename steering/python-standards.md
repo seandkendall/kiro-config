@@ -1,6 +1,8 @@
 ---
 inclusion: fileMatch
 fileMatchPattern: '**/*.py'
+name: python-standards
+description: Python coding standards: type hints on all signatures, Google-style docstrings, f-strings, pathlib over os.path, dataclasses/pydantic for structured data, structured logging, uv for venv/deps, pyproject.toml. Use when writing or reviewing Python code (Lambda functions, scripts, CDK).
 ---
 
 # Python Standards

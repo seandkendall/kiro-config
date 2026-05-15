@@ -1,5 +1,7 @@
 ---
 inclusion: always
+name: development-workflow
+description: Mandatory development rules: daily dependency upgrades, no time estimates, Kiro Specs before code, file modification in-place (no _v2/_new files), pre-deployment quality gate, /code overview onboarding, Cypress E2E standards, response format with post-task recommendations. Use for every code/build/fix task.
 ---
 
 # Development Workflow

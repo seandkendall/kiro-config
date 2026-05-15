@@ -1,5 +1,7 @@
 ---
 inclusion: always
+name: product
+description: Product overview: AWS serverless web applications with React frontends and CDK infrastructure. Target users, key features, business goals. Use as background context when understanding what's being built and why.
 ---
 
 # Product Overview
