@@ -187,27 +187,26 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ## What's Included
 
-### Agents (17)
+### Agents (16)
 
-| Agent              | Description                                                      |
-| ------------------ | ---------------------------------------------------------------- |
-| `master`           | Orchestrator — routes to the right specialist subagent           |
-| `serverless`       | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools    |
-| `frontend`         | React, TypeScript, Tailwind CSS, shadcn/ui, Playwright, Figma    |
-| `testing`          | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent   |
-| `cypress`          | Cypress E2E tests, Page Objects, data-cy selectors               |
-| `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews |
-| `ai-builder`       | Amazon Bedrock, Strands Agents, prompt engineering, RAG          |
-| `agentcore`        | AWS AgentCore applications with Strands framework                |
-| `devops`           | CloudWatch monitoring, alerting, cost optimization               |
-| `data`             | DynamoDB single-table design, data modeling                      |
-| `security`         | IAM, encryption, cdk-nag, CloudTrail                             |
-| `docs`             | READMEs, API docs, ADRs, runbooks                                |
-| `image-gen`        | Image generation via Bedrock (Nova Canvas + SD 3.5)              |
-| `research`         | Deep research with web search, AWS docs, GitHub                  |
-| `sap-abap`         | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                      |
-| `web-builder`      | React + AWS full-stack web applications                          |
-| `google-workspace` | Google Docs, Sheets, Drive (read-only)                           |
+| Agent              | Description                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| `master`           | Orchestrator — routes to the right specialist subagent                                 |
+| `serverless`       | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools                          |
+| `frontend`         | React, TypeScript, Tailwind CSS, shadcn/ui, Playwright, Figma                          |
+| `testing`          | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent                         |
+| `cypress`          | Cypress E2E tests, Page Objects, data-cy selectors                                     |
+| `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews                       |
+| `ai-builder`       | Amazon Bedrock, Strands Agents, prompt engineering, RAG, AgentCore (full agentic apps) |
+| `devops`           | CloudWatch monitoring, alerting, cost optimization                                     |
+| `data`             | DynamoDB single-table design, data modeling                                            |
+| `security`         | IAM, encryption, cdk-nag, CloudTrail                                                   |
+| `docs`             | READMEs, API docs, ADRs, runbooks                                                      |
+| `image-gen`        | Image generation via Bedrock (Nova Canvas + SD 3.5)                                    |
+| `research`         | Deep research with web search, AWS docs, GitHub                                        |
+| `sap-abap`         | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                                            |
+| `web-builder`      | React + AWS full-stack web applications                                                |
+| `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                 |
 
 ### Steering Docs (16)
 
@@ -226,7 +225,7 @@ Agents configure their own MCP servers. Key servers used across agents:
 
 | Server              | Agents                                                     | Purpose                              |
 | ------------------- | ---------------------------------------------------------- | ------------------------------------ |
-| AWS MCP Server      | All 17 agents                                              | Full AWS API, docs, skills, scripts  |
+| AWS MCP Server      | All 16 agents                                              | Full AWS API, docs, skills, scripts  |
 | Context7            | frontend, serverless, architect, data, web-builder, master | Live library docs (React, AWS, etc.) |
 | Playwright          | frontend                                                   | Browser automation and E2E testing   |
 | shadcn              | frontend, web-builder                                      | Component registry browsing/install  |

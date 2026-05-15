@@ -40,8 +40,10 @@ All notable changes to this Kiro CLI configuration.
 - **`db` agent** (Postgres DBA — no longer needed)
 - **`clean` agent** (macOS disk cleanup — no longer needed)
 - **`image-editor` agent** (merged into `image-gen` — single image agent now handles all generation + editing use cases)
+- **`agentcore` agent** (merged into `ai-builder` — `ai-builder` now covers AI integration patterns AND full AgentCore app building. Strands Agents + AgentCore + Bedrock is the default stack; SageMaker only when you genuinely need a custom model not on Bedrock)
 - **Broken `fetch` MCP server** from frontend and research agents (npm package `@modelcontextprotocol/server-fetch` doesn't exist; built-in `web_fetch` covers the use case)
 - Dead `elevenlabs-mcp` stripping code from `export-kiro.sh` (no agent has it anymore)
+- "ai-builder vs agentcore" decision table from `AGENTS.md` (no longer needed after the merge)
 
 ### Fixed
 
