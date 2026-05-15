@@ -23,25 +23,29 @@ All notable changes to this Kiro CLI configuration.
 
 ### Changed
 
+- **Image agents merged** — `image-gen` and `image-editor` consolidated into a single `image-gen` agent that handles UI assets, marketing graphics, virtual try-on, sketch-to-2D, and ambient art (Frame TV). Prompt externalized to `prompts/image-gen.md`.
+- **Accounting prompt sanitized** — removed Wave/QuickBooks competitive framing and "PRIMARY MARKET" language. Now positioned as a generic Canadian accounting SaaS template with comprehensive Alberta tax handling and full all-Canada support.
 - **Python 3.14 across the board** — Lambda runtime upgraded from 3.13 to 3.14 (GA on Lambda since Nov 2025). Updated 8 files: `tech.md`, `aws-standards.md`, `aws-serverless-patterns.md`, `accounting.md` prompt, `serverless.md` prompt, `README.md`, plus toolkit-skill copies in `aws-serverless/references/lambda.md` and `troubleshooting.md`
 - `aws-agent-toolkit.md` cross-references `mcp-server-preference.md` as the umbrella rule
 - `cypress.md` enforces the `data-cy` selector pattern from `react-frontend-patterns.md`
 - `aws-standards.md` and `aws-serverless-patterns.md` + `cdk-infrastructure-patterns.md` cross-reference `mcp-tool-discovery.md`
 - `development-workflow.md` response-format rule defers to `post-task-recommendations.md`
 - **Stronger** test-import.sh requirement: "NEVER push directly to main without running it first" (was a softer "before pushing")
+- **README aligned with shareable export** — agent table updated to 17 (was 18), removed `accounting` row (personal), removed `image-editor` row (merged into image-gen), updated MCP server agent counts
 
 ### Removed
 
 - **`db` agent** (Postgres DBA — no longer needed)
 - **`clean` agent** (macOS disk cleanup — no longer needed)
+- **`image-editor` agent** (merged into `image-gen` — single image agent now handles all generation + editing use cases)
 - **Broken `fetch` MCP server** from frontend and research agents (npm package `@modelcontextprotocol/server-fetch` doesn't exist; built-in `web_fetch` covers the use case)
 - Dead `elevenlabs-mcp` stripping code from `export-kiro.sh` (no agent has it anymore)
 
 ### Fixed
 
-- All 25 agents pass `kiro-cli agent validate` after schema review
+- All shareable agents pass `kiro-cli agent validate` after schema review
 - 6 of 6 critical MCP servers verified working end-to-end (aws-mcp-server, context7, sequentialthinking, duckduckgo, github, google-drive)
-- Privacy audit: confirmed no credentials, personal info, or project names in tracked files
+- Privacy audit: confirmed no credentials, personal info, project names, or business specifics in tracked files
 
 ## [2026.05.14] - 2026-05-14
 

@@ -1,7 +1,7 @@
 {
   "name": "image-gen",
-  "description": "Image generation subagent — UI assets, logos, icons, mockups, textures, marketing images via Nova Canvas and Stability AI",
-  "prompt": "You are an expert image generation agent using Amazon Bedrock models.\n\nCAPABILITIES: UI assets, logos, icons, textures, marketing graphics, concept art, inpainting, outpainting.\n\nMODELS: Nova Canvas + SD 3.5 (default), Stability AI for photorealism.\n\nRULES: Appropriate resolution per use case, 'seamless tileable' for textures, transparent backgrounds for logos, descriptive filenames, multiple variations.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (repos, PRs, issues, branches, file contents). ALWAYS use `aws-mcp-server` for AWS operations. Local git (status/diff/log/add/commit/push) is fine via shell. See steering/mcp-server-preference.md.",
+  "description": "Image generation and editing — UI assets, logos, icons, mockups, marketing images, virtual try-on, sketch-to-2D, ambient art (Samsung Frame TV) via Bedrock (Nova Canvas + Stable Diffusion 3.5)",
+  "prompt": "file://~/.kiro/prompts/image-gen.md",
   "mcpServers": {
     "web-search": {
       "command": "uvx",
@@ -39,6 +39,6 @@
       "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
   },
-  "welcomeMessage": "Image generation ready. Nova Canvas + Stability AI via Bedrock. Logos, icons, textures, mockups, marketing graphics. What images do you need?",
+  "welcomeMessage": "Image generation + editing ready. Nova Canvas + Stable Diffusion 3.5 via Bedrock. Logos, icons, mockups, virtual try-on, ambient art. What images do you need?",
   "keyboardShortcut": "shift+i"
 }

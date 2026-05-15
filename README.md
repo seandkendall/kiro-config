@@ -136,6 +136,19 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ## What's New
 
+### 2026.05.15
+
+- **MCP-over-CLI rule** wired into all agents — every agent prompt now mandates the github MCP server for github.com operations, never `gh` CLI. Local git is still fine via shell.
+- **`mcp-tool-discovery` skill** — explains how to use `tool_search` to find the right MCP tool, with decision tree and common-mappings cheat sheet
+- **`test-import.sh`** local pre-push validation — exports → simulated install → validates every agent JSON. Run before every push.
+- **Git Hook Ban** — never recommend pre-commit, husky, lefthook, or any hook framework (mirrors CI/CD ban)
+- **Documentation Sync rule** — agents MUST update CHANGELOG.md and README.md in the same commit as any change that affects them
+- **Python 3.14** — Lambda runtime upgraded across all agents and skills (GA on Lambda Nov 2025)
+- **Image agents merged** — `image-gen` and `image-editor` consolidated into a single `image-gen` agent that handles UI assets, marketing, virtual try-on, and ambient art (e.g., Frame TV)
+- **Removed `db` and `clean` agents** — no longer needed
+- **18 agents total** in shareable export (was 19), all validated end-to-end
+- **Privacy audit clean** — no credentials, personal info, or project names in tracked files
+
 ### 2026.05.14
 
 - **MCP server preference rule** — new mandatory steering doc (`mcp-server-preference.md`) forces agents to use the GitHub MCP server (and others) over `gh`/`aws` CLI commands. Hard table mapping every operation to its MCP tool.
@@ -174,7 +187,7 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ## What's Included
 
-### Agents (18)
+### Agents (17)
 
 | Agent              | Description                                                      |
 | ------------------ | ---------------------------------------------------------------- |
@@ -193,7 +206,6 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 | `image-gen`        | Image generation via Bedrock (Nova Canvas + SD 3.5)              |
 | `research`         | Deep research with web search, AWS docs, GitHub                  |
 | `sap-abap`         | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                      |
-| `image-editor`     | Image generation + editing for apparel, virtual try-on, art      |
 | `web-builder`      | React + AWS full-stack web applications                          |
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                           |
 
@@ -214,7 +226,7 @@ Agents configure their own MCP servers. Key servers used across agents:
 
 | Server              | Agents                                                     | Purpose                              |
 | ------------------- | ---------------------------------------------------------- | ------------------------------------ |
-| AWS MCP Server      | All 18 agents                                              | Full AWS API, docs, skills, scripts  |
+| AWS MCP Server      | All 17 agents                                              | Full AWS API, docs, skills, scripts  |
 | Context7            | frontend, serverless, architect, data, web-builder, master | Live library docs (React, AWS, etc.) |
 | Playwright          | frontend                                                   | Browser automation and E2E testing   |
 | shadcn              | frontend, web-builder                                      | Component registry browsing/install  |
