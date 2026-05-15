@@ -193,7 +193,7 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 | `image-gen`        | Image generation via Bedrock (Nova Canvas + SD 3.5)              |
 | `research`         | Deep research with web search, AWS docs, GitHub                  |
 | `sap-abap`         | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                      |
-| `accounting`       | Canadian accounting SaaS (Alberta-focused)                       |
+| `image-editor`     | Image generation + editing for apparel, virtual try-on, art      |
 | `web-builder`      | React + AWS full-stack web applications                          |
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                           |
 
@@ -223,7 +223,7 @@ Agents configure their own MCP servers. Key servers used across agents:
 | Browser Lens        | frontend, web-builder                                      | Live CSS/layout debugging            |
 | Sequential Thinking | master, frontend                                           | Structured reasoning chains          |
 | DuckDuckGo          | master, research, sap-abap + 4                             | Privacy-first web search             |
-| GitHub              | master, research, sap-abap, accounting, devops             | GitHub API (repos, PRs, issues)      |
+| GitHub              | master, research, sap-abap, devops                         | GitHub API (repos, PRs, issues)      |
 | Chrome DevTools     | frontend, web-builder, testing                             | Chrome debugging                     |
 | Bedrock Image       | frontend, web-builder, image-gen + 3                       | Image generation                     |
 | Google Drive        | google-workspace                                           | Google Docs/Sheets/Drive (read-only) |

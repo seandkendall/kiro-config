@@ -117,7 +117,7 @@ aws lambda put-function-concurrency --function-name my-func --reserved-concurren
 
 ```bash
 find ./package -name "*.pyc" -delete && find ./package -name "*.dist-info" -type d -exec rm -rf {} +
-aws lambda publish-layer-version --layer-name my-deps --zip-file fileb://layer.zip --compatible-runtimes python3.13
+aws lambda publish-layer-version --layer-name my-deps --zip-file fileb://layer.zip --compatible-runtimes python3.14
 # Or upload via S3, or switch to container image packaging (10 GB limit)
 ```
 

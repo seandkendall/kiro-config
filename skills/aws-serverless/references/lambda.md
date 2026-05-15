@@ -44,7 +44,7 @@ Snapshots the initialized execution environment (Firecracker microVM memory + di
 from aws_cdk import aws_lambda as lambda_
 
 fn = lambda_.Function(self, "MyFunction",
-    runtime=lambda_.Runtime.PYTHON_3_13,
+    runtime=lambda_.Runtime.PYTHON_3_14,
     handler="index.handler",
     code=lambda_.Code.from_asset("lambda"),
     snap_start=lambda_.SnapStartConf.ON_PUBLISHED_VERSIONS,

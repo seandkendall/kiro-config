@@ -6,6 +6,7 @@ All notable changes to this Kiro CLI configuration.
 
 ### Added
 
+- **Documentation Sync rule** in `development-workflow.md`: agents MUST update `CHANGELOG.md` and `README.md` in the same commit as any change that affects them
 - **MCP-over-CLI rule wired into ALL 25 agents** — every agent prompt (13 external `.md` + 7 inline + previously-updated master/devops/research/testing/cypress) now explicitly tells the agent to prefer MCP servers over `gh`/`aws` CLI commands
 - **`mcp-tool-discovery.md` skill** — explains how to use `tool_search` to find the right MCP tool when unsure, with a decision tree, common-mappings cheat sheet, and anti-patterns
 - **Git Hook Ban (STRICT)** in `post-task-recommendations.md` — never recommend pre-commit/pre-push hooks, husky, lefthook, or hook frameworks. Mirrors the existing CI/CD ban
@@ -13,11 +14,34 @@ All notable changes to this Kiro CLI configuration.
 - **Side channels documented** in testing + cypress prompts (`$AGENT_DISPLAY_OUT` / `$AGENT_CONTEXT_OUT` for verbose test runs)
 - **`test-import.sh`** — local fresh-install validation script: exports → simulated install → validates every agent JSON → JSON/bash syntax. Run before every push.
 - **`agentcore` agent** now has full subagent toolsSettings (11 trusted subagents)
+- **mcp-tool-discovery skill** added to master agent's resources for auto-load
+- **GitHub badges** in README (latest tag + last commit)
+- **MCP Server Issues** section in `troubleshooting.md` (server unavailable, timeout, name collision)
+- **Tips for AI Agents** callout block at top of README
+- **Steering descriptions** added to 8 docs that lacked them (AGENTS, aws-standards, development-workflow, product, python-standards, security-policies, structure, tech)
+- **`agents/agent_config.json.example`** added to `.gitignore` (Kiro CLI auto-recreates this stray file)
 
 ### Changed
 
+- **Python 3.14 across the board** — Lambda runtime upgraded from 3.13 to 3.14 (GA on Lambda since Nov 2025). Updated 8 files: `tech.md`, `aws-standards.md`, `aws-serverless-patterns.md`, `accounting.md` prompt, `serverless.md` prompt, `README.md`, plus toolkit-skill copies in `aws-serverless/references/lambda.md` and `troubleshooting.md`
 - `aws-agent-toolkit.md` cross-references `mcp-server-preference.md` as the umbrella rule
 - `cypress.md` enforces the `data-cy` selector pattern from `react-frontend-patterns.md`
+- `aws-standards.md` and `aws-serverless-patterns.md` + `cdk-infrastructure-patterns.md` cross-reference `mcp-tool-discovery.md`
+- `development-workflow.md` response-format rule defers to `post-task-recommendations.md`
+- **Stronger** test-import.sh requirement: "NEVER push directly to main without running it first" (was a softer "before pushing")
+
+### Removed
+
+- **`db` agent** (Postgres DBA — no longer needed)
+- **`clean` agent** (macOS disk cleanup — no longer needed)
+- **Broken `fetch` MCP server** from frontend and research agents (npm package `@modelcontextprotocol/server-fetch` doesn't exist; built-in `web_fetch` covers the use case)
+- Dead `elevenlabs-mcp` stripping code from `export-kiro.sh` (no agent has it anymore)
+
+### Fixed
+
+- All 25 agents pass `kiro-cli agent validate` after schema review
+- 6 of 6 critical MCP servers verified working end-to-end (aws-mcp-server, context7, sequentialthinking, duckduckgo, github, google-drive)
+- Privacy audit: confirmed no credentials, personal info, or project names in tracked files
 
 ## [2026.05.14] - 2026-05-14
 

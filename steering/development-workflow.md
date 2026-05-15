@@ -207,3 +207,16 @@ Before considering any feature complete, verify:
 1. **Summary**: Brief description of what was done
 2. **Tools & MCP Servers Used**: List every tool, MCP server, and subagent invoked
 3. **Recommended Next Steps**: Follow the format in `post-task-recommendations.md` — split into "for the user" (optional) and "for the AI Agent" (mandatory, ≥10 items, sorted by priority)
+
+**Documentation Sync (MANDATORY)** - When you make changes to this repo:
+
+- **ALWAYS update `CHANGELOG.md`** with a new entry for the change. If a dated entry for today already exists, append to it; otherwise create a new one. Group entries under `### Added`, `### Changed`, `### Removed`, `### Fixed` as appropriate.
+- **ALWAYS update `README.md`** when the change affects:
+  - The agent table (additions, removals, renames)
+  - The skills count or table
+  - The MCP server table
+  - Required environment variables
+  - Prerequisites or installation steps
+  - Configuration defaults (model, settings)
+- Both updates happen in the SAME commit as the underlying change — do not defer to a separate commit
+- This rule applies to ALL agents, ALL subagents, and ALL sessions
