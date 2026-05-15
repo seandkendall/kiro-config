@@ -33,7 +33,7 @@ from aws_cdk.aws_lambda_python_alpha import PythonFunction
 from aws_cdk.aws_lambda import Runtime, Tracing
 
 PythonFunction(self, 'MyFunction',
-    runtime=Runtime.PYTHON_3_13,
+    runtime=Runtime.PYTHON_3_14,
     entry='cdk-backend/lambda/functions/my_function',
     index='my_function.py',
     tracing=Tracing.ACTIVE,

@@ -32,8 +32,8 @@ else
 fi
 
 # Personal agents/prompts to exclude from shareable export
-EXCLUDE_AGENTS=(reinvent clean stocks outlook shopify db promptgen accounting)
-EXCLUDE_PROMPTS=(accounting.md reinvent.md clean.md db.md outlook.md promptgen.md shopify.md)
+EXCLUDE_AGENTS=(reinvent stocks outlook shopify promptgen accounting)
+EXCLUDE_PROMPTS=(accounting.md reinvent.md outlook.md promptgen.md shopify.md)
 
 echo "Exporting Kiro setup..."
 

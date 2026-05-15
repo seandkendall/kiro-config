@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: tech
-description: Technology stack: React 18+/TypeScript strict + Tailwind + shadcn/ui + Vite, Python 3.13 Lambda + CDK Python, DynamoDB, API Gateway, AppSync, Cognito, CloudFront, S3, Kiro CLI 2.3.0+ tooling. Use as the canonical reference for which libraries, services, and versions to use.
+description: Technology stack: React 18+/TypeScript strict + Tailwind + shadcn/ui + Vite, Python 3.14 Lambda + CDK Python, DynamoDB, API Gateway, AppSync, Cognito, CloudFront, S3, Kiro CLI 2.3.0+ tooling. Use as the canonical reference for which libraries, services, and versions to use.
 ---
 
 # Technology Stack
@@ -31,7 +31,7 @@ description: Technology stack: React 18+/TypeScript strict + Tailwind + shadcn/u
 
 ## Backend
 
-- AWS Lambda with Python 3.13
+- AWS Lambda with Python 3.14
 - AWS CDK for infrastructure (Python only — never TypeScript for CDK)
 - DynamoDB for data storage
 - API Gateway for REST APIs

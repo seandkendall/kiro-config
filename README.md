@@ -17,7 +17,7 @@ Multi-agent AWS development environment for the Kiro CLI with specialized subage
 ## Prerequisites
 
 - [Kiro CLI](https://kiro.dev) installed
-- Python 3.13+ with `uv` and `uvx`
+- Python 3.14+ with `uv` and `uvx`
 - Node.js 20+ with `npx`
 - AWS CLI v2 configured with named profiles
 - Git

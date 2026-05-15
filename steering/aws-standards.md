@@ -79,14 +79,14 @@ Rules:
 - Do NOT manually add the `awsApplication` tag — `ApplicationAssociator` propagates it automatically to every resource in every associated stack
 - For cross-account deployments (e.g., pipeline target accounts), set `associate_cross_account_stacks=True`
 
-**Lambda Functions** - Use `PythonFunction` construct with Python 3.13:
+**Lambda Functions** - Use `PythonFunction` construct with Python 3.14:
 
 ```python
 from aws_cdk.aws_lambda_python_alpha import PythonFunction
 from aws_cdk.aws_lambda import Runtime
 
 PythonFunction(self, 'MyFunction',
-    runtime=Runtime.PYTHON_3_13,
+    runtime=Runtime.PYTHON_3_14,
     entry='cdk-backend/lambda/functions/my_function',
     index='my_function.py'
 )

@@ -25,3 +25,4 @@ steering-backup-*/
 
 # Misc
 argv.json
+agents/agent_config.json.example

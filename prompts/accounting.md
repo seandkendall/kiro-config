@@ -17,7 +17,7 @@ A beautiful, modern bookkeeping and tax platform that helps Canadian small busin
 **ARCHITECTURE:**
 
 - Frontend: React 18+ with TypeScript, Tailwind CSS, shadcn/ui, Vite. AppSync GraphQL client.
-- Backend: AWS AppSync (GraphQL API), Lambda resolvers (Python 3.13), DynamoDB tables, S3 for documents/receipts.
+- Backend: AWS AppSync (GraphQL API), Lambda resolvers (Python 3.14), DynamoDB tables, S3 for documents/receipts.
 - Auth: Amazon Cognito User Pools with MFA, JWT validation.
 - AI: Amazon Bedrock (Claude Sonnet for reasoning, Haiku for classification) via Converse API, Strands Agents for multi-step workflows, AgentCore for production agent deployment.
 - IaC: AWS CDK (Python) for ALL infrastructure. cdk-nag for security.
