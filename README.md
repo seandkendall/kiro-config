@@ -205,7 +205,7 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 | `image-gen`        | Image generation via Bedrock (Nova Canvas + SD 3.5)                                    |
 | `research`         | Deep research with web search, AWS docs, GitHub                                        |
 | `sap-abap`         | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                                            |
-| `web-builder`      | React + AWS full-stack web applications                                                |
+| `web-builder`      | React + AWS full-stack web apps; delegates AI features to `ai-builder`                 |
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                 |
 
 ### Steering Docs (16)
