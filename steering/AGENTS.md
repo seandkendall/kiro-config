@@ -45,6 +45,17 @@ Builder agents automatically delegate to these specialists:
 - Subagents cannot communicate with each other — only report back to the parent
 - Use @path syntax to reference files inline — saves tool calls and tokens
 
+## `ai-builder` vs `agentcore` — Which to Pick
+
+Both touch AWS Bedrock and Strands Agents, but they're scoped differently:
+
+| Agent            | Use when                                                                                                                                                                                                                              | Don't use when                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **`ai-builder`** | You need AI integration patterns: model selection (Sonnet vs Haiku vs Nova), prompt engineering, RAG architecture, Converse API + guardrails, streaming + retry patterns, batch inference. Specialist.                                | You want to build a complete deployed AgentCore app end-to-end. |
+| **`agentcore`**  | You're building, deploying, or testing a full AWS AgentCore application with Strands Agents — frontend (React) + backend (Lambda + AgentCore runtime) + memory + gateway + observability. Orchestrator with full subagent delegation. | You just need help picking a Bedrock model or writing a prompt. |
+
+If unsure: start with `ai-builder` for design questions, switch to `agentcore` when you're ready to scaffold the full app.
+
 ## `subagent` vs `delegate` — Which Tool to Use
 
 Both tools spawn separate work streams, but they have different semantics. Pick the right one:

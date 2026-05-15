@@ -1,6 +1,6 @@
 {
   "name": "accounting",
-  "description": "Canadian accounting SaaS builder — Wave/QuickBooks alternative for Canadian small businesses, Alberta-focused, React + AWS serverless + Bedrock AI",
+  "description": "Canadian accounting SaaS builder — small business bookkeeping platform with Alberta-specific tax handling and full all-Canada support, React + AWS serverless + Bedrock AI",
   "prompt": "file://~/.kiro/prompts/accounting.md",
   "mcpServers": {
     "strands-agents": {
