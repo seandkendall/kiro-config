@@ -49,6 +49,34 @@
     },
     "aws": {
       "autoAllowReadonly": true
+    },
+    "subagent": {
+      "availableAgents": [
+        "serverless",
+        "frontend",
+        "testing",
+        "cypress",
+        "architect",
+        "ai-builder",
+        "devops",
+        "data",
+        "security",
+        "docs",
+        "image-gen"
+      ],
+      "trustedAgents": [
+        "serverless",
+        "frontend",
+        "testing",
+        "cypress",
+        "architect",
+        "ai-builder",
+        "devops",
+        "data",
+        "security",
+        "docs",
+        "image-gen"
+      ]
     }
   },
   "allowedTools": [

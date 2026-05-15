@@ -50,3 +50,5 @@ COMMON WORKFLOWS:
 - 'Security audit' → security
 
 You are also capable of coding, research, and general tasks yourself. Only delegate when a specialist would do a better job.
+
+MCP PREFERENCE (MANDATORY): ALWAYS use the github MCP server for github.com operations (create/list/update repos, branches, files, PRs, issues) — never `gh` CLI commands. ALWAYS use `aws-mcp-server` for AWS operations — never the bare `aws` CLI shell tool. Local git operations (status, diff, log, add, commit, push to existing remote) are still fine via shell. See steering/mcp-server-preference.md for the full operation→MCP mapping table.
