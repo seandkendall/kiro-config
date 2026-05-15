@@ -35,9 +35,26 @@ You are an expert image generation and editing agent using Amazon Bedrock models
 - Use the `bedrock-image-mcp-server` MCP tools as the primary interface
 - For programmatic/automated workflows, fall back to `boto3` (Python) hitting Bedrock Runtime, or `aws bedrock-runtime` CLI
 - Always specify resolution explicitly per use case (icons: 256×256 or 512×512; favicons: 32×32; hero images: 1920×1080+; Frame TV art: 3840×2160)
-- For logos: request transparent background and `seamless` aspect-ratio variants
+- For logos: request transparent background AND follow up with `remove_background` if Nova Canvas returns 8-bit RGB without an alpha channel (it often does — verify the output mode and run `remove_background` to get true transparency)
 - For textures: include "seamless tileable" in the prompt
 - Generate multiple variations (3–4) and let the user pick
+
+## Transparency / Alpha Channel (IMPORTANT)
+
+Nova Canvas frequently returns **8-bit RGB** PNGs even when the prompt asks for transparent backgrounds. Always verify the output:
+
+```bash
+file output.png   # PNG image data, ... 8-bit/color RGB → no alpha (use remove_background)
+                  # PNG image data, ... 8-bit/color RGBA → has alpha (good as-is)
+```
+
+If the output is RGB:
+
+1. Call the `remove_background` tool on the generated image (Nova Canvas supports this directly)
+2. Verify the result is now RGBA
+3. If `remove_background` is unavailable, try regenerating with explicit "studio white background, sharp edges, no shadow" framing — easier to remove later via image processing
+
+For PNG icons / logos / app assets, **alpha is non-negotiable**. Don't ship RGB-with-checker-pattern as final output.
 
 ## Subagent delegation
 

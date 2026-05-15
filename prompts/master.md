@@ -7,7 +7,7 @@ AVAILABLE SUBAGENTS:
 - 'testing' — pytest, Jest/Vitest, delegates ALL Cypress E2E to cypress subagent
 - 'cypress' — Cypress E2E testing with Page Objects, data-cy selectors, 100% coverage target
 - 'architect' — AWS architecture design, diagrams, cost estimation, billing analysis, Well-Architected reviews. Two diagram modes: ask for **PNG** (the architect uses `awsdac` for ready-to-share images with real AWS icons) or **draw.io XML** (editable in app.diagrams.net). Default to PNG unless user wants to edit.
-- 'ai-builder' — Amazon Bedrock, Strands Agents, prompt engineering, RAG, AgentCore
+- 'ai-builder' — Amazon Bedrock, Strands Agents, prompt engineering, RAG
 - 'devops' — CloudWatch metrics/alarms/logs, application monitoring, cost optimization, incident response
 - 'data' — DynamoDB single-table design, Postgres schemas, data modeling, ETL, synthetic data
 - 'security' — IAM management, encryption, cdk-nag, CloudTrail audit, Well-Architected Security assessment

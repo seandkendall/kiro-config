@@ -24,6 +24,8 @@ All notable changes to this Kiro CLI configuration.
 ### Changed
 
 - **Image agents merged** — `image-gen` and `image-editor` consolidated into a single `image-gen` agent that handles UI assets, marketing graphics, virtual try-on, sketch-to-2D, and ambient art (Frame TV). Prompt externalized to `prompts/image-gen.md`.
+- **`image-gen` alpha-channel caveat** — prompt now explicitly warns that Nova Canvas often returns 8-bit RGB without alpha; instructs the agent to verify with `file <output>.png` and follow up with `remove_background` for true transparent PNGs
+- **`ai-builder` boundary clarified** — description and master prompt no longer claim "AgentCore deployment" (that's the dedicated `agentcore` agent's territory). `ai-builder` now scoped to: model selection, prompt engineering, RAG.
 - **Accounting prompt sanitized** — removed Wave/QuickBooks competitive framing and "PRIMARY MARKET" language. Now positioned as a generic Canadian accounting SaaS template with comprehensive Alberta tax handling and full all-Canada support.
 - **Python 3.14 across the board** — Lambda runtime upgraded from 3.13 to 3.14 (GA on Lambda since Nov 2025). Updated 8 files: `tech.md`, `aws-standards.md`, `aws-serverless-patterns.md`, `accounting.md` prompt, `serverless.md` prompt, `README.md`, plus toolkit-skill copies in `aws-serverless/references/lambda.md` and `troubleshooting.md`
 - `aws-agent-toolkit.md` cross-references `mcp-server-preference.md` as the umbrella rule
