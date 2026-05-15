@@ -5,25 +5,17 @@
   "mcpServers": {
     "web-search": {
       "command": "uvx",
-      "args": [
-        "duckduckgo-mcp-server"
-      ],
+      "args": ["duckduckgo-mcp-server"],
       "disabled": false
     },
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     },
     "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
@@ -31,10 +23,7 @@
     },
     "sequentialthinking": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "disabled": false
     },
     "aws-mcp-server": {
@@ -48,9 +37,7 @@
       "disabled": false
     }
   },
-  "tools": [
-    "*"
-  ],
+  "tools": ["*"],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
@@ -99,19 +86,14 @@
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*",
-        ".*github\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
     }
   },
   "keyboardShortcut": "ctrl+1",
-  "welcomeMessage": "Master orchestrator ready. I route tasks to specialist subagents — serverless, frontend, testing, architect, AI, devops, data, security, docs, image-gen, research, sap-abap, google-workspace. I can also generate AWS architecture diagrams (PNG via awsdac, draw.io XML for editing) and full deploy.sh scripts. What are we building?",
+  "welcomeMessage": "Master orchestrator ready. I route to 13 specialists (serverless, frontend, testing, architect, ai-builder, devops, data, security, docs, image-gen, research, sap-abap, cypress, google-workspace), generate diagrams (PNG/awsdac or draw.io XML), and write deploy.sh scripts. What are we building?",
   "hooks": {
     "postToolUse": [
       {

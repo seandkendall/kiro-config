@@ -594,6 +594,30 @@ SETTINGS_EOF
   echo -e "  ${GREEN}✓${NC} Kiro CLI settings configured"
 fi
 
+# --- Step 5.4: Agent config validation smoke test ---
+if command -v kiro-cli &>/dev/null; then
+  echo ""
+  echo "Validating agent configs..."
+  AGENT_PASS=0
+  AGENT_FAIL=0
+  AGENT_FAIL_LIST=()
+  for agent_file in "$KIRO_DIR/agents"/*.json; do
+    [[ ! -f "$agent_file" ]] && continue
+    if kiro-cli agent validate --path "$agent_file" >/dev/null 2>&1; then
+      AGENT_PASS=$((AGENT_PASS + 1))
+    else
+      AGENT_FAIL=$((AGENT_FAIL + 1))
+      AGENT_FAIL_LIST+=("$(basename "$agent_file")")
+    fi
+  done
+  if [[ $AGENT_FAIL -eq 0 ]]; then
+    echo -e "  ${GREEN}✓${NC} All $AGENT_PASS agents validate"
+  else
+    echo -e "  ${YELLOW}⚠${NC}  $AGENT_PASS passed, $AGENT_FAIL failed: ${AGENT_FAIL_LIST[*]}"
+    echo "    Run: kiro-cli agent validate --path <file> for details"
+  fi
+fi
+
 # --- Step 5.5: MCP server smoke test ---
 if command -v kiro-cli &>/dev/null; then
   echo ""

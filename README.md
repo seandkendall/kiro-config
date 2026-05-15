@@ -126,6 +126,18 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ## What's New
 
+### 2026.05.14
+
+- **MCP server preference rule** — new mandatory steering doc (`mcp-server-preference.md`) forces agents to use the GitHub MCP server (and others) over `gh`/`aws` CLI commands. Hard table mapping every operation to its MCP tool.
+- **awsdac PNG diagrams** — `aws-diagram-png` skill generates publication-ready PNG architecture diagrams with real AWS icons via `awslabs/diagram-as-code`. Complements the existing draw.io XML skill.
+- **`deploy.sh.template`** with side channels — full deployment script template using Kiro CLI 2.3.0's `$AGENT_DISPLAY_OUT` / `$AGENT_CONTEXT_OUT` so verbose output stays out of agent context
+- **Post-task recommendations split** — now "for the user" (optional, omitted unless required) + "for the AI Agent" (mandatory, ≥10 items, sorted by priority). Type `Continue` to run all, or `Continue with 2, 5, 8` for a subset
+- **`kiro-cli-troubleshooting.md`** — new auto-loaded steering doc with fixes for missing tools, MCP failures, side-channel issues
+- **Web-builder polished** — added `shift+w` shortcut, welcome message, full subagent delegation config (10 trusted subagents)
+- **Image-editor agent** is now part of the shareable export
+- **import.sh hardened** — recursive skill copy (so toolkit folders + `.template` files come along), agent JSON validation smoke test, `kiro-cli mcp list` smoke test
+- **Agent Toolkit polish** — stale MCP refs scrubbed (cdk-mcp-server, dead toolAliases), agentcore prompt rewritten to use `aws-mcp-server`
+
 ### 2026.05.06
 
 - **AWS Agent Toolkit adopted** — single managed MCP server (`mcp-proxy-for-aws`) replaces 6 individual awslabs servers across all agents
