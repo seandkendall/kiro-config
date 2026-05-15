@@ -23,6 +23,10 @@ All notable changes to this Kiro CLI configuration.
 
 ### Changed
 
+- **AI agents merged** — `agentcore` consolidated into `ai-builder`. Single AI agent now covers AI integration patterns AND full agentic app builds. Default stack: Strands Agents + AgentCore + Bedrock; SageMaker fallback only for custom models not on Bedrock. ai-builder now has 5 MCP servers (aws-mcp-server, bedrock-agentcore-mcp-server, bedrock-image-mcp-server, context7, strands-agents) + subagent orchestration with 10 trusted subagents.
+- **`web-builder` can delegate to `ai-builder`** — added `ai-builder` to web-builder's availableAgents/trustedAgents (now 11 trusted subagents) so React + AWS apps with AI features can route the AI integration layer to ai-builder
+- **`accounting` agent**: added explicit `availableAgents` list (mirrors trustedAgents) for clarity
+- **`ai-builder` welcomeMessage** trimmed 190 → 177 chars while preserving default-stack and SageMaker-fallback messaging
 - **Image agents merged** — `image-gen` and `image-editor` consolidated into a single `image-gen` agent that handles UI assets, marketing graphics, virtual try-on, sketch-to-2D, and ambient art (Frame TV). Prompt externalized to `prompts/image-gen.md`.
 - **`image-gen` alpha-channel caveat** — prompt now explicitly warns that Nova Canvas often returns 8-bit RGB without alpha; instructs the agent to verify with `file <output>.png` and follow up with `remove_background` for true transparent PNGs
 - **`ai-builder` boundary clarified** — description and master prompt no longer claim "AgentCore deployment" (that's the dedicated `agentcore` agent's territory). `ai-builder` now scoped to: model selection, prompt engineering, RAG.

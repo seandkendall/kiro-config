@@ -88,6 +88,18 @@
         "data",
         "security",
         "docs"
+      ],
+      "availableAgents": [
+        "ai-builder",
+        "architect",
+        "cypress",
+        "data",
+        "docs",
+        "frontend",
+        "research",
+        "security",
+        "serverless",
+        "testing"
       ]
     },
     "shell": {
