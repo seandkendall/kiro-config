@@ -136,6 +136,10 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ## What's New
 
+### 2026.05.16
+
+- **Self-evolving personal rules** — new `personal-rules-protocol.md` steering doc. When you state a preference using "always / never / from now on / I prefer …" OR you repeat a preference 2+ times in a session, the agent proposes saving it as a `personal-<topic>.md` steering doc. On confirmation, the rule is written to `~/.kiro/steering/` and auto-loaded in every future session. Personal rules are gitignored, excluded from `./export-kiro.sh`, and ALWAYS win over base rules on your machine.
+
 ### 2026.05.15
 
 - **AI agents consolidated** — single `ai-builder` agent now covers both AI integration patterns (model selection, prompts, RAG) and full agentic app builds. Default stack: Strands Agents + AgentCore + Bedrock; SageMaker fallback only for custom models not on Bedrock.

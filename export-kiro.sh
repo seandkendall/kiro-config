@@ -59,7 +59,11 @@ done
 # --- Steering ---
 mkdir -p "$EXPORT_DIR/steering"
 for f in "$KIRO_DIR/steering"/*.md; do
-  [[ -f "$f" ]] && cp "$f" "$EXPORT_DIR/steering/"
+  [[ ! -f "$f" ]] && continue
+  filename=$(basename "$f")
+  # Skip personal-*.md (user-specific self-evolving rules, never shared)
+  [[ "$filename" == personal-* ]] && continue
+  cp "$f" "$EXPORT_DIR/steering/"
 done
 
 # --- Skills ---

@@ -2,6 +2,27 @@
 
 All notable changes to this Kiro CLI configuration.
 
+## [2026.05.16] - 2026-05-16
+
+### Added
+
+- **Self-evolving personal steering rules** — new `personal-rules-protocol.md` (inclusion: always). When the user states a preference using explicit signals ("always", "never", "from now on", "I prefer", "going forward", "make sure to") OR repeats a preference 2+ times in a session, the agent proposes saving it as a `personal-<topic>.md` steering doc. After user confirmation, the file is written to `~/.kiro/steering/` and auto-loaded in every future session.
+- Personal rules are **gitignored** (`steering/personal-*.md` in `.gitignore`)
+- Personal rules are **excluded from `./export-kiro.sh`** (never shared)
+- Personal rules **ALWAYS WIN** over base rules in this repo when there's a conflict
+- Smoke test passed: created `personal-test.md`, confirmed gitignored, confirmed not in export bundle, cleaned up
+
+### Use Case Example
+
+The user keeps asking for pastel colors and a light theme in React UIs. After the second mention, the agent proposes:
+
+```
+personal-ui-style.md (inclusion: fileMatch on '**/*.{tsx,jsx,css,scss}')
+> Always use pastel color palette + light theme by default
+```
+
+User confirms once. Every future session automatically picks up that rule.
+
 ## [2026.05.15] - 2026-05-15
 
 This release consolidates AI agents, locks down MCP-over-CLI usage across the board, adds a local pre-push validation script, and ships a reusable `mcp-tool-discovery` skill. Public-ready.
