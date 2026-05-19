@@ -61,8 +61,11 @@ mkdir -p "$EXPORT_DIR/steering"
 for f in "$KIRO_DIR/steering"/*.md; do
   [[ ! -f "$f" ]] && continue
   filename=$(basename "$f")
-  # Skip personal-*.md (user-specific self-evolving rules, never shared)
-  [[ "$filename" == personal-* ]] && continue
+  # Skip user-personal rules (self-evolving, never shared) — but ALWAYS ship
+  # the protocol file itself (it's the public meta-rule).
+  if [[ "$filename" == personal-* && "$filename" != "personal-rules-protocol.md" ]]; then
+    continue
+  fi
   cp "$f" "$EXPORT_DIR/steering/"
 done
 
