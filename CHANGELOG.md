@@ -2,6 +2,16 @@
 
 All notable changes to this Kiro CLI configuration.
 
+## [2026.05.19] - 2026-05-19
+
+### Added
+
+- **`personal-rules-management` skill** (`skills/personal-rules-management.md`, 133 lines) — companion to `personal-rules-protocol.md`. Documents lifecycle operations: list, update in place, remove, consolidate, conflict reporting, staleness review.
+- **Credentials/PII validator** in the personal-rules confirmation flow (step 5). Refuses to save rules containing AWS keys, API tokens, emails, phone numbers, SSNs, JDBC URLs with credentials, or private keys. Even though personal rules are gitignored, they live unencrypted on disk.
+- **Staleness review pattern** in `personal-rules-protocol.md`. When a rule's `## Source` date is older than 60 days, surface it once: "Still relevant?" User replies `keep` / `update` / `remove`. `keep` adds a `Last confirmed:` line so the rule doesn't re-surface for another 60 days.
+- **Automated smoke test** in `test-import.sh` — verifies (a) `personal-rules-protocol.md` IS in the export bundle (the public meta-rule must ship), and (b) any user `personal-*.md` files (e.g., `personal-ui-style.md`) are NOT in the bundle. Catches future regressions in the privacy guard.
+- **README** — Steering Docs section now has a callout explaining personal rules and how they're triggered. Skills count: 23 → 24 (added `personal-rules-management`).
+
 ## [2026.05.16] - 2026-05-16
 
 ### Added

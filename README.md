@@ -216,11 +216,13 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 Rules and standards automatically loaded into every session: accessibility, API design, AWS/CDK patterns, AWS Agent Toolkit usage, development workflow, error handling, performance, Python standards, security policies, and more.
 
-### Skills (23)
+> **Personal steering** — say "always …" / "from now on …" / "I prefer …" or repeat a preference 2+ times in a session, and the agent will offer to save it as a `personal-<topic>.md` steering doc on your machine. These files are gitignored, excluded from `./export-kiro.sh`, and ALWAYS win over base rules. No extra tooling required — they just work via Kiro's existing steering loader. See `steering/personal-rules-protocol.md` and `skills/personal-rules-management.md`.
+
+### Skills (24)
 
 | Source                 | Skills                                                                                                                                                                                                                                                          |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Custom (8)             | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, SAP ABAP, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac)                                                                                       |
+| Custom (9)             | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, SAP ABAP, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management                                                            |
 | AWS Agent Toolkit (15) | Lambda+API GW, Lambda+DynamoDB, debugging timeouts, CloudFront routing, serverless decision guide, S3 security, IAM, Secrets Manager, observability, CloudWatch alarms, app failure troubleshooting, Bedrock, billing/cost, CloudFormation, messaging/streaming |
 
 ### MCP Servers

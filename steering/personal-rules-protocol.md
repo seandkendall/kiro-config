@@ -63,17 +63,26 @@ You MUST always confirm before writing a personal rule. Never silently create on
 
 4. **Check for conflicts** with existing base rules in `~/.kiro/steering/*.md` (excluding other `personal-*.md`). If a conflict exists, mention it and note that the personal rule will win.
 
-5. **Show the user**:
+5. **Scan for credentials/PII** in the proposed rule body. If detected, REFUSE to save and ask the user to rephrase. Watch for:
+   - AWS keys: `AKIA[A-Z0-9]{16}`, keys starting with `ASIA`, secret access keys (40+ char base64-like strings)
+   - API tokens: `ghp_`, `sk-`, `pat_`, `xoxb-`, bearer tokens
+   - Email addresses, phone numbers, SSNs, full legal names tied to private accounts
+   - Database URLs with embedded credentials (e.g., `postgresql://user:pass@host/db`)
+   - Private keys: `-----BEGIN ... PRIVATE KEY-----`, JWT tokens with three dot-separated segments
+
+   These files live unencrypted in `~/.kiro/steering/`. Even though gitignored, they're readable by any process with home directory access. Generic preferences only.
+
+6. **Show the user**:
    - Filename you'd create
    - Full proposed content (frontmatter + body)
    - Any conflicts you detected
    - A brief sentence explaining what changes for future sessions
 
-6. **Wait for explicit confirmation**. Only proceed if the user replies with `yes`, `confirm`, `save it`, `do it`, or similar affirmative.
+7. **Wait for explicit confirmation**. Only proceed if the user replies with `yes`, `confirm`, `save it`, `do it`, or similar affirmative.
 
-7. **Write the file** to `~/.kiro/steering/personal-<topic>.md` and confirm: "Saved. Future sessions will follow this rule automatically. Edit anytime at `~/.kiro/steering/personal-<topic>.md`."
+8. **Write the file** to `~/.kiro/steering/personal-<topic>.md` and confirm: "Saved. Future sessions will follow this rule automatically. Edit anytime at `~/.kiro/steering/personal-<topic>.md`."
 
-8. **Never commit it** — these files are gitignored. If the user asks why their rule isn't in git, explain that personal rules are intentionally local-only.
+9. **Never commit it** — these files are gitignored. If the user asks why their rule isn't in git, explain that personal rules are intentionally local-only.
 
 ## File Format
 
@@ -124,6 +133,18 @@ If `~/.kiro/steering/personal-*.md` count exceeds 10:
 - Suggest reviewing them in your next response
 - Offer to consolidate related rules (e.g., merge `personal-ui-color.md` + `personal-ui-spacing.md` into `personal-ui-style.md`)
 - Prefer `inclusion: auto` or `fileMatch` over `always` to keep base context lean
+
+## Staleness Review
+
+Personal rules accumulate. To keep them useful, surface stale ones for review:
+
+- When the user starts a session and any personal rule's `## Source` date is **older than 60 days**, mention it once: "Heads up — `personal-X.md` was created on YYYY-MM-DD. Still relevant, or want to update/remove it?"
+- Don't nag — surface each stale rule at most once per week
+- If the user replies with `keep`, update the file's `## Source` footer with a `Last confirmed: <date>` line so it doesn't re-surface for another 60 days
+- If they reply with `remove`, follow the deletion flow in `skills/personal-rules-management.md`
+- If they reply with `update`, follow the in-place edit flow
+
+This is a soft signal, not a forced cleanup. The user always controls retention.
 
 ## Examples
 

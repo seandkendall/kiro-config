@@ -1,6 +1,6 @@
 {
   "name": "master",
-  "description": "Master orchestrator agent — routes any task to the right specialist subagent (no gaming)",
+  "description": "Master orchestrator agent — routes any task to the right specialist subagent",
   "prompt": "file://~/.kiro/prompts/master.md",
   "mcpServers": {
     "web-search": {

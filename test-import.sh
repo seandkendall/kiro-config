@@ -68,6 +68,17 @@ echo -e "  ${GREEN}✓${NC} export bundle: $EXPORTED"
 [[ -d "$EXPORTED/skills/amazon-bedrock" ]] || { echo -e "  ${RED}✗${NC} toolkit skill subdirs missing"; exit 1; }
 echo -e "  ${GREEN}✓${NC} bundle structure intact (skills + subdirs + .template)"
 
+# Personal-rules privacy guard: ensure user personal-*.md files are NOT in the bundle.
+# The protocol file itself (personal-rules-protocol.md) MUST be present — it's the public meta-rule.
+PERSONAL_LEAKED=$(find "$EXPORTED/steering" -maxdepth 1 -name 'personal-*.md' ! -name 'personal-rules-protocol.md' 2>/dev/null)
+if [[ -n "$PERSONAL_LEAKED" ]]; then
+  echo -e "  ${RED}✗${NC} user personal rules leaked into export bundle:"
+  echo "$PERSONAL_LEAKED" | sed 's|^|      |'
+  exit 1
+fi
+[[ -f "$EXPORTED/steering/personal-rules-protocol.md" ]] || { echo -e "  ${RED}✗${NC} personal-rules-protocol.md missing from export"; exit 1; }
+echo -e "  ${GREEN}✓${NC} personal-rules privacy: protocol shipped, user rules excluded"
+
 # ----------------------------------------------------------------------------
 # Step 2: Simulate fresh install with KIRO_HOME pointed at /tmp
 # ----------------------------------------------------------------------------
