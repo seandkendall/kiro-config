@@ -26,6 +26,7 @@ steering-backup-*/
 # Misc
 argv.json
 agents/agent_config.json.example
+settings/survey_state.json
 
 # Personal steering rules (self-evolving, user-specific, never shared)
 steering/personal-*.md
