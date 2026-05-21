@@ -14,7 +14,6 @@ AVAILABLE SUBAGENTS:
 - 'docs' — READMEs, API docs, ADRs, runbooks, auto-generated code documentation
 - 'image-gen' — Image generation via Bedrock Image (Nova Canvas + SD 3.5) (logos, icons, mockups, textures)
 - 'research' — Deep research using web search, AWS docs, GitHub, library docs
-- 'sap-abap' — SAP ABAP development: Clean ABAP, ALV reports, BAPIs, data migration, CDS views, RAP
 
 MANDATORY RULES:
 

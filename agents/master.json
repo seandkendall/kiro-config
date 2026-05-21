@@ -1,6 +1,6 @@
 {
   "name": "master",
-  "description": "Master orchestrator agent — routes any task to the right specialist subagent",
+  "description": "Master orchestrator agent \u2014 routes any task to the right specialist subagent",
   "prompt": "file://~/.kiro/prompts/master.md",
   "mcpServers": {
     "web-search": {
@@ -63,7 +63,6 @@
         "docs",
         "image-gen",
         "research",
-        "sap-abap",
         "google-workspace"
       ],
       "trustedAgents": [
@@ -79,7 +78,6 @@
         "docs",
         "image-gen",
         "research",
-        "sap-abap",
         "google-workspace"
       ]
     },
@@ -94,7 +92,7 @@
     }
   },
   "keyboardShortcut": "ctrl+1",
-  "welcomeMessage": "Master orchestrator ready. I route to 13 specialists (serverless, frontend, testing, architect, ai-builder, devops, data, security, docs, image-gen, research, sap-abap, cypress, google-workspace), generate diagrams (PNG/awsdac or draw.io XML), and write deploy.sh scripts. What are we building?",
+  "welcomeMessage": "Master orchestrator ready. I route to 13 specialists (serverless, frontend, testing, cypress, architect, ai-builder, devops, data, security, docs, image-gen, research, google-workspace), generate diagrams (PNG/awsdac or draw.io XML), and write deploy.sh scripts. What are we building?",
   "hooks": {
     "postToolUse": [
       {

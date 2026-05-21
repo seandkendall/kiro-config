@@ -37,7 +37,6 @@ Builder agents automatically delegate to these specialists:
 | `docs`       | READMEs, API docs, ADRs, auto-generated code docs                     |
 | `image-gen`  | Image generation via Bedrock Image — Nova Canvas + SD 3.5             |
 | `research`   | Web search, AWS docs, GitHub, library docs                            |
-| `sap-abap`   | SAP ABAP — Clean ABAP, ALV, BAPIs, data migration, CDS, RAP           |
 
 ## Delegation Rules
 

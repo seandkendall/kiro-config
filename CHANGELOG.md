@@ -2,6 +2,21 @@
 
 All notable changes to this Kiro CLI configuration.
 
+## [2026.05.21] - 2026-05-21
+
+### Removed
+
+- **`sap-abap` agent** removed for public release — narrows the config's focus to AWS + general web/full-stack work
+- Deleted `agents/sap-abap.json`, `prompts/sap-abap.md`, `skills/sap-abap-patterns.md`
+- Removed `sap-abap` from master agent's `availableAgents` and `trustedAgents` (now 13 specialists, was 14)
+- Removed `sap-abap` row from `README.md` agent table (15 agents, was 16)
+- Removed `sap-abap` row from `steering/AGENTS.md` subagent table
+- Removed `sap-abap` line from `prompts/master.md`
+- Removed "SAP ABAP" from `README.md` Custom skills list (8 custom skills, was 9)
+- Updated AWS MCP Server count in README from "All 16 agents" to "All 15 agents"
+- Updated DuckDuckGo and GitHub MCP usage rows in README to drop `sap-abap`
+- Updated master agent welcome message — dropped `sap-abap`, fixed specialist enumeration
+
 ## [2026.05.19] - 2026-05-19
 
 ### Added

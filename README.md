@@ -191,7 +191,7 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 
 ## What's Included
 
-### Agents (16)
+### Agents (15)
 
 | Agent              | Description                                                                            |
 | ------------------ | -------------------------------------------------------------------------------------- |
@@ -208,7 +208,6 @@ cp -rn agents/ steering/ skills/ prompts/ settings/ ~/.kiro/
 | `docs`             | READMEs, API docs, ADRs, runbooks                                                      |
 | `image-gen`        | Image generation via Bedrock (Nova Canvas + SD 3.5)                                    |
 | `research`         | Deep research with web search, AWS docs, GitHub                                        |
-| `sap-abap`         | SAP ABAP — Clean ABAP, ALV, BAPIs, CDS, RAP                                            |
 | `web-builder`      | React + AWS full-stack web apps; delegates AI features to `ai-builder`                 |
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                 |
 
@@ -222,7 +221,7 @@ Rules and standards automatically loaded into every session: accessibility, API 
 
 | Source                 | Skills                                                                                                                                                                                                                                                          |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Custom (9)             | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, SAP ABAP, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management                                                            |
+| Custom (8)             | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management                                                                      |
 | AWS Agent Toolkit (15) | Lambda+API GW, Lambda+DynamoDB, debugging timeouts, CloudFront routing, serverless decision guide, S3 security, IAM, Secrets Manager, observability, CloudWatch alarms, app failure troubleshooting, Bedrock, billing/cost, CloudFormation, messaging/streaming |
 
 ### MCP Servers
@@ -231,7 +230,7 @@ Agents configure their own MCP servers. Key servers used across agents:
 
 | Server              | Agents                                                     | Purpose                              |
 | ------------------- | ---------------------------------------------------------- | ------------------------------------ |
-| AWS MCP Server      | All 16 agents                                              | Full AWS API, docs, skills, scripts  |
+| AWS MCP Server      | All 15 agents                                              | Full AWS API, docs, skills, scripts  |
 | Context7            | frontend, serverless, architect, data, web-builder, master | Live library docs (React, AWS, etc.) |
 | Playwright          | frontend                                                   | Browser automation and E2E testing   |
 | shadcn              | frontend, web-builder                                      | Component registry browsing/install  |
@@ -239,8 +238,8 @@ Agents configure their own MCP servers. Key servers used across agents:
 | Figma Framelink     | frontend                                                   | Design-to-code from Figma URLs       |
 | Browser Lens        | frontend, web-builder                                      | Live CSS/layout debugging            |
 | Sequential Thinking | master, frontend                                           | Structured reasoning chains          |
-| DuckDuckGo          | master, research, sap-abap + 4                             | Privacy-first web search             |
-| GitHub              | master, research, sap-abap, devops                         | GitHub API (repos, PRs, issues)      |
+| DuckDuckGo          | master, research + 3                                       | Privacy-first web search             |
+| GitHub              | master, research, devops + 1                               | GitHub API (repos, PRs, issues)      |
 | Chrome DevTools     | frontend, web-builder, testing                             | Chrome debugging                     |
 | Bedrock Image       | frontend, web-builder, image-gen + 3                       | Image generation                     |
 | Google Drive        | google-workspace                                           | Google Docs/Sheets/Drive (read-only) |
