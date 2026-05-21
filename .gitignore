@@ -28,6 +28,12 @@ argv.json
 agents/agent_config.json.example
 settings/survey_state.json
 
+# Personal agents (local-only, never shared)
+agents/accounting.json
+agents/personal-*.json
+prompts/accounting.md
+prompts/personal-*.md
+
 # Personal steering rules (self-evolving, user-specific, never shared)
 steering/personal-*.md
 # Exception: the protocol file itself lives in the public repo

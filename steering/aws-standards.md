@@ -22,7 +22,7 @@ Tags.of(stack).add('auto-delete', 'false')
 Tags.of(stack).add('project', project_name)
 ```
 
-**Stack Naming** - NEVER use default CDK stack names (`CdkStack`, `CdkBackendStack`, `Stack`). Every stack MUST have a unique, project-specific name that clearly identifies the application and environment (e.g., `InvoiceAppDevStack`, `AccountingProdStack`).
+**Stack Naming** - NEVER use default CDK stack names (`CdkStack`, `CdkBackendStack`, `Stack`). Every stack MUST have a unique, project-specific name that clearly identifies the application and environment (e.g., `InvoiceAppDevStack`, `InvoiceAppProdStack`).
 
 **Security Validation** - Always include cdk-nag:
 

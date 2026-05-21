@@ -6,6 +6,19 @@ All notable changes to this Kiro CLI configuration.
 
 ### Removed
 
+- **`accounting` agent untracked from git** — moved to local-only on this machine. The agent JSON, prompt file, and Canadian-specific steering content are no longer in the public repo. Agent still works locally; just stays personal.
+  - `agents/accounting.json` — git rm --cached, added to .gitignore
+  - `prompts/accounting.md` — git rm --cached, added to .gitignore
+  - `.gitignore` — added wildcards `agents/personal-*.json` and `prompts/personal-*.md` for future personal agents
+- **README "Pre-push Checklist" section removed** — guidance is already in the steering docs and as a tip block at the top of the README
+- **`AccountingProdStack` example** in `aws-standards.md` neutralized to `InvoiceAppProdStack` (consistent with existing `InvoiceAppDevStack` example)
+- **Accounting references removed** from `steering/AGENTS.md`:
+  - Removed `/agent accounting` line from "When to Use Which Agent"
+  - Removed `accounting` from the "currently configured for delegation" sentence
+
+### Added
+
+- **`steering/personal-accounting-agent.md`** (gitignored) — captures the local-only accounting agent's scope, activation shortcut, and routing rules so other agents on this machine still know it exists
 - **`sap-abap` agent** removed for public release — narrows the config's focus to AWS + general web/full-stack work
 - Deleted `agents/sap-abap.json`, `prompts/sap-abap.md`, `skills/sap-abap-patterns.md`
 - Removed `sap-abap` from master agent's `availableAgents` and `trustedAgents` (now 13 specialists, was 14)

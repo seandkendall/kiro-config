@@ -13,7 +13,6 @@ This workspace uses a multi-agent architecture with a master orchestrator and sp
 ## When to Use Which Agent
 
 - **`/agent master`** (ctrl+1) — Default. Routes to the right specialist.
-- **`/agent accounting`** (ctrl+3) — Canadian accounting SaaS (Wave/QuickBooks alternative, Alberta-focused)
 - **`/agent serverless`** (ctrl+4) — AWS Lambda, API Gateway, DynamoDB, Powertools, X-Ray
 - **`/agent frontend`** (ctrl+5) — React, TypeScript, Tailwind CSS, shadcn/ui components
 - **`/agent testing`** (ctrl+6) — pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent
@@ -55,7 +54,7 @@ Both tools spawn separate work streams, but they have different semantics. Pick 
 
 If unsure, use `subagent`. Never use `delegate` just because the task is long — use it only when the result genuinely doesn't need to be in-band with the current conversation.
 
-> **Custom orchestrator agents must declare the `subagent` tool.** If you build a new agent that needs to spawn subagents, include `subagent` in its `tools` array (or use `"tools": ["*"]` / `"@builtin"` to inherit all built-ins). Without it, the agent silently fails to delegate. Agents currently configured for delegation: `master`, `accounting`.
+> **Custom orchestrator agents must declare the `subagent` tool.** If you build a new agent that needs to spawn subagents, include `subagent` in its `tools` array (or use `"tools": ["*"]` / `"@builtin"` to inherit all built-ins). Without it, the agent silently fails to delegate. Agents currently configured for delegation: `master`, `web-builder`, `ai-builder`.
 
 ## Kiro CLI 2.3.0 Features Worth Knowing
 

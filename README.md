@@ -285,25 +285,6 @@ The default model and settings are in `settings/cli.json`. Key settings:
 - **cdk-nag** for security validation on all stacks
 - **Lambda Powertools** (Logger, Tracer, Metrics) on all Lambda functions
 
-## Pre-push Checklist
-
-Before pushing changes to this repo, run the local smoke test:
-
-```bash
-./test-import.sh
-```
-
-This script:
-
-1. Runs `./export-kiro.sh` to produce a shareable bundle
-2. Verifies `deploy.sh.template` and toolkit skill subdirectories made it through
-3. Simulates a fresh install into an isolated temp directory
-4. Validates every agent JSON via `kiro-cli agent validate`
-5. Checks JSON syntax for all configs
-6. Checks bash syntax for `import.sh`, `export-kiro.sh`, and `test-import.sh`
-
-The script prints `✓ All checks passed. Safe to push.` when everything is green. Catches schema drift, file-copy bugs, and broken agent configs locally — no need to wait for users to discover problems.
-
 ## License
 
 Personal configuration — shared for reference and reuse.
