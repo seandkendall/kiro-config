@@ -92,7 +92,7 @@
     }
   },
   "keyboardShortcut": "ctrl+1",
-  "welcomeMessage": "Master orchestrator ready. I route to 13 specialists (serverless, frontend, testing, cypress, architect, ai-builder, devops, data, security, docs, image-gen, research, google-workspace), generate diagrams (PNG/awsdac or draw.io XML), and write deploy.sh scripts. What are we building?",
+  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (13 available), generate diagrams, and write deploy.sh scripts. What are we building?",
   "hooks": {
     "postToolUse": [
       {

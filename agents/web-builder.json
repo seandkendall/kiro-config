@@ -114,5 +114,5 @@
     ]
   },
   "keyboardShortcut": "shift+w",
-  "welcomeMessage": "Web builder ready. React + AWS full-stack apps with CDK, S3, CloudFront, Cognito (custom UI + passkeys), API Gateway, Lambda, DynamoDB. I delegate UI work to the frontend subagent and backend to serverless. What are we building?"
+  "welcomeMessage": "Web builder ready. React + AWS full-stack apps. I delegate UI work to the frontend subagent, backend to serverless, and AI features to ai-builder. What are we building?"
 }
