@@ -13,6 +13,7 @@ This workspace uses a multi-agent architecture with a master orchestrator and sp
 ## When to Use Which Agent
 
 - **`/agent master`** (ctrl+1) — Default. Routes to the right specialist.
+- **`/agent master-demo`** (shift+m) — Demo orchestrator for serverless backends. Always parallel subagents, always CORS, never UI/WAF/Route53. Use for live demos.
 - **`/agent serverless`** (ctrl+4) — AWS Lambda, API Gateway, DynamoDB, Powertools, X-Ray
 - **`/agent frontend`** (ctrl+5) — React, TypeScript, Tailwind CSS, shadcn/ui components
 - **`/agent testing`** (ctrl+6) — pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent

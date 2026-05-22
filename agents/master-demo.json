@@ -1,0 +1,108 @@
+{
+  "name": "master-demo",
+  "description": "Demo orchestrator for live AWS serverless backend builds \u2014 parallel subagent showcase, OpenAPI 3 native, always-CORS, never UI/WAF/Route53/custom-domains, default account only",
+  "prompt": "file://~/.kiro/prompts/master-demo.md",
+  "mcpServers": {
+    "web-search": {
+      "command": "uvx",
+      "args": ["duckduckgo-mcp-server"],
+      "disabled": false
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "disabled": false
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "disabled": false
+    },
+    "sequentialthinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "disabled": false
+    },
+    "aws-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=us-east-1"
+      ],
+      "disabled": false
+    }
+  },
+  "tools": ["*"],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://~/.kiro/steering/*.md",
+    "skill://~/.kiro/skills/aws-serverless-patterns.md",
+    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
+    "skill://~/.kiro/skills/testing-patterns.md",
+    "skill://~/.kiro/skills/deploy-on-aws.md",
+    "skill://~/.kiro/skills/mcp-tool-discovery.md"
+  ],
+  "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "serverless",
+        "architect",
+        "data",
+        "security",
+        "testing",
+        "devops",
+        "docs",
+        "research",
+        "ai-builder"
+      ],
+      "trustedAgents": [
+        "serverless",
+        "architect",
+        "data",
+        "security",
+        "testing",
+        "devops",
+        "docs",
+        "research",
+        "ai-builder"
+      ]
+    },
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true,
+      "deniedCommands": ["git-defender.*"]
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*github\\.com.*",
+        ".*swagger\\.io.*",
+        ".*openapi\\.org.*",
+        ".*redoc\\.ly.*",
+        ".*stoplight\\.io.*",
+        ".*petstore\\.swagger\\.io.*"
+      ]
+    }
+  },
+  "keyboardShortcut": "shift+m",
+  "welcomeMessage": "master-demo ready. AWS serverless only \u2014 no UI, no WAF, no custom domains. I fan out to subagents in parallel and verify CORS + endpoints after every deploy. What are we demoing?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  }
+}
