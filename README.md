@@ -19,7 +19,7 @@ See [Releases](https://github.com/seandkendall/kiro-config/releases) for the lat
 
 ## Prerequisites
 
-- [Kiro CLI](https://kiro.dev) installed
+- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.4.1**)
 - Python 3.14+ with `uv` and `uvx`
 - Node.js 20+ with `npx`
 - AWS CLI v2 configured with named profiles
@@ -224,6 +224,21 @@ The default model and settings are in `settings/cli.json`. Key settings:
 - **cdk-nag** for security validation on all stacks
 - **Lambda Powertools** (Logger, Tracer, Metrics) on all Lambda functions
 - **MCP-over-CLI** — github MCP for github.com operations (never `gh`); `aws-mcp-server` for AWS (never bare `aws` CLI)
+
+## Troubleshooting
+
+Common install issues:
+
+| Symptom                                                     | Likely cause                                                           | Fix                                                                                                                          |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Agent fails to call AWS APIs ("could not load credentials") | No AWS profile configured                                              | Run `aws configure --profile <name>`. Most AWS-flavored agents look up credentials from a named profile, not env vars.       |
+| MCP server fails at startup with "API key not set"          | Missing env var in `~/.zshrc`                                          | Re-run `./import.sh` — it prompts for each missing key. Or set the variable manually and `source ~/.zshrc`.                  |
+| First run of a `uvx`/`npx` MCP server times out             | Package is downloading on first invocation                             | The config sets `mcp.noInteractiveTimeout` to 180s. If it still times out, run `uvx <pkg>` once manually to warm the cache.  |
+| `import.sh` fails on Linux                                  | Some install lines use `brew` (macOS-specific)                         | Adapt the Linux equivalents from the Local Tooling table above (`apt install ...` instead of `brew install ...`).            |
+| Agent silently fails to delegate                            | Custom orchestrator agent doesn't have `subagent` in its `tools` array | Add `"subagent"` to the agent's `tools` array, or use `"tools": ["*"]` / `"@builtin"`. See `steering/AGENTS.md`.             |
+| `kiro-cli mcp list` shows no servers                        | Tool name collision with Kiro CLI's deferred tools                     | Rename the colliding MCP server key (e.g., `sequential-thinking` → `sequentialthinking`). See `steering/troubleshooting.md`. |
+
+For deeper Kiro CLI issues (settings not loading, side channels in deploy.sh, agent validation errors), see `steering/kiro-cli-troubleshooting.md`.
 
 ## License
 
