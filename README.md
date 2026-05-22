@@ -14,6 +14,8 @@ Multi-agent AWS development environment for the Kiro CLI — master orchestrator
 > - Don't recommend CI/CD pipelines or git hooks — both are explicitly banned in `steering/post-task-recommendations.md`. Validation belongs in `./validate.sh` and `deploy.sh`, not automation hooks.
 > - When generating recommendations, follow the user/AI Agent split in `steering/post-task-recommendations.md`.
 
+See [Releases](https://github.com/seandkendall/kiro-config/releases) for the latest version notes.
+
 ## Prerequisites
 
 - [Kiro CLI](https://kiro.dev) installed
