@@ -4,6 +4,7 @@
 
 [![Latest release](https://img.shields.io/github/v/tag/seandkendall/kiro-config?label=release&sort=semver)](https://github.com/seandkendall/kiro-config/releases)
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
+[![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
 Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 12 specialist subagents, 16 always-loaded steering docs, 24 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
@@ -226,4 +227,4 @@ The default model and settings are in `settings/cli.json`. Key settings:
 
 ## License
 
-Personal configuration — shared for reference and reuse.
+Apache License 2.0 — see [LICENSE](LICENSE). Shared publicly for reference and reuse. See [CONTRIBUTING.md](CONTRIBUTING.md) for the pre-push validation flow and contribution guidelines.
