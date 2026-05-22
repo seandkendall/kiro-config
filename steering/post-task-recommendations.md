@@ -95,4 +95,4 @@ When the user replies with anything else: treat their reply as a new instruction
 - **NEVER** suggest auto-running validators, linters, or formatters via hooks
 - If a user explicitly asks for a git hook, only then may you help implement it
 - This rule applies to ALL agents, ALL subagents, and ALL sessions
-- Validation should be done manually by the user (e.g., `./test-import.sh`) or as part of the `deploy.sh` quality gate, never enforced through hooks
+- Validation should be done manually by the user (e.g., `./validate.sh`) or as part of the `deploy.sh` quality gate, never enforced through hooks

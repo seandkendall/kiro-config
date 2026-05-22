@@ -12,7 +12,6 @@ These personal rules:
 
 - Live at `~/.kiro/steering/personal-<topic>.md`
 - Are gitignored (`.gitignore` excludes `steering/personal-*.md`)
-- Are excluded from `./export-kiro.sh` (never shared)
 - **ALWAYS WIN** over base rules in this repo when there's a conflict
 - Are unique to the user's machine
 
