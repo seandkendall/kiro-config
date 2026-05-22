@@ -44,6 +44,7 @@ Builder agents automatically delegate to these specialists:
 - Up to 4 subagents can run in parallel
 - Subagents cannot communicate with each other — only report back to the parent
 - Use @path syntax to reference files inline — saves tool calls and tokens
+- **Orchestrators can call other orchestrators.** `master` delegates to `web-builder` for full-stack web app scaffolds and to `ai-builder` for full agentic apps. `web-builder` delegates to `ai-builder` when an app needs AI features. `ai-builder` delegates to `web-builder`'s subagents (frontend, serverless) for the surrounding app shell. Orchestrator-to-orchestrator calls are useful when one orchestrator's scope nests inside another's task — keep the chain shallow (max 2 hops) to avoid context fragmentation.
 
 ## `subagent` vs `delegate` — Which Tool to Use
 
