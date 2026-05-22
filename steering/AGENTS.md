@@ -22,20 +22,22 @@ This workspace uses a multi-agent architecture with a master orchestrator and sp
 
 Builder agents automatically delegate to these specialists:
 
-| Subagent     | Specialty                                                             |
-| ------------ | --------------------------------------------------------------------- |
-| `serverless` | Lambda, API GW, DynamoDB, Step Functions, Powertools, X-Ray           |
-| `frontend`   | React, TypeScript, Tailwind, shadcn/ui, accessibility                 |
-| `testing`    | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent        |
-| `cypress`    | Cypress E2E tests, Page Objects, 100% coverage target                 |
-| `architect`  | Architecture diagrams, cost estimation, Well-Architected reviews      |
-| `ai-builder` | Bedrock, Strands Agents, prompt engineering, RAG                      |
-| `devops`     | CloudWatch monitoring, alerting, cost optimization, incident response |
-| `data`       | DynamoDB single-table design, Postgres, data modeling                 |
-| `security`   | IAM, encryption, cdk-nag, CloudTrail, Well-Architected Security       |
-| `docs`       | READMEs, API docs, ADRs, auto-generated code docs                     |
-| `image-gen`  | Image generation via Bedrock Image — Nova Canvas + SD 3.5             |
-| `research`   | Web search, AWS docs, GitHub, library docs                            |
+| Subagent           | Specialty                                                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `serverless`       | Lambda, API GW, DynamoDB, Step Functions, Powertools, X-Ray                                                      |
+| `frontend`         | React, TypeScript, Tailwind, shadcn/ui, accessibility                                                            |
+| `testing`          | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent                                                   |
+| `cypress`          | Cypress E2E tests, Page Objects, 100% coverage target                                                            |
+| `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews                                                 |
+| `ai-builder`       | Bedrock, Strands Agents, prompt engineering, RAG                                                                 |
+| `devops`           | CloudWatch monitoring, alerting, cost optimization, incident response                                            |
+| `data`             | DynamoDB single-table design, Postgres, data modeling                                                            |
+| `security`         | IAM, encryption, cdk-nag, CloudTrail, Well-Architected Security                                                  |
+| `docs`             | READMEs, API docs, ADRs, auto-generated code docs                                                                |
+| `image-gen`        | Image generation via Bedrock Image — Nova Canvas + SD 3.5                                                        |
+| `research`         | Web search, AWS docs, GitHub, library docs                                                                       |
+| `web-builder`      | React + AWS full-stack web apps; itself orchestrates frontend/serverless/ai-builder when scaffolding entire apps |
+| `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                                           |
 
 ## Delegation Rules
 

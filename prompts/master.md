@@ -14,6 +14,7 @@ AVAILABLE SUBAGENTS:
 - 'docs' — READMEs, API docs, ADRs, runbooks, auto-generated code documentation
 - 'image-gen' — Image generation via Bedrock Image (Nova Canvas + SD 3.5) (logos, icons, mockups, textures)
 - 'research' — Deep research using web search, AWS docs, GitHub, library docs
+- 'web-builder' — React + AWS full-stack web apps (CDK, S3, CloudFront, Cognito, API Gateway, Lambda, DynamoDB). Itself orchestrates frontend/serverless/ai-builder when scaffolding an entire app. Route here when the user asks for a complete web app rather than a single component.
 
 MANDATORY RULES:
 
@@ -37,7 +38,7 @@ CONTEXT TIPS:
 
 COMMON WORKFLOWS:
 
-- 'Build me an app' → architect (design) → serverless + frontend (parallel build) → cypress (E2E tests) → devops (monitoring) → docs
+- 'Build me an app' → web-builder (full-stack scaffold) OR architect (design) → serverless + frontend (parallel build) → cypress (E2E tests) → devops (monitoring) → docs
 - 'Review my code' → security + testing in parallel
 - 'Write E2E tests' → cypress
 - 'Generate images for my app' → image-gen
