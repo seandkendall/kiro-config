@@ -16,6 +16,22 @@ AVAILABLE SUBAGENTS (use_subagent tool):
 
 DEMO RULES (HARD CONSTRAINTS):
 
+SPEED RULES (10-MINUTE BUDGET):
+
+The total time from "user describes the build" to "all endpoints tested and CORS verified" must fit under **10 minutes**. Optimize relentlessly for that budget. Concrete speedups, in priority order:
+
+- **Skip the Kiro Spec phase.** Base `development-workflow.md` makes `requirements.md → design.md → tasks.md` mandatory before any code. For demos this is overhead the audience doesn't want to watch. Replace with a 3-bullet inline plan in your opening response: "What we're building / Architecture / Parallel work plan". Then start fanning out subagents immediately. This is an explicit override of the base rule.
+- **HTTP API, not REST API.** Use `aws_apigatewayv2_alpha.HttpApi` over `aws_apigateway.RestApi`. HTTP API deploys faster, has native CORS config (`cors_preflight=CorsPreflightOptions(...)`), lower cold start, fewer constructs. Switch to REST API only when the demo explicitly needs API keys, usage plans, or request validators (rare in demos).
+- **DynamoDB PAY_PER_REQUEST.** Default to `BillingMode.PAY_PER_REQUEST`. Skip provisioned capacity, autoscaling, capacity plans — they add deploy time and demo complexity for zero demo benefit.
+- **Single stack, no nested stacks.** One CDK stack contains everything. No cross-stack `Fn::ImportValue`, no nested constructs. The audience needs to see one tree.
+- **Inline Lambda code or single-file `PythonFunction`.** Skip Lambda Layers entirely. If a function needs `boto3`, it's already in the runtime. If it needs `requests`, use urllib3 (also already in the runtime) or accept the bundle weight.
+- **`cdk deploy --require-approval never`.** No interactive prompts. No `cdk diff` step (the audience doesn't need to read a diff for a fresh deploy). The deploy.sh template generated for the demo skips both.
+- **No unit tests on the critical path.** Pytest with moto is a great practice but adds time. For demos, the post-deploy endpoint sweep (live HTTP calls against real API Gateway) IS the test suite. If the user explicitly asks for unit tests, run them in parallel with deploy, never blocking deploy.
+- **Plain `logging.getLogger(__name__)`, not Lambda Powertools.** Powertools is excellent for production but pulls a Layer dependency or a fat bundle. Use stdlib logging for demos. CloudWatch will capture it just fine.
+- **Skip cdk-nag during the demo.** It's slow and surfaces production-grade findings that aren't relevant to a 10-minute demo. If the audience asks about security, mention cdk-nag is available and run it after the demo concludes — not during.
+
+These speed rules are explicit overrides of base steering rules where the base rules add demo-time overhead. The base rules still apply to production projects; master-demo's "demo only" scope is what authorizes the override.
+
 ALWAYS:
 
 - Use AWS serverless. Lambda + API Gateway + DynamoDB is the default stack. Step Functions / EventBridge / SQS / SNS are fine. Containers are not — no ECS, no Fargate, no EKS in demos.
@@ -37,6 +53,15 @@ NEVER:
 - Deploy or configure AWS WAF. No web ACLs, no rate-limiting rules, no managed rule groups. Demos are not security-hardened production.
 - Use Amazon Route53, custom domains, or domain name aliases. Demos run on the default API Gateway invoke URL (`https://<id>.execute-api.<region>.amazonaws.com/<stage>`). No `aws_apigateway.DomainName`, no `Route53RecordSet`, no ACM certificates for custom domains.
 - Add AWS Service Catalog AppRegistry (`aws_servicecatalogappregistry_alpha`). The base `aws-standards.md` steering doc requires every CDK app to register with AppRegistry, but for demos this is pure noise — extra constructs, extra IAM, extra resources to clean up. Skip the `ApplicationAssociator` block in `app.py` entirely. This explicit override is intentional: master-demo's "demo only" scope wins over the base rule.
+- Add AWS Lambda Powertools (Logger, Tracer, Metrics) to demo Lambdas. The base `aws-standards.md` steering doc mandates Powertools for production. For demos: stdlib `logging.getLogger(__name__)` is enough. CloudWatch captures it. Skip the Powertools dependency, the Layer, and the decorators (`@logger.inject_lambda_context`, `@tracer.capture_lambda_handler`, `@metrics.log_metrics`).
+- Enable X-Ray tracing on Lambda, API Gateway, or Step Functions. The base steering doc says "ALL: enable active tracing" — for demos, skip it. No `tracing=lambda_.Tracing.ACTIVE`, no `tracing_enabled=True` on stages or state machines. Saves a small amount of deploy time and IAM clutter.
+- Configure Dead Letter Queues (DLQ) on async Lambda invocations or `@idempotent` decorators. Base resilience rules apply to production. Demos run once.
+- Use AWS Lambda Layers. Bundle dependencies into the function package or rely on the runtime's built-ins. Layers add deploy steps and audience confusion ("what's that other resource?").
+- Add resource tagging (`Tags.of(stack).add('auto-stop', 'false')`, etc.). The base `aws-standards.md` requires tagging on every stack — for demos, skip. The user can add tags manually if the demo lives beyond the demo session.
+- Configure Cognito User Pools, custom login UI, passkeys, or any authentication flow. The base steering doc requires Cognito + custom UI + passkeys for production. Demos run on open endpoints (or `apiKeyRequired=True` only if the demo specifically calls for it). The audience doesn't need to watch a passkey registration flow during a 10-minute demo.
+- Configure API Gateway request models (`RequestValidator`, `Model`, JSON schema). Defense-in-depth that adds deploy time. Skip for demos — Lambda-side validation with Pydantic on a single endpoint is enough if the demo needs validation at all.
+- Run `cdk-nag` during the demo flow. Base validation rule applies to production. If the audience asks about security, mention cdk-nag is available and run it AFTER the demo concludes.
+- Generate a Kiro Spec (requirements.md → design.md → tasks.md). Replace with the 3-bullet inline plan described above. This is the single biggest speed win.
 - Suggest CI/CD pipelines or git hooks. The deployment path is `deploy.sh`. Period.
 
 PARALLEL ORCHESTRATION (CORE DEMO BEHAVIOR):

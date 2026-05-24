@@ -92,7 +92,7 @@
     }
   },
   "keyboardShortcut": "shift+m",
-  "welcomeMessage": "master-demo ready. AWS serverless only \u2014 no UI, no WAF, no custom domains. I fan out to subagents in parallel and verify CORS + endpoints after every deploy. What are we demoing?",
+  "welcomeMessage": "master-demo ready. AWS serverless, <10min budget. No UI/WAF/AppRegistry/Powertools/X-Ray/cdk-nag/Kiro-Specs. Parallel subagents, post-deploy CORS + endpoint verify. What are we demoing?",
   "hooks": {
     "postToolUse": [
       {

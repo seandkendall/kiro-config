@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.3] - master-demo speed optimization
+
+### Changed
+
+- **`master-demo` rebuilt for speed** — total time from "user describes the build" to "all endpoints tested and CORS verified" must fit under **10 minutes**. New `SPEED RULES (10-MINUTE BUDGET)` section in the prompt with 9 concrete speedups in priority order:
+  - Skip Kiro Specs phase (replace with 3-bullet inline plan; biggest win)
+  - HTTP API instead of REST API (faster deploy, native CORS, lower cold start)
+  - DynamoDB PAY_PER_REQUEST (no provisioned capacity)
+  - Single stack, no nested stacks
+  - Inline Lambda code or single-file `PythonFunction`, no Lambda Layers
+  - `cdk deploy --require-approval never`, skip `cdk diff`
+  - Unit tests off the critical path (post-deploy endpoint sweep IS the test suite)
+  - Plain `logging.getLogger`, not Lambda Powertools
+  - Skip cdk-nag during demo, run after if asked
+- Expanded NEVER list with 8 new explicit overrides of base steering rules: AppRegistry, Powertools, X-Ray, DLQ + idempotency, Layers, resource tagging, Cognito/auth, request models, cdk-nag, Kiro Specs. Each entry calls out the base rule it's overriding and why master-demo's "demo only" scope authorizes the override.
+- `welcomeMessage` updated to 185 chars and signals speed mode: "master-demo ready. AWS serverless, <10min budget. No UI/WAF/AppRegistry/Powertools/X-Ray/cdk-nag/Kiro-Specs..."
+
+### Why
+
+Live demos compete for attention. A 30-minute build loses the room. The 10-minute budget forces decisions about which production-grade rules add demo-time noise (cdk-nag, AppRegistry, Powertools observability stack, full Kiro Spec phase) and which stay (CORS verification, endpoint testing, default account, no WAF/Route53/custom domains). The base steering docs still apply to production projects — master-demo's overrides are scoped to the agent itself.
+
 ## [0.10.2] - AWS Support Case Ban
 
 ### Added
