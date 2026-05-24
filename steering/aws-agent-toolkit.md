@@ -19,3 +19,10 @@ description: AWS MCP Server usage rules — prefer the managed MCP server, disco
 - When creating infrastructure, prefer infrastructure-as-code (AWS CDK in Python) over direct CLI commands.
 - When working with infrastructure, follow AWS Well-Architected Framework principles.
 - Use `aws___suggest_aws_commands` to get correct API syntax for newly released services that may not be in training data.
+
+## AWS Support API Guard
+
+- **NEVER** call AWS Support or Service Quotas APIs that open cases or request quota increases without explicit user instruction. This includes `support:CreateCase`, `support:AddCommunicationToCase`, `servicequotas:RequestServiceQuotaIncrease`, and equivalents.
+- The `aws-mcp-server` exposes these APIs, but the MCP-over-CLI rule does NOT authorize unattended case creation.
+- When you hit a service quota wall, surface the limit, recommend the user open a case manually, and stop. Do not open it for them.
+- Full rule + scope: see `post-task-recommendations.md` → "AWS Support Case Ban (STRICT)".

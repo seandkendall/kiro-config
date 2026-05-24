@@ -96,3 +96,16 @@ When the user replies with anything else: treat their reply as a new instruction
 - If a user explicitly asks for a git hook, only then may you help implement it
 - This rule applies to ALL agents, ALL subagents, and ALL sessions
 - Validation should be done manually by the user (e.g., `./validate.sh`) or as part of the `deploy.sh` quality gate, never enforced through hooks
+
+## AWS Support Case Ban (STRICT)
+
+- **NEVER** automatically open an AWS Support case of any kind without explicit user instruction. This includes:
+  - Service quota / limit increase requests (`service-quotas request-service-quota-increase`, `support create-case` with `serviceCode=service-limit`)
+  - Technical support cases
+  - Account & billing cases
+  - Any other interaction with the AWS Support API or Service Quotas API that opens a case or ticket
+- **NEVER** call `support:CreateCase`, `support:AddCommunicationToCase`, `support:ResolveCase`, `servicequotas:RequestServiceQuotaIncrease`, or any equivalent operation as part of automated remediation
+- If you hit a service quota wall during a task (e.g., "Lambda concurrent executions limit reached"), surface the limit clearly, explain the impact, and recommend the user open a support case manually — do not open it for them
+- This applies even when an MCP server (e.g., `aws-mcp-server`) exposes the AWS Support API. The MCP-over-CLI rule does not authorize you to open cases unattended.
+- If the user explicitly says "open a support case for X" / "request a quota increase for Y", only then proceed — and even then, summarize the case content for review before submission
+- This rule applies to ALL agents, ALL subagents, and ALL sessions
