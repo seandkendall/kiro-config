@@ -1,0 +1,14 @@
+Welcome to {{ product_name }}.
+
+Hi {{ user_name }},
+
+Thanks for signing up. Your account is ready and we're glad you're here.
+
+Open your dashboard:
+{{ cta_url }}
+
+Need help? Reply to this email or write to {{ support_email }}.
+
+---
+{{ company_address }}
+Email preferences: {{ unsubscribe_url }}

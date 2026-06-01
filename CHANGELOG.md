@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.5] - Email starter templates + Cognito migration runbook
+
+### Added
+
+- **`skills/email-templates/verification.html`** (106 lines) — brand-matched verification code email with prominent monospace code display. Used for Cognito SignUp / ResendCode / VerifyUserAttribute / UpdateUserAttribute trigger sources.
+- **`skills/email-templates/password-reset.html`** (117 lines) — brand-matched password reset email with code display + CTA button to the reset page. Used for Cognito ForgotPassword.
+- **`skills/email-templates/{welcome,verification,password-reset}.txt`** — plain-text companions for the three HTML templates. Hand-authored for readable plain-text rendering (not auto-converted from HTML).
+- **`skills/cognito-email-migration.md`** (220 lines, `inclusion: auto`) — runbook for migrating an existing Cognito User Pool from default emails to a CustomEmailSender Lambda. Covers pre-flight, important caveat (one-way door — no fallback to default Cognito if Lambda fails), 8 migration steps, end-to-end test matrix, monitoring (CloudWatch errors, DLQ depth, SES bounce rate, synthetic test pass rate), and rollback plan.
+- **`CONTRIBUTING.md`** — new "Email Templates" section. Contributors must follow `email-standards.md`, run new templates through the 20-item Email Checklist, place templates under `skills/email-templates/` with `.txt` companion, use the build pipeline (Premailer / Juice), and follow the migration runbook for existing User Pools.
+
+### Verified
+
+- AST compile check on `skills/email-templates/cognito-email-handler.py` — parses cleanly (210 lines, 7952 bytes)
+- Audit: no agents currently load `skills/email-templates/*` as upfront resources. By design — templates are read-on-demand when relevant, not preloaded into every agent's context. The steering doc and rendering skill auto-include via keyword match.
+
+### Decisions documented
+
+- **`email-standards.md` stays as steering doc, NOT converted to a skill.** Considered moving to `skills/` for opt-in loading via `aws___retrieve_skill`, but kept as steering because: (a) the "always custom HTML, never defaults" rule is mandatory, not advisory; (b) agents won't think to retrieve a skill called "email-standards" — they'll assume they know how to send an email; (c) auto-trigger on keywords (signup, verification, password reset, Cognito email, SES, welcome, magic link) is the right behavior. Skills are for opt-in domain expertise; steering is for hard rules. Email defaults are a hard rule.
+
 ## [0.11.4] - Email standards: samples, render skill, checklist, decisions
 
 ### Added

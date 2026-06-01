@@ -43,6 +43,16 @@ Don't defer doc updates to a separate commit. The pre-push validator doesn't enf
 
 Always edit files in place. Never create `file_v2.py`, `file_new.py`, `file_backup.md` alongside the original. If the file exists, modify it.
 
+## Email Templates
+
+If your contribution adds, modifies, or references email templates:
+
+- Follow `steering/email-standards.md` end-to-end (no defaults, no emojis, brand match, mobile-responsive, plain-text alternative, etc.)
+- Run new HTML templates through the 20-item Email Checklist in `email-standards.md` before committing
+- Place new templates under `skills/email-templates/` with a matching `.txt` plain-text companion
+- Use the build pipeline patterns from `skills/email-template-rendering.md` (Premailer for Python, Juice for Node) — never ship un-inlined `<style>` blocks
+- For Cognito-driven emails, follow the migration runbook in `skills/cognito-email-migration.md` if changing an existing User Pool's email sender
+
 ## Personal Rules Stay Local
 
 The `personal-*.md`, `agents/personal-*.json`, and `prompts/personal-*.md` patterns are gitignored. If you have personal preferences (e.g., UI style, test framework, deployment quirks), let the agent suggest them as personal rules per `steering/personal-rules-protocol.md` — they live on your machine and never get committed.

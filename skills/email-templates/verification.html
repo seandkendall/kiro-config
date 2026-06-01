@@ -1,0 +1,171 @@
+<!doctype html>
+<!--
+  Sample verification email template — copy to your project's emails/verification.html
+  and customize. Used for Cognito SignUp, ResendCode, VerifyUserAttribute,
+  UpdateUserAttribute trigger sources.
+
+  Placeholders (replace at render time via Jinja2 / Mustache / SES TemplateData):
+    {{ product_name }}      — your product's display name
+    {{ logo_url }}          — absolute HTTPS URL to your logo PNG/SVG
+    {{ primary_color }}     — brand primary, e.g. #1a73e8
+    {{ accent_color }}      — brand accent (header band), e.g. #f0f6ff
+    {{ user_name }}         — recipient's display name (or "there" fallback)
+    {{ verification_code }} — 6-digit code from Cognito (KMS-decrypted in Lambda)
+    {{ company_address }}
+    {{ unsubscribe_url }}
+    {{ support_email }}
+
+  See email-standards.md for the full standards and email-template-rendering.md
+  for the build pipeline.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Confirm your {{ product_name }} account</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f4f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+    "
+  >
+    <!-- Preheader -->
+    <div
+      style="
+        display: none;
+        font-size: 1px;
+        color: #f4f5f7;
+        line-height: 1px;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+      "
+    >
+      Your {{ product_name }} verification code is {{ verification_code }}. It expires in 24 hours.
+    </div>
+
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="background-color: #f4f5f7"
+    >
+      <tr>
+        <td align="center" style="padding: 32px 16px">
+          <table
+            role="presentation"
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="
+              max-width: 600px;
+              width: 100%;
+              background-color: #ffffff;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            "
+          >
+            <!-- Brand header band -->
+            <tr>
+              <td align="left" style="background-color:{{ accent_color }};padding:24px 32px;">
+                <img
+                  src="{{ logo_url }}"
+                  alt="{{ product_name }}"
+                  width="140"
+                  height="32"
+                  style="display: block; width: 140px; height: auto; border: 0"
+                />
+              </td>
+            </tr>
+
+            <!-- Hero -->
+            <tr>
+              <td style="padding: 40px 32px 16px 32px">
+                <h1
+                  style="
+                    margin: 0 0 16px 0;
+                    font-size: 28px;
+                    line-height: 1.2;
+                    font-weight: 700;
+                    color: #1a1a1a;
+                  "
+                >
+                  Verify your email
+                </h1>
+                <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.55; color: #3c4043">
+                  Hi {{ user_name }}, use this verification code to confirm your {{ product_name }}
+                  account:
+                </p>
+              </td>
+            </tr>
+
+            <!-- Code display -->
+            <tr>
+              <td align="center" style="padding: 8px 32px 24px 32px">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td
+                      align="center"
+                      style="background-color:{{ accent_color }};border:2px solid {{ primary_color }};border-radius:12px;padding:24px 40px;"
+                    >
+                      <div
+                        style="font-family:'SF Mono',Menlo,Consolas,'Courier New',monospace;font-size:36px;font-weight:700;color:{{ primary_color }};letter-spacing:8px;line-height:1;"
+                      >
+                        {{ verification_code }}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Secondary content -->
+            <tr>
+              <td style="padding: 8px 32px 32px 32px">
+                <p style="margin: 0 0 12px 0; font-size: 14px; line-height: 1.55; color: #5f6368">
+                  This code expires in 24 hours. If you didn't request this, you can safely ignore
+                  this email — your account won't be created without confirmation.
+                </p>
+                <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #5f6368">
+                  Questions? Email
+                  <a
+                    href="mailto:{{ support_email }}"
+                    style="color:{{ primary_color }};text-decoration:underline;"
+                    >{{ support_email }}</a
+                  >.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                style="background-color: #fafbfc; padding: 24px 32px; border-top: 1px solid #e8eaed"
+              >
+                <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.5; color: #80868b">
+                  {{ company_address }}
+                </p>
+                <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #80868b">
+                  <a href="{{ unsubscribe_url }}" style="color: #80868b; text-decoration: underline"
+                    >Email preferences</a
+                  >
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
