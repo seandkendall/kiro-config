@@ -151,6 +151,50 @@ The `partials/` and `styles.css` are inlined by the build step (Premailer in Pyt
 - `alt` text on every `<img>`. For decorative images, `alt=""`
 - Don't rely on background images (Outlook strips them, screen readers ignore them)
 
+## Email Checklist (RUN BEFORE EVERY GO-LIVE)
+
+Before shipping any new transactional email, work through this list:
+
+1. **No defaults.** Confirm the template is not the Cognito / SES / Amplify default.
+2. **No emojis.** Subject line, preview text, headers, body — none.
+3. **Brand match.** Logo, primary color, accent color, typography all match the product UI.
+4. **Subject line under 50 characters.** Mobile preview truncates at 30-40.
+5. **Preheader present.** Hidden 50-100 char preview that shows in inbox alongside subject.
+6. **Single primary CTA.** One colored button, not three competing links.
+7. **Touch targets ≥44x44px** for buttons (WCAG / iOS HIG).
+8. **Inline CSS.** Run the template through Premailer / Juice. No `<style>` blocks should remain.
+9. **Plain-text alternative exists** alongside the HTML and is sent as `multipart/alternative`.
+10. **Web-safe fonts** with fallback stack (Arial, Helvetica, sans-serif) — or `@font-face` with fallback.
+11. **All `<img>` tags have `alt` text** and explicit `width` + `height`. No background images.
+12. **Color contrast ≥4.5:1** for body text (WCAG 2.1 AA — see `accessibility-standards.md`).
+13. **Physical mailing address** in the footer (CAN-SPAM / CASL).
+14. **Unsubscribe / preferences link** in the footer.
+15. **From-domain verified in SES** with SPF + DKIM + DMARC records published.
+16. **Cross-client preview**: rendered correctly in Gmail (web + iOS), Outlook (desktop + web), Apple Mail.
+17. **Dark-mode rendering** doesn't break (most clients ignore it but check Apple Mail / iOS).
+18. **No `<script>` tags** anywhere — clients strip them, may flag as spam.
+19. **Subject + preheader read sensibly together** in the inbox preview.
+20. **Test send to a real account** (not just a render preview) to confirm delivery + threading.
+
+If any item fails, fix before sending the first production email.
+
+## Templating Engines Comparison
+
+For the rendering build pipeline (CSS inlining, build steps, runtime rendering), see the companion skill: **`skills/email-template-rendering.md`**.
+
+| Engine                 | When to use                                                                                                                                                        | Syntax                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| **Jinja2**             | Python Lambda handlers (e.g., Cognito CustomEmailSender). Default choice for runtime rendering.                                                                    | `{{ user_name }}`, `{% if %}`, `{% for %}` |
+| **Mustache**           | Logic-less templates that need to render in BOTH Python and Node from a single source                                                                              | `{{ user_name }}`, `{{#section}}`          |
+| **MJML**               | Complex multi-section emails (newsletters, plan upgrades) where deeply nested `<table>` layouts get unmaintainable. Compiles MJML → responsive HTML at build time. | `<mj-section>`, `<mj-button>`              |
+| **SES `TemplateData`** | Pre-registered SES templates invoked via `send_templated_email`. Limited to `{{ name }}` substitution (no logic, no loops).                                        | `{{ name }}` only                          |
+
+Decision rules:
+
+- Cognito-driven emails (verification, reset, MFA) → Jinja2 in the CustomEmailSender Lambda
+- App-driven transactional emails (welcome, billing, plan changes, security alerts) → Jinja2 in Lambda OR pre-registered SES `CfnTemplate` with `TemplateData`
+- Marketing / newsletter / promotional → MJML compiled at build time, then registered as SES templates
+
 ## Cross-References
 
 - `aws-standards.md` — Cognito custom UI rule (same spirit: never use the defaults)

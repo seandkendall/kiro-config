@@ -1,0 +1,200 @@
+<!doctype html>
+<!--
+  Sample welcome email template — copy to your project's emails/welcome.html and customize.
+
+  Placeholders (replace at render time via Jinja2 / Mustache / SES TemplateData):
+    {{ product_name }}      — your product's display name
+    {{ logo_url }}          — absolute HTTPS URL to your logo PNG/SVG (host on CloudFront)
+    {{ primary_color }}     — brand primary, e.g. #1a73e8
+    {{ accent_color }}      — brand accent (header band), e.g. #f0f6ff
+    {{ user_name }}         — recipient's display name (or first name)
+    {{ cta_url }}           — call-to-action target (e.g. dashboard link)
+    {{ company_address }}   — physical mailing address (CAN-SPAM / CASL)
+    {{ unsubscribe_url }}   — preferences / unsubscribe link
+    {{ support_email }}     — support@yourcompany.com
+
+  Build pipeline: run this through a CSS inliner (Premailer / Juice / Maizzle) so the
+  shipped HTML has no <style> block. Most email clients strip <style> in <head>.
+
+  Tested against: Gmail (web + iOS), Outlook (desktop + web), Apple Mail (macOS + iOS),
+  dark-mode rendering. See email-standards.md for the full client matrix.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Welcome to {{ product_name }}</title>
+    <style>
+      /* Inlined at build time. Kept here for readability only. */
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f5f7;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        color: #1a1a1a;
+      }
+      table { border-collapse: collapse; }
+      a { color: {{ primary_color }}; }
+      img { border: 0; display: block; }
+      @media (prefers-color-scheme: dark) {
+        /* Most clients ignore this. Keep brand light-theme-first. */
+      }
+    </style>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f4f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+    "
+  >
+    <!-- Preheader (hidden but shown in inbox preview) -->
+    <div
+      style="
+        display: none;
+        font-size: 1px;
+        color: #f4f5f7;
+        line-height: 1px;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+      "
+    >
+      Welcome to {{ product_name }}. Here's how to get started.
+    </div>
+
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="background-color: #f4f5f7"
+    >
+      <tr>
+        <td align="center" style="padding: 32px 16px">
+          <!-- ---- Outer container ---- -->
+          <table
+            role="presentation"
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="
+              max-width: 600px;
+              width: 100%;
+              background-color: #ffffff;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            "
+          >
+            <!-- ---- Brand header band ---- -->
+            <tr>
+              <td align="left" style="background-color:{{ accent_color }};padding:24px 32px;">
+                <img
+                  src="{{ logo_url }}"
+                  alt="{{ product_name }}"
+                  width="140"
+                  height="32"
+                  style="display: block; width: 140px; height: auto"
+                />
+              </td>
+            </tr>
+
+            <!-- ---- Hero ---- -->
+            <tr>
+              <td style="padding: 40px 32px 16px 32px">
+                <h1
+                  style="
+                    margin: 0 0 16px 0;
+                    font-size: 28px;
+                    line-height: 1.2;
+                    font-weight: 700;
+                    color: #1a1a1a;
+                  "
+                >
+                  Welcome, {{ user_name }}.
+                </h1>
+                <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.55; color: #3c4043">
+                  Thanks for signing up for {{ product_name }}. Your account is ready and we're glad
+                  you're here.
+                </p>
+                <p style="margin: 0 0 32px 0; font-size: 16px; line-height: 1.55; color: #3c4043">
+                  Here's where to start:
+                </p>
+              </td>
+            </tr>
+
+            <!-- ---- Primary CTA ---- -->
+            <tr>
+              <td align="center" style="padding: 0 32px 32px 32px">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td
+                      align="center"
+                      style="border-radius:8px;background-color:{{ primary_color }};"
+                    >
+                      <a
+                        href="{{ cta_url }}"
+                        style="
+                          display: inline-block;
+                          padding: 14px 28px;
+                          font-size: 16px;
+                          font-weight: 600;
+                          color: #ffffff;
+                          text-decoration: none;
+                          border-radius: 8px;
+                          min-height: 44px;
+                          line-height: 1;
+                        "
+                      >
+                        Open your dashboard
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- ---- Secondary content ---- -->
+            <tr>
+              <td style="padding: 0 32px 40px 32px">
+                <p style="margin: 0 0 8px 0; font-size: 14px; line-height: 1.55; color: #5f6368">
+                  Need help? Reply to this email or write to
+                  <a
+                    href="mailto:{{ support_email }}"
+                    style="color:{{ primary_color }};text-decoration:underline;"
+                    >{{ support_email }}</a
+                  >.
+                </p>
+              </td>
+            </tr>
+
+            <!-- ---- Footer ---- -->
+            <tr>
+              <td
+                style="background-color: #fafbfc; padding: 24px 32px; border-top: 1px solid #e8eaed"
+              >
+                <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.5; color: #80868b">
+                  {{ company_address }}
+                </p>
+                <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #80868b">
+                  <a href="{{ unsubscribe_url }}" style="color: #80868b; text-decoration: underline"
+                    >Email preferences</a
+                  >
+                </p>
+              </td>
+            </tr>
+          </table>
+          <!-- ---- /Outer container ---- -->
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

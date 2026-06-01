@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.4] - Email standards: samples, render skill, checklist, decisions
+
+### Added
+
+- **`skills/email-templates/welcome.html`** (126 lines) — copy-paste-ready brand-matched welcome email template. Inline-styles-friendly source, `<table>` layout, preheader, single primary CTA, footer with mailing address + preferences link, dark-mode-safe. Placeholders: `{{ product_name }}`, `{{ logo_url }}`, `{{ primary_color }}`, `{{ accent_color }}`, `{{ user_name }}`, `{{ cta_url }}`, `{{ company_address }}`, `{{ unsubscribe_url }}`, `{{ support_email }}`.
+- **`skills/email-templates/cognito-email-handler.py`** (210 lines) — sample Cognito `CustomEmailSender` Lambda. KMS-decrypts the verification code via the AWS Encryption SDK, renders Jinja2 templates, sends via SES with both HTML + plain-text parts (`multipart/alternative`). Maps all 7 Cognito trigger sources (SignUp, ResendCode, ForgotPassword, UpdateUserAttribute, VerifyUserAttribute, AdminCreateUser, AccountTakeOverNotification) to the right template + subject. Includes the CDK wiring as a reference comment block.
+- **`skills/email-template-rendering.md`** (196 lines) — companion skill covering the build pipeline: Premailer (Python) and Juice (Node) for CSS inlining, plain-text fallback authoring, local preview workflow, cross-client testing options (Litmus / Email on Acid / Mailtrap), anti-patterns. Wires into `deploy.sh` as a pre-deploy step.
+- **Email Checklist (20 items)** added to `steering/email-standards.md` — runs through every requirement before go-live: no defaults, no emojis, brand match, subject under 50 chars, preheader, single CTA, touch targets, inline CSS, plain-text alternative, web-safe fonts, alt text, color contrast, physical address, unsubscribe link, From-domain verified, cross-client preview, dark-mode, no `<script>`, subject+preheader read sensibly, real test send.
+- **Templating Engines Comparison table** added to `steering/email-standards.md` — Jinja2 / Mustache / MJML / SES TemplateData with decision rules: Cognito-driven emails → Jinja2 in CustomEmailSender Lambda; app-driven transactional → Jinja2 OR pre-registered SES `CfnTemplate`; marketing → MJML compiled at build time.
+
+### Audit results (no fixes needed)
+
+- `prompts/` — zero references to "default Cognito email", Hosted UI defaults, or default SES templates
+- `skills/amazon-bedrock/`, `skills/aws-serverless/` — no email-related guidance that conflicts with the new standards
+- All existing agents will pick up the new rules through the auto-included `email-standards.md`
+
+### Decisions documented
+
+- **`inclusion: auto` retained** for `email-standards.md` (NOT switched to `always`). Most sessions never touch email — frontend component work, infrastructure tweaks, debugging. Loading 158 lines into every session is context bloat. The rich keyword list (email, verification, password reset, Cognito email, SES, welcome, magic link, etc.) reliably triggers when email work actually comes up.
+- **No dedicated `email-builder` subagent.** Adding a 23rd agent for email construction would over-fragment the roster. Email work always comes up inside a broader build (Cognito flow → `serverless`, marketing flow → `web-builder`, AI notification → `ai-builder`). The steering doc + sample template + Lambda handler + render skill already give those agents everything they need.
+
 ## [0.11.3] - Email standards
 
 ### Added
