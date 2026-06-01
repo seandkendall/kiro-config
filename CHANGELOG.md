@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.2] - master-demo-single agent
+
+### Added
+
+- **`master-demo-single` agent** — single-agent variant of `master-demo` for demos that benefit from one continuous thread of work rather than parallel orchestration. Same hard scope as `master-demo` (no UI, WAF, Route53/custom domains, AppRegistry, Powertools, X-Ray, cdk-nag, Kiro Specs, CI/CD) but with key simplifications:
+  - **No subagents.** This agent does everything itself — write CDK, write Lambda handlers, deploy via `./deploy.sh -y`, verify endpoints + CORS. The whole demo is one linear flow.
+  - **Only `aws-mcp-server`** (the AWS Agent Toolkit's core MCP). No `github`, no `web-search`, no `context7`, no `sequentialthinking`. Lean on purpose.
+  - **`aws-serverless` skill bundle as primary reference** — covers Lambda configuration, API Gateway debugging, Step Functions, EventBridge, event source mappings, cold starts, deployment with SAM/CDK, troubleshooting.
+  - Uses the v0.11.0 `deploy.sh` contract with `-y` for auto-confirm.
+  - Keyboard shortcut: `ctrl+7`.
+- README agent table updated: 16 → 17 agents
+- AWS MCP Server count: "All 16 agents" → "All 17 agents"
+- AGENTS.md "When to Use Which Agent" updated with `master-demo-single` and routing guidance ("use when the demo benefits from one continuous thread of work rather than parallel orchestration")
+
+### When to use which demo agent
+
+| Agent                         | Best for                                                                                                 |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `master-demo` (shift+m)       | Demos showing how subagents fan out in parallel — the orchestration IS the show                          |
+| `master-demo-single` (ctrl+7) | Demos where the audience benefits from one focused, linear thread — no orchestration overhead to explain |
+
+Both follow identical hard rules; the only difference is whether subagents are involved.
+
 ## [0.11.1] - Time-budget removal + deploy.sh template hardening
 
 ### Removed
