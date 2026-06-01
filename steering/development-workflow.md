@@ -220,3 +220,13 @@ Before considering any feature complete, verify:
   - Configuration defaults (model, settings)
 - Both updates happen in the SAME commit as the underlying change — do not defer to a separate commit
 - This rule applies to ALL agents, ALL subagents, and ALL sessions
+
+**Settings Change Confirmation (MANDATORY)** - Kiro CLI silently mutates `settings/cli.json` during normal use (e.g., it can flip `chat.greeting.enabled` between sessions). When `git add -A` would sweep up such a change:
+
+- ALWAYS surface the diff in your response BEFORE committing
+- ALWAYS ask the user whether the change is intentional, unless the change is clearly part of the current task (e.g., the user asked to bump the default model)
+- NEVER auto-revert a settings change just because it wasn't explicitly requested — the user may have made the change deliberately outside this session. Surface, ask, then act on their answer.
+- Prefer `git add <specific-file>` over `git add -A` when the task scope is narrow, to avoid sweeping up unrelated state mutations entirely
+- This rule also applies to: `agents/*.json` (Kiro CLI may rewrite formatting on agent edits) and any other config files that the CLI itself manages
+
+**Stage Specific Files (MANDATORY)** - For narrow-scope changes (one file, one feature), use `git add <files>` over `git add -A`. Three real stowaways have been caught in this project's history (`settings/survey_state.json`, two `chat.greeting.enabled` flips) — each was caused by `git add -A` sweeping in unrelated state. The defensive default is to stage only what you intentionally changed.

@@ -109,6 +109,29 @@ fi
 echo -e "  ${GREEN}✓${NC} no personal/private files leaked into git"
 
 # ----------------------------------------------------------------------------
+# Step 5: Settings drift warning (soft check — informs, doesn't block)
+# ----------------------------------------------------------------------------
+
+echo ""
+echo "Step 5: Settings drift check..."
+SETTINGS_DIFF=$(cd "$KIRO" && git diff --name-only settings/cli.json agents/ 2>/dev/null)
+if [[ -n "$SETTINGS_DIFF" ]]; then
+  YELLOW='\033[1;33m'
+  echo -e "  ${YELLOW}!${NC} config files have uncommitted changes:"
+  echo "$SETTINGS_DIFF" | sed 's|^|      |'
+  echo ""
+  echo -e "  ${YELLOW}!${NC} Review the diff before committing — Kiro CLI silently mutates"
+  echo "      settings/cli.json (e.g., chat.greeting.enabled) and agents/*.json"
+  echo "      formatting between sessions. Confirm each change is intentional."
+  echo ""
+  echo "      Show diff:    git diff settings/cli.json agents/"
+  echo "      Revert:       git checkout -- <file>"
+  echo "      Stage subset: git add <specific-file>  (preferred over 'git add -A')"
+else
+  echo -e "  ${GREEN}✓${NC} no config drift in settings/cli.json or agents/"
+fi
+
+# ----------------------------------------------------------------------------
 # Done
 # ----------------------------------------------------------------------------
 

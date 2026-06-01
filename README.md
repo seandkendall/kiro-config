@@ -214,7 +214,10 @@ The default model and settings are in `settings/cli.json`. Key settings:
 - `chat.enableSubagent`: `true`
 - `chat.enableThinking`: `true`
 - `chat.enableTodoList`: `true`
+- `chat.greeting.enabled`: `true`
 - `toolSearch.enabled`: `true`
+
+> **First-time setup tip** — Kiro CLI silently mutates `settings/cli.json` between sessions (e.g., it can flip `chat.greeting.enabled`). When `validate.sh` runs before a push, Step 5 surfaces any uncommitted settings drift so you can confirm or revert before it sneaks into a commit. Prefer `git add <specific-file>` over `git add -A` for narrow changes — see `steering/development-workflow.md` ("Settings Change Confirmation" rule).
 
 ## Key Conventions
 

@@ -1,0 +1,324 @@
+<!doctype html>
+<!--
+  Sample security alert email — copy to your project's emails/security-alert.html
+  and customize. Sent for the Cognito AccountTakeOverNotification trigger source
+  OR when your own risk engine flags suspicious activity (impossible-travel
+  velocity, brute-force attempts, suspected credential stuffing).
+
+  Tone is direct and slightly urgent — this is different from login-new-device.html
+  which is informational. The primary CTA is "lock my account".
+
+  Placeholders:
+    {{ product_name }}, {{ logo_url }}, {{ primary_color }}, {{ accent_color }}
+    {{ user_name }}
+    {{ alert_summary }}     — one-line summary, e.g. "5 failed sign-in attempts in the last 10 minutes"
+    {{ device }}            — e.g. "Unknown device on Chrome"
+    {{ location }}          — e.g. "Lagos, Nigeria (approximate)"
+    {{ event_time }}        — e.g. "May 22, 2026 at 4:33 PM MDT"
+    {{ ip_address }}
+    {{ lock_account_url }}  — primary CTA: lock account + force password reset
+    {{ company_address }}, {{ unsubscribe_url }}, {{ support_email }}
+
+  WARNING_COLOR is hard-coded to a strong red because brand color may not be
+  appropriate for an alert. Override only if your brand has a designated
+  warning color. Never use green or blue for security alerts.
+
+  See email-standards.md and email-template-rendering.md.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Security alert for your {{ product_name }} account</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f4f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+    "
+  >
+    <div
+      style="
+        display: none;
+        font-size: 1px;
+        color: #f4f5f7;
+        line-height: 1px;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+      "
+    >
+      Suspicious activity on your {{ product_name }} account. Lock your account immediately if this
+      wasn't you.
+    </div>
+
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="background-color: #f4f5f7"
+    >
+      <tr>
+        <td align="center" style="padding: 32px 16px">
+          <table
+            role="presentation"
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="
+              max-width: 600px;
+              width: 100%;
+              background-color: #ffffff;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            "
+          >
+            <!-- Brand header -->
+            <tr>
+              <td align="left" style="background-color:{{ accent_color }};padding:24px 32px;">
+                <img
+                  src="{{ logo_url }}"
+                  alt="{{ product_name }}"
+                  width="140"
+                  height="32"
+                  style="display: block; width: 140px; height: auto; border: 0"
+                />
+              </td>
+            </tr>
+
+            <!-- Alert banner -->
+            <tr>
+              <td style="background-color: #c5221f; padding: 16px 32px">
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 14px;
+                    line-height: 1.4;
+                    color: #ffffff;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  SECURITY ALERT
+                </p>
+              </td>
+            </tr>
+
+            <!-- Hero -->
+            <tr>
+              <td style="padding: 32px 32px 16px 32px">
+                <h1
+                  style="
+                    margin: 0 0 16px 0;
+                    font-size: 24px;
+                    line-height: 1.2;
+                    font-weight: 700;
+                    color: #1a1a1a;
+                  "
+                >
+                  Suspicious activity on your account
+                </h1>
+                <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.55; color: #3c4043">
+                  Hi {{ user_name }}, we detected unusual activity on your {{ product_name }}
+                  account that we couldn't verify was you:
+                </p>
+                <p
+                  style="
+                    margin: 0 0 24px 0;
+                    font-size: 16px;
+                    line-height: 1.55;
+                    color: #1a1a1a;
+                    font-weight: 600;
+                  "
+                >
+                  {{ alert_summary }}
+                </p>
+              </td>
+            </tr>
+
+            <!-- Event details -->
+            <tr>
+              <td style="padding: 0 32px 24px 32px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="background-color: #fef7f6; border: 1px solid #f3c2bf; border-radius: 8px"
+                >
+                  <tr>
+                    <td style="padding: 16px 20px">
+                      <p
+                        style="margin: 0 0 8px 0; font-size: 13px; line-height: 1.4; color: #80868b"
+                      >
+                        DEVICE
+                      </p>
+                      <p
+                        style="
+                          margin: 0 0 16px 0;
+                          font-size: 15px;
+                          line-height: 1.4;
+                          color: #1a1a1a;
+                          font-weight: 600;
+                        "
+                      >
+                        {{ device }}
+                      </p>
+                      <p
+                        style="margin: 0 0 8px 0; font-size: 13px; line-height: 1.4; color: #80868b"
+                      >
+                        APPROXIMATE LOCATION
+                      </p>
+                      <p
+                        style="
+                          margin: 0 0 16px 0;
+                          font-size: 15px;
+                          line-height: 1.4;
+                          color: #1a1a1a;
+                          font-weight: 600;
+                        "
+                      >
+                        {{ location }}
+                      </p>
+                      <p
+                        style="margin: 0 0 8px 0; font-size: 13px; line-height: 1.4; color: #80868b"
+                      >
+                        EVENT TIME
+                      </p>
+                      <p
+                        style="
+                          margin: 0 0 16px 0;
+                          font-size: 15px;
+                          line-height: 1.4;
+                          color: #1a1a1a;
+                          font-weight: 600;
+                        "
+                      >
+                        {{ event_time }}
+                      </p>
+                      <p
+                        style="margin: 0 0 8px 0; font-size: 13px; line-height: 1.4; color: #80868b"
+                      >
+                        IP ADDRESS
+                      </p>
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 15px;
+                          line-height: 1.4;
+                          color: #1a1a1a;
+                          font-weight: 600;
+                        "
+                      >
+                        {{ ip_address }}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Primary CTA: lock account -->
+            <tr>
+              <td align="center" style="padding: 0 32px 16px 32px">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="center" style="border-radius: 8px; background-color: #c5221f">
+                      <a
+                        href="{{ lock_account_url }}"
+                        style="
+                          display: inline-block;
+                          padding: 14px 28px;
+                          font-size: 16px;
+                          font-weight: 700;
+                          color: #ffffff;
+                          text-decoration: none;
+                          border-radius: 8px;
+                          min-height: 44px;
+                          line-height: 1;
+                        "
+                      >
+                        Lock my account
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Recommended actions -->
+            <tr>
+              <td style="padding: 16px 32px 32px 32px">
+                <p
+                  style="
+                    margin: 0 0 12px 0;
+                    font-size: 15px;
+                    line-height: 1.55;
+                    color: #1a1a1a;
+                    font-weight: 600;
+                  "
+                >
+                  If this wasn't you:
+                </p>
+                <ol
+                  style="
+                    margin: 0 0 16px 0;
+                    padding-left: 20px;
+                    font-size: 14px;
+                    line-height: 1.6;
+                    color: #3c4043;
+                  "
+                >
+                  <li>Click "Lock my account" above to immediately revoke all sessions</li>
+                  <li>Reset your password from the account recovery flow</li>
+                  <li>Re-register your passkeys on devices you trust</li>
+                  <li>Review recent activity in your account settings</li>
+                </ol>
+                <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #5f6368">
+                  If this WAS you (e.g., you're traveling and signed in from a new location), no
+                  action needed — but if you have any doubt, lock the account and re-authenticate.
+                  It takes a minute and gives you certainty.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                style="background-color: #fafbfc; padding: 24px 32px; border-top: 1px solid #e8eaed"
+              >
+                <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.5; color: #80868b">
+                  Need help? Email
+                  <a
+                    href="mailto:{{ support_email }}"
+                    style="color: #80868b; text-decoration: underline"
+                    >{{ support_email }}</a
+                  >.
+                </p>
+                <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.5; color: #80868b">
+                  {{ company_address }}
+                </p>
+                <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #80868b">
+                  <a href="{{ unsubscribe_url }}" style="color: #80868b; text-decoration: underline"
+                    >Email preferences</a
+                  >
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

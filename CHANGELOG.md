@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.6] - Settings drift defenses + security email templates
+
+### Added
+
+- **`steering/development-workflow.md`** — two new MANDATORY rules:
+  - **Settings Change Confirmation** — when `git add -A` would sweep up a `settings/cli.json` (or `agents/*.json`) change Kiro CLI silently mutated, surface the diff in your response BEFORE committing and ask the user. Never auto-revert. The user may have intentionally changed the setting outside this session.
+  - **Stage Specific Files** — for narrow-scope changes, prefer `git add <files>` over `git add -A`. Three real stowaways have been caught in this project's history (`settings/survey_state.json`, two `chat.greeting.enabled` flips). Defensive default is to stage only what was intentionally changed.
+- **`validate.sh` Step 5: Settings drift check** — soft warning (doesn't block) when `settings/cli.json` or `agents/*.json` has uncommitted changes. Surfaces the diff with revert instructions and a reminder to use `git add <specific-file>`.
+- **`skills/email-templates/login-new-device.html`** + **`.txt`** (123 + 21 lines) — informational email when a user signs in from a new device or location. Sign-in details box (device / approximate location / time / IP), single CTA "This wasn't me" that links to the lock-account flow.
+- **`skills/email-templates/security-alert.html`** + **`.txt`** (153 + 30 lines) — urgent email for the Cognito `AccountTakeOverNotification` trigger source OR when your own risk engine flags suspicious activity (impossible-travel velocity, brute-force, credential stuffing). Red banner, hard-coded warning color (NOT brand color — never green/blue for alerts), prominent "Lock my account" CTA, numbered recovery steps.
+- **`README.md`** Configuration section — `chat.greeting.enabled: true` added to the documented defaults so setup is reproducible across machines.
+
+### Changed
+
+- **`chat.greeting.enabled = true`** is now the intentional default (previous session had it as false; user confirmed they want it on).
+
+### Decisions documented
+
+- **Master-demo greeting propagation skipped.** `chat.greeting.enabled` is a CLI-global setting in `settings/cli.json`, not a per-agent setting. Every agent (master, master-demo, master-demo-single, etc.) inherits the global value. No per-agent override is needed or possible.
+
 ## [0.11.5] - Email starter templates + Cognito migration runbook
 
 ### Added

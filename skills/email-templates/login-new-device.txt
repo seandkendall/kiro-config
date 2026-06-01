@@ -1,0 +1,21 @@
+New sign-in to your {{ product_name }} account.
+
+Hi {{ user_name }},
+
+We noticed a new sign-in. If this was you, no action needed.
+
+  Device:               {{ device }}
+  Approximate location: {{ location }}
+  Sign-in time:         {{ login_time }}
+  IP address:           {{ ip_address }}
+
+If you don't recognize this sign-in, click below to lock your account
+and reset your password:
+
+{{ wasnt_you_url }}
+
+Questions? Email {{ support_email }}.
+
+---
+{{ company_address }}
+Email preferences: {{ unsubscribe_url }}

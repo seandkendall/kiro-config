@@ -1,0 +1,30 @@
+SECURITY ALERT — {{ product_name }}
+
+Hi {{ user_name }},
+
+We detected unusual activity on your {{ product_name }} account that we
+couldn't verify was you:
+
+  {{ alert_summary }}
+
+Event details:
+  Device:               {{ device }}
+  Approximate location: {{ location }}
+  Event time:           {{ event_time }}
+  IP address:           {{ ip_address }}
+
+If this WASN'T you:
+
+  1. Lock your account immediately: {{ lock_account_url }}
+  2. Reset your password from the account recovery flow.
+  3. Re-register your passkeys on devices you trust.
+  4. Review recent activity in your account settings.
+
+If this WAS you (e.g., you're traveling), no action needed — but if you
+have any doubt, lock the account and re-authenticate.
+
+Need help? Email {{ support_email }}.
+
+---
+{{ company_address }}
+Email preferences: {{ unsubscribe_url }}
