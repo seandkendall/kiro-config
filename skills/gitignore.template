@@ -1,0 +1,96 @@
+# .gitignore template for AWS CDK + React projects deployed via deploy.sh
+#
+# Copy this file to your project root as .gitignore and customize as needed.
+# Source: https://github.com/seandkendall/kiro-config (skills/gitignore.template)
+
+# ----------------------------------------------------------------------------
+# deploy.sh state (per-profile inputs like --domain are saved here by deploy.sh)
+# ----------------------------------------------------------------------------
+
+.deploy-state.json
+
+# ----------------------------------------------------------------------------
+# Secrets and environment files (NEVER commit)
+# ----------------------------------------------------------------------------
+
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+*.secret
+*.secrets
+secrets.json
+credentials
+.aws/credentials
+
+# ----------------------------------------------------------------------------
+# AWS CDK
+# ----------------------------------------------------------------------------
+
+cdk.out/
+cdk.context.json
+*.swp
+
+# ----------------------------------------------------------------------------
+# Python (Lambda functions, CDK Python)
+# ----------------------------------------------------------------------------
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.venv/
+venv/
+env/
+.python-version
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+
+# ----------------------------------------------------------------------------
+# Node / React / TypeScript / Vite
+# ----------------------------------------------------------------------------
+
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+.next/
+out/
+coverage/
+.eslintcache
+*.tsbuildinfo
+.vite/
+
+# ----------------------------------------------------------------------------
+# Testing
+# ----------------------------------------------------------------------------
+
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+junit.xml
+test-results/
+playwright-report/
+
+# ----------------------------------------------------------------------------
+# Editors and OS
+# ----------------------------------------------------------------------------
+
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+*.log
+logs/

@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.1] - Time-budget removal + deploy.sh template hardening
+
+### Removed
+
+- **All time budgets from `master-demo`** — the previous "10-MINUTE BUDGET" framing in `prompts/master-demo.md` directly violated the existing **"No Time Estimates (MANDATORY)"** rule in `steering/development-workflow.md`. Renamed `SPEED RULES` → `EFFICIENCY RULES`. Dropped every "10 minutes / 10-minute / under N minutes" reference. The same 9 efficiency tradeoffs (skip Specs, HTTP API, PAY_PER_REQUEST, single stack, no Layers, etc.) are kept — they're concrete tradeoffs, not time estimates.
+- Added an explicit `NO TIME ESTIMATES` reminder block in `master-demo.md` cross-referencing `development-workflow.md`. If asked "how long?", respond with scope (number of stacks, services, resources) — never time.
+- `master-demo.json` `welcomeMessage` updated: dropped "<10min budget", trimmed to 175 chars.
+
+### Added
+
+- **`skills/gitignore.template`** (96 lines) — copy-paste-ready `.gitignore` for AWS CDK + React projects deployed via `deploy.sh`. Includes `.deploy-state.json` (per-profile state file from the v0.11.0 contract), all `.env*` patterns, AWS credential files, CDK output dirs, Python/Node/Vite caches, Cypress artifacts, editor/OS junk.
+- **`ai-builder.md`** — explicit deploy.sh contract reference added to the AgentCore app-build orchestration section. Lists the 5 flags, points to `.deploy-state.json` for per-profile state, references `skills/deploy.sh.template`. (master.md and web-builder.md don't deploy directly — they delegate to `serverless` which inherits the contract from `aws-standards.md`.)
+
+### Changed
+
+- **`master-demo` prompt — explicit `-y` flag usage in deployment flow.** All `./deploy.sh` invocations now show `./deploy.sh -y` (deploy) and `./deploy.sh --delete -y` (teardown), making the demo's auto-confirm pattern explicit.
+- **`skills/deploy.sh.template` Route53 cleanup made concrete.** The previous `# TODO: Route53 record cleanup` placeholder is replaced with a working implementation:
+  - Walks up the domain levels to find the hosted zone (e.g., `d1.app.example.com` → `app.example.com` → `example.com`)
+  - Lists any `RecordSets` whose Name matches the deployed domain (these are orphans `cdk destroy` left behind)
+  - Asks the user to confirm before deletion (skipped under `-y`)
+  - Builds a Route53 change-batch with `DELETE` actions and submits via `change-resource-record-sets`
+  - **Never deletes the hosted zone itself** — zones are treated as shared infra across projects in the account
+
 ## [0.11.0] - deploy.sh full contract + Claude Opus 4.8
 
 ### Changed

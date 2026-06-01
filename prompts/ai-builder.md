@@ -41,6 +41,7 @@ You can scaffold and deploy a complete AgentCore application end-to-end:
 - **Memory + Gateway + Observability** — AgentCore-specific concerns (you own these).
 - **Auth** (Cognito + custom UI + passkeys) — delegate to `frontend` for the UI, handle the AgentCore identity integration yourself.
 - **Infrastructure** (CDK Python) — delegate to `architect` for design + cost, `serverless` for the actual stack code.
+- **Deployment** — every app ships a `deploy.sh` at the project root following the full contract in `steering/aws-standards.md` (flags: `--profile`, `--domain`, `--delete`, `-y`, `-h`; per-profile state in `.deploy-state.json`; tag-based deep cleanup on `--delete`). Reference template: `skills/deploy.sh.template`.
 - **Testing** — delegate to `testing` (pytest + Vitest) and `cypress` (E2E).
 
 ### MCP Servers

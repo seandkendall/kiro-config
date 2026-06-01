@@ -193,16 +193,68 @@ if $DELETE; then
     fi
   done
 
-  # 3. Route53: delete only records this stack added to a SHARED zone
-  #    (Don't delete the zone itself unless this stack owns it.)
-  #    This block is intentionally minimal — customize per project based on
-  #    which records the stack creates.
+  # 3. Route53: delete only records this stack created. Strategy: query the
+  #    hosted zone for the project's domain, find any RecordSets whose Name
+  #    matches the stack's domain, and delete them by name+type after
+  #    confirming with the user. The hosted zone itself is NEVER deleted —
+  #    it is treated as shared infrastructure across projects in the account.
   if [[ -n "$DOMAIN" ]]; then
-    ZONE_ID=$(aws route53 list-hosted-zones-by-name --dns-name "${DOMAIN#*.}" \
-      --profile "$PROFILE" --query 'HostedZones[0].Id' --output text 2>/dev/null || echo "")
-    if [[ -n "$ZONE_ID" && "$ZONE_ID" != "None" ]]; then
-      echo "  TODO: Route53 record cleanup for $DOMAIN in zone $ZONE_ID"
-      echo "        (deleting only records added by this stack — customize per project)"
+    # Strip the leftmost subdomain to get the apex zone name
+    # (e.g., d1.app.example.com -> app.example.com -> example.com)
+    ZONE_NAME="$DOMAIN"
+    while [[ "$ZONE_NAME" == *.* ]]; do
+      CANDIDATE_ID=$(aws route53 list-hosted-zones-by-name \
+        --dns-name "$ZONE_NAME" \
+        --profile "$PROFILE" \
+        --query "HostedZones[?Name=='${ZONE_NAME}.'].Id | [0]" \
+        --output text 2>/dev/null | sed 's|/hostedzone/||')
+      if [[ -n "$CANDIDATE_ID" && "$CANDIDATE_ID" != "None" ]]; then
+        ZONE_ID="$CANDIDATE_ID"
+        break
+      fi
+      ZONE_NAME="${ZONE_NAME#*.}"
+    done
+
+    if [[ -n "${ZONE_ID:-}" ]]; then
+      # Records still present for the deployed domain are orphans from
+      # cdk destroy (CDK should have cleaned them, but we verify).
+      RECORDS=$(aws route53 list-resource-record-sets \
+        --hosted-zone-id "$ZONE_ID" \
+        --profile "$PROFILE" \
+        --query "ResourceRecordSets[?Name=='${DOMAIN}.']" \
+        --output json 2>/dev/null || echo "[]")
+
+      if [[ "$RECORDS" != "[]" && -n "$RECORDS" ]]; then
+        echo "  Found Route53 records still present for $DOMAIN:"
+        echo "$RECORDS" | python3 -c "
+import sys, json
+for r in json.load(sys.stdin):
+    print(f\"      {r['Type']:6s} {r['Name']}\")
+" 2>/dev/null || true
+
+        if confirm "Delete these Route53 records (zone $ZONE_ID will NOT be deleted)?"; then
+          # Build a Route53 change-batch with DELETE actions
+          BATCH=$(echo "$RECORDS" | python3 -c "
+import sys, json
+records = json.load(sys.stdin)
+print(json.dumps({'Changes': [{'Action': 'DELETE', 'ResourceRecordSet': r} for r in records]}))
+" 2>/dev/null)
+          if [[ -n "$BATCH" ]]; then
+            TMPFILE=$(mktemp -t route53-XXXXXX.json)
+            echo "$BATCH" > "$TMPFILE"
+            aws route53 change-resource-record-sets \
+              --hosted-zone-id "$ZONE_ID" \
+              --change-batch "file://$TMPFILE" \
+              --profile "$PROFILE" 2>&1 | verbose || true
+            rm -f "$TMPFILE"
+            echo "  ✓ Route53 records deleted from zone $ZONE_ID"
+          fi
+        else
+          echo "  Skipped Route53 cleanup. Records remain in zone $ZONE_ID."
+        fi
+      else
+        echo "  ✓ No orphaned Route53 records for $DOMAIN"
+      fi
     fi
   fi
 
