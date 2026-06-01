@@ -5,7 +5,7 @@
   "chat.enableNotifications": true,
   "chat.enablePromptHints": false,
   "chat.enableThinking": true,
-  "chat.greeting.enabled": true,
+  "chat.greeting.enabled": false,
   "chat.autoExpandToolOutput": true,
   "mcp.noInteractiveTimeout": 180000,
   "telemetry.enabled": true,
