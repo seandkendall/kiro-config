@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.3] - Email standards
+
+### Added
+
+- **`steering/email-standards.md`** (158 lines, `inclusion: auto`) — every user-facing transactional email this system sends MUST be a custom, brand-matched HTML email. No defaults, no emojis, full color, mobile-responsive, with plain-text fallback.
+  - **Banned**: default Cognito verification email, default SES Welcome template, default Amplify Auth emails, plain-text-only when HTML is appropriate, emojis (subject line / preview / body), generic third-party templates without brand customization, external stylesheets (most clients strip `<link>`/`<style>`)
+  - **Required visual**: brand match (logo / palette / typography / voice), full color, mobile single-column max-600px, inline CSS, touch-target buttons (44x44 min), one primary CTA per email
+  - **Required technical**: `multipart/alternative` (HTML + plain text), web-safe fonts, absolute image URLs with `alt` text, no background images (Outlook strips them), cross-client rendering tests (Gmail / Outlook / Apple Mail / dark mode)
+  - **Compliance**: physical mailing address footer (CAN-SPAM / CASL), unsubscribe / preferences link, From-domain verification (SPF + DKIM + DMARC)
+  - **AWS implementation**: Cognito `CustomEmailSender` Lambda trigger with KMS-decrypted code; SES `CfnTemplate` for non-Cognito emails (welcome, billing, notifications)
+  - **File layout**: `emails/{welcome,verification,password-reset,login-new-device}.{html,txt}` + `partials/header.html` + `partials/footer.html` + `styles.css` (inlined at build)
+  - **Cross-references**: `accessibility-standards.md` (WCAG color contrast), `aws-standards.md` (Cognito custom UI rule), `security-policies.md` (SES API key management)
+- **`steering/aws-standards.md`** Cognito section — new "Custom Cognito Emails (MANDATORY)" sub-rule that bans default Cognito verification, password-reset, and MFA emails. Points to `email-standards.md` for the full rule.
+
+### Why
+
+The base steering already mandated custom Cognito UI (login, registration, password reset pages) but said nothing about the emails Cognito sends. Default Cognito emails ("Your verification code is XXXXXX" with no styling) ship plain text from `no-reply@verificationemail.com` — that breaks the visual continuity the custom UI works hard to establish. Email is also a touchpoint where most teams default-to-default, so codifying it as a steering rule is high-leverage.
+
 ## [0.11.2] - master-demo-single agent
 
 ### Added

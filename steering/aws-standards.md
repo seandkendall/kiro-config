@@ -142,6 +142,8 @@ managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN
 - Custom **password reset page** (forgot password flow)
 - Use the Cognito Identity SDK or `amazon-cognito-identity-js` / `@aws-amplify/auth` for all auth flows
 
+**Custom Cognito Emails (MANDATORY)** - NEVER use the default Cognito verification, password-reset, or MFA emails. Wire up the `CustomEmailSender` Lambda trigger and send brand-matched HTML via SES. Full rule: `email-standards.md`.
+
 **Passkeys (MANDATORY)** - ALWAYS enable WebAuthn/passkeys for login:
 
 - Passkeys MUST be offered as a primary login method — not hidden behind email entry
