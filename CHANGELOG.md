@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - deploy.sh full contract + Claude Opus 4.8
+
+### Changed
+
+- **Default model bumped: `claude-opus-4.7` → `claude-opus-4.8`**
+  - `settings/cli.json` `chat.defaultModel` updated
+  - `steering/AGENTS.md` "Adaptive Thinking" section updated
+  - `steering/tech.md` "Kiro CLI Tooling" section updated
+  - README "Configuration" section updated
+  - The historical `4.6 → 4.7` migration note in `skills/amazon-bedrock/references/model-migration.md` is kept intentionally — it documents prior migration history, not the current default
+
+### Added
+
+- **Full `deploy.sh` contract** specified in `steering/aws-standards.md`. Every project's `deploy.sh` MUST follow it:
+  - **Flags**: `--profile <name>` (defaults to `default`), `--domain <fqdn>`, `--delete`, `-y`/`--yes`, `-h`/`--help`
+  - **Per-profile state** in `.deploy-state.json` (gitignored). When `--domain` is passed, the value is saved keyed by AWS profile. Subsequent runs without `--domain` recall the saved value for the current profile.
+  - **Deep-cleanup on `--delete`**: empties + deletes S3 buckets, deletes CloudWatch log groups, removes Route53 records the stack added (without deleting the zone), deletes ACM certificates the stack created, deletes SQS/SNS/EventBridge/ECR resources owned by the stack, detaches and deletes IAM roles + policies. Discovery is by tag (`project=<name>`), never by name prefix.
+  - **`-y` auto-confirm flag**: skips every interactive prompt (intended for CI-like usage and `master-demo`)
+  - **Multi-project safety in shared AWS accounts**: discovery by tag (NOT by name prefix), surgical Route53 record deletion (never delete the hosted zone if shared), pre-flight resource list shown before deletion, `CDKToolkit` bootstrap stack is NEVER destroyed by `deploy.sh --delete`
+- **Reference template**: `skills/deploy.sh.template` fully rewritten (330 lines) implementing the contract end-to-end
+- **`skills/deploy-on-aws.md`** updated to summarize the contract and link back to the canonical rule in `steering/aws-standards.md`
+
+### Why
+
+The previous `deploy.sh` contract was minimal (`--profile`, `--delete`). Three real-world pain points led to this expansion:
+
+1. **Manual domain re-typing**: every redeploy required passing `--domain` again. Now saved per-profile in `.deploy-state.json`.
+2. **Orphaned resources after `cdk destroy`**: non-empty S3 buckets, retained CloudWatch log groups, lingering ACM certs. Now `--delete` deep-cleans by tag.
+3. **Cross-project blast radius in shared AWS accounts**: deleting a stack could nuke Route53 records or ACM certs owned by sibling projects. Now discovery is tag-based and the `CDKToolkit` is explicitly excluded from `--delete`.
+
 ## [0.10.3] - master-demo speed optimization
 
 ### Changed
@@ -101,7 +131,7 @@ When the user states a preference using "always / never / from now on / I prefer
 ### Default Configuration
 
 - `chat.defaultAgent`: `master`
-- `chat.defaultModel`: `claude-opus-4.7`
+- `chat.defaultModel`: `claude-opus-4.8`
 - `chat.enableSubagent`: `true`
 - `chat.enableThinking`: `true`
 - `chat.enableTodoList`: `true`

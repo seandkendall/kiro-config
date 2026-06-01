@@ -34,12 +34,25 @@ Use the unified **AWS MCP Server** (`aws-mcp-server`, via `mcp-proxy-for-aws`) f
 - **Cost estimates**: `aws___call_aws` to invoke Pricing API or Cost Explorer directly. **Always present costs before generating IaC** so the user can adjust before committing
 - **IaC validation**: `aws___run_script` for sandboxed Python checks (e.g., synth a CDK stack and inspect the template)
 
-## deploy.sh Pattern (MANDATORY)
+## deploy.sh Contract (MANDATORY)
 
-Every project ships a `deploy.sh` at the root. The script handles `cdk synth`, `cdk diff`, `cdk deploy`, frontend build + S3 sync, and CloudFront invalidation. Required flags:
+Every project ships a `deploy.sh` at the root following the full contract documented in `steering/aws-standards.md`. Reference template: `skills/deploy.sh.template`.
 
-- `--profile <name>` — AWS profile (no default; must be explicit)
-- `--delete` — Tear down the stack
+Required flags:
+
+| Flag               | Purpose                                                                  |
+| ------------------ | ------------------------------------------------------------------------ |
+| `--profile <name>` | AWS profile (defaults to `default`)                                      |
+| `--domain <fqdn>`  | Custom domain (saved per profile, recalled next run)                     |
+| `--delete`         | Tear down stack AND deep-clean orphans (S3, log groups, ACM certs, etc.) |
+| `-y` / `--yes`     | Auto-confirm — skip every prompt                                         |
+| `-h` / `--help`    | Show usage                                                               |
+
+Per-profile state lives in `.deploy-state.json` (gitignored). When the user re-runs `deploy.sh` without `--domain`, the value saved for the current profile is recalled. Add `.deploy-state.json` to `.gitignore`.
+
+Multi-project safety: `--delete` discovers resources by the `project=<name>` tag (NOT by name prefix). Resources without that tag are never touched, so sibling projects in the same account are safe. The `CDKToolkit` bootstrap stack is never destroyed by `deploy.sh --delete`.
+
+`-y` is intended for CI-like usage and the `master-demo` agent. Without `-y`, the script prompts at every destructive step.
 
 ### Use Agent Output Side Channels (Kiro CLI 2.3.0+)
 

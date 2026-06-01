@@ -1,6 +1,6 @@
 {
   "chat.defaultAgent": "master",
-  "chat.defaultModel": "claude-opus-4.7",
+  "chat.defaultModel": "claude-opus-4.8",
   "chat.enableKnowledge": true,
   "chat.enableNotifications": true,
   "chat.enablePromptHints": false,

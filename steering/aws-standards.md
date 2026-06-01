@@ -170,14 +170,87 @@ managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN
 
 **Infrastructure as Code** - All changes via CDK code, React code, and the `deploy.sh` script.
 
-**deploy.sh is the ONLY deployment method** - Never deploy via `cdk deploy` directly or the AWS Console.
+**`deploy.sh` is the ONLY supported deployment mechanism** - Never deploy via `cdk deploy` directly, the AWS Console, or any other path.
 
-- Every project MUST have a `deploy.sh` script at the project root
-- Required flags:
-  - `--profile <name>` — AWS profile to use (no default, must be explicit)
-  - `--delete` — Tear down the stack (destroy all resources)
-- The script handles: `cdk synth`, `cdk diff`, `cdk deploy`, frontend build + S3 sync
-- Example: `./deploy.sh --profile my-dev` or `./deploy.sh --profile my-dev --delete`
+Every project MUST have a `deploy.sh` script at the project root that follows this exact contract:
+
+#### Required Flags
+
+| Flag               | Required                         | Purpose                                                    |
+| ------------------ | -------------------------------- | ---------------------------------------------------------- |
+| `--profile <name>` | Optional (defaults to `default`) | AWS profile to use                                         |
+| `--domain <fqdn>`  | Optional                         | Custom domain for the deployment (e.g. `app.example.com`)  |
+| `--delete`         | Optional                         | Tear down the stack AND deep-clean associated resources    |
+| `-y` / `--yes`     | Optional                         | Auto-confirm — skip every interactive prompt (deletes too) |
+| `-h` / `--help`    | Optional                         | Show usage                                                 |
+
+Examples:
+
+```bash
+./deploy.sh                                        # Uses default profile + last-saved domain (if any)
+./deploy.sh --domain d1.example.com                # Saves d1 against the default profile
+./deploy.sh --domain d2.example.ca --profile work  # Saves d2 against the 'work' profile
+./deploy.sh --profile work                          # Reuses d2 (saved earlier)
+./deploy.sh --delete                                # Tears down with confirmation prompt
+./deploy.sh --delete -y                             # Tears down without prompting
+```
+
+#### Per-profile State (MANDATORY)
+
+`deploy.sh` MUST persist non-profile inputs (currently `--domain`, plus any future named flags) keyed by AWS profile, so subsequent runs auto-fill them.
+
+- Storage: `.deploy-state.json` at the project root, gitignored.
+- Format: a JSON object keyed by profile name, value is an object of saved inputs.
+- Special-case: when no `--profile` is passed, the key is the literal string `default`.
+- Read order on each run: CLI flag → saved state for that profile → error if neither and the value is required for the operation.
+- Write: every successful invocation that received a non-profile flag MUST update the saved value for that profile before exiting.
+- Add `.deploy-state.json` to the project's `.gitignore` — it can leak deployment topology (domains, environment hints) across forks.
+
+Example:
+
+```json
+{
+  "default": { "domain": "d1.example.com" },
+  "work": { "domain": "d2.example.ca" },
+  "demo": { "domain": "demo.kiro.dev" }
+}
+```
+
+#### Deep-Cleanup on `--delete` (MANDATORY)
+
+`cdk destroy` leaves orphans. `deploy.sh --delete` MUST go further:
+
+- Empty and delete every S3 bucket created by the stack (CDK won't delete non-empty buckets even with `RemovalPolicy.DESTROY`)
+- Delete every CloudWatch log group created by the stack (Lambda log groups, API GW access logs, custom log groups)
+- Remove DNS records the stack added to a shared Route53 hosted zone (without deleting the zone itself — see "Multi-project Safety" below)
+- Delete ACM certificates created exclusively for this stack
+- Delete any SQS queues, SNS topics, EventBridge rules, ECR repos that the stack owns
+- Detach and delete IAM roles + policies the stack created
+- Wait for `DELETE_COMPLETE` before exiting; surface any `DELETE_FAILED` resources clearly so the user can intervene
+
+Tag-based discovery is the safest sweep — every stack tags resources with `awsApplication` (via AppRegistry's `ApplicationAssociator`) and `project=<name>`. Use those tags to find resources that survived `cdk destroy`.
+
+#### `-y` Auto-Confirm Flag (MANDATORY)
+
+When `-y` is set, the script MUST NOT issue any interactive prompts. This includes:
+
+- The "are you sure you want to destroy this stack?" prompt on `--delete`
+- `cdk deploy --require-approval never` (CDK's own confirmation)
+- Any `read -p` prompts the script adds for safety
+
+`-y` is intended for CI-like usage and the demo orchestrator (`master-demo`). Without `-y`, the script SHOULD prompt at every destructive step.
+
+#### Multi-Project Safety in Shared AWS Accounts (MANDATORY)
+
+The same AWS account often hosts multiple projects sharing infrastructure (Route53 hosted zones, ACM certs, VPCs, Cognito user pools). The `deploy.sh` script MUST NOT break sibling projects:
+
+- **Discover by tag, not by name pattern.** Use `awsApplication` (set by AppRegistry's `ApplicationAssociator`) and `project=<name>` tags to identify resources owned by THIS stack. Never delete resources matching a name prefix or substring — name collisions across projects are real.
+- **Touch shared zones surgically.** When this stack created records in a Route53 hosted zone owned by another project (or by a shared infra stack), delete only the records this stack added (typically by `name` + `type`). Never delete the hosted zone itself unless this stack owns it end-to-end.
+- **Pre-flight check on `--delete`.** Before destroying, list all resources tagged with this project's tag and show them to the user (or skip the listing under `-y`). Resources NOT tagged with this project are NEVER touched.
+- **Shared certificates.** ACM certs in `us-east-1` are commonly reused (CloudFront only accepts certs there). If the cert was imported by another stack, this stack MUST NOT delete it on teardown — even if it imported the cert via `Certificate.fromCertificateArn`. Delete-on-teardown applies only to certs this stack created.
+- **CDK bootstrap stack.** `CDKToolkit` is shared across all CDK projects in the account. Never destroy it from `deploy.sh --delete`.
+
+The script handles: `cdk synth`, `cdk diff`, `cdk deploy`, frontend build + S3 sync, CloudFront invalidation, post-deploy state save. Reference template: `skills/deploy.sh.template`.
 
 Never make manual changes in AWS Console.
 

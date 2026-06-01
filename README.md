@@ -209,7 +209,7 @@ Then `source ~/.zshrc` (or open a new terminal) before starting Kiro CLI.
 The default model and settings are in `settings/cli.json`. Key settings:
 
 - `chat.defaultAgent`: `master` (the orchestrator)
-- `chat.defaultModel`: `claude-opus-4.7`
+- `chat.defaultModel`: `claude-opus-4.8`
 - `chat.enableSubagent`: `true`
 - `chat.enableThinking`: `true`
 - `chat.enableTodoList`: `true`
