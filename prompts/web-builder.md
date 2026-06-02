@@ -12,3 +12,5 @@ SUBAGENT DELEGATION: For any AWS serverless backend work (Lambda functions, API 
 Always prioritize user experience, performance, security, and AWS best practices. When you run CLI commands, NEVER run commands that will never exit such as: `<command> | tail`
 
 MCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (repos, PRs, issues, branches, file contents). ALWAYS use `aws-mcp-server` for AWS operations. Local git (status/diff/log/add/commit/push) is fine via shell. See steering/mcp-server-preference.md.
+
+PLAYWRIGHT MCP USAGE: This agent has `@playwright/mcp` configured for ad-hoc browser inspection during scaffolding (verifying CloudFront deployments came up, checking shadcn components render, generating selectors via `generate_locator`). For writing TEST SUITES (specs, page objects, fixtures), delegate to the `testing` subagent — it owns all Playwright E2E work per the v0.12.0 standards. Don't write `tests/e2e/*.spec.ts` files yourself.

@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.1] - Playwright migration polish
+
+### Added
+
+- **`skills/playwright-config.template.ts`** (113 lines) — copy-paste-ready `playwright.config.ts` matching the v0.12.0 standards: `data-testid` selectors, `storageState` programmatic auth, `fullyParallel`, `retries` on CI, `baseURL` from env, V8 trace + screenshot + video on failure, separate `setup` project for auth, 5 browser projects (chromium / firefox / webkit / mobile-chrome / mobile-safari at the standard breakpoints), `webServer` for local dev.
+- **`skills/playwright-auth-setup.template.ts`** (113 lines) — copy-paste-ready `tests/e2e/auth.setup.ts`. Two auth flow examples (Cognito InitiateAuth REST and custom backend `POST /api/auth/login`), localStorage / cookie persistence into `playwright/.auth/user.json`, dashboard verification, secrets from `process.env`. Documents the anti-patterns it avoids (UI login, hard-coded creds).
+- **`skills/cypress-to-playwright-migration.md`** (334 lines) — step-by-step runbook for projects with existing Cypress test suites. Covers: install/uninstall, directory structure, `data-cy` → `data-testid` bulk rename, mechanical test transformations table (`cy.get` → `getByTestId`, `cy.intercept` → `page.route`, `cy.session` → `storageState`, `cy.wait('@alias')` → `page.waitForResponse`, etc.), Page Object migration, custom commands → Playwright fixtures, side-by-side run validation before deletion, `.gitignore` / `package.json` / CI updates, accessibility test migration, common gotchas, partial-migration rollback strategy.
+- **`prompts/web-builder.md`** — new "PLAYWRIGHT MCP USAGE" paragraph clarifying that web-builder's bundled `@playwright/mcp` is for ad-hoc browser inspection during scaffolding (verifying CloudFront deployments came up, checking shadcn components render, generating selectors via `generate_locator`). Test SUITES still delegate to the `testing` subagent — don't write `tests/e2e/*.spec.ts` directly from web-builder.
+
+### Verified (no fixes needed)
+
+- `master-demo` and `master-demo-single`: confirmed NO browser MCPs in their configs (correct — they explicitly forbid all browser testing). MCP list: `master-demo` has 5 (web-search/context7/github/sequentialthinking/aws-mcp-server), `master-demo-single` has 1 (aws-mcp-server only).
+- `kiro-cli mcp list`: `testing` agent loads `playwright` MCP successfully (alongside aws-mcp-server, chrome-devtools, context7). `web-builder` loads `playwright` alongside its 7 other MCP servers.
+- `steering/aws-standards.md`: zero E2E references (correct — it's CDK/Lambda focused, E2E rules live in `development-workflow.md`).
+- README already has a `[Releases](https://github.com/seandkendall/kiro-config/releases)` link near the top (item 10 from the previous turn's recommendations was effectively done).
+
+### Changed
+
+- README: Skills 26 → 27, Custom (10) → Custom (11) with "Cypress-to-Playwright migration" added to the list.
+
 ## [0.12.0] - Cypress → Playwright migration
 
 Full migration from Cypress to Playwright across the entire config. Decisions confirmed with user:
