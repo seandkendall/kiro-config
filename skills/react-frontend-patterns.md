@@ -24,7 +24,7 @@ export function Dashboard({ userId }: DashboardProps) {
   if (!data) return <EmptyState message="No data yet" />;
 
   return (
-    <main data-cy="dashboard-page">
+    <main data-testid="dashboard-page">
       <h1 className="text-2xl font-bold">Dashboard</h1>
       {/* content */}
     </main>
@@ -47,7 +47,7 @@ function TransactionForm() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
   return (
-    <form onSubmit={handleSubmit(onSubmit)} data-cy="transaction-form">
+    <form onSubmit={handleSubmit(onSubmit)} data-testid="transaction-form">
       <label htmlFor="amount">Amount</label>
       <input
         id="amount"
@@ -89,9 +89,9 @@ function TransactionForm() {
 - Desktop: `lg:` (1280px)
 - Touch targets: minimum 44x44px on mobile
 
-## data-cy Selectors (MANDATORY — for Cypress)
+## data-testid Selectors (MANDATORY — for Playwright)
 
-`data-cy` attributes are **REQUIRED** on every interactive element. Cypress tests are non-negotiable in this codebase, and CSS/class selectors break tests when styles change.
+`data-testid` attributes are **REQUIRED** on every interactive element. Playwright tests are non-negotiable in this codebase, and CSS/class selectors break tests when styles change.
 
 **Required on:**
 
@@ -103,24 +103,24 @@ function TransactionForm() {
 - Every modal / dialog (visibility check)
 - Every loading indicator (race-condition guard)
 
-**Naming pattern:** `data-cy="<entity>-<action>"` or `data-cy="<entity>-<role>"`
+**Naming pattern:** `data-testid="<entity>-<action>"` or `data-testid="<entity>-<role>"`
 
-| Element        | Pattern                  | Example                          |
-| -------------- | ------------------------ | -------------------------------- |
-| Submit button  | `<entity>-submit`        | `data-cy="invoice-submit"`       |
-| Cancel button  | `<entity>-cancel`        | `data-cy="invoice-cancel"`       |
-| Form input     | `<entity>-<field>-input` | `data-cy="invoice-amount-input"` |
-| Error message  | `<entity>-error`         | `data-cy="invoice-error"`        |
-| Page container | `<page>-page`            | `data-cy="dashboard-page"`       |
-| List item      | `<entity>-row-<id>`      | `data-cy="invoice-row-123"`      |
-| Modal          | `<entity>-modal`         | `data-cy="delete-confirm-modal"` |
+| Element        | Pattern                  | Example                              |
+| -------------- | ------------------------ | ------------------------------------ |
+| Submit button  | `<entity>-submit`        | `data-testid="invoice-submit"`       |
+| Cancel button  | `<entity>-cancel`        | `data-testid="invoice-cancel"`       |
+| Form input     | `<entity>-<field>-input` | `data-testid="invoice-amount-input"` |
+| Error message  | `<entity>-error`         | `data-testid="invoice-error"`        |
+| Page container | `<page>-page`            | `data-testid="dashboard-page"`       |
+| List item      | `<entity>-row-<id>`      | `data-testid="invoice-row-123"`      |
+| Modal          | `<entity>-modal`         | `data-testid="delete-confirm-modal"` |
 
 **Rules:**
 
-- Never use class selectors, IDs, or tag selectors in Cypress — `cy.get('[data-cy=...]')` only
+- Never use class selectors, IDs, or tag selectors in Playwright — `page.getByTestId('...')` only
 - Keep selectors **stable** — only change them when the element's purpose changes, not when styles or DOM hierarchy change
-- Avoid dynamic IDs like `data-cy="btn-${randomId}"` — use stable entity identifiers
-- One `data-cy` per element — don't reuse the same value on multiple elements (Cypress will be ambiguous)
+- Avoid dynamic IDs like `data-testid="btn-${randomId}"` — use stable entity identifiers
+- One `data-testid` per element — don't reuse the same value on multiple elements (Playwright will throw a strict-mode violation)
 - For lists, include the row's unique identifier so individual rows can be selected
 
-**Code review enforcement:** PRs that add interactive elements WITHOUT `data-cy` selectors should be rejected. The Cypress agent will flag missing selectors automatically when it sees a component without coverage.
+**Code review enforcement:** PRs that add interactive elements WITHOUT `data-testid` selectors should be rejected. The testing agent will flag missing selectors automatically when it sees a component without coverage.

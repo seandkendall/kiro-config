@@ -88,6 +88,6 @@ Even then: prefer the AWS CLI shell tool over `gh`, `curl`, or other commands, s
 ❌ **Don't use `curl` against AWS endpoints** — use `aws-mcp-server`
 ❌ **Don't use `web_fetch` against `docs.aws.amazon.com`** — use `aws___search_documentation`
 ❌ **Don't guess library API surfaces from training data** — use `context7` for live docs
-❌ **Don't manually craft Cypress selectors for live debugging** — use `browser-lens` or `chrome-devtools`
+❌ **Don't manually craft Playwright selectors for live debugging** — use `playwright` MCP's `generate_locator` tool, `browser-lens`, or `chrome-devtools`
 
 If you find yourself reaching for a CLI when an MCP server is available, **stop and switch to the MCP tool**.

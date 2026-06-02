@@ -130,7 +130,7 @@ cp -r kiro-config/{agents,steering,skills,prompts,settings} ~/.kiro/
 
 ## What's Included
 
-### Agents (17)
+### Agents (16)
 
 | Agent                | Description                                                                                                      |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -139,8 +139,7 @@ cp -r kiro-config/{agents,steering,skills,prompts,settings} ~/.kiro/
 | `master-demo-single` | Single-agent demo variant — only `aws-mcp-server`, no subagents, no extra MCPs                                   |
 | `serverless`         | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools                                                    |
 | `frontend`           | React, TypeScript, Tailwind CSS, shadcn/ui, Playwright, Figma                                                    |
-| `testing`            | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent                                                   |
-| `cypress`            | Cypress E2E tests, Page Objects, data-cy selectors                                                               |
+| `testing`            | pytest, Jest/Vitest, Playwright E2E via subagent                                                                 |
 | `architect`          | Architecture diagrams, cost estimation, Well-Architected reviews                                                 |
 | `ai-builder`         | Amazon Bedrock, Strands Agents, prompt engineering, RAG, AgentCore (full agentic apps)                           |
 | `devops`             | CloudWatch monitoring, alerting, cost optimization                                                               |
@@ -171,7 +170,7 @@ Agents configure their own MCP servers. Key servers used across agents:
 
 | Server              | Agents                                                     | Purpose                              |
 | ------------------- | ---------------------------------------------------------- | ------------------------------------ |
-| AWS MCP Server      | All 17 agents                                              | Full AWS API, docs, skills, scripts  |
+| AWS MCP Server      | All 16 agents                                              | Full AWS API, docs, skills, scripts  |
 | Context7            | frontend, serverless, architect, data, web-builder, master | Live library docs (React, AWS, etc.) |
 | Playwright          | frontend                                                   | Browser automation and E2E testing   |
 | shadcn              | frontend, web-builder                                      | Component registry browsing/install  |

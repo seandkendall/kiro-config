@@ -53,7 +53,7 @@ description: Technology stack: React 18+/TypeScript strict + Tailwind + shadcn/u
 - AWS Lambda Powertools for observability
 - cdk-nag for security validation
 - ESLint and Prettier for code quality
-- Testing: pytest + moto (Python), Vitest + React Testing Library (React), Cypress (E2E)
+- Testing: pytest + moto (Python), Vitest + React Testing Library (React), Playwright (E2E with data-testid selectors)
 - `awsdac` (CLI) for generating PNG architecture diagrams with official AWS icons (`brew install awsdac`)
 
 ## Kiro CLI Tooling

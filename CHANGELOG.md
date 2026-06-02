@@ -5,6 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - Cypress → Playwright migration
+
+Full migration from Cypress to Playwright across the entire config. Decisions confirmed with user:
+
+- `data-cy` → `data-testid` everywhere (Playwright-native convention)
+- MCP only (no separate `@playwright/cli` skill)
+- `@playwright/mcp@latest` (matches the daily-upgrade-deps rule)
+- E2E expertise folded into the `testing` agent — dedicated `cypress` subagent deleted
+- `@axe-core/playwright` library imports inside specs for accessibility (no separate a11y MCP)
+
+### Removed
+
+- **`agents/cypress.json` deleted** — E2E expertise moved into the `testing` agent
+- **`prompts/cypress.md` deleted**
+- **`@jprealini/cypress-mcp`** dropped from agent configs
+- **`@browsermcp/mcp`** dropped from `testing` agent (replaced by `@playwright/mcp`)
+- All `data-cy` selector references across steering / skills / README
+
+### Added
+
+- **`@playwright/mcp@latest`** added to `testing` agent with flags `--headless --isolated --caps=testing,storage,devtools` (Microsoft official Playwright MCP, 4.8M weekly downloads, 33.3k stars, no API key needed)
+- **`@playwright/mcp@latest`** added to `web-builder` agent with `--headless --isolated`
+- New "Playwright E2E Standards" section in `steering/development-workflow.md` covering: `data-testid` selectors via `page.getByTestId()`, `storageState` programmatic auth, `expect.poll()` and `page.waitForResponse()` waits (never `page.waitForTimeout`), `playwright.config.ts` baseURL + fullyParallel, `playwright-coverage` / `monocart-coverage-reports` for coverage, `@axe-core/playwright` for a11y, `--isolated` flag for parallel MCP browser sessions
+- "Playwright E2E Issues" section in `steering/troubleshooting.md` with concrete recipes: `storageState` not loading, flake on CI, `page.route()` not matching, replacing `page.waitForTimeout`
+
+### Changed
+
+- **`testing` agent prompt** — owns ALL E2E work via Playwright. Drops the previous "delegate Cypress E2E to cypress subagent" delegation language.
+- **`master.json` welcomeMessage** — "14 specialists" → "13 specialists" (cypress removed)
+- **`master.json` / `ai-builder.json` / `web-builder.json` subagent rosters** — `cypress` removed from `availableAgents` and `trustedAgents`
+- **`prompts/master.md`** — subagent list, parallel-chain workflow example, "Build me an app" workflow, "Write E2E tests" workflow all updated
+- **`prompts/web-builder.md`, `ai-builder.md`, `reinvent.md`, `shopify.md`, `frontend.md`** — delegation paragraphs scrubbed of cypress, replaced with `testing` for E2E
+- **`prompts/master-demo.md`, `master-demo-single.md`** — NEVER lists scrubbed of "Cypress" name; rules unchanged (still forbid all browser testing)
+- **`prompts/accounting.md`** (local-only) — same treatment for consistency
+- **`skills/testing-patterns.md`** — Cypress Quick Reference → Playwright Quick Reference (`page.getByTestId()`, `tests/e2e/*.spec.ts`, `tests/e2e/pages/*.ts`)
+- **`skills/react-frontend-patterns.md`** — full `data-cy Selectors (MANDATORY — for Cypress)` section rewritten as `data-testid Selectors (MANDATORY — for Playwright)`. Naming pattern, table, rules, and code-review-enforcement language all updated.
+- **`skills/gitignore.template`** — `cypress/screenshots/`, `cypress/videos/`, `cypress/downloads/` replaced with `test-results/`, `playwright-report/`, `playwright/.cache/`
+- **`skills/mcp-tool-discovery.md`** — Cypress selector example → Playwright `generate_locator` MCP tool
+- **`skills/deploy-on-aws.md`** — Pre-deployment quality gate: "Cypress E2E (target 100%)" → "Playwright E2E (target 100%)"
+- **`steering/structure.md`** — directory layout `cypress/{e2e,pages,support,fixtures}/*.cy.ts` → `tests/e2e/{pages,fixtures}/*.spec.ts`
+- **`steering/accessibility-standards.md`** — "Test in Cypress E2E" → "Test in Playwright E2E"
+- **`steering/post-task-recommendations.md`** — Testing gaps recommendation updated
+- **`steering/AGENTS.md`** — testing row updated, cypress row deleted from subagent table
+- **`steering/tech.md`** — Testing tools list: Cypress (E2E) → Playwright (E2E with data-testid selectors)
+- **README.md** — cypress row deleted from agent table, testing description updated, agent count 17 → 16, AWS MCP "All 17 agents" → "All 16"
+
+### Counts after migration
+
+- **Agents**: 16 (was 17)
+- **Master subagent roster**: 13 (was 14)
+- **Web-builder subagent roster**: 10 (was 11)
+- **AI-builder subagent roster**: 9 (was 10)
+- **Cypress references in non-CHANGELOG tracked files**: 0 (verified via grep)
+- **`data-cy` references in tracked files**: 0 (verified via grep)
+
+### Why
+
+Microsoft's `@playwright/mcp` is the canonical browser-automation MCP in 2026 and is maintained by the Playwright core team. The official toolkit covers everything we used Cypress for plus capabilities Cypress doesn't have (multiple browsers including webkit/firefox, Playwright tracing, video recording, accessibility-tree-based interaction, request route mocking, `storageState` auth). The `cypress` subagent was a single-framework specialist; folding E2E into `testing` reduces agent count and makes the migration future-proof.
+
 ## [0.11.6] - Settings drift defenses + security email templates
 
 ### Added

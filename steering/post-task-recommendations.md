@@ -60,7 +60,7 @@ Reply with `Continue` to execute all items in order, or specify item numbers (e.
   5. **Security** — IAM tightening, secrets management, OWASP prevention, AWS managed KMS keys preferred
   6. **Performance** — cold starts, bundle size, query optimization, caching, X-Ray sampling
   7. **Cost optimization** — right-sizing Lambda memory, DynamoDB capacity, CloudFront caching, log retention
-  8. **Testing gaps** — missing unit tests (target ≥90% coverage), uncovered branches, Cypress E2E coverage (target 100%)
+  8. **Testing gaps** — missing unit tests (target ≥90% coverage), uncovered branches, Playwright E2E coverage (target 100%)
   9. **Documentation** — missing docstrings, README updates, API spec gaps, ADRs
   10. **New features & enhancements** — ALWAYS listed last
 

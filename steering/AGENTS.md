@@ -17,7 +17,7 @@ This workspace uses a multi-agent architecture with a master orchestrator and sp
 - **`/agent master-demo-single`** (ctrl+7) — Single-agent demo variant. Same hard rules as master-demo, but no subagents and only `aws-mcp-server` as MCP. Use when the demo benefits from one continuous thread of work rather than parallel orchestration.
 - **`/agent serverless`** (ctrl+4) — AWS Lambda, API Gateway, DynamoDB, Powertools, X-Ray
 - **`/agent frontend`** (ctrl+5) — React, TypeScript, Tailwind CSS, shadcn/ui components
-- **`/agent testing`** (ctrl+6) — pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent
+- **`/agent testing`** (ctrl+6) — pytest, Jest/Vitest, Playwright E2E (data-testid selectors, Page Objects, 100% coverage target)
 - **`/agent research`** — Deep research on any topic with web search and docs
 
 ## Available Subagents
@@ -28,8 +28,7 @@ Builder agents automatically delegate to these specialists:
 | ------------------ | ---------------------------------------------------------------------------------------------------------------- |
 | `serverless`       | Lambda, API GW, DynamoDB, Step Functions, Powertools, X-Ray                                                      |
 | `frontend`         | React, TypeScript, Tailwind, shadcn/ui, accessibility                                                            |
-| `testing`          | pytest, Jest/Vitest, delegates Cypress E2E to cypress subagent                                                   |
-| `cypress`          | Cypress E2E tests, Page Objects, 100% coverage target                                                            |
+| `testing`          | pytest, Jest/Vitest, Playwright E2E (data-testid selectors, Page Objects, 100% coverage target)                  |
 | `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews                                                 |
 | `ai-builder`       | Bedrock, Strands Agents, prompt engineering, RAG                                                                 |
 | `devops`           | CloudWatch monitoring, alerting, cost optimization, incident response                                            |

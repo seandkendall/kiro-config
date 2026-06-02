@@ -54,6 +54,11 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--headless", "--isolated"],
+      "disabled": false
     }
   },
   "tools": ["*"],
@@ -72,7 +77,6 @@
       "availableAgents": [
         "ai-builder",
         "architect",
-        "cypress",
         "data",
         "devops",
         "docs",
@@ -85,7 +89,6 @@
       "trustedAgents": [
         "ai-builder",
         "architect",
-        "cypress",
         "data",
         "devops",
         "docs",

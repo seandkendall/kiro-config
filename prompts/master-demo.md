@@ -51,7 +51,7 @@ ALWAYS:
 NEVER:
 
 - Build, modify, or scaffold UIs. No React, no Tailwind, no shadcn, no frontend code at all. Demos are backend-only.
-- Execute browser testing. No Cypress, no Playwright tests, no Chrome DevTools instrumentation. Endpoint testing via `requests` only.
+- Execute browser testing. No Playwright tests, no Chrome DevTools instrumentation, no end-to-end browser tests of any kind. Endpoint testing via `requests` only.
 - Deploy or configure AWS WAF. No web ACLs, no rate-limiting rules, no managed rule groups. Demos are not security-hardened production.
 - Use Amazon Route53, custom domains, or domain name aliases. Demos run on the default API Gateway invoke URL (`https://<id>.execute-api.<region>.amazonaws.com/<stage>`). No `aws_apigateway.DomainName`, no `Route53RecordSet`, no ACM certificates for custom domains.
 - Add AWS Service Catalog AppRegistry (`aws_servicecatalogappregistry_alpha`). The base `aws-standards.md` steering doc requires every CDK app to register with AppRegistry, but for demos this is pure noise — extra constructs, extra IAM, extra resources to clean up. Skip the `ApplicationAssociator` block in `app.py` entirely. This explicit override is intentional: master-demo's "demo only" scope wins over the base rule.

@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: development-workflow
-description: Mandatory development rules: daily dependency upgrades, no time estimates, Kiro Specs before code, file modification in-place (no _v2/_new files), pre-deployment quality gate, /code overview onboarding, Cypress E2E standards, response format with post-task recommendations. Use for every code/build/fix task.
+description: Mandatory development rules: daily dependency upgrades, no time estimates, Kiro Specs before code, file modification in-place (no _v2/_new files), pre-deployment quality gate, /code overview onboarding, Playwright E2E standards, response format with post-task recommendations. Use for every code/build/fix task.
 ---
 
 # Development Workflow
@@ -61,7 +61,7 @@ Before every significant deployment, ALL of the following must pass:
 1. **Lint**: `npm run lint` (zero errors/warnings) + `pylint`/`flake8` (zero errors)
 2. **Build**: `npm run build` with zero warnings, `cdk synth` with zero warnings
 3. **Unit tests**: `pytest --cov --cov-fail-under=90` + `npx vitest --coverage`
-4. **Cypress E2E**: `npx cypress run` — target 100% coverage via `@cypress/code-coverage`
+4. **Playwright E2E**: `npx playwright test` — target 100% coverage via `playwright-coverage` or `monocart-coverage-reports`
 5. **No deprecations**: All build/synth/test output must be free of deprecation notices
 6. **Dependency audit**: `npm audit` and `pip audit` with zero critical/high vulnerabilities
 
@@ -129,19 +129,21 @@ test('renders button with text', () => {
 - Lambda tests: `cdk-backend/lambda/functions/function_name/test_function_name.py`
 - React tests: `frontend/src/components/__tests__/Component.test.tsx`
 - Integration tests: `tests/integration/`
-- Cypress E2E tests: `cypress/e2e/*.cy.ts`
-- Cypress Page Objects: `cypress/pages/*.ts`
+- Playwright E2E tests: `tests/e2e/*.spec.ts`
+- Playwright Page Objects: `tests/e2e/pages/*.ts`
 
-## Cypress E2E Standards
+## Playwright E2E Standards
 
-**Cypress is mandatory for all E2E testing.**
+**Playwright is mandatory for all E2E testing.**
 
-**Selectors**: Always use `data-cy` attributes — never class, id, or tag
-**Isolation**: Each test runs independently. Use `beforeEach`, never `afterEach` for cleanup.
-**Auth**: Programmatic login via `cy.request()` + `cy.session()` — never UI login
-**Waiting**: Never `cy.wait(number)`. Use `cy.intercept()` + `cy.wait('@alias')`.
-**Config**: Set `baseUrl` in cypress.config.ts. Use `cy.env()` for secrets.
-**Coverage**: Target 100%. Use `@cypress/code-coverage` plugin.
+**Selectors**: Always use `data-testid` attributes — never class, id, or tag. Prefer `page.getByTestId()` over `page.locator()` for testid lookups.
+**Isolation**: Each test runs independently. Use `test.beforeEach`, never `test.afterEach` for cleanup. Set `fullyParallel: true` in `playwright.config.ts`.
+**Auth**: Programmatic login via API + `storageState` — never UI login. Save state once in a setup project, reuse across all tests via `use.storageState`.
+**Waiting**: Never `page.waitForTimeout(ms)`. Use `expect(locator).toBeVisible()` (auto-retries), `page.waitForResponse()`, or `expect.poll()`.
+**Config**: Set `baseURL` in `playwright.config.ts`. Use environment variables (process.env) for secrets, NOT a `cy.env()` equivalent.
+**Coverage**: Target 100%. Use `playwright-coverage` or Chromium V8 coverage with `monocart-coverage-reports`.
+**Accessibility**: Use `@axe-core/playwright` library inside specs (no separate a11y MCP needed).
+**Parallel**: For multiple browser sessions via the Playwright MCP, pass `--isolated` to avoid the persistent-profile single-browser lock.
 
 ## Documentation Requirements
 
@@ -154,7 +156,7 @@ test('renders button with text', () => {
 
 Before considering any feature complete, verify:
 
-- [ ] All new components have `data-cy` attributes for Cypress selectors
+- [ ] All new components have `data-testid` attributes for Playwright selectors
 - [ ] All new API endpoints are documented in the OpenAPI spec
 - [ ] All new Lambda functions use Powertools (Logger, Tracer, Metrics)
 - [ ] All new DynamoDB operations use parameterized queries (no string concatenation)

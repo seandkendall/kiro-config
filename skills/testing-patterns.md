@@ -1,6 +1,6 @@
 ---
 name: testing-patterns
-description: pytest with moto, Jest/Vitest with React Testing Library, Cypress E2E patterns. Use when writing or reviewing tests, setting up test infrastructure, or debugging test failures.
+description: pytest with moto, Jest/Vitest with React Testing Library, Playwright E2E patterns. Use when writing or reviewing tests, setting up test infrastructure, or debugging test failures.
 ---
 
 # Testing Patterns
@@ -61,12 +61,12 @@ test('has no accessibility violations', async () => {
 
 - Python: `pytest --cov --cov-report=term-missing --cov-fail-under=90`
 - React: `npx vitest --coverage`
-- Cypress: `npx cypress run` with `@cypress/code-coverage`
+- Playwright: `npx playwright test` with `playwright-coverage` or `monocart-coverage-reports`
 - Target: 100%. Never settle below 90%.
 
-## Cypress Quick Reference
+## Playwright Quick Reference
 
-- Selectors: `[data-cy="..."]` only
+- Selectors: `page.getByTestId("...")` (uses `data-testid` attribute) — never class/id/tag
 - Auth: `cy.session()` + `cy.request()`, never UI login
 - Waiting: `cy.intercept()` + `cy.wait('@alias')`, never `cy.wait(ms)`
-- Structure: `cypress/e2e/*.cy.ts`, `cypress/pages/*.ts`
+- Structure: `tests/e2e/*.spec.ts`, `tests/e2e/pages/*.ts`

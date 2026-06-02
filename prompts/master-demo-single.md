@@ -45,7 +45,7 @@ ALWAYS:
 NEVER:
 
 - Build, modify, or scaffold UIs. No React, no Tailwind, no shadcn, no frontend code at all. Demos are backend-only.
-- Execute browser testing. No Cypress, no Playwright tests, no Chrome DevTools instrumentation. Endpoint testing via `curl` or `requests` only.
+- Execute browser testing. No Playwright tests, no Chrome DevTools instrumentation, no end-to-end browser tests of any kind. Endpoint testing via `curl` or `requests` only.
 - Deploy or configure AWS WAF. No web ACLs, no rate-limiting rules, no managed rule groups.
 - Use Amazon Route53, custom domains, or domain name aliases. Demos run on the default API Gateway invoke URL (`https://<id>.execute-api.<region>.amazonaws.com/<stage>`). No `aws_apigateway.DomainName`, no `Route53RecordSet`, no ACM certificates for custom domains.
 - Add AWS Service Catalog AppRegistry (`aws_servicecatalogappregistry_alpha`). Skip the `ApplicationAssociator` block in `app.py` entirely. Explicit override of `aws-standards.md`.

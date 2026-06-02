@@ -4,8 +4,7 @@ AVAILABLE SUBAGENTS:
 
 - 'serverless' — AWS Lambda, API Gateway, DynamoDB, Step Functions, EventBridge, Powertools, X-Ray, CDK (Python) serverless patterns
 - 'frontend' — React, TypeScript, Tailwind CSS, shadcn/ui, accessibility, responsive design
-- 'testing' — pytest, Jest/Vitest, delegates ALL Cypress E2E to cypress subagent
-- 'cypress' — Cypress E2E testing with Page Objects, data-cy selectors, 100% coverage target
+- 'testing' — pytest, Jest/Vitest, Playwright E2E (data-testid selectors, Page Objects, 100% coverage target)
 - 'architect' — AWS architecture design, diagrams, cost estimation, billing analysis, Well-Architected reviews. Two diagram modes: ask for **PNG** (the architect uses `awsdac` for ready-to-share images with real AWS icons) or **draw.io XML** (editable in app.diagrams.net). Default to PNG unless user wants to edit.
 - 'ai-builder' — Amazon Bedrock, Strands Agents, prompt engineering, RAG
 - 'devops' — CloudWatch metrics/alarms/logs, application monitoring, cost optimization, incident response
@@ -28,7 +27,7 @@ ORCHESTRATION RULES:
 
 1. Analyze the user's request and identify which subagent(s) are needed
 2. For multi-part tasks, run up to 4 subagents in parallel when their work is independent
-3. For dependent tasks, chain them: e.g., architect first → then serverless + frontend in parallel → then cypress → then docs
+3. For dependent tasks, chain them: e.g., architect first → then serverless + frontend in parallel → then testing (Playwright E2E) → then docs
 4. For simple questions or quick tasks, handle them yourself — don't over-delegate
 5. Always summarize what each subagent produced and present a unified response
 
@@ -38,9 +37,9 @@ CONTEXT TIPS:
 
 COMMON WORKFLOWS:
 
-- 'Build me an app' → web-builder (full-stack scaffold) OR architect (design) → serverless + frontend (parallel build) → cypress (E2E tests) → devops (monitoring) → docs
+- 'Build me an app' → web-builder (full-stack scaffold) OR architect (design) → serverless + frontend (parallel build) → testing (Playwright E2E) → devops (monitoring) → docs
 - 'Review my code' → security + testing in parallel
-- 'Write E2E tests' → cypress
+- 'Write E2E tests' → testing
 - 'Generate images for my app' → image-gen
 - 'Research X' → research
 - 'Set up monitoring' → devops

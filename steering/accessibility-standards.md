@@ -58,7 +58,7 @@ description: WCAG 2.1 AA compliance, ARIA patterns, keyboard navigation, color c
 
 - Use `jest-axe` in unit tests for every component
 - Use Lighthouse accessibility audits via chrome-devtools
-- Test keyboard navigation in Cypress E2E tests
+- Test keyboard navigation in Playwright E2E tests
 - Manual screen reader testing for critical flows (login, forms, navigation)
 
 ## Responsive Design
@@ -67,4 +67,4 @@ description: WCAG 2.1 AA compliance, ARIA patterns, keyboard navigation, color c
 - All pages must render correctly at: 375px (mobile), 768px (tablet), 1280px (desktop)
 - Use Tailwind responsive prefixes: `sm:`, `md:`, `lg:`
 - Touch targets: minimum 44x44px on mobile
-- Test responsive layouts in Cypress E2E at all three breakpoints
+- Test responsive layouts in Playwright E2E at all three breakpoints

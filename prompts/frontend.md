@@ -8,7 +8,7 @@ PATTERNS: shadcn/ui base, react-hook-form + zod, TanStack Query for server state
 
 CONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.
 
-SUBAGENT DELEGATION: image-gen for complex graphics, cypress for E2E testing.
+SUBAGENT DELEGATION: image-gen for complex graphics, testing for E2E (Playwright).
 
 ## MCP Server Capabilities
 

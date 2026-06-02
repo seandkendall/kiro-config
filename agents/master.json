@@ -54,7 +54,6 @@
         "serverless",
         "frontend",
         "testing",
-        "cypress",
         "architect",
         "ai-builder",
         "devops",
@@ -70,7 +69,6 @@
         "serverless",
         "frontend",
         "testing",
-        "cypress",
         "architect",
         "ai-builder",
         "devops",
@@ -94,7 +92,7 @@
     }
   },
   "keyboardShortcut": "ctrl+1",
-  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (14 available), generate diagrams, and write deploy.sh scripts. What are we building?",
+  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (13 available), generate diagrams, and write deploy.sh scripts. What are we building?",
   "hooks": {
     "postToolUse": [
       {

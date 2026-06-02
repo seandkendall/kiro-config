@@ -65,24 +65,30 @@ description: CDK deployment errors, Lambda cold starts, API Gateway CORS, Cognit
 - Verify CloudFront distribution settings
 - Check build output directory structure
 
-## Cypress E2E Issues
+## Playwright E2E Issues
 
-**`cy.session()` not caching**:
+**`storageState` not loading between specs**:
 
-- Check `testIsolation` is enabled in cypress.config.ts
-- Verify session setup function is deterministic
+- Verify the JSON file path in `playwright.config.ts` `use.storageState`
+- Confirm the auth setup project completed before dependent specs run
 
-**`cy.intercept()` not matching**:
+**Tests flake on CI but pass locally**:
+
+- Increase `actionTimeout` and `navigationTimeout` in `playwright.config.ts`
+- Use `page.waitForLoadState('networkidle')` for SPAs
+- Check that `--isolated` flag is set if running parallel from the MCP
+
+**`page.route()` not matching**:
 
 - Check route pattern matches the actual request URL
 - Verify HTTP method matches (GET vs POST)
-- Use `cy.intercept('**/api/**')` for broad matching, then narrow down
+- Use glob `'**/api/**'` or regex `/api\//` in `page.route()`, narrow down
 
 **Flaky tests**:
 
-- Replace `cy.wait(ms)` with `cy.wait('@alias')` using intercept aliases
-- Use `.should()` assertions which auto-retry
-- Add `{ timeout: 10000 }` to slow-loading element queries
+- Replace `page.waitForTimeout(ms)` with `expect.poll()` or `page.waitForResponse()`
+- Use `expect(locator).toBeVisible()` assertions which auto-retry
+- Increase `expect.timeout` in `playwright.config.ts` for slow-loading elements
 
 ## MCP Server Issues
 

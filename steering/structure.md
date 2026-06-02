@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: structure
-description: Directory and file organization conventions: cdk-backend/lambda/functions/, cdk-backend/cdk/, frontend/src/components/, cypress/e2e/, .kiro/steering/. Naming: kebab-case dirs, PascalCase React components, snake_case Python files. Use when scaffolding new files or projects.
+description: Directory and file organization conventions: cdk-backend/lambda/functions/, cdk-backend/cdk/, frontend/src/components/, tests/e2e/, .kiro/steering/. Naming: kebab-case dirs, PascalCase React components, snake_case Python files. Use when scaffolding new files or projects.
 ---
 
 # Project Structure
@@ -16,11 +16,11 @@ description: Directory and file organization conventions: cdk-backend/lambda/fun
 ├── frontend/
 │   ├── src/
 │   └── public/
-├── cypress/
+├── tests/
 │   ├── e2e/
-│   ├── pages/
-│   ├── support/
-│   └── fixtures/
+│   │   ├── pages/
+│   │   ├── fixtures/
+│   │   └── *.spec.ts
 ├── tests/
 │   └── integration/
 ├── deploy.sh
@@ -32,8 +32,8 @@ description: Directory and file organization conventions: cdk-backend/lambda/fun
 - Lambda functions: `cdk-backend/lambda/functions/function_name/function_name.py`
 - CDK stacks: `cdk-backend/cdk/`
 - React components: `frontend/src/components/`
-- Cypress E2E tests: `cypress/e2e/*.cy.ts`
-- Cypress Page Objects: `cypress/pages/*.ts`
+- Playwright E2E tests: `tests/e2e/*.spec.ts`
+- Playwright Page Objects: `tests/e2e/pages/*.ts`
 - Steering docs: `.kiro/steering/`
 
 ## Naming Conventions
