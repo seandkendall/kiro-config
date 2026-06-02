@@ -132,6 +132,32 @@ else
 fi
 
 # ----------------------------------------------------------------------------
+# Step 6: Cypress regression guard (post-v0.12.0 migration)
+# ----------------------------------------------------------------------------
+
+echo ""
+echo "Step 6: Cypress regression guard..."
+# Allow CHANGELOG (historical) and the migration runbook (intentional examples)
+CYPRESS_LEAKS=$(cd "$KIRO" && git ls-files \
+  | grep -v '^CHANGELOG\.md$' \
+  | grep -v '^skills/cypress-to-playwright-migration\.md$' \
+  | xargs grep -l -E "cypress|data-cy" 2>/dev/null || true)
+
+if [[ -n "$CYPRESS_LEAKS" ]]; then
+  YELLOW='\033[1;33m'
+  echo -e "  ${YELLOW}!${NC} Cypress / data-cy references found in tracked files:"
+  echo "$CYPRESS_LEAKS" | sed 's|^|      |'
+  echo ""
+  echo -e "  ${YELLOW}!${NC} Per v0.12.0, all Cypress references should have migrated to Playwright."
+  echo "      data-cy → data-testid, cypress/e2e/ → tests/e2e/, cy.* → page.*"
+  echo "      See skills/cypress-to-playwright-migration.md for the runbook."
+  echo "      If these refs are intentional (e.g., another historical doc),"
+  echo "      add the file to the skip list at the top of Step 6 in validate.sh."
+else
+  echo -e "  ${GREEN}✓${NC} no Cypress/data-cy regressions"
+fi
+
+# ----------------------------------------------------------------------------
 # Done
 # ----------------------------------------------------------------------------
 

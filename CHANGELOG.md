@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.2] - Playwright migration polish: tooling, regression guard, more templates
+
+### Added
+
+- **README "Local Tooling Required by MCP Servers" table** — new row for **Playwright browsers**: `npx playwright install --with-deps chromium firefox webkit`. Used by the `@playwright/mcp` server on `frontend`, `testing`, and `web-builder` agents. Without this, the MCP starts but every browser-launch action fails.
+- **`validate.sh` Step 6: Cypress regression guard** — defensive check that scans every tracked file for `cypress` or `data-cy` references. Allow-list: `CHANGELOG.md` (historical) and `skills/cypress-to-playwright-migration.md` (intentional examples showing what to migrate FROM). If a regression slips through (e.g., someone copies an old test file into the repo), the guard surfaces it with the file paths and a pointer to the migration runbook.
+- **`skills/package.json.template`** (111 lines) — copy-paste-ready starter `package.json` for React + Playwright projects deployed via this config. Includes Vite + React 18 + TypeScript, Vitest + RTL for unit tests, Playwright + `@axe-core/playwright` + `monocart-coverage-reports` for E2E with coverage, ESLint flat config, Tailwind CSS, react-hook-form + zod, TanStack Query + Zustand, Premailer/Juice for the email build pipeline. All version pins are placeholders — projects should `npm install <pkg>@latest` per the daily-upgrade rule.
+- **`skills/playwright-fixtures.template.ts`** (181 lines) — copy-paste-ready Playwright fixtures file demonstrating the Cypress-custom-commands → Playwright-fixtures migration pattern. Includes:
+  - Page Object classes (`DashboardPage`, `InvoicePage`) with constructor-based dependency injection
+  - `TestData` factory using `APIRequestContext` for seeding via the API (replaces `cy.fixture` patterns)
+  - `MockedApi` helpers (`stubCreateInvoice`, `stubListInvoices`, `stubFailure`) wrapping `page.route()` (replaces scattered `cy.intercept` calls)
+  - Sample spec showing how to consume the fixtures in tests
+
+### Verified (no fixes needed)
+
+- `master-demo` and `master-demo-single` NEVER lists already explicitly mention "No Playwright tests" (added in v0.12.0 migration commit). No change required.
+- `cy.session()`, `cy.intercept()`, `cy.visit()`, `cy.get()` references in tracked files: all 16 occurrences are intentional and correctly placed inside `skills/cypress-to-playwright-migration.md` (showing what to migrate FROM) or in the CHANGELOG describing the migration table. The new validate.sh Step 6 explicitly allow-lists both files.
+
+### Why
+
+The previous v0.12.0 + v0.12.1 commits completed the Cypress → Playwright migration but left three small gaps that this commit closes:
+
+1. **Local tooling discoverability** — a new contributor cloning the repo might not realize `@playwright/mcp` needs browser binaries installed via a separate command. README table now makes it explicit.
+2. **Regression defense** — without an automated check, future contributors could accidentally re-introduce `data-cy` selectors or `cy.*` calls. validate.sh Step 6 makes this loud.
+3. **Starter completeness** — projects starting from this config now have copy-paste templates for `playwright.config.ts`, `auth.setup.ts`, `package.json`, AND fixtures pattern. No need to assemble these from memory.
+
 ## [0.12.1] - Playwright migration polish
 
 ### Added
