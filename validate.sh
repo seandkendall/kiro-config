@@ -137,10 +137,12 @@ fi
 
 echo ""
 echo "Step 6: Cypress regression guard..."
-# Allow CHANGELOG (historical) and the migration runbook (intentional examples)
+# Allow CHANGELOG (historical), the migration runbook (intentional examples),
+# and validate.sh itself (the regex pattern is a literal-string false positive).
 CYPRESS_LEAKS=$(cd "$KIRO" && git ls-files \
   | grep -v '^CHANGELOG\.md$' \
   | grep -v '^skills/cypress-to-playwright-migration\.md$' \
+  | grep -v '^validate\.sh$' \
   | xargs grep -l -E "cypress|data-cy" 2>/dev/null || true)
 
 if [[ -n "$CYPRESS_LEAKS" ]]; then
