@@ -1,31 +1,8 @@
 {
-  "name": "master-demo",
-  "description": "Demo orchestrator for live AWS serverless backend builds \u2014 parallel subagent showcase, OpenAPI 3 native, always-CORS, never UI/WAF/Route53/custom-domains, default account only",
-  "prompt": "file://~/.kiro/prompts/master-demo.md",
+  "name": "master-demo-single",
+  "description": "Single-agent demo for live AWS serverless backend builds — no subagents, only aws-mcp-server (Agent Toolkit for AWS) + aws-serverless skill bundle. Lean variant of master-demo.",
+  "prompt": "file://~/.kiro/prompts/master-demo-single.md",
   "mcpServers": {
-    "web-search": {
-      "command": "uvx",
-      "args": ["duckduckgo-mcp-server"],
-      "disabled": false
-    },
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
-      "disabled": false
-    },
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      },
-      "disabled": false
-    },
-    "sequentialthinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "disabled": false
-    },
     "aws-mcp-server": {
       "command": "uvx",
       "args": [
@@ -42,37 +19,17 @@
     "file://AGENTS.md",
     "file://README.md",
     "file://~/.kiro/steering/*.md",
+    "skill://~/.kiro/skills/aws-serverless/SKILL.md",
     "skill://~/.kiro/skills/aws-serverless-patterns.md",
+    "skill://~/.kiro/skills/connecting-lambda-to-api-gateway",
+    "skill://~/.kiro/skills/connecting-lambda-to-dynamodb",
     "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
-    "skill://~/.kiro/skills/testing-patterns.md",
     "skill://~/.kiro/skills/deploy-on-aws.md",
+    "skill://~/.kiro/skills/deploy.sh.template",
+    "skill://~/.kiro/skills/gitignore.template",
     "skill://~/.kiro/skills/mcp-tool-discovery.md"
   ],
   "toolsSettings": {
-    "subagent": {
-      "availableAgents": [
-        "serverless",
-        "architect",
-        "data",
-        "security",
-        "testing",
-        "devops",
-        "docs",
-        "research",
-        "ai-builder"
-      ],
-      "trustedAgents": [
-        "serverless",
-        "architect",
-        "data",
-        "security",
-        "testing",
-        "devops",
-        "docs",
-        "research",
-        "ai-builder"
-      ]
-    },
     "shell": {
       "timeout": 300,
       "working_directory": ".",
@@ -91,8 +48,8 @@
       ]
     }
   },
-  "keyboardShortcut": "shift+m",
-  "welcomeMessage": "master-demo ready. AWS serverless only. No UI/WAF/AppRegistry/Powertools/X-Ray/cdk-nag/Kiro-Specs. Parallel subagents, post-deploy CORS + endpoint verify. What are we demoing?",
+  "keyboardShortcut": "ctrl+7",
+  "welcomeMessage": "master-demo-single ready. Single-agent AWS serverless demo. aws-mcp-server only — no subagents, no extra MCPs. Same hard rules as master-demo. What are we demoing?",
   "hooks": {
     "postToolUse": [
       {
