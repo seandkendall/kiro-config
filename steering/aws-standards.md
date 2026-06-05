@@ -13,6 +13,14 @@ description: AWS development standards: CDK Python (never TypeScript), resource 
 
 **Language Requirement** - ALL CDK code MUST be written in Python. No TypeScript CDK. Lambda functions in Python.
 
+**CDK Alpha Modules (MANDATORY)** - Before using any `*_alpha` CDK module, check whether it has graduated to stable in `aws-cdk-lib`. Alpha modules are separate `pip` packages (`aws-cdk.aws-<service>-alpha`) with no backward-compatibility guarantee; most eventually graduate into `aws-cdk-lib` and the alpha package is then deprecated.
+
+- **Always prefer the stable module** when one exists. Stable constructs live in `aws-cdk-lib` and import as `from aws_cdk import aws_<service>`.
+- **Verify before using an alpha** — use `aws___search_documentation` (AWS MCP server) or check the module's PyPI page. If the PyPI page says "deprecated / moved to aws-cdk-lib" or the Development Status is "Inactive", the alpha is dead; use the stable path.
+- **Known graduations** (use the stable path, NOT the alpha):
+  - `aws-cdk.aws-apigatewayv2-alpha` → **deprecated Dec 2023**. Use `aws_cdk.aws_apigatewayv2` (HTTP/WebSocket API: `HttpApi`, `CorsPreflightOptions`, `HttpMethod`, `DomainName`), `aws_cdk.aws_apigatewayv2_integrations` (`HttpLambdaIntegration`, `HttpUrlIntegration`, etc.), and `aws_cdk.aws_apigatewayv2_authorizers` (`HttpJwtAuthorizer`, etc.). All three are now in `aws-cdk-lib` — no separate `pip install` needed.
+- **Still alpha** (as of CDK 2.250+, re-check before relying on it): `aws_lambda_python_alpha` (`PythonFunction`), `aws_servicecatalogappregistry_alpha` (`ApplicationAssociator`). These have NOT graduated — the alpha package is still required.
+
 **Resource Tagging** - Tag ALL resources in every stack (mandatory):
 
 ```python

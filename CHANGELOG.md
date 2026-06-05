@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.3] - apigatewayv2-alpha → stable migration + CDK alpha-module rule
+
+### Changed
+
+- **`prompts/master-demo.md` + `prompts/master-demo-single.md`** — migrated the HTTP API efficiency rule from the deprecated `aws_apigatewayv2_alpha` to stable `aws_cdk.aws_apigatewayv2` (in `aws-cdk-lib`). The `aws-cdk.aws-apigatewayv2-alpha` PyPI package was retired in Dec 2023 (Development Status: Inactive, last release 2.114.1a0) and all constructs graduated to `aws-cdk-lib`. Updated 3 references total:
+  - HTTP API construct: `aws_apigatewayv2_alpha.HttpApi` → `aws_cdk.aws_apigatewayv2.HttpApi` (`from aws_cdk import aws_apigatewayv2 as apigwv2`)
+  - CORS config: `aws_apigatewayv2_alpha.CorsPreflightOptions` → `apigwv2.CorsPreflightOptions`
+  - Added explicit "do NOT use the deprecated alpha package" warnings + pointer to `aws_cdk.aws_apigatewayv2_integrations` for Lambda integrations
+- **`steering/AGENTS.md`** — trimmed the verbose "Use when the demo benefits from one continuous thread of work…" clause from the `master-demo-single` routing line (the master-demo vs master-demo-single comparison was removed from the prompt itself; this keeps the docs consistent).
+- **`prompts/master-demo-single.md`** — removed the "WHEN TO USE master-demo-single vs master-demo" comparison block (the routing guidance lives in AGENTS.md / README, not in the agent's own prompt).
+- **`settings/cli.json`** — restored the trailing newline (matches `.editorconfig` `insert_final_newline = true`).
+
+### Added
+
+- **`steering/aws-standards.md`** — new "CDK Alpha Modules (MANDATORY)" rule under CDK Infrastructure:
+  - Always prefer the stable `aws-cdk-lib` module when one exists; verify via `aws___search_documentation` or the module's PyPI page before relying on any `*_alpha` package
+  - **Known graduations** (use stable, not alpha): the `aws-cdk.aws-apigatewayv2-alpha` trio → `aws_cdk.aws_apigatewayv2` + `aws_cdk.aws_apigatewayv2_integrations` + `aws_cdk.aws_apigatewayv2_authorizers`
+  - **Still alpha** (re-check before use): `aws_lambda_python_alpha` (`PythonFunction`), `aws_servicecatalogappregistry_alpha` (`ApplicationAssociator`)
+
+### Why
+
+A user audit flagged that the demo prompts still referenced `aws-cdk.aws-apigatewayv2-alpha`, which has been deprecated since Dec 2023. Confirmed via PyPI (Development Status: 7 - Inactive) and the current CDK docs (2.252.0) that all three apigatewayv2 submodules now live in `aws-cdk-lib`. Added a general alpha-module rule so future agents check graduation status before pinning any `*_alpha` package.
+
 ## [0.12.2] - Playwright migration polish: tooling, regression guard, more templates
 
 ### Added
