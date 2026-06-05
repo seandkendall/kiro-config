@@ -13,8 +13,7 @@ This workspace uses a multi-agent architecture with a master orchestrator and sp
 ## When to Use Which Agent
 
 - **`/agent master`** (ctrl+1) — Default. Routes to the right specialist.
-- **`/agent master-demo`** (shift+m) — Demo orchestrator for serverless backends. Always parallel subagents, always CORS, never UI/WAF/Route53. Use for live demos.
-- **`/agent master-demo-single`** (ctrl+7) — Single-agent demo variant. Same hard rules as master-demo, but no subagents and only `aws-mcp-server` as MCP.
+- **`/agent master-demo`** (shift+m) — Single-agent demo for serverless backends. No subagents, only `aws-mcp-server`. Always CORS, never UI/WAF/Route53. Use for live demos.
 - **`/agent serverless`** (ctrl+4) — AWS Lambda, API Gateway, DynamoDB, Powertools, X-Ray
 - **`/agent frontend`** (ctrl+5) — React, TypeScript, Tailwind CSS, shadcn/ui components
 - **`/agent testing`** (ctrl+6) — pytest, Jest/Vitest, Playwright E2E (data-testid selectors, Page Objects, 100% coverage target)

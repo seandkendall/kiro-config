@@ -248,7 +248,7 @@ When `-y` is set, the script MUST NOT issue any interactive prompts. This includ
 - `cdk deploy --require-approval never` (CDK's own confirmation)
 - Any `read -p` prompts the script adds for safety
 
-`-y` is intended for CI-like usage and the demo orchestrator (`master-demo`). Without `-y`, the script SHOULD prompt at every destructive step.
+`-y` is intended for CI-like usage and the `master-demo` agent. Without `-y`, the script SHOULD prompt at every destructive step.
 
 #### Multi-Project Safety in Shared AWS Accounts (MANDATORY)
 

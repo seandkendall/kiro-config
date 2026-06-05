@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - Demo agent consolidation (one master-demo)
+
+### Removed
+
+- **Orchestrator `master-demo` agent deleted** — `agents/master-demo.json` (the parallel-subagent-showcase version) and its `prompts/master-demo.md`. The two-demo-agent split (orchestrator + single) added complexity without enough payoff; one demo agent is cleaner.
+
+### Changed
+
+- **`master-demo-single` renamed → `master-demo`** (via `git mv`, history preserved). The surviving demo agent is the lean single-agent version: no subagents, only `aws-mcp-server` (Agent Toolkit for AWS) + the `aws-serverless` skill bundle.
+  - `agents/master-demo-single.json` → `agents/master-demo.json`
+  - `prompts/master-demo-single.md` → `prompts/master-demo.md`
+  - Agent `name`: `master-demo-single` → `master-demo`
+  - `prompt` URI updated to `file://~/.kiro/prompts/master-demo.md`
+  - `description` reworded (dropped "lean variant of master-demo" framing — there's no longer a master-demo to be a variant of)
+  - `welcomeMessage` updated to "master-demo ready…"
+  - Keyboard shortcut: inherits **`shift+m`** (the mnemonic shortcut freed by deleting the old orchestrator). `ctrl+7` is now free.
+  - Prompt self-references updated; the "switch to master-demo for parallel work" fallback now points to the `master` orchestrator (the only orchestrator that fans out to subagents)
+- **README**: collapsed the two demo-agent rows into one `master-demo` row; agent count 16 → 15; AWS MCP "All 16 agents" → "All 15 agents"
+- **`steering/AGENTS.md`**: collapsed the two "When to Use Which Agent" demo lines into one
+- **`steering/aws-standards.md`**: `-y` flag note reworded from "demo orchestrator (`master-demo`)" to just "`master-demo` agent" (it's no longer an orchestrator)
+
+### Counts after consolidation
+
+- **Agents**: 15 shareable (was 16), 20 total on disk (was 21)
+- No keyboard shortcut conflicts; `ctrl+7` freed
+
+### Why
+
+The orchestrator demo and single-agent demo had identical hard rules (no UI/WAF/Route53/AppRegistry/Powertools/X-Ray/cdk-nag/Kiro-Specs, always CORS, OpenAPI 3 native) — the only difference was subagent fan-out. Maintaining two near-identical prompts was redundant. The single-agent version is the better default for live demos (one linear thread the audience can follow), and anyone needing parallel orchestration can use the full `master` agent.
+
 ## [0.12.3] - apigatewayv2-alpha → stable migration + CDK alpha-module rule
 
 ### Changed
