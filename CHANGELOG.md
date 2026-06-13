@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.1] - Timestamped output rule
+
+### Added
+
+- **`Timestamped Output (MANDATORY)`** rule in `steering/development-workflow.md` (inclusion: always — applies to every agent, every session). Agents now stamp their output with the current local time so the user can see WHEN each comment, decision, or status update was made.
+  - Uses the `Current time:` value from the session context (carries the user's timezone offset)
+  - Timestamp at the start of every response + before major status updates in long-running responses (per-phase, before/after long tool runs, when reporting results)
+  - Compact format: `[HH:MM:SS TZ]` or `[YYYY-MM-DD HH:MM:SS -06:00]`, always with the timezone offset/abbreviation
+  - Applies to feedback, reasoning narration, progress updates, and final summaries
+  - **Explicitly distinguished from the "No Time Estimates" ban** — a wall-clock timestamp of when a comment was written is NOT a prediction of how long work will take. Printing the current time is encouraged; predicting durations stays banned.
+  - If the turn's context has no current time, omit the timestamp rather than fabricate one
+- Added "timestamped output" to the doc's frontmatter `description` for discoverability
+
 ## [0.13.0] - Demo agent consolidation (one master-demo)
 
 ### Removed

@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: development-workflow
-description: Mandatory development rules: daily dependency upgrades, no time estimates, Kiro Specs before code, file modification in-place (no _v2/_new files), pre-deployment quality gate, /code overview onboarding, Playwright E2E standards, response format with post-task recommendations. Use for every code/build/fix task.
+description: Mandatory development rules: daily dependency upgrades, no time estimates, timestamped output, Kiro Specs before code, file modification in-place (no _v2/_new files), pre-deployment quality gate, /code overview onboarding, Playwright E2E standards, response format with post-task recommendations. Use for every code/build/fix task.
 ---
 
 # Development Workflow
@@ -173,6 +173,15 @@ Before considering any feature complete, verify:
 - Do NOT include effort sizing (small/medium/large) unless the user explicitly asks
 - Just execute the work. Time estimates are unreliable for AI-assisted development and add noise
 - If the user asks for complexity, respond with scope (number of files, dependencies, risks) — not time
+
+**Timestamped Output (MANDATORY)** - Stamp your output with the current local time so the user can see WHEN each comment, decision, or status update was made:
+
+- Use the current time provided in the session context (the `Current time:` context entry) — it carries the user's timezone offset (e.g., `2026-06-13T13:11:02-06:00`).
+- Print a timestamp at the **start of every response**, and again before major status updates within a long-running response (e.g., before each phase of a multi-step task, before/after a long tool run, when reporting a result).
+- Format: `[HH:MM:SS TZ]` or `[YYYY-MM-DD HH:MM:SS -06:00]` — keep it compact and include the timezone offset or abbreviation so it's unambiguous. Example: `[13:11:02 MDT] Starting the migration…`
+- Apply this to feedback, reasoning/thinking narration, progress updates, and final summaries.
+- This is NOT a time estimate — it's a wall-clock timestamp of when the comment was written. It does not conflict with the "No Time Estimates" rule above (which bans predicting how _long_ work will take). Printing the current time is always allowed and encouraged; predicting durations is still banned.
+- If the session context does not include a current time for the turn, omit the timestamp rather than guessing — never fabricate a time.
 
 **Kiro Specs (MANDATORY)** - Before writing ANY code:
 
