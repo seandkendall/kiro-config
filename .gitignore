@@ -38,3 +38,8 @@ prompts/personal-*.md
 steering/personal-*.md
 # Exception: the protocol file itself lives in the public repo
 !steering/personal-rules-protocol.md
+
+# Editor / manual backup files (never commit)
+*.bak
+*.backup
+* copy.*
