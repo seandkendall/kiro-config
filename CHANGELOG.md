@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.2] - master-demo prompt rewrite (tighter, no time budget)
+
+### Changed
+
+- **`prompts/master-demo.md` rewritten** — condensed from ~124 lines to a tighter, scannable prompt. Substantive improvements:
+  - "Deploy FIRST, validate AFTER" — skip `cdk synth` / local pre-deploy checks; the deploy + post-deploy live sweep are the only validation
+  - Minimal `cdk.json` (`{"app": "python3 app.py"}`, no feature-flag block), unpinned `requirements.txt` (no install-then-introspect)
+  - `deploy.sh` must be **bash-3.2-safe** (macOS default — no empty-array `[@]` expansion under `set -u`)
+  - "Lambdalith" single-file Lambda, latest Python runtime, stdlib `logging`
+  - CORS guidance clarified: configure on `HttpApi` via `cors_preflight`; do NOT set `Access-Control-*` headers in the Lambda (gateway adds them — avoids duplicates)
+  - Consolidated NEVER list into one dense line
+  - Tighter 5-step FLOW (plan → write all files → deploy → sweep → report URL)
+  - **No time budget** — qualitative "Speed is the priority" framing kept, but the `~7 minutes` numeric target was removed to stay consistent with the v0.11.1 "remove all time budgets" decision and the v0.13.1 "No Time Estimates" / "Timestamped Output" global rule
+
+### Added
+
+- **`.gitignore`**: `*.bak`, `*.backup`, `* copy.*` patterns — stowaway prevention for editor/manual backup files (caught a stray `prompts/master-demo.md.bak`)
+
 ## [0.13.1] - Timestamped output rule
 
 ### Added
