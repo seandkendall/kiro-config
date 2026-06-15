@@ -19,7 +19,7 @@ See [Releases](https://github.com/seandkendall/kiro-config/releases) for the lat
 
 ## Prerequisites
 
-- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.4.1**)
+- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.7.0**)
 - Python 3.14+ with `uv` and `uvx`
 - Node.js 20+ with `npx`
 - AWS CLI v2 configured with named profiles

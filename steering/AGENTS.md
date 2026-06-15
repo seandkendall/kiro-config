@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: AGENTS
-description: Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, Kiro CLI 2.3.0+ features. Use when building or routing across agents.
+description: Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.7.0+ features. Use when building or routing across agents.
 ---
 
 # AGENTS.md
@@ -45,6 +45,23 @@ Builder agents automatically delegate to these specialists:
 - Subagents cannot communicate with each other — only report back to the parent
 - Use @path syntax to reference files inline — saves tool calls and tokens
 - **Orchestrators can call other orchestrators.** `master` delegates to `web-builder` for full-stack web app scaffolds and to `ai-builder` for full agentic apps. `web-builder` delegates to `ai-builder` when an app needs AI features. `ai-builder` delegates to `web-builder`'s subagents (frontend, serverless) for the surrounding app shell. Orchestrator-to-orchestrator calls are useful when one orchestrator's scope nests inside another's task — keep the chain shallow (max 2 hops) to avoid context fragmentation.
+- **Subagent review loops (Kiro CLI 2.5.0+).** A subagent pipeline can now self-correct: a reviewer stage sends work back to the implementer stage and loops until the work meets the bar, all before results return to the parent. Use this for review/refactor workflows — e.g., `serverless` implements → `security` reviews → loops back to `serverless` if cdk-nag findings remain. Set a `loop_to` target with a `trigger` phrase and a `max_iterations` cap (so a failing reviewer can't loop forever). Prefer a bounded loop over manually re-spawning the implementer.
+
+## Subagent Review Loops
+
+When a multi-agent pipeline benefits from a quality gate, wire a reviewer stage that can bounce work back:
+
+- The reviewer emits a trigger phrase (e.g., `NEEDS_CHANGES`) when the work isn't acceptable
+- That trigger loops the task back to the implementer stage with the reviewer's feedback as context
+- A `max_iterations` cap stops the loop even if the bar is never met (surfaces the impasse instead of spinning)
+
+Good fits in this config:
+
+- **Code review**: `serverless`/`frontend` implements → `security` or `testing` reviews → loops back on failures until cdk-nag/lint/tests pass
+- **Refactor**: implementer refactors → reviewer checks behavior preserved → loops until clean
+- **Docs accuracy**: `docs` drafts → `research` verifies claims → loops on unverified statements
+
+Keep `max_iterations` low (2–3) for demos and tight for production so a stuck reviewer fails loud rather than burning the budget.
 
 ## `subagent` vs `delegate` — Which Tool to Use
 
@@ -59,12 +76,20 @@ If unsure, use `subagent`. Never use `delegate` just because the task is long �
 
 > **Custom orchestrator agents must declare the `subagent` tool.** If you build a new agent that needs to spawn subagents, include `subagent` in its `tools` array (or use `"tools": ["*"]` / `"@builtin"` to inherit all built-ins). Without it, the agent silently fails to delegate. Agents currently configured for delegation: `master`, `web-builder`, `ai-builder`.
 
-## Kiro CLI 2.3.0 Features Worth Knowing
+## Kiro CLI Features Worth Knowing (through 2.7.0)
 
-- **Agent output side channels** — `$AGENT_DISPLAY_OUT` and `$AGENT_CONTEXT_OUT` env vars in shell commands route verbose output to the user TUI without polluting agent context (used by `deploy.sh`)
-- **OAuth Client ID for HTTP MCP servers** — set `oauth.clientId` in MCP config to use Slack/GitHub/Figma HTTP MCP servers without DCR (we don't need this — our MCPs are stdio)
-- **`KIRO_HOME` env var** — relocate the global config directory if needed
-- **Configurable V2 TUI keybindings** — remap Ctrl+C / Esc / quit if they conflict with tmux
+- **Agent output side channels** (2.3.0) — `$AGENT_DISPLAY_OUT` and `$AGENT_CONTEXT_OUT` env vars in shell commands route verbose output to the user TUI without polluting agent context (used by `deploy.sh`)
+- **OAuth Client ID for HTTP MCP servers** (2.3.0) — set `oauth.clientId` in MCP config to use Slack/GitHub/Figma HTTP MCP servers without DCR (we don't need this — our MCPs are stdio)
+- **`KIRO_HOME` env var** (2.3.0) — relocate the global config directory if needed
+- **Configurable V2 TUI keybindings** (2.3.0) — remap Ctrl+C / Esc / quit if they conflict with tmux
+- **`/rewind`** (2.4.0, enriched in 2.7.0) — jump back to an earlier prompt and branch into a new session; the turn picker now previews tool calls, files touched, and commands run per turn
+- **Model reasoning effort** (2.4.0) — `/effort` (low / medium / high / xhigh / max) tunes how hard the model thinks; `--effort` sets it at launch (2.6.0)
+- **Subagent review loops** (2.5.0) — reviewer→implementer loops for self-correcting pipelines (see "Subagent Review Loops" above)
+- **Thinking display** (2.5.0) — streams the model's reasoning live; on by default, toggle via `/settings display`
+- **Transcript export** (2.6.0) — `/transcript save` exports a conversation as markdown/plaintext/JSON
+- **Persistent model + effort prefs** (2.6.0) — `/model` and `/effort` choices stick across sessions automatically (no more `set-current-as-default`)
+- **`/goal`** (2.7.0) — start an iterative loop where the agent works toward an objective and must verify completion before stopping (default 5 iterations, `--max` configurable). Aligns with this config's quality-gate philosophy.
+- **Queue steering** (2.7.0) — send a correction while the agent is working; it picks it up at the next tool boundary. `Ctrl+S` toggles steer mode (inject mid-turn) vs queue mode (buffer until turn ends).
 
 ## Adaptive Thinking (Kiro CLI 2.2+)
 

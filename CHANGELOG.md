@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] - Kiro CLI 2.7.0 alignment
+
+### Added
+
+- **`steering/AGENTS.md` — Subagent Review Loops** (Kiro CLI 2.5.0+ capability). Documented native reviewer→implementer loops: a reviewer stage emits a trigger phrase (e.g., `NEEDS_CHANGES`) that loops work back to the implementer with feedback as context, bounded by `max_iterations`, all before results return to the parent. New "Subagent Review Loops" section + a Delegation Rules bullet. Good fits called out: code review (`serverless`/`frontend` → `security`/`testing`), refactor, docs accuracy (`docs` → `research`).
+- **`steering/AGENTS.md` — refreshed "Kiro CLI Features Worth Knowing (through 2.7.0)"** (was "2.3.0 Features"). Each feature now annotated with the version it shipped in: side channels / OAuth clientId / `KIRO_HOME` / TUI keybindings (2.3.0), `/rewind` (2.4.0, enriched 2.7.0), model reasoning effort `/effort` + `--effort` (2.4.0/2.6.0), subagent review loops + thinking display (2.5.0), transcript export + persistent model/effort prefs (2.6.0), `/goal` + queue steering (2.7.0).
+
+### Changed
+
+- Version references bumped from 2.3/2.4 era to 2.7.0:
+  - `README.md` — "latest tested with 2.4.1" → "2.7.0"
+  - `steering/AGENTS.md` frontmatter — "Kiro CLI 2.3.0+ features" → "2.7.0+", added "subagent review loops" keyword
+  - `steering/tech.md` — frontmatter + "Kiro CLI Tooling" line "2.3.0+" → "2.7.0+"
+
+### Reviewed, no change needed
+
+- **MCP servers** — nothing in CLI 2.4–2.7 changes the MCP system in a way that affects our stack (the only MCP change, OAuth `clientId` for HTTP servers, was 2.3.0 and we're all stdio)
+- **Models** — unchanged since May 28; `claude-opus-4.8` default stands
+- **Agent JSON configs + `settings/cli.json`** — no functional changes required; `chat.enableThinking: true` already covers the default-on thinking display
+- **General changelog** (Pro Max tier, HIPAA, GovCloud, student plan) — not config-relevant
+
 ## [0.13.2] - master-demo prompt rewrite (tighter, no time budget)
 
 ### Changed

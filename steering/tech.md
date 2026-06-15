@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: tech
-description: Technology stack: React 18+/TypeScript strict + Tailwind + shadcn/ui + Vite, Python 3.14 Lambda + CDK Python, DynamoDB, API Gateway, AppSync, Cognito, CloudFront, S3, Kiro CLI 2.3.0+ tooling. Use as the canonical reference for which libraries, services, and versions to use.
+description: Technology stack: React 18+/TypeScript strict + Tailwind + shadcn/ui + Vite, Python 3.14 Lambda + CDK Python, DynamoDB, API Gateway, AppSync, Cognito, CloudFront, S3, Kiro CLI 2.7.0+ tooling. Use as the canonical reference for which libraries, services, and versions to use.
 ---
 
 # Technology Stack
@@ -58,7 +58,7 @@ description: Technology stack: React 18+/TypeScript strict + Tailwind + shadcn/u
 
 ## Kiro CLI Tooling
 
-- Kiro CLI 2.3.0+ with Claude Opus 4.8 (adaptive thinking) as default model
+- Kiro CLI 2.7.0+ with Claude Opus 4.8 (adaptive thinking) as default model
 - Master agent (`ctrl+1`) is the entry point — delegates to specialist subagents via `subagent` tool
 - Use `subagent` for synchronous orchestration; `delegate` only for long-running async background tasks
 - `deploy.sh` scripts route verbose output via `$AGENT_DISPLAY_OUT` and structured summaries via `$AGENT_CONTEXT_OUT` so the agent context stays lean
