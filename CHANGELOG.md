@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.1] - Model effort note (C/5)
+
+### Added
+
+- **`steering/tech.md` "Kiro CLI Tooling"** — two bullets documenting model reasoning effort:
+  - `/effort` levels (low / medium / high / xhigh / max) + the `--effort` launch flag; lower = faster/cheaper, higher = more reasoning
+  - Model + effort preferences persist automatically across sessions (CLI 2.6.0+) — no `set-current-as-default` step needed
+
+### Note
+
+- C/6 (`/goal` + queue steering) was already covered by the v0.14.0 "Features Worth Knowing (through 2.7.0)" list in `steering/AGENTS.md` — no dedicated subsection added, to keep the always-loaded doc lean.
+
 ## [0.14.0] - Kiro CLI 2.7.0 alignment
 
 ### Added
