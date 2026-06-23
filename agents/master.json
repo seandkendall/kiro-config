@@ -35,6 +35,15 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "bedrock-image-mcp-server": {
+      "command": "uvx",
+      "args": ["bedrock-image-mcp-server@latest"],
+      "env": {
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
     }
   },
   "tools": ["*"],
@@ -92,7 +101,7 @@
     }
   },
   "keyboardShortcut": "ctrl+1",
-  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (13 available), generate diagrams, and write deploy.sh scripts. What are we building?",
+  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (13 available), generate images and diagrams, and write deploy.sh scripts. What are we building?",
   "hooks": {
     "postToolUse": [
       {

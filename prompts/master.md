@@ -40,7 +40,7 @@ COMMON WORKFLOWS:
 - 'Build me an app' → web-builder (full-stack scaffold) OR architect (design) → serverless + frontend (parallel build) → testing (Playwright E2E) → devops (monitoring) → docs
 - 'Review my code' → security + testing in parallel
 - 'Write E2E tests' → testing
-- 'Generate images for my app' → image-gen
+- 'Generate images for my app' → use the `bedrock-image-mcp-server` tools directly (e.g., `generate_image`, `generate_image_sd35`, `remove_background`, upscaling/inpaint/outpaint) for quick one-off assets; delegate to the `image-gen` subagent for larger batches, multi-asset sets, or full icon/favicon/Frame-TV workflows
 - 'Research X' → research
 - 'Set up monitoring' → devops
 - 'Design my database' → data

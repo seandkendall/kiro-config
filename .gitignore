@@ -43,3 +43,9 @@ steering/personal-*.md
 *.bak
 *.backup
 * copy.*
+
+# CLI runtime / machine-specific state (never commit)
+logs/
+workspace-roots/
+.trust-migration.json
+settings/permissions.yaml

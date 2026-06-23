@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - Image generation reachable from master + region fix
+
+### Fixed
+
+- **`master` could not generate images.** The master agent had no image-generation MCP server of its own — its only path to images was delegating to the `image-gen` subagent, so a direct request found no tool. Added `bedrock-image-mcp-server` to `agents/master.json` `mcpServers` (loads on demand via Tool Search), giving master first-class image tools (`generate_image`, `generate_image_sd35`, `remove_background`, upscaling/inpaint/outpaint, etc.) while `image-gen` remains for larger multi-asset workflows.
+- **Missing `AWS_REGION` on every Bedrock image server.** Added `"AWS_REGION": "us-east-1"` to the `bedrock-image-mcp-server` env in `agents/image-gen.json`, `frontend.json`, `web-builder.json`, and `ai-builder.json` (and the new master entry). Amazon Bedrock Runtime requires an explicit region; the AWS-published config for this package specifies it.
+
+### Changed
+
+- **`prompts/master.md`** — "Generate images" workflow now documents using the `bedrock-image-mcp-server` tools directly for one-off assets and delegating to `image-gen` for batches/icon sets/Frame-TV art.
+- **`agents/master.json`** — welcome message now mentions image generation.
+- **`README.md`** — Bedrock Image MCP table row updated to `master, image-gen, frontend, web-builder, ai-builder` (was a stale `frontend, web-builder, image-gen + 3`).
+
+### Verified
+
+- Confirmed `bedrock-image-mcp-server` is the AWS-recommended successor to the now-**deprecated** `awslabs.nova-canvas-mcp-server` (the deprecation notice on PyPI explicitly redirects to this package).
+- Live MCP stdio handshake against `bedrock-image-mcp-server@latest` returned 20 tools (`generate_image`, `generate_image_with_colors`, `generate_image_sd35`, `transform_image_sd35`, `upscale_creative/conservative/fast`, `inpaint_image`, `outpaint_image`, `search_and_replace`, `search_and_recolor`, `remove_object`, `remove_background`, `sketch_to_image`, `structure_control`, `style_guide`, `style_transfer`, mask helpers).
+- `./validate.sh` → all 20 agents validate, JSON parses, "Safe to push."
+
+## [0.15.0] - Per-project CHANGES.md logging rule
+
+### Added
+
+- **`steering/change-logging.md`** (new `inclusion: always` steering doc) — mandates that every project maintain a `CHANGES.md` at its root. After any set of file changes, before returning to the user, the agent appends a round-numbered, timestamped entry (`## Round N — <YYYY-MM-DD HH:MM:SS ±HH:MM>` header + bullet list). Specifies round-number monotonicity, GitHub-friendly formatting, first-time file scaffold, bottom-append ordering, and what counts as a change-set. Applies to ALL agents, subagents, and sessions in ANY project.
+  - Clarifies it is distinct from a release-oriented `CHANGELOG.md` (a project may keep both) and that the `CHANGES.md` write happens before the `post-task-recommendations.md` "Recommended Next Steps" section.
+
+### Changed
+
+- **`README.md`** — bumped always-loaded steering doc count 16 → 17 (intro line + "Steering Docs" section header); added "change logging" to the steering topics list.
+
 ## [0.14.1] - Model effort note (C/5)
 
 ### Added
