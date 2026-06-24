@@ -19,7 +19,7 @@ description: AWS development standards: CDK Python (never TypeScript), resource 
 - **Verify before using an alpha** — use `aws___search_documentation` (AWS MCP server) or check the module's PyPI page. If the PyPI page says "deprecated / moved to aws-cdk-lib" or the Development Status is "Inactive", the alpha is dead; use the stable path.
 - **Known graduations** (use the stable path, NOT the alpha):
   - `aws-cdk.aws-apigatewayv2-alpha` → **deprecated Dec 2023**. Use `aws_cdk.aws_apigatewayv2` (HTTP/WebSocket API: `HttpApi`, `CorsPreflightOptions`, `HttpMethod`, `DomainName`), `aws_cdk.aws_apigatewayv2_integrations` (`HttpLambdaIntegration`, `HttpUrlIntegration`, etc.), and `aws_cdk.aws_apigatewayv2_authorizers` (`HttpJwtAuthorizer`, etc.). All three are now in `aws-cdk-lib` — no separate `pip install` needed.
-- **Still alpha** (as of CDK 2.250+, re-check before relying on it): `aws_lambda_python_alpha` (`PythonFunction`), `aws_servicecatalogappregistry_alpha` (`ApplicationAssociator`). These have NOT graduated — the alpha package is still required.
+- **Still alpha** (verified at CDK **2.260.0** on 2026-06-23 — both publish as `2.260.0a0`, Development Status: Beta; re-check before relying on it): `aws_lambda_python_alpha` (`PythonFunction`), `aws_servicecatalogappregistry_alpha` (`ApplicationAssociator`). These have NOT graduated — the alpha package is still required.
 
 **Resource Tagging** - Tag ALL resources in every stack (mandatory):
 
@@ -44,7 +44,7 @@ Aspects.of(app).add(AwsSolutionsChecks())
 
 Use the `ApplicationAssociator` pattern in `app.py` — it auto-associates every stack in the app and handles cross-account sharing. The manual `Application` + `associate_application_with_stack` pattern is older and more verbose.
 
-> Note: The module is still in alpha (`aws_servicecatalogappregistry_alpha`) as of CDK 2.248+. Before using, check latest AWS CDK docs via the AWS documentation MCP server to see if it has graduated to stable (`aws_cdk.aws_servicecatalogappregistry`).
+> Note: The module is still in alpha (`aws_servicecatalogappregistry_alpha`) as of CDK 2.260 (verified 2026-06-23). Before using, check latest AWS CDK docs via the AWS documentation MCP server to see if it has graduated to stable (`aws_cdk.aws_servicecatalogappregistry`).
 
 Install:
 

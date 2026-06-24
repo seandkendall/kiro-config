@@ -5,7 +5,7 @@
     "",
     "Aligns with the v0.12.0 standards:",
     "  - Vite for build tooling (steering/tech.md)",
-    "  - React 18+ with TypeScript strict mode",
+    "  - React 19+ with TypeScript strict mode",
     "  - Vitest + React Testing Library for unit/component tests",
     "  - Playwright for E2E (data-testid selectors, storageState auth)",
     "  - @axe-core/playwright for accessibility assertions inside specs",
@@ -14,8 +14,14 @@
     "  - react-hook-form + zod for forms (development-workflow.md)",
     "  - TanStack Query for server state, Zustand for client state",
     "",
-    "Versions are placeholders — run 'npm install <pkg>@latest' for each then commit the lockfile.",
-    "Per development-workflow.md, dependencies are upgraded to latest daily."
+    "Version pins below were refreshed to the latest releases on 2026-06-23. Per",
+    "development-workflow.md, dependencies are upgraded to latest daily — re-run",
+    "'npm install <pkg>@latest' and commit the lockfile.",
+    "",
+    "HEADS UP — these are MAJOR upgrades with breaking changes; review each migration guide",
+    "before adopting in an existing project: React 19, React Router 7, Zod 4, Tailwind CSS 4",
+    "(CSS-first config via @tailwindcss/postcss; autoprefixer no longer required), Vite 8,",
+    "TypeScript 6, ESLint 10 (flat config), Vitest 4, @hookform/resolvers 5, jsdom 29."
   ],
 
   "name": "your-project-name",
@@ -49,63 +55,63 @@
   },
 
   "dependencies": {
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "react-router-dom": "^6.27.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.0",
 
-    "@tanstack/react-query": "^5.59.0",
-    "zustand": "^5.0.0",
+    "@tanstack/react-query": "^5.101.1",
+    "zustand": "^5.0.14",
 
-    "react-hook-form": "^7.53.0",
-    "zod": "^3.23.0",
-    "@hookform/resolvers": "^3.9.0",
+    "react-hook-form": "^7.80.0",
+    "zod": "^4.4.3",
+    "@hookform/resolvers": "^5.4.0",
 
-    "@aws-amplify/auth": "^6.5.0",
-    "amazon-cognito-identity-js": "^6.3.0",
+    "@aws-amplify/auth": "^6.20.0",
+    "amazon-cognito-identity-js": "^6.3.18",
 
-    "tailwind-merge": "^2.5.0",
-    "clsx": "^2.1.0"
+    "tailwind-merge": "^3.6.0",
+    "clsx": "^2.1.1"
   },
 
   "devDependencies": {
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "@types/node": "^22.0.0",
-    "typescript": "^5.6.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.3",
 
-    "vite": "^5.4.0",
-    "@vitejs/plugin-react": "^4.3.0",
+    "vite": "^8.1.0",
+    "@vitejs/plugin-react": "^6.0.3",
 
-    "tailwindcss": "^3.4.0",
-    "postcss": "^8.4.0",
-    "autoprefixer": "^10.4.0",
+    "tailwindcss": "^4.3.1",
+    "@tailwindcss/postcss": "^4.3.1",
+    "postcss": "^8.5.15",
+    "autoprefixer": "^10.5.1",
 
-    "vitest": "^2.1.0",
-    "@vitest/coverage-v8": "^2.1.0",
-    "@testing-library/react": "^16.0.0",
-    "@testing-library/jest-dom": "^6.5.0",
-    "@testing-library/user-event": "^14.5.0",
-    "jsdom": "^25.0.0",
+    "vitest": "^4.1.9",
+    "@vitest/coverage-v8": "^4.1.9",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/user-event": "^14.6.1",
+    "jsdom": "^29.1.1",
 
-    "@playwright/test": "^1.48.0",
-    "@axe-core/playwright": "^4.10.0",
-    "monocart-coverage-reports": "^2.10.0",
+    "@playwright/test": "^1.61.1",
+    "@axe-core/playwright": "^4.12.1",
+    "monocart-coverage-reports": "^2.12.12",
 
-    "eslint": "^9.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "eslint-plugin-react": "^7.37.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-jsx-a11y": "^6.10.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint": "^10.5.0",
+    "@typescript-eslint/parser": "^8.62.0",
+    "@typescript-eslint/eslint-plugin": "^8.62.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-config-prettier": "^10.1.8",
 
-    "prettier": "^3.3.0",
+    "prettier": "^3.8.4",
 
-    "premailer": "^4.0.0",
-    "juice": "^11.0.0"
+    "juice": "^12.1.1"
   },
 
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   }
 }

@@ -346,6 +346,8 @@ Sync completes but files fail. For OAuth 2.0 auth (not recommended): requires Sh
 
 ## AgentCore Services
 
+> **AgentCore managed harness (GA — Jun 17, 2026):** the harness bundles **Runtime + Memory + Gateway + Identity + Observability** into a single managed unit with an **AgentCore CLI**, so you can go from idea to production-grade agent in minutes rather than wiring the primitives together by hand. It works with any framework (Strands Agents, LangGraph, LlamaIndex, CrewAI). Use the harness as the **default deployment path**; reach for the individual services below when you need finer-grained control. Attach **Bedrock Guardrails via AgentCore Policy** to evaluate gateway tool inputs and agent outputs for prompt injection, harmful content, and sensitive-data exposure.
+
 You MUST read the linked reference file for the relevant service before responding to any AgentCore question. Follow procedures in the reference step by step.
 
 | Service               | Use For                                                                                        | Reference                                                                                                                              |

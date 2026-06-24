@@ -27,6 +27,7 @@ steering-backup-*/
 argv.json
 agents/agent_config.json.example
 settings/survey_state.json
+settings/feed_state.json
 
 # Personal agents (local-only, never shared)
 agents/accounting.json
@@ -48,4 +49,11 @@ steering/personal-*.md
 logs/
 workspace-roots/
 .trust-migration.json
+
+# Kiro CLI V3 capability-permissions file (keep gitignored — permanently).
+# Per the V3 docs, user-scope (~/.kiro/settings/permissions.yaml) and workspace-scope
+# (~/.kiro/workspace-roots/<hash>/permissions.yaml) rules are machine-local, per-user, and
+# live OUTSIDE the repo by design — "a cloned repo cannot inject permission rules."
+# Repo-shareable permissions belong in each agent profile's `permissions:` block (V3 Markdown
+# agents), NOT here. See steering/kiro-cli-v3-migration.md.
 settings/permissions.yaml

@@ -18,3 +18,23 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Updated `agents/master.json` welcome message to mention image generation
 - Updated `README.md` — corrected the Bedrock Image MCP server agent list
 - Added `[0.16.0]` entry to `CHANGELOG.md`; verified the MCP server exposes 20 tools via a live stdio handshake and `./validate.sh` passed
+
+## Round 3 — 2026-06-23 21:06:37 -06:00
+
+- Added a "Kiro CLI V3 (Early Access) — Readiness" section + `permissions.yaml` note to `steering/AGENTS.md`
+- Bumped Kiro CLI version refs 2.7.0 → 2.8.0 across `README.md`, `steering/AGENTS.md`, `steering/tech.md`, `steering/kiro-cli-troubleshooting.md`
+- Updated `prompts/ai-builder.md` for AgentCore managed-harness GA (CLI + Guardrails-in-Policy) and Strands 1.0 patterns (Agents-as-Tools/Swarm/Graph/Workflow, A2A, Shell, Evals 1.0); added a harness note to `skills/amazon-bedrock/SKILL.md`
+- Added a V3-aware explanation for `settings/permissions.yaml` in `.gitignore` (gitignored permanently)
+- Added `skills/AWS-TOOLKIT-SKILLS-AUDIT.md` marking 15 vendored awslabs skills as trim candidates (no deletion)
+- Bumped CDK alpha-module note to 2.260 in `steering/aws-standards.md` (verified both modules still alpha)
+- Added `steering/kiro-cli-v3-migration.md` (manual inclusion) with the full v2→v3 mapping + checklist
+- Added draft `agents/v3-preview/master.md` + `README.md` (V3 Markdown prototype, not loaded by 2.x)
+- Added `[0.17.0]` to `CHANGELOG.md`; `./validate.sh` passed (all 20 agents validate, safe to push)
+
+## Round 4 — 2026-06-23 21:37:46 -06:00
+
+- Refreshed all dependency pins in `skills/package.json.template` to latest (React 19.2.7, React Router 7.18.0, Zod 4.4.3, Tailwind 4.3.1, Vite 8.1.0, TypeScript 6.0.3, Vitest 4.1.9, ESLint 10.5.0, Playwright 1.61.1, etc.); bumped `engines.node` to `>=24`; removed invalid `premailer` npm dep; added a major-upgrade caveat comment
+- Updated "React 18+" → "React 19+" in `steering/tech.md` (frontmatter + list) and `skills/react-frontend-patterns.md` frontmatter
+- Updated `README.md` prerequisite "Node.js 20+" → "Node.js 24+" (latest LTS)
+- Updated pinned `boto3==1.35.0` → `boto3==1.43.36` in `skills/cognito-email-migration.md`
+- Verified latest versions against npm/PyPI/Node release index; left Python 3.14, boto3 minimum-floor docs, AWS-fact runtime lists, and historical entries unchanged; `./validate.sh` passed

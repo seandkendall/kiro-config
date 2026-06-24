@@ -1,6 +1,6 @@
 ---
 name: react-frontend-patterns
-description: React 18+, TypeScript, Tailwind CSS, shadcn/ui component patterns, accessibility, forms, state management. Use when building or reviewing React components, pages, or frontend architecture.
+description: React 19+, TypeScript, Tailwind CSS, shadcn/ui component patterns, accessibility, forms, state management. Use when building or reviewing React components, pages, or frontend architecture.
 ---
 
 # React Frontend Patterns

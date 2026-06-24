@@ -49,7 +49,7 @@ Copy `skills/email-templates/cognito-email-handler.py` to `cdk-backend/lambda/fu
 ```
 aws-encryption-sdk==4.0.1
 jinja2==3.1.4
-boto3==1.35.0
+boto3==1.43.36
 ```
 
 (Pin to the latest stable versions at migration time; check `pip index versions <pkg>` for current.)

@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - Refresh referenced library versions to latest (2026-06-23)
+
+Swept the config for stale library/version references and bumped them to the current latest (verified against the npm registry, PyPI, and the Node.js release index on 2026-06-23).
+
+### Changed
+
+- **`skills/package.json.template`** — refreshed all dependency pins to latest: React 18→**19.2.7** (+ `@types/react`/`@types/react-dom` 19), `react-router-dom` 6→**7.18.0**, `zod` 3→**4.4.3**, `@hookform/resolvers` 3→**5.4.0**, `tailwindcss` 3→**4.3.1** (+ added `@tailwindcss/postcss`), `tailwind-merge` 2→**3.6.0**, `vite` 5→**8.1.0**, `@vitejs/plugin-react` 4→**6.0.3**, `typescript` 5→**6.0.3**, `vitest`/`@vitest/coverage-v8` 2→**4.1.9**, `jsdom` 25→**29.1.1**, `eslint` 9→**10.5.0**, `eslint-plugin-react-hooks` 5→**7.1.1**, `eslint-config-prettier` 9→**10.1.8**, `@playwright/test`→**1.61.1**, `juice` 11→**12.1.1**, plus minor bumps to TanStack Query, Zustand, RHF, Amplify, prettier, axe, monocart, typescript-eslint. `engines.node` `>=20` → **`>=24`** (latest LTS); `@types/node` aligned to **^24**.
+  - **Removed `premailer`** from npm devDependencies — it is not a published npm package (`npm view premailer` is empty; Premailer is a Ruby/Python tool). `juice` is the Node CSS inliner and remains.
+  - Added a comment caveat flagging the MAJOR upgrades (React 19, React Router 7, Zod 4, Tailwind 4, Vite 8, TypeScript 6, ESLint 10, Vitest 4) as breaking-change migrations.
+- **`steering/tech.md`** — "React 18+" → "React 19+" (frontmatter + Frontend list), matching `prompts/frontend.md` which already specified React 19+.
+- **`skills/react-frontend-patterns.md`** — frontmatter "React 18+" → "React 19+".
+- **`README.md`** — prerequisite "Node.js 20+" → "Node.js 24+" (latest LTS).
+- **`skills/cognito-email-migration.md`** — pinned `boto3==1.35.0` → **`boto3==1.43.36`** (latest).
+
+### Left intentionally unchanged
+
+- **Python 3.14 / `Runtime.PYTHON_3_14`** — already the current stable Python (3.15 not yet released); no change.
+- **boto3 minimum-floor statements** (`≥ 1.34.x` in `skills/amazon-bedrock/SKILL.md` and `boto3>=1.34.0` in the Converse SDK reference) — these document the minimum version where the Converse API appeared; raising the floor would make the explanation factually wrong.
+- **AWS-fact runtime references** (Lambda "Python 3.12+/Java 11+/.NET 8+", CloudWatch Synthetics runtime versions, a "Python 3.9" timeout example) and **historical CHANGELOG entries** — factual/records, not our version choices.
+- **CDK 2.260** — already verified/bumped in v0.17.0.
+
+## [0.17.0] - 2026 ecosystem alignment (CLI V3 readiness, AgentCore GA, Strands 1.0)
+
+Validated the config against recent releases (Kiro CLI 2.8.0/V3, AgentCore harness GA, Strands 1.0, Agent Toolkit for AWS GA, CDK 2.260) and implemented items 1–7, 9, 10 from that review (item 8 skipped per owner).
+
+### Added
+
+- **`steering/AGENTS.md` — "Kiro CLI V3 (Early Access) — Readiness"** section: breaking-changes table (permissions, hooks, agent config, `aws_tool`/supervised-mode removal, sessions, platforms), stay-on-2.x policy, and a `settings/permissions.yaml` note (machine-local, gitignored permanently per V3 docs).
+- **`steering/kiro-cli-v3-migration.md`** (new, `inclusion: manual`): full v2→v3 mapping — agent JSON→Markdown+tags, embedded hooks→standalone `.kiro/hooks/*.json` (trigger name table), `toolsSettings`→`permissions`, `kiro-cli agent migrate`, and a migration checklist.
+- **`agents/v3-preview/master.md` + `README.md`** (new): draft V3 Markdown translation of `master` (not loaded by 2.x) demonstrating tags, inline `mcpServers`, and a `permissions:` block.
+- **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** (new): marks 15 vendored awslabs skills as trim candidates (retrievable on demand via the GA AWS MCP Server's `aws___retrieve_skill`/Agent SOPs), keeps `amazon-bedrock` (locally extended) + all custom skills. No deletion (destructive — needs sign-off).
+
+### Changed
+
+- **`prompts/ai-builder.md`** — Default Stack now documents the **AgentCore managed harness GA (Jun 17, 2026)** (Runtime/Memory/Gateway/Identity/Observability + AgentCore CLI + Guardrails-in-Policy) and **Strands 1.0** (Agents-as-Tools/Swarm/Graph/Workflow, A2A, context management, Strands Shell, Evals 1.0); enforced-patterns updated to match.
+- **`skills/amazon-bedrock/SKILL.md`** — added an AgentCore managed-harness GA note above the AgentCore Services table.
+- **Version bumps to 2.8.0** (+ V3 early-access note) in `README.md`, `steering/AGENTS.md` (frontmatter + features heading + new 2.8.0 bullet), `steering/tech.md`, `steering/kiro-cli-troubleshooting.md`.
+- **`steering/aws-standards.md`** — CDK alpha-module note bumped to **2.260** (verified 2026-06-23: `aws-lambda-python-alpha` and `aws-servicecatalogappregistry-alpha` both still alpha at `2.260.0a0`/Beta).
+- **`.gitignore`** — `settings/permissions.yaml` note corrected to "gitignored permanently" with the V3 rationale (user/workspace permission rules are machine-local, outside the repo by design).
+
 ## [0.16.0] - Image generation reachable from master + region fix
 
 ### Fixed
