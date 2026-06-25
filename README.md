@@ -204,6 +204,18 @@ export FIGMA_API_KEY="your_key_here"
 
 Then `source ~/.zshrc` (or open a new terminal) before starting Kiro CLI.
 
+### Google Workspace agent (optional, local-only setup)
+
+The `google-workspace` subagent (reachable from `master`) uses a Google Drive MCP server that requires a **local Google OAuth client-secrets file**. It is **not** part of this repo and most users will not have it — that subagent simply won't connect until you set it up, while every other agent works normally.
+
+To enable it:
+
+1. Create a Google Cloud OAuth client (Desktop app) and download its credentials JSON.
+2. Save it to `~/.config/google-drive-mcp/gcp-oauth.keys.json` (the path the `google-workspace` agent expects via `GOOGLE_DRIVE_OAUTH_CREDENTIALS`).
+3. Restart Kiro CLI; the agent runs read-only (`drive.readonly` scope).
+
+This file is a credential — keep it out of version control (it is gitignored here as `gcp-oauth.keys.json`).
+
 ## Configuration
 
 The default model and settings are in `settings/cli.json`. Key settings:

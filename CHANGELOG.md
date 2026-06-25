@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0] - Route master to the google-workspace subagent
+
+### Changed
+
+- **`prompts/master.md`** — added `google-workspace` to AVAILABLE SUBAGENTS and a COMMON WORKFLOWS routing line. `agents/master.json` already listed it in `availableAgents`/`trustedAgents`, but the prompt never mentioned it, so master never routed there. The entry notes the subagent's MCP needs a local Google OAuth file at `~/.config/google-drive-mcp/gcp-oauth.keys.json` and instructs the agent to fall back gracefully (not retry) if it isn't set up.
+- **`README.md`** — added a "Google Workspace agent (optional, local-only setup)" subsection: most users won't have the OAuth client-secrets file, so that one subagent won't connect until they create it, while every other agent works normally. Documents the setup steps and the expected path.
+
+### Added
+
+- **`.gitignore`** — defensive guard for `gcp-oauth.keys.json` / `**/gcp-oauth.keys.json` (Google OAuth client secret — never commit). The real file lives outside the repo at `~/.config/google-drive-mcp/` and was never tracked.
+
 ## [0.18.0] - Refresh referenced library versions to latest (2026-06-23)
 
 Swept the config for stale library/version references and bumped them to the current latest (verified against the npm registry, PyPI, and the Node.js release index on 2026-06-23).

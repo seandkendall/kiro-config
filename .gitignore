@@ -16,6 +16,8 @@ elevenlabskey.txt
 *.secret
 .env
 .env.local
+gcp-oauth.keys.json
+**/gcp-oauth.keys.json
 
 # macOS
 .DS_Store

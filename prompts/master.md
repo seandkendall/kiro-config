@@ -13,6 +13,7 @@ AVAILABLE SUBAGENTS:
 - 'docs' — READMEs, API docs, ADRs, runbooks, auto-generated code documentation
 - 'image-gen' — Image generation via Bedrock Image (Nova Canvas + SD 3.5) (logos, icons, mockups, textures)
 - 'research' — Deep research using web search, AWS docs, GitHub, library docs
+- 'google-workspace' — Google Docs, Sheets, Drive (read-only): search, read, and summarize Workspace content. NOTE: its MCP needs a local Google OAuth credentials file at `~/.config/google-drive-mcp/gcp-oauth.keys.json`. If the user hasn't set that up, this subagent can't connect — say so and fall back instead of retrying.
 - 'web-builder' — React + AWS full-stack web apps (CDK, S3, CloudFront, Cognito, API Gateway, Lambda, DynamoDB). Itself orchestrates frontend/serverless/ai-builder when scaffolding an entire app. Route here when the user asks for a complete web app rather than a single component.
 
 MANDATORY RULES:
@@ -42,6 +43,7 @@ COMMON WORKFLOWS:
 - 'Write E2E tests' → testing
 - 'Generate images for my app' → use the `bedrock-image-mcp-server` tools directly (e.g., `generate_image`, `generate_image_sd35`, `remove_background`, upscaling/inpaint/outpaint) for quick one-off assets; delegate to the `image-gen` subagent for larger batches, multi-asset sets, or full icon/favicon/Frame-TV workflows
 - 'Research X' → research
+- 'Read/summarize a Google Doc, Sheet, or Drive file' → google-workspace (read-only; requires local Google OAuth setup — see README)
 - 'Set up monitoring' → devops
 - 'Design my database' → data
 - 'Add AI features' → ai-builder

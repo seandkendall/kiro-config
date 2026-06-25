@@ -38,3 +38,10 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Updated `README.md` prerequisite "Node.js 20+" → "Node.js 24+" (latest LTS)
 - Updated pinned `boto3==1.35.0` → `boto3==1.43.36` in `skills/cognito-email-migration.md`
 - Verified latest versions against npm/PyPI/Node release index; left Python 3.14, boto3 minimum-floor docs, AWS-fact runtime lists, and historical entries unchanged; `./validate.sh` passed
+
+## Round 5 — 2026-06-25 11:28:00 -06:00
+
+- Added `google-workspace` to `prompts/master.md` AVAILABLE SUBAGENTS + a COMMON WORKFLOWS routing line, with a note to fall back gracefully when the local Google OAuth file is absent (master.json already permitted it; the prompt was the missing link)
+- Added a "Google Workspace agent (optional, local-only setup)" section to `README.md` documenting the `~/.config/google-drive-mcp/gcp-oauth.keys.json` requirement
+- Added a `.gitignore` guard for `gcp-oauth.keys.json` (Google OAuth client secret)
+- Added `[0.19.0]` to `CHANGELOG.md`; `./validate.sh` passed
