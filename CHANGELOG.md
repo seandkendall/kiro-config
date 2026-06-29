@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.0] - Prefer SSM Parameter Store over Secrets Manager for secrets
+
+### Changed
+
+- **`steering/security-policies.md`** — reversed the secrets default. Was "use AWS Secrets Manager for all secrets"; now **prefer SSM Parameter Store (`SecureString`, KMS-encrypted) by default**, and use **Secrets Manager only when specifically required**: RDS/Aurora/Redshift/DocumentDB managed credentials + rotation, an AWS service that needs a Secrets Manager secret ARN (MSK SASL/SCRAM, Amazon MQ event sources, some Bedrock KB vector stores), automatic rotation, or cross-account sharing. Kept "never plaintext env vars for secrets" and "fetch at runtime + cache (Powertools `parameters`)". Frontmatter description updated to match.
+- **`steering/aws-standards.md`** — "No Hardcoded Values" rule aligned: SSM Parameter Store (`SecureString` for secrets) by default; Secrets Manager only when rotation/RDS/service-integration requires it; env vars for non-secret config only.
+
+### Note
+
+- Skill references that mandate Secrets Manager for MSK/Amazon MQ/RDS Data API/AgentCore-managed credentials were intentionally left unchanged — those are exactly the "Secrets Manager is required" exceptions, and most are vendored AWS skills.
+
 ## [0.19.0] - Route master to the google-workspace subagent
 
 ### Changed

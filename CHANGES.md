@@ -45,3 +45,10 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Added a "Google Workspace agent (optional, local-only setup)" section to `README.md` documenting the `~/.config/google-drive-mcp/gcp-oauth.keys.json` requirement
 - Added a `.gitignore` guard for `gcp-oauth.keys.json` (Google OAuth client secret)
 - Added `[0.19.0]` to `CHANGELOG.md`; `./validate.sh` passed
+
+## Round 6 — 2026-06-28 18:36:59 -06:00
+
+- Reversed the secrets default in `steering/security-policies.md`: prefer SSM Parameter Store (`SecureString`) by default; Secrets Manager only when required (RDS/Aurora, service needs a secret ARN, rotation, cross-account) — section body + frontmatter updated
+- Aligned the "No Hardcoded Values" rule in `steering/aws-standards.md` with the SSM-preferred guidance
+- Left Secrets-Manager-required skill references (MSK/MQ/RDS Data API/AgentCore) unchanged — those are the documented exceptions
+- Added `[0.20.0]` to `CHANGELOG.md`

@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: security-policies
-description: Security policies: Cognito + MFA + passkeys, Secrets Manager (never env vars), IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls.
+description: Security policies: Cognito + MFA + passkeys, secrets via SSM Parameter Store SecureString by default (Secrets Manager only when rotation/RDS/service integration requires it, never plaintext env vars), IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls.
 ---
 
 # Security Policies
@@ -15,10 +15,16 @@ description: Security policies: Cognito + MFA + passkeys, Secrets Manager (never
 
 ## Secrets Management
 
-- Use AWS Secrets Manager for all secrets — never environment variables
-- Enable automatic rotation where supported
-- Never hardcode API keys, passwords, or tokens in code
-- Use SSM Parameter Store for non-secret configuration
+- **Prefer AWS SSM Parameter Store (`SecureString`, KMS-encrypted) for secrets by default.** It is simpler and cheaper for static secrets (third-party API keys, tokens, webhook signing keys) that don't need managed rotation.
+- **Use AWS Secrets Manager only when you specifically need it**, for example:
+  - **RDS / Aurora / Redshift / DocumentDB credentials** — use the managed master password with native rotation and RDS Proxy integration
+  - **An AWS service that requires a Secrets Manager secret ARN** to connect a client (e.g., MSK SASL/SCRAM, Amazon MQ event-source credentials, some Bedrock Knowledge Base vector-store connectors)
+  - **Automatic credential rotation** — Secrets Manager has built-in rotation; Parameter Store does not
+  - **Cross-account secret sharing**, or values larger than the Parameter Store limit
+- **Never put secrets in plaintext environment variables** — Lambda env vars are visible in the console, `GetFunctionConfiguration`, and CloudFormation. Fetch from SSM `SecureString` or Secrets Manager at runtime and cache outside the handler (e.g., the Lambda Powertools `parameters` utility).
+- Encrypt with KMS — prefer AWS managed keys unless a compliance requirement dictates customer-managed (see KMS rule below).
+- Never hardcode API keys, passwords, or tokens in code.
+- Use plain SSM Parameter Store (`String`) for non-secret configuration; environment variables are acceptable for **non-secret** config only.
 
 ## IAM
 
