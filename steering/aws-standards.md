@@ -2,7 +2,7 @@
 inclusion: fileMatch
 fileMatchPattern: '{cdk/**/*,**/lambda/**/*,**/*.py}'
 name: aws-standards
-description: AWS development standards: CDK Python (never TypeScript), resource tagging, cdk-nag, AppRegistry, Lambda Powertools, Cognito custom UI + passkeys, S3 OAC, Lambda resilience (DLQ + idempotency), API routing through CloudFront /api path. Use when writing or reviewing CDK, Lambda, or AWS infrastructure code.
+description: AWS development standards: CDK Python (never TypeScript), resource tagging, cdk-nag, AWS Resource Groups (tag-based), Lambda Powertools, Cognito custom UI + passkeys, S3 OAC, Lambda resilience (DLQ + idempotency), API routing through CloudFront /api path. Use when writing or reviewing CDK, Lambda, or AWS infrastructure code.
 ---
 
 # AWS Development Standards
@@ -19,7 +19,14 @@ description: AWS development standards: CDK Python (never TypeScript), resource 
 - **Verify before using an alpha** — use `aws___search_documentation` (AWS MCP server) or check the module's PyPI page. If the PyPI page says "deprecated / moved to aws-cdk-lib" or the Development Status is "Inactive", the alpha is dead; use the stable path.
 - **Known graduations** (use the stable path, NOT the alpha):
   - `aws-cdk.aws-apigatewayv2-alpha` → **deprecated Dec 2023**. Use `aws_cdk.aws_apigatewayv2` (HTTP/WebSocket API: `HttpApi`, `CorsPreflightOptions`, `HttpMethod`, `DomainName`), `aws_cdk.aws_apigatewayv2_integrations` (`HttpLambdaIntegration`, `HttpUrlIntegration`, etc.), and `aws_cdk.aws_apigatewayv2_authorizers` (`HttpJwtAuthorizer`, etc.). All three are now in `aws-cdk-lib` — no separate `pip install` needed.
-- **Still alpha** (verified at CDK **2.260.0** on 2026-06-23 — both publish as `2.260.0a0`, Development Status: Beta; re-check before relying on it): `aws_lambda_python_alpha` (`PythonFunction`), `aws_servicecatalogappregistry_alpha` (`ApplicationAssociator`). These have NOT graduated — the alpha package is still required.
+- **Still alpha** (verified at CDK **2.260.0** on 2026-06-23 — publishes as `2.260.0a0`, Development Status: Beta; re-check before relying on it): `aws_lambda_python_alpha` (`PythonFunction`). It has NOT graduated — the alpha package is still required. (We no longer use `aws_servicecatalogappregistry_alpha` / `ApplicationAssociator`: AWS Service Catalog AppRegistry moved to maintenance on 2026-06-30 — use the stable `aws_resourcegroups.CfnGroup` instead; see "AWS Resource Groups" below.)
+
+**Construct Level (MANDATORY) — prefer L2/L3 over L1** - Always use the highest-level construct available. Prefer **L3** (patterns) and **L2** (curated resources with sensible defaults) over **L1** (`Cfn*`, raw CloudFormation 1:1).
+
+- Whenever guidance, a snippet, or generated code reaches for an **L1 `Cfn<Resource>`** construct, first **verify whether the current `aws-cdk-lib` now ships an L2/L3** for that resource — use `aws___search_documentation` (AWS MCP server) or the construct's PyPI/API-reference page — and **propose the higher-level construct instead**.
+- Only fall back to an L1 `Cfn*` when **no L2/L3 exists** (or the L2 genuinely can't express what you need). When you do, leave a short comment saying so and noting it should be revisited.
+- **Re-check on every CDK upgrade.** L2s graduate continuously; an L1 you used last quarter may have an L2 now. The daily-maintenance dependency upgrade (`development-workflow.md`) is the natural point to re-evaluate.
+- Current known L1-only exception in this config: **`aws_resourcegroups.CfnGroup`** — `aws-cdk-lib` has **no L2** for Resource Groups as of CDK 2.260 (verified 2026-06-23), so L1 is correct here for now; re-check on upgrade.
 
 **Resource Tagging** - Tag ALL resources in every stack (mandatory):
 
@@ -40,52 +47,80 @@ from aws_cdk import Aspects
 Aspects.of(app).add(AwsSolutionsChecks())
 ```
 
-**AWS AppRegistry** - Every CDK app MUST register itself in Service Catalog App Registry. This groups all resources under a named application for governance, cost tracking, and operational visibility.
+**AWS Resource Groups (MANDATORY)** - Every CDK app MUST register its resources in a **tag-based AWS Resource Group** for governance, cost tracking, and operational visibility — a single Console/CLI/SDK view of everything the app owns.
 
-Use the `ApplicationAssociator` pattern in `app.py` — it auto-associates every stack in the app and handles cross-account sharing. The manual `Application` + `associate_application_with_stack` pattern is older and more verbose.
+> **Why not Service Catalog AppRegistry / myApplications?** Per the AWS announcement on 2026-06-30, **AWS Service Catalog – Application Registry** and the **myApplications** console experience moved to **maintenance** (effective 2026-07-30: no new applications or updates; existing ones stay viewable). AWS recommends **AWS Resource Groups** (tag-based) as the replacement. Do NOT use `ApplicationAssociator` / `aws_servicecatalogappregistry_alpha` in new code — see the migration procedure below for existing projects.
 
-> Note: The module is still in alpha (`aws_servicecatalogappregistry_alpha`) as of CDK 2.260 (verified 2026-06-23). Before using, check latest AWS CDK docs via the AWS documentation MCP server to see if it has graduated to stable (`aws_cdk.aws_servicecatalogappregistry`).
+Resource Groups uses the **stable** `aws_cdk.aws_resourcegroups.CfnGroup` (`AWS::ResourceGroups::Group`) — no alpha package required. Build the group from the mandatory `project` tag every stack already applies.
 
-Install:
-
-```bash
-pip install aws-cdk.aws-servicecatalogappregistry-alpha
-```
-
-Register in `app.py`:
+Register in `app.py` (or your top-level stack):
 
 ```python
 import os
 import aws_cdk as cdk
-from aws_cdk import aws_servicecatalogappregistry_alpha as appreg
+from aws_cdk import Stack, Tags, aws_resourcegroups as resourcegroups
+from constructs import Construct
 
 app = cdk.App()
 region = os.environ.get('CDK_DEFAULT_REGION', 'us-east-1')
 project_name = 'MyApp'
 
-# Auto-associates all stacks in this app with the AppRegistry application.
-# The awsApplication tag is automatically propagated to every resource.
-appreg.ApplicationAssociator(app, 'AppRegistry',
-    applications=[appreg.TargetApplication.create_application_stack(
-        application_name=f'{project_name}-{region}',
-        stack_name=f'{project_name}-AppRegistry-{region}',
-        application_description=f'{project_name} deployed in {region}',
-        associate_cross_account_stacks=True,
-    )]
-)
 
-# Define your stacks AFTER ApplicationAssociator
-MyAppStack(app, f'{project_name}Stack-{region}', ...)
+class MyAppStack(Stack):
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
+        super().__init__(scope, id, **kwargs)
+
+        # ... define your resources here ...
+
+        # Tag-based Resource Group: every resource tagged project=<name> joins it.
+        resourcegroups.CfnGroup(self, 'AppResourceGroup',
+            name=f'{project_name}-{region}',
+            description=f'{project_name} resources in {region}',
+            resource_query=resourcegroups.CfnGroup.ResourceQueryProperty(
+                type='TAG_FILTERS_1_0',
+                query=resourcegroups.CfnGroup.QueryProperty(
+                    resource_type_filters=['AWS::AllSupported'],
+                    tag_filters=[
+                        resourcegroups.CfnGroup.TagFilterProperty(
+                            key='project', values=[project_name],
+                        ),
+                    ],
+                ),
+            ),
+        )
+
+
+stack = MyAppStack(app, f'{project_name}Stack-{region}')
+
+# Tag every stack so its resources land in the group (see Resource Tagging above).
+Tags.of(stack).add('project', project_name)
 
 app.synth()
 ```
 
 Rules:
 
-- `application_name` MUST be unique per account per region and is immutable once created
-- Place the `ApplicationAssociator` BEFORE any stack definitions in `app.py`
-- Do NOT manually add the `awsApplication` tag — `ApplicationAssociator` propagates it automatically to every resource in every associated stack
-- For cross-account deployments (e.g., pipeline target accounts), set `associate_cross_account_stacks=True`
+- The group is **tag-based on `project=<name>`** — keep applying the mandatory `project` tag to every stack (see Resource Tagging). No `awsApplication` tag, no AppRegistry application.
+- `name` should be unique per account per region (e.g., `{project}-{region}`).
+- `resource_type_filters=['AWS::AllSupported']` includes every taggable resource type; narrow it only if you want a subset.
+- Resource Groups are Region-scoped — create one per region you deploy to.
+- Do NOT rely on **Resource Groups – Group Lifecycle Events** (also moved to maintenance on 2026-06-30); plain tag-based groups are fully supported.
+
+#### Migrating an existing project off myApplications / AppRegistry (NON-DESTRUCTIVE)
+
+If a project still uses `ApplicationAssociator` / AppRegistry (the `awsApplication` tag + myApplications), migrate it to a tag-based Resource Group. **This migration MUST be non-destructive** — it changes only the _grouping_ mechanism. Workload resources (Lambda functions, CloudWatch log groups, S3 buckets, DynamoDB/RDS/Aurora databases, SQS queues, etc.) MUST NOT be deleted.
+
+Why it's safe: deleting the **AppRegistry Application** removes only the Service Catalog registry entry and its resource _associations_ — it does NOT delete the associated workload resources. Removing the `awsApplication` tag is metadata-only. Neither touches your data or compute.
+
+Procedure:
+
+1. **Add the Resource Group** — add the `CfnGroup` above (tag-based on `project=<name>`) and ensure every stack applies the `project` tag. Deploy. Confirm the new group lists the expected resources (`aws resource-groups list-group-resources --group-name <name>`, via `aws-mcp-server`).
+2. **Remove the AppRegistry wiring** — delete the `ApplicationAssociator` block (and the `aws-cdk.aws-servicecatalogappregistry-alpha` dependency) from `app.py`. On the next `deploy.sh`, CloudFormation deletes only the AppRegistry **Application** (and the separate `*-AppRegistry-*` application stack, if one was created) — NOT the workload stacks.
+3. **Drop the `awsApplication` tag only if nothing else uses it.** It is optional: AWS keeps the tag working for grouping, so you may leave it in place. If you remove it, do so via tag changes only — never by recreating resources.
+4. **Never `cdk destroy`, never empty/delete S3 buckets, never delete log groups, queues, or databases as part of this migration.** If `deploy.sh --delete` exists, do NOT run it — migration is a deploy, not a teardown.
+5. **Verify post-migration:** workload resources still exist and function, the Resource Group shows them, and the old AppRegistry application is gone (or intentionally left). Run live tests against deployed endpoints.
+
+> Guardrail: if an agent is ever unsure whether a migration step would delete a workload resource, STOP and ask the user. The only things this migration may remove are the AppRegistry Application and the (now-unused) `awsApplication` tag.
 
 **Lambda Functions** - Use `PythonFunction` construct with Python 3.14:
 
@@ -238,7 +273,7 @@ Example:
 - Detach and delete IAM roles + policies the stack created
 - Wait for `DELETE_COMPLETE` before exiting; surface any `DELETE_FAILED` resources clearly so the user can intervene
 
-Tag-based discovery is the safest sweep — every stack tags resources with `awsApplication` (via AppRegistry's `ApplicationAssociator`) and `project=<name>`. Use those tags to find resources that survived `cdk destroy`.
+Tag-based discovery is the safest sweep — every stack tags resources with `project=<name>` (the same tag the stack's AWS Resource Group is built on). Use that tag to find resources that survived `cdk destroy`.
 
 #### `-y` Auto-Confirm Flag (MANDATORY)
 
@@ -254,7 +289,7 @@ When `-y` is set, the script MUST NOT issue any interactive prompts. This includ
 
 The same AWS account often hosts multiple projects sharing infrastructure (Route53 hosted zones, ACM certs, VPCs, Cognito user pools). The `deploy.sh` script MUST NOT break sibling projects:
 
-- **Discover by tag, not by name pattern.** Use `awsApplication` (set by AppRegistry's `ApplicationAssociator`) and `project=<name>` tags to identify resources owned by THIS stack. Never delete resources matching a name prefix or substring — name collisions across projects are real.
+- **Discover by tag, not by name pattern.** Use the `project=<name>` tag (the same tag the stack's AWS Resource Group is built on) to identify resources owned by THIS stack. Never delete resources matching a name prefix or substring — name collisions across projects are real.
 - **Touch shared zones surgically.** When this stack created records in a Route53 hosted zone owned by another project (or by a shared infra stack), delete only the records this stack added (typically by `name` + `type`). Never delete the hosted zone itself unless this stack owns it end-to-end.
 - **Pre-flight check on `--delete`.** Before destroying, list all resources tagged with this project's tag and show them to the user (or skip the listing under `-y`). Resources NOT tagged with this project are NEVER touched.
 - **Shared certificates.** ACM certs in `us-east-1` are commonly reused (CloudFront only accepts certs there). If the cert was imported by another stack, this stack MUST NOT delete it on teardown — even if it imported the cert via `Certificate.fromCertificateArn`. Delete-on-teardown applies only to certs this stack created.

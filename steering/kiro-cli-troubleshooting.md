@@ -78,7 +78,7 @@ Some pushes get blocked by Code Defender. Approve manually in the prompt — the
 ## Diagnostic Commands
 
 ```bash
-kiro-cli --version                    # Confirm version (2.8.0+ tested; 2.3.0 min for side channels)
+kiro-cli --version                    # Confirm version (2.10.0+ tested; 2.3.0 min for side channels)
 kiro-cli mcp list                     # See all MCP servers and their status
 kiro-cli agent list                   # List configured agents
 kiro-cli agent validate --path <file> # Validate an agent config

@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.22.0] - Prefer L2/L3 CDK constructs over L1
+
+### Added
+
+- **`steering/aws-standards.md`** — new "Construct Level (MANDATORY) — prefer L2/L3 over L1" rule: whenever guidance, a snippet, or generated code reaches for an L1 `Cfn*` construct, first verify whether the current `aws-cdk-lib` now ships an L2/L3 for that resource (via `aws___search_documentation` / PyPI / API reference) and propose the higher-level construct instead. Only fall back to L1 when no L2/L3 exists; re-check on every CDK upgrade. Documents the current L1-only exception (`aws_resourcegroups.CfnGroup` — no L2 as of CDK 2.260).
+- **`skills/cdk-infrastructure-patterns.md`** — same rule added to the Rules list, plus an L1 note on the `CfnGroup` snippet explaining it's L1 only because no L2 exists yet.
+
+## [0.21.0] - Migrate myApplications/AppRegistry → AWS Resource Groups; Kiro 2.10 alignment
+
+AWS announced (2026-06-30) that **Service Catalog – Application Registry** and **myApplications** move to **maintenance** on 2026-07-30. Recommended replacement: **AWS Resource Groups** (tag-based). Migrated the config accordingly.
+
+### Changed
+
+- **`steering/aws-standards.md`** — replaced the "AWS AppRegistry (MANDATORY)" rule (`ApplicationAssociator` / `aws_servicecatalogappregistry_alpha`) with **"AWS Resource Groups (MANDATORY)"** using the **stable** `aws_cdk.aws_resourcegroups.CfnGroup` (`AWS::ResourceGroups::Group`), tag-based on the existing `project=<name>` tag — **no alpha package**.
+  - Added a **NON-DESTRUCTIVE migration procedure**: add the Resource Group, remove the `ApplicationAssociator` wiring, optionally drop the now-unused `awsApplication` tag — explicitly preserving Lambda functions, CloudWatch log groups, S3 buckets, and databases (never `cdk destroy`, never empty buckets/log groups/DBs). Deleting the AppRegistry Application removes only the registry entry + associations, not workload resources.
+  - Dropped `aws_servicecatalogappregistry_alpha` from the still-alpha note (only `aws_lambda_python_alpha` remains); frontmatter "AppRegistry" → "AWS Resource Groups (tag-based)".
+  - `deploy.sh` deep-cleanup + multi-project discovery now key on the `project` tag (was `awsApplication` set by AppRegistry).
+- **`skills/cdk-infrastructure-patterns.md`** — added a tag-based `CfnGroup` snippet (the skill previously had no resource-grouping example).
+- **`prompts/master-demo.md` + `agents/master-demo.json`** — NEVER list now says "resource grouping (Resource Groups)" instead of "AppRegistry".
+- **Kiro version bumps 2.8.0 → 2.10.0** in `README.md`, `steering/AGENTS.md` (frontmatter + features heading), `steering/tech.md`, `steering/kiro-cli-troubleshooting.md`; added feature bullets for **2.9.0** (V3 stability + Entra ID session refresh + compact sub-agent tool cards) and **2.10.0** (Config Hot-Reload — agent/MCP configs reconcile live on save, no restart; `chat.disableInheritingDefaultResources`).
+
+### Note
+
+- AWS Agent Toolkit: no new toolkit change required doc edits this round beyond the AppRegistry deprecation; `aws-mcp-server` (GA) stays as-is.
+- Avoid the **Resource Groups – Group Lifecycle Events** feature (also moved to maintenance 2026-06-30); plain tag-based groups are fully supported.
+
 ## [0.20.0] - Prefer SSM Parameter Store over Secrets Manager for secrets
 
 ### Changed

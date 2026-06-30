@@ -52,3 +52,19 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Aligned the "No Hardcoded Values" rule in `steering/aws-standards.md` with the SSM-preferred guidance
 - Left Secrets-Manager-required skill references (MSK/MQ/RDS Data API/AgentCore) unchanged — those are the documented exceptions
 - Added `[0.20.0]` to `CHANGELOG.md`
+
+## Round 7 — 2026-06-30 11:51:49 -06:00
+
+- Replaced AppRegistry/myApplications guidance in `steering/aws-standards.md` with AWS Resource Groups (stable `aws_resourcegroups.CfnGroup`, tag-based on `project`); rationale: AWS moved AppRegistry + myApplications to maintenance (2026-07-30)
+- Added a NON-DESTRUCTIVE myApplications→Resource Groups migration procedure (preserve Lambda/CW logs/S3/databases; only remove the AppRegistry Application + optional `awsApplication` tag; never `cdk destroy`)
+- Removed `aws_servicecatalogappregistry_alpha` from the still-alpha note; fixed frontmatter; switched deploy.sh deep-cleanup + multi-project discovery to the `project` tag
+- Added a tag-based `CfnGroup` snippet to `skills/cdk-infrastructure-patterns.md`
+- Updated `prompts/master-demo.md` + `agents/master-demo.json` NEVER lists (AppRegistry → resource grouping/Resource Groups)
+- Bumped Kiro refs 2.8.0 → 2.10.0 (README, AGENTS, tech, troubleshooting) + added 2.9.0/2.10.0 feature bullets (V3 stability/Entra ID; Config Hot-Reload + `chat.disableInheritingDefaultResources`)
+- Added `[0.21.0]` to `CHANGELOG.md`; `./validate.sh` passed
+
+## Round 8 — 2026-06-30 12:14:24 -06:00
+
+- Added a "Construct Level (MANDATORY) — prefer L2/L3 over L1" rule to `steering/aws-standards.md`: when guidance reaches for an L1 `Cfn*`, verify whether `aws-cdk-lib` now has an L2/L3 and propose it instead; fall back to L1 only when none exists; re-check on each CDK upgrade
+- Added the same rule to `skills/cdk-infrastructure-patterns.md` Rules + an L1 note on the `CfnGroup` snippet (no L2 for Resource Groups as of CDK 2.260)
+- Added `[0.22.0]` to `CHANGELOG.md`; `./validate.sh` passed

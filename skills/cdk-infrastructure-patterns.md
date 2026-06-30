@@ -66,10 +66,34 @@ table = dynamodb.Table(self, "Table",
 )
 ```
 
+## Resource Group (tag-based)
+
+Replaces Service Catalog AppRegistry / myApplications (both moved to maintenance 2026-06-30). Stable construct, **no alpha package** — groups every resource tagged `project=<name>`. (This is an **L1** `Cfn*` because `aws-cdk-lib` has no L2 for Resource Groups as of CDK 2.260 — re-check on upgrade and switch to an L2 if one ships.)
+
+```python
+from aws_cdk import aws_resourcegroups as resourcegroups
+
+resourcegroups.CfnGroup(self, "AppResourceGroup",
+    name="my-app-us-east-1",  # unique per account per region
+    resource_query=resourcegroups.CfnGroup.ResourceQueryProperty(
+        type="TAG_FILTERS_1_0",
+        query=resourcegroups.CfnGroup.QueryProperty(
+            resource_type_filters=["AWS::AllSupported"],
+            tag_filters=[
+                resourcegroups.CfnGroup.TagFilterProperty(key="project", values=["my-app"]),
+            ],
+        ),
+    ),
+)
+```
+
+Keep tagging every stack with `project=<name>` (see Stack Template). Full rule + the NON-DESTRUCTIVE AppRegistry→Resource Groups migration procedure: `steering/aws-standards.md`.
+
 ## Rules
 
 - NEVER use default stack names (CdkStack, Stack)
 - Let CDK auto-generate S3 bucket names
 - Only add/remove ONE GSI per deploy
 - Always include cdk-nag AwsSolutionsChecks
+- Prefer L2/L3 constructs; use an L1 `Cfn*` only when no L2/L3 exists — when you reach for an L1, check whether the current `aws-cdk-lib` now ships a higher-level construct (via `aws___search_documentation` / PyPI) and propose it instead; re-check on each CDK upgrade
 - deploy.sh is the ONLY deployment method

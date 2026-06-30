@@ -49,7 +49,7 @@
     }
   },
   "keyboardShortcut": "shift+m",
-  "welcomeMessage": "master-demo ready. AWS serverless only. No UI/WAF/AppRegistry/Powertools/X-Ray/cdk-nag/Kiro-Specs. Post-deploy CORS + endpoint verify. What are we demoing?",
+  "welcomeMessage": "master-demo ready. AWS serverless only. No UI/WAF/Resource-Groups/Powertools/X-Ray/cdk-nag/Kiro-Specs. Post-deploy CORS + endpoint verify. What are we demoing?",
   "hooks": {
     "postToolUse": [
       {

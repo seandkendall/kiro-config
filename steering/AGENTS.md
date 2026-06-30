@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: AGENTS
-description: Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.8.0+ features (incl. V3 early access). Use when building or routing across agents.
+description: Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.10.0+ features (incl. V3 early access). Use when building or routing across agents.
 ---
 
 # AGENTS.md
@@ -76,7 +76,7 @@ If unsure, use `subagent`. Never use `delegate` just because the task is long �
 
 > **Custom orchestrator agents must declare the `subagent` tool.** If you build a new agent that needs to spawn subagents, include `subagent` in its `tools` array (or use `"tools": ["*"]` / `"@builtin"` to inherit all built-ins). Without it, the agent silently fails to delegate. Agents currently configured for delegation: `master`, `web-builder`, `ai-builder`.
 
-## Kiro CLI Features Worth Knowing (through 2.8.0)
+## Kiro CLI Features Worth Knowing (through 2.10.0)
 
 - **Agent output side channels** (2.3.0) — `$AGENT_DISPLAY_OUT` and `$AGENT_CONTEXT_OUT` env vars in shell commands route verbose output to the user TUI without polluting agent context (used by `deploy.sh`)
 - **OAuth Client ID for HTTP MCP servers** (2.3.0) — set `oauth.clientId` in MCP config to use Slack/GitHub/Figma HTTP MCP servers without DCR (we don't need this — our MCPs are stdio)
@@ -91,6 +91,8 @@ If unsure, use `subagent`. Never use `delegate` just because the task is long �
 - **`/goal`** (2.7.0) — start an iterative loop where the agent works toward an objective and must verify completion before stopping (default 5 iterations, `--max` configurable). Aligns with this config's quality-gate philosophy.
 - **Queue steering** (2.7.0) — send a correction while the agent is working; it picks it up at the next tool boundary. `Ctrl+S` toggles steer mode (inject mid-turn) vs queue mode (buffer until turn ends).
 - **CLI V3 early access** (2.8.0) — opt-in unified-harness engine (`kiro-cli --v3`) that also powers the IDE and Web. Brings capability-based permissions, standalone hooks, and tag-based Markdown agents. See "Kiro CLI V3 (Early Access) — Readiness" below; this config intentionally stays on 2.x for now.
+- **V3 stability + Entra ID session refresh** (2.9.0) — V3 approval-loop fixes for compound shell commands, Entra ID (Azure AD) session refresh, and compact sub-agent tool cards.
+- **Config Hot-Reload** (2.10.0) — agent and MCP config changes reconcile **live on save**: no session restart, only affected MCP servers restart, conversation context preserved, order-independent diff (reordering env vars won't trigger a restart). Editing an agent JSON or `mcp.json` now takes effect immediately. Also adds `chat.disableInheritingDefaultResources` to stop custom agents from inheriting default steering/skills/AGENTS.md (they inherit by default since 2.7.0).
 
 ## Kiro CLI V3 (Early Access) — Readiness
 

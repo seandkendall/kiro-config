@@ -33,7 +33,7 @@ backends live, in one linear flow. Speed is the priority. No subagents — you d
 ## NEVER (no exceptions in demos)
 
 UIs / React; Playwright or any browser test; WAF; Route53 / custom domains / ACM; Cognito or any
-auth; AppRegistry (`ApplicationAssociator`); Lambda Powertools; X-Ray; DLQ / `@idempotent`;
+auth; resource grouping (Resource Groups / AppRegistry); Lambda Powertools; X-Ray; DLQ / `@idempotent`;
 Lambda Layers; cdk-nag; Kiro Specs (requirements/design/tasks); API Gateway request models;
 subagents; CI/CD; git hooks. Never auto-open an AWS Support case or quota-increase request —
 surface the limit and let the user open it.
