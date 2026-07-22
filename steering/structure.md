@@ -1,7 +1,7 @@
 ---
-inclusion: always
+inclusion: auto
 name: structure
-description: Directory and file organization conventions: cdk-backend/lambda/functions/, cdk-backend/cdk/, frontend/src/components/, tests/e2e/, .kiro/steering/. Naming: kebab-case dirs, PascalCase React components, snake_case Python files. Use when scaffolding new files or projects.
+description: "Directory and file organization conventions: cdk-backend/lambda/functions/, cdk-backend/cdk/, frontend/src/components/, tests/e2e/, .kiro/steering/. Naming: kebab-case dirs, PascalCase React components, snake_case Python files. Use when scaffolding new files or projects."
 ---
 
 # Project Structure

@@ -1,11 +1,14 @@
 {
   "name": "serverless",
-  "description": "AWS Serverless development agent — Lambda, API Gateway, DynamoDB, Step Functions, EventBridge with Powertools and X-Ray",
+  "description": "AWS Serverless development agent - Lambda, API Gateway, DynamoDB, Step Functions, EventBridge with Powertools and X-Ray",
   "prompt": "file://~/.kiro/prompts/serverless.md",
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     },
     "aws-mcp-server": {
@@ -19,35 +22,33 @@
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*",
+    "@creds-agent"
+  ],
   "resources": [
-    "file://AGENTS.md",
-    "file://README.md",
-    "file://~/.kiro/steering/*.md",
-    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
-    "skill://~/.kiro/skills/aws-serverless-patterns.md",
-    "skill://~/.kiro/skills/connecting-lambda-to-api-gateway/SKILL.md",
-    "skill://~/.kiro/skills/connecting-lambda-to-dynamodb/SKILL.md",
-    "skill://~/.kiro/skills/debugging-lambda-timeouts/SKILL.md",
-    "skill://~/.kiro/skills/aws-serverless/SKILL.md",
-    "skill://~/.kiro/skills/aws-messaging-and-streaming/SKILL.md"
+    "file://README.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true
     }
   },
   "keyboardShortcut": "ctrl+4",
-  "welcomeMessage": "Serverless specialist ready. Lambda, API Gateway, DynamoDB, Step Functions, EventBridge — all with Powertools and X-Ray. What are we building?",
+  "welcomeMessage": "Serverless specialist ready. Lambda, API Gateway, DynamoDB, Step Functions, EventBridge - all with Powertools and X-Ray. What are we building?",
   "hooks": {
     "postToolUse": [
       {
@@ -59,5 +60,8 @@
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
-  }
+  },
+  "allowedTools": [
+    "@creds-agent"
+  ]
 }

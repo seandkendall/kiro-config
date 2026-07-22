@@ -1,0 +1,82 @@
+{
+  "name": "ios",
+  "description": "Native iOS/Swift/SwiftUI development agent - CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first patterns, MVVM+Combine",
+  "prompt": "file://~/.kiro/prompts/ios.md",
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "disabled": false
+    },
+    "aws-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=us-east-1"
+      ],
+      "disabled": false
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "disabled": false
+    },
+    "sequentialthinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*",
+    "@creds-agent"
+  ],
+  "resources": [
+    "file://README.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true,
+      "deniedCommands": [
+        "git-defender.*"
+      ]
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*developer\\.apple\\.com.*",
+        ".*docs\\.aws\\.amazon\\.com.*",
+        ".*swiftpackageindex\\.com.*",
+        ".*github\\.com.*"
+      ]
+    }
+  },
+  "keyboardShortcut": "ctrl+7",
+  "welcomeMessage": "iOS specialist ready. Swift 5.9+, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, offline-first MVVM+Combine architecture. What are we building?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "swiftformat --quiet \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  },
+  "allowedTools": [
+    "@creds-agent"
+  ]
+}

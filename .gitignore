@@ -34,8 +34,15 @@ settings/feed_state.json
 # Personal agents (local-only, never shared)
 agents/accounting.json
 agents/personal-*.json
+agents/accounting.md
+agents/personal-*.md
+agents/v2-backup/accounting.json
+agents/v2-backup/personal-*.json
 prompts/accounting.md
 prompts/personal-*.md
+
+# Externally-managed ACP agent configs (machine-specific, auto-generated — e.g. QuickWork)
+agents/*_acp_*.json
 
 # Personal steering rules (self-evolving, user-specific, never shared)
 steering/personal-*.md
@@ -59,3 +66,6 @@ workspace-roots/
 # Repo-shareable permissions belong in each agent profile's `permissions:` block (V3 Markdown
 # agents), NOT here. See steering/kiro-cli-v3-migration.md.
 settings/permissions.yaml
+
+# Pre-V3-migration backup (machine-local, never commit)
+agents/v2-backup/

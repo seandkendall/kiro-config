@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: security-policies
-description: Security policies: Cognito + MFA + passkeys, secrets via SSM Parameter Store SecureString by default (Secrets Manager only when rotation/RDS/service integration requires it, never plaintext env vars), IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls.
+description: "Security policies: Cognito + MFA + passkeys, secrets via SSM Parameter Store SecureString by default (Secrets Manager only when rotation/RDS/service integration requires it, never plaintext env vars), IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls."
 ---
 
 # Security Policies

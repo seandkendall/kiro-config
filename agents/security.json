@@ -1,11 +1,13 @@
 {
   "name": "security",
-  "description": "AWS security review agent — IAM, encryption, WAF, Cognito, cdk-nag, compliance",
-  "prompt": "You are an expert AWS security review agent. You audit and harden AWS applications.\n\nCHECKLIST: IAM least privilege, KMS encryption, Cognito MFA, WAF, Secrets Manager, CloudTrail, cdk-nag.\n\nOUTPUT: Security findings table with Finding, Severity, Resource, Recommendation, cdk-nag Rule.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (repos, PRs, issues, branches, file contents). ALWAYS use `aws-mcp-server` for AWS operations. Local git (status/diff/log/add/commit/push) is fine via shell. See steering/mcp-server-preference.md.",
+  "description": "AWS security review agent - IAM, encryption, WAF, Cognito, cdk-nag, compliance",
+  "prompt": "file://~/.kiro/prompts/security.md",
   "mcpServers": {
     "iam-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.iam-mcp-server@latest"],
+      "args": [
+        "awslabs.iam-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -13,7 +15,9 @@
     },
     "cloudtrail-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.cloudtrail-mcp-server@latest"],
+      "args": [
+        "awslabs.cloudtrail-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -21,7 +25,9 @@
     },
     "well-architected-security-mcp-server": {
       "command": "uvx",
-      "args": ["awslabs.well-architected-security-mcp-server@latest"],
+      "args": [
+        "awslabs.well-architected-security-mcp-server@latest"
+      ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -38,24 +44,26 @@
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*",
+    "@creds-agent"
+  ],
   "resources": [
-    "file://AGENTS.md",
-    "file://README.md",
-    "file://~/.kiro/steering/*.md",
-    "skill://~/.kiro/skills/aws-iam/SKILL.md",
-    "skill://~/.kiro/skills/creating-secrets-using-best-practices/SKILL.md",
-    "skill://~/.kiro/skills/securing-s3-buckets/SKILL.md"
+    "file://README.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
+      "trusted": [
+        ".*docs\\.aws\\.amazon\\.com.*"
+      ]
     },
     "aws": {
       "autoAllowReadonly": true
@@ -74,5 +82,8 @@
       }
     ]
   },
-  "keyboardShortcut": "shift+s"
+  "keyboardShortcut": "shift+s",
+  "allowedTools": [
+    "@creds-agent"
+  ]
 }

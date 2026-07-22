@@ -1,0 +1,45 @@
+{
+  "name": "ios-testing",
+  "description": "iOS testing specialist - XCTest unit tests, XCUITest UI tests, snapshot testing, performance tests, mocking patterns",
+  "prompt": "file://~/.kiro/prompts/ios-testing.md",
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "disabled": false
+    }
+  },
+  "tools": [
+    "*",
+    "@creds-agent"
+  ],
+  "resources": [
+    "file://README.md"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "timeout": 300,
+      "working_directory": ".",
+      "autoAllowReadonly": true,
+      "deniedCommands": [
+        "git-defender.*"
+      ]
+    }
+  },
+  "keyboardShortcut": "shift+t",
+  "welcomeMessage": "iOS testing specialist ready. XCTest, XCUITest, snapshot testing, performance tests. What needs test coverage?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "swiftformat --quiet \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  },
+  "allowedTools": [
+    "@creds-agent"
+  ]
+}

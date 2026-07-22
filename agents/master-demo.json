@@ -1,6 +1,6 @@
 {
   "name": "master-demo",
-  "description": "Single-agent demo for live AWS serverless backend builds \u2014 no subagents, only aws-mcp-server (Agent Toolkit for AWS) + aws-serverless skill bundle. Builds + deploys fast for demos.",
+  "description": "Single-agent demo for serverless backends. No subagents, only aws-mcp-server.",
   "prompt": "file://~/.kiro/prompts/master-demo.md",
   "mcpServers": {
     "aws-mcp-server": {
@@ -14,27 +14,21 @@
       "disabled": false
     }
   },
-  "tools": ["*"],
+  "tools": [
+    "*",
+    "@creds-agent"
+  ],
   "resources": [
-    "file://AGENTS.md",
-    "file://README.md",
-    "file://~/.kiro/steering/*.md",
-    "skill://~/.kiro/skills/aws-serverless/SKILL.md",
-    "skill://~/.kiro/skills/aws-serverless-patterns.md",
-    "skill://~/.kiro/skills/connecting-lambda-to-api-gateway",
-    "skill://~/.kiro/skills/connecting-lambda-to-dynamodb",
-    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
-    "skill://~/.kiro/skills/deploy-on-aws.md",
-    "skill://~/.kiro/skills/deploy.sh.template",
-    "skill://~/.kiro/skills/gitignore.template",
-    "skill://~/.kiro/skills/mcp-tool-discovery.md"
+    "file://README.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
+      "deniedCommands": [
+        "git-defender.*"
+      ]
     },
     "web_fetch": {
       "trusted": [
@@ -49,7 +43,7 @@
     }
   },
   "keyboardShortcut": "shift+m",
-  "welcomeMessage": "master-demo ready. AWS serverless only. No UI/WAF/Resource-Groups/Powertools/X-Ray/cdk-nag/Kiro-Specs. Post-deploy CORS + endpoint verify. What are we demoing?",
+  "welcomeMessage": "Demo mode ready. Single agent, serverless only, always CORS. What are we building?",
   "hooks": {
     "postToolUse": [
       {
@@ -61,5 +55,8 @@
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
       }
     ]
-  }
+  },
+  "allowedTools": [
+    "@creds-agent"
+  ]
 }

@@ -2,7 +2,7 @@
 inclusion: fileMatch
 fileMatchPattern: '{cdk/**/*,**/lambda/**/*,**/*.py}'
 name: aws-standards
-description: AWS development standards: CDK Python (never TypeScript), resource tagging, cdk-nag, AWS Resource Groups (tag-based), Lambda Powertools, Cognito custom UI + passkeys, S3 OAC, Lambda resilience (DLQ + idempotency), API routing through CloudFront /api path. Use when writing or reviewing CDK, Lambda, or AWS infrastructure code.
+description: "AWS development standards: CDK Python (never TypeScript), resource tagging, cdk-nag, AWS Resource Groups (tag-based), Lambda Powertools, Cognito custom UI + passkeys, S3 OAC, Lambda resilience (DLQ + idempotency), API routing through CloudFront /api path. Use when writing or reviewing CDK, Lambda, or AWS infrastructure code."
 ---
 
 # AWS Development Standards

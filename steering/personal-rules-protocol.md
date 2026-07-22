@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: personal-rules-protocol
-description: Self-evolving personal steering rules. Detects user preferences (explicit signals or repetition) and proposes saving them as gitignored personal-*.md steering docs that override base rules on the user's machine.
+description: "Self-evolving personal steering rules. Detects user preferences (explicit signals or repetition) and proposes saving them as gitignored personal-*.md steering docs that override base rules on the user's machine."
 ---
 
 # Personal Rules Protocol (MANDATORY)

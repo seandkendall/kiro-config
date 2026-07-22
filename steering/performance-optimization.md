@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: performance-optimization
-description: Lambda cold starts, memory tuning, React code splitting, CloudFront caching, DynamoDB query optimization. Use when discussing performance, latency, cold starts, bundle size, or caching.
+description: "Lambda cold starts, memory tuning, React code splitting, CloudFront caching, DynamoDB query optimization. Use when discussing performance, latency, cold starts, bundle size, or caching."
 ---
 
 # Performance Optimization

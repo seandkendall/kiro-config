@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: email-standards
-description: Email template standards — never use default service emails (Cognito hosted, SES default). All transactional emails (account creation, verification codes, password reset, welcome, magic-link, security notifications, billing receipts) MUST be custom HTML, brand-matched, no emojis, professional, mobile-responsive, with plain-text fallback. Use when implementing email flows, Cognito email triggers, SES templates, password reset, account verification, signup, magic link, user notifications, or any user-facing email.
+description: "Email template standards — never use default service emails (Cognito hosted, SES default). All transactional emails (account creation, verification codes, password reset, welcome, magic-link, security notifications, billing receipts) MUST be custom HTML, brand-matched, no emojis, professional, mobile-responsive, with plain-text fallback. Use when implementing email flows, Cognito email triggers, SES templates, password reset, account verification, signup, magic link, user notifications, or any user-facing email."
 ---
 
 # Email Standards (MANDATORY)

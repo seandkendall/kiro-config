@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: aws-agent-toolkit
-description: AWS MCP Server usage rules — prefer the managed MCP server, discover skills before acting, verify docs. Use when interacting with AWS services, APIs, or infrastructure.
+description: "AWS MCP Server usage rules — prefer the managed MCP server, discover skills before acting, verify docs. Use when interacting with AWS services, APIs, or infrastructure."
 ---
 
 # AWS Agent Toolkit Rules

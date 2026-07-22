@@ -5,6 +5,137 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.28.0] - Legacy agents converted to V3; full config now dual-format
+
+### Added
+
+- **V3 Markdown conversions for the 4 recovered legacy agents** — `agents/{stocks,shopify,reinvent,promptgen}.md`, following current conventions (delegator tool tags, trimmed resources, MCP `timeout: 180000`, `permissions.rules`). Bodies folded in from the legacy prompts (inline for `stocks`; `prompts/{shopify,reinvent,promptgen}.md` for the rest). `sync-agents.py` regenerated their V2 `.json` — **all 22 agents now exist in both engines**.
+
+### Changed
+
+- `README.md` — Agents table 18 → **22** (+4 rows); intro count updated (20 specialist subagents).
+- `.gitignore` — `agents/v2-backup/` is now ignored entirely (machine-local pre-migration backup; contains stale configs + the personal accounting agent; the V2 retirement plan deletes it eventually).
+
+### Verified
+
+- `./validate.sh` → **22 V3 agents validate**, parity OK, self-test passed, safe to push. V2 `agent list` no warnings. V3 startup: **22 registered, 0 parse failures** (stocks/shopify/reinvent/promptgen all confirmed registered).
+
+## [0.27.0] - Steering slim-down, toolkit-skills retirement, sync self-test, V2 retirement plan
+
+### Fixed
+
+- **Restored 4 legacy V2 agents** (`stocks`, `shopify`, `reinvent`, `promptgen`) that were accidentally dropped during the Jul-18 V3 migration — the `.json` were moved to `v2-backup/` but never got `.md` conversions, so a commit would have silently deleted them from the repo. Restored from git HEAD as V2-only agents (convert to `.md` later if they should exist in V3).
+- **`README.md` version line** was stale at 0.10 since June — synced to **0.27** (matches CHANGELOG).
+
+### Changed
+
+- **Steering slim-down (always-loaded context reduction):** split `development-workflow.md` (13.2KB, always) into a lean always-loaded core (6.7KB — interaction rules: no time estimates, timestamps, specs, TODO, response format, doc sync, settings confirmation, staging) plus a new **`steering/development-quality-gates.md`** (`auto`) holding the build/test/lint detail (daily maintenance, pre-deployment gate, Playwright standards, testing patterns, docs requirements, review checklist). Demoted `structure.md` and `product.md` from `always` to `auto`.
+- **Retired 14 vendored AWS Agent Toolkit skills** (owner-approved per `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`): aws-serverless, aws-observability, aws-iam, aws-cloudformation, aws-billing-and-cost-management, aws-messaging-and-streaming, securing-s3-buckets, creating-secrets-using-best-practices, setting-up-cloudwatch-alarm-notifications, troubleshooting-application-failures, debugging-lambda-timeouts, connecting-lambda-to-api-gateway, connecting-lambda-to-dynamodb, routing-traffic-with-route53-and-cloudfront. The managed AWS MCP Server (GA) serves equivalents on demand via `aws___retrieve_skill` / Agent SOPs. Kept: `amazon-bedrock` (locally extended), `mcp-tool-discovery`, all 11 custom skills, 3 iOS reference skills. Audit doc marked EXECUTED; README skills table now 16 (11 custom + 2 toolkit + 3 iOS).
+- **`steering/kiro-cli-v3-migration.md`** — added a **V2 Retirement Plan** with an explicit trigger (V3 announced GA/default in the changelog) and a 6-step sunset procedure (delete generated `.json`/`prompts/`, `v2-backup/`, simplify sync/validate, handle the 4 V2-only legacy agents).
+
+### Added
+
+- **`tests/test_sync_agents.py`** — stdlib-only self-test for `sync-agents.py` (generation + MCP conversion, V2-only field preservation, drift detection in `--check`, prompt-body drift). `sync-agents.py` now honors a `KIRO_DIR` env override for testability. Wired into `validate.sh` as **Step 3.5**.
+
+### Verified
+
+- Self-test 4/4 pass; `./validate.sh` all green (18 agents, parity, self-test, privacy); V2 `agent list` no warnings; V3 startup 18 registered / 0 failures / 0 steering warnings.
+
+## [0.26.0] - Agent effectiveness overhaul: context de-dupe, least-privilege tools, single-source sync
+
+### Added
+
+- **`sync-agents.py`** (new, repo root) — the V3 `agents/*.md` are now the **single source of truth**. The script regenerates each agent's V2 `agents/<name>.json` (description, welcomeMessage, keyboardShortcut, mcpServers with V3-only `timeout` fields stripped + `disabled: false`, `prompt` → `file://~/.kiro/prompts/<name>.md`, resources) and writes `prompts/<name>.md` from the `.md` body (de-dupes the prompt text). V2-only fields (`tools`, `toolsSettings`, `hooks`, `allowedTools`) are preserved. `--check` mode reports drift.
+- **`validate.sh` Step 1.5** — V2/V3 parity check (`sync-agents.py --check`); validation fails on any drift.
+- **`hooks/guardrails.json`** (new) — V3 agent-action hooks: `destructive-shell-guard` (PreToolUse on shell: one-line teardown guardrail appended to context) and `log-changes-round` (Manual trigger: on-demand CHANGES.md round logging per `steering/change-logging.md`).
+
+### Changed
+
+- **All 18 V3 agents — context de-dupe (payload reduction):** removed `file://~/.kiro/steering/*.md`, `file://AGENTS.md`, and all `skill://` entries from `resources` (kept `file://README.md`). Steering/skills/AGENTS.md are auto-inherited defaults since CLI 2.7; the explicit glob double-loaded steering into every request (a confirmed contributor to ~772KB payloads and `InternalServerException`s) and defeated per-doc `inclusion` modes (`fileMatch` iOS docs were loading into every agent). Synced to the V2 JSON.
+- **All 18 V3 agents — least-privilege tool tags:** replaced blanket `tools: ["*"]` with role-appropriate sets — orchestrators (master/web-builder/ai-builder) keep the full set; delegating builders (ios, ring, image-gen, testing) get `[read, write, shell, web, subagent, knowledge, todo_list, @mcp]`; non-delegating builders drop `subagent`; `research` drops `write`/`shell`; `google-workspace` is `[read, knowledge, todo_list, @mcp]`. V2 JSON keeps its own access model (`["*"]` + `toolsSettings`).
+- **All stdio MCP servers in `.md` agents** — added `timeout: 180000` (handshake) so first-run `uvx`/`npx` package downloads don't time out (V3 default is 60s; matches V2's `mcp.noInteractiveTimeout`).
+- **Welcome messages** — dropped the hardcoded, drift-prone "(N available)" subagent counts.
+- **`agents/master.json`** — removed the machine-local `creds-agent` MCP server + `@creds-agent` tool refs that had leaked into the shared config (it was failing to connect in logs; machine-specific).
+- **`README.md`** — AI-tips now document the canonical-`.md` + `./sync-agents.py` workflow; install prompt updated to match.
+- **`steering/kiro-cli-v3-migration.md`** — side-by-side section now documents the sync workflow.
+
+### Verified
+
+- `./validate.sh` → 18 V3 agents validate, **parity OK**, all JSON parse, privacy guard clean, "Safe to push".
+- V2: `agent list` — no warnings; all agents listed. All 18 generated JSON pass `kiro-cli agent validate`.
+- V3 startup: 18 registered, 0 parse failures, 0 steering/skill warnings, 0 hook errors; both hooks files valid v1 schema.
+
+## [0.25.2] - Dual-format (V2+V3) AI-agent install prompt
+
+### Changed
+
+- **`README.md` — "Quick Install Using Your AI Agent" prompt rewritten** for the dual-format era. The old prompt only asked the agent to "review" the config and research changelogs; the new one is a 5-step install/verify contract: (1) install prerequisites, (2) verify BOTH engines' files are present (`agents/*.json` for V2, `agents/*.md` for V3, `hooks/formatters.json`, steering/skills/prompts/settings), (3) validate both engines — `./validate.sh`, V2 `agent list` (no warnings), V3 startup log check (`Registered user profile` per agent, zero `Failed to parse`) with the two known V3 pitfalls called out, (4) MCP API-key handling that keeps `.json` + `.md` in sync and treats the google-workspace OAuth file as optional, (5) propose-only changelog/Agent-Toolkit research. Ends with a required status report.
+- **`README.md` — Manual Installation** `cp` line now includes `hooks/` (was omitted, so manual installs missed the V3 global formatter hooks).
+
+## [0.25.1] - Deep review against latest V3 docs; fix silent no-op formatter hooks
+
+### Fixed
+
+- **`hooks/formatters.json` was silently doing nothing in V3.** The hooks used `PostToolUse`/`fs_write` with V2's `$FILEPATH` env var, which V3 does not populate — per the current V3 hooks doc, command hooks receive the file path via the **`{{filePath}}` template variable on file-related triggers**. Rewrote all 4 formatters to the documented shape: `PostFileSave` trigger + file-extension regex matchers (`\.py$`, JS/TS/CSS/HTML/JSON/MD/YAML, `\.sh$`, `\.swift$`) + `{{filePath}}` + explicit timeouts. Updated `steering/kiro-cli-v3-migration.md` to match.
+
+### Verified against latest docs (2026-07-21)
+
+- CLI changelog: 2.13.0 (Jul 17) is still the latest public release — no newer versions to absorb; docs pages current as of Jul 1/Jun 17.
+- Agent schema: all 18 `.md` agents match the current spec (quoted `tools: ["*"]` / tag lists, `permissions.rules` object, inline `mcpServers` incl. the Ring remote HTTP server). V3 startup: 18 registered, 0 failures, 0 hook errors. `./validate.sh` green.
+
+## [0.25.0] - V2 and V3 agents run side by side
+
+### Changed
+
+- **Both engines now work from one directory.** Copied the 18 active agents' V2 `.json` back to `~/.kiro/agents/` (top level) alongside the V3 `.md`: `kiro-cli chat` (V2) loads the `.json`; `kiro-cli chat --v3` (V3) loads the `.md` and ignores the `.json`. **Verified**: V2 `agent list` shows all 18 agents; V3 registers all 18 with 0 parse failures and 0 `.json`/name conflicts. Keep an agent's `.json` and `.md` in sync when editing.
+- Fixed a V2 duplicate keyboard shortcut — `agents/ios-testing.json` `ctrl+9` → `shift+t` (matches the V3 `ios-testing.md`; `devops` keeps `ctrl+9`). Cleared the `agent list` "shortcuts disabled" warning.
+- `validate.sh` — JSON syntax check now includes top-level `agents/*.json`; privacy guard extended to `agents/v2-backup/{accounting.json,personal-*.json}`.
+- `.gitignore` — ignore `agents/v2-backup/accounting.json` + `agents/v2-backup/personal-*.json` (the local accounting agent sat uncovered in the backup dir and would have leaked on commit), and `agents/*_acp_*.json` (externally-managed ACP agent configs like the auto-generated `quickwork_acp_kiro.json` — machine-specific, not part of the shared config).
+- `steering/kiro-cli-v3-migration.md` — documented the side-by-side V2/V3 layout.
+
+## [0.24.1] - V3 runtime-error troubleshooting
+
+### Added
+
+- **`steering/kiro-cli-troubleshooting.md` — "Kiro CLI V3 Runtime Errors"** section. Documents the `BedrockValidationError: Invalid additionalModelRequestFields: property 'reasoning' …` error (cause: `chat.enableThinking: true` sends a `reasoning` field to a non-reasoning model after a `/model` switch, e.g. `gpt-5.6-sol`; fix: use a reasoning-capable model or disable thinking — likely a Kiro V3 gap) plus the other common transient errors (web_search no-results, large-context stream failures, relative-path tool calls, Bedrock InternalServerException, local `creds-agent` MCP disconnect). Diagnosed from `~/.kiro/logs`; **no agent/config file change required** — the reasoning error is model-selection, not a config defect.
+
+## [0.24.0] - Amazon Ring integration subagent (V2 + V3)
+
+### Added
+
+- **`ring` subagent** in both engines — `agents/ring.md` (V3), `agents/v2-backup/ring.json` (V2), and the shared prompt `prompts/ring.md`. Specialist for building Amazon Ring integrations: Ring App Store apps, device APIs (cameras/doorbells/alarm), events/webhooks, and auth. Shortcut `shift+r`.
+  - **Required MCP server**: `ring-appstore-knowledge-mcp-server` (remote `type: streamable-http`, `https://knowledge.appstore-mcp.ring.amazon.dev/mcp`) as the mandatory source of truth, plus `context7`, `github`, and `aws-mcp-server`.
+  - **Verified**: V3 registers it as a profile (18 agents total, 0 `ProfileLoader` parse failures — the `streamable-http` MCP field is accepted); the V2 JSON passes `kiro-cli agent validate` (rc=0).
+- Wired `ring` into `master` so it's delegatable: V3 `agents/master.md` AVAILABLE SUBAGENTS + COMMON WORKFLOWS (welcome count 15 → 16); V2 `agents/v2-backup/master.json` `availableAgents` + `trustedAgents` (welcome count → 16).
+
+### Changed
+
+- `README.md` — added `ring` to the agent table (now 18 agents; 15 specialist subagents).
+
+## [0.23.0] - Fix V3 migration (bare-star YAML bug), V3-aware validate.sh, Kiro 2.13
+
+### Fixed
+
+- **All 17 agents failed to load under V3** — the migration wrote `permissions:` as a bare **array**, but V3's schema requires an **object with a `rules:` list** (`ZodError: Expected object, received array`, confirmed in `~/.kiro/logs/*/kiro.log` `[ProfileLoader] Failed to parse`). Rewrapped every agent's rules under `permissions.rules`. **This was the actual reason agents weren't showing in V3** — verified all 17 now register (`[ProfileLoader] Registered user profile: …`).
+- Removed the redundant `agents/v3-preview/` prototype (superseded by the real V3 agents; it also threw parse warnings).
+- Quoted `description:` values in steering docs with unquoted colons (`aws-standards.md`, `tech.md`, `security-policies.md`, `development-workflow.md`, `product.md`, `python-standards.md`, `structure.md`) — V3's strict frontmatter parser rejected them, so those steering rules silently weren't loading.
+- Added YAML frontmatter (`name` + `description`) to 3 iOS skills (`amazon-location-service`, `amazon-polly-generative`, `cognito-passkey-auth`) that were missing it, so they load as `skill://` resources.
+- **13 V3 agents failed to load** because they used `tools: [*]` (bare star) — invalid YAML (a bare `*` is parsed as an alias, so the frontmatter fails and V3 silently rejects the agent). Quoted to `tools: ["*"]` in `architect`, `data`, `devops`, `docs`, `frontend`, `google-workspace`, `image-gen`, `ios`, `ios-testing`, `research`, `security`, `serverless`, `testing`. **This was the root cause of `kiro-cli chat --v3` not working.** All 17 agents now parse (verified with a YAML parser).
+- **`steering/kiro-cli-v3-migration.md`** actually *recommended* the invalid `tools: [*]` — corrected to `tools: ["*"]` with a bare-star warning; fixed the backup location (`agents/v2-backup/`), documented the correct invocation (`kiro-cli chat --v3` / `--agent-engine v3`), and noted that `agent list` / `agent validate` are V2/JSON-only (they can't see `.md` agents — expected, not the bug).
+- **`validate.sh`** Step 1 globbed `agents/*.json`, which now matches nothing (agents are `.md`; JSON moved to `v2-backup/`) — so it silently validated zero agents. Rewrote Step 1 to parse each `agents/*.md` YAML frontmatter + tool tags; Step 2 now also checks `hooks/*.json` and `v2-backup/*.json`; privacy guard extended to `agents/personal-*.md` + `agents/accounting.md`.
+
+### Changed
+
+- `.gitignore` — ignore `agents/personal-*.md` and `agents/accounting.md` (V3 local-only agents).
+- `validate.sh` — Step 1 now also fails if an agent's `permissions` isn't an object with a `rules:` list (catches the array regression that broke V3 loading).
+- Version bumps **2.10 → 2.13** (`README.md`, `steering/AGENTS.md`, `steering/tech.md`, troubleshooting) + feature notes for 2.11 (MCP auth management), 2.12 (expanded MCP OAuth), 2.13 (introspect subagent + **global hooks in `~/.kiro/hooks/`** — what makes `formatters.json` apply everywhere). AGENTS.md now reflects the **completed** V3 migration and the correct `kiro-cli chat --v3` invocation (was "stay on 2.x").
+- `steering/kiro-cli-troubleshooting.md` — new "Kiro CLI V3: agents don't load" entry (bare-star YAML, wrong command, agent location).
+- `README.md` — added `ios` + `ios-testing` to the agent table (now 17 agents); noted iOS steering docs (21).
+
+### Validated
+
+- iOS agents (`ios.md`, `ios-testing.md`) and the 4 iOS steering docs (`ios-standards`, `ios-audio-standards`, `ios-carplay`, `ios-offline-patterns`) parse and follow best practices (proper `fileMatch` frontmatter, Swift 5.9+/SwiftUI/MVVM patterns). No keyboard-shortcut conflicts across the 17 agents. `hooks/formatters.json` is valid V3 (v1 schema, PascalCase `PostToolUse`). `./validate.sh` → all 17 V3 agents validate, safe to push.
+
 ## [0.22.0] - Prefer L2/L3 CDK constructs over L1
 
 ### Added

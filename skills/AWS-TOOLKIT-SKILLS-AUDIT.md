@@ -61,6 +61,10 @@ Retiring the 15 vendored awslabs skills would:
 
 ## Decision
 
+> **EXECUTED 2026-07-21** — owner approved; the 14 trim-candidate directories were deleted.
+> `amazon-bedrock` retained (locally extended). Retrieve equivalents on demand via
+> `aws___retrieve_skill` / `aws___search_documentation` (topic filter `agent_skills`).
+
 - **Now:** MARK only (this document). Keep `amazon-bedrock` regardless (locally extended + referenced by `ai-builder`).
 - **Before trimming:** confirm each trim-candidate has a managed-server equivalent via
   `aws___search_documentation` (topic filter `agent_skills`) / `aws___retrieve_skill`, then remove the

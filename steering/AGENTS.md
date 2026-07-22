@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: AGENTS
-description: Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.10.0+ features (incl. V3 early access). Use when building or routing across agents.
+description: "Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.13.0+ features (incl. V3, now migrated). Use when building or routing across agents."
 ---
 
 # AGENTS.md
@@ -15,6 +15,8 @@ This workspace uses a multi-agent architecture with a master orchestrator and sp
 - **`/agent master`** (ctrl+1) — Default. Routes to the right specialist.
 - **`/agent master-demo`** (shift+m) — Single-agent demo for serverless backends. No subagents, only `aws-mcp-server`. Always CORS, never UI/WAF/Route53. Use for live demos.
 - **`/agent serverless`** (ctrl+4) — AWS Lambda, API Gateway, DynamoDB, Powertools, X-Ray
+- **`/agent ios`** (ctrl+7) — Native iOS: Swift, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, offline-first
+- **`/agent ios-testing`** (ctrl+9) — iOS tests: XCTest, XCUITest, snapshot tests, performance tests
 - **`/agent frontend`** (ctrl+5) — React, TypeScript, Tailwind CSS, shadcn/ui components
 - **`/agent testing`** (ctrl+6) — pytest, Jest/Vitest, Playwright E2E (data-testid selectors, Page Objects, 100% coverage target)
 - **`/agent research`** — Deep research on any topic with web search and docs
@@ -29,6 +31,8 @@ Builder agents automatically delegate to these specialists:
 | `frontend`         | React, TypeScript, Tailwind, shadcn/ui, accessibility                                                            |
 | `testing`          | pytest, Jest/Vitest, Playwright E2E (data-testid selectors, Page Objects, 100% coverage target)                  |
 | `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews                                                 |
+| `ios`              | Native iOS: Swift 5.9+, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first MVVM       |
+| `ios-testing`      | XCTest unit tests, XCUITest UI automation, swift-snapshot-testing, performance tests                              |
 | `ai-builder`       | Bedrock, Strands Agents, prompt engineering, RAG                                                                 |
 | `devops`           | CloudWatch monitoring, alerting, cost optimization, incident response                                            |
 | `data`             | DynamoDB single-table design, Postgres, data modeling                                                            |
@@ -76,7 +80,7 @@ If unsure, use `subagent`. Never use `delegate` just because the task is long �
 
 > **Custom orchestrator agents must declare the `subagent` tool.** If you build a new agent that needs to spawn subagents, include `subagent` in its `tools` array (or use `"tools": ["*"]` / `"@builtin"` to inherit all built-ins). Without it, the agent silently fails to delegate. Agents currently configured for delegation: `master`, `web-builder`, `ai-builder`.
 
-## Kiro CLI Features Worth Knowing (through 2.10.0)
+## Kiro CLI Features Worth Knowing (through 2.13.0)
 
 - **Agent output side channels** (2.3.0) — `$AGENT_DISPLAY_OUT` and `$AGENT_CONTEXT_OUT` env vars in shell commands route verbose output to the user TUI without polluting agent context (used by `deploy.sh`)
 - **OAuth Client ID for HTTP MCP servers** (2.3.0) — set `oauth.clientId` in MCP config to use Slack/GitHub/Figma HTTP MCP servers without DCR (we don't need this — our MCPs are stdio)
@@ -90,7 +94,10 @@ If unsure, use `subagent`. Never use `delegate` just because the task is long �
 - **Persistent model + effort prefs** (2.6.0) — `/model` and `/effort` choices stick across sessions automatically (no more `set-current-as-default`)
 - **`/goal`** (2.7.0) — start an iterative loop where the agent works toward an objective and must verify completion before stopping (default 5 iterations, `--max` configurable). Aligns with this config's quality-gate philosophy.
 - **Queue steering** (2.7.0) — send a correction while the agent is working; it picks it up at the next tool boundary. `Ctrl+S` toggles steer mode (inject mid-turn) vs queue mode (buffer until turn ends).
-- **CLI V3 early access** (2.8.0) — opt-in unified-harness engine (`kiro-cli --v3`) that also powers the IDE and Web. Brings capability-based permissions, standalone hooks, and tag-based Markdown agents. See "Kiro CLI V3 (Early Access) — Readiness" below; this config intentionally stays on 2.x for now.
+- **CLI V3 early access** (2.8.0) — opt-in unified-harness engine (`kiro-cli chat --v3`) that also powers the IDE and Web. Brings capability-based permissions, standalone hooks, and tag-based Markdown agents. **This config has MIGRATED to V3** (Markdown agents in `agents/*.md`, `~/.kiro/hooks/formatters.json`, `settings/permissions.yaml`) — run with `kiro-cli chat --v3`. See `steering/kiro-cli-v3-migration.md`.
+- **MCP auth management** (2.11.0) — `/mcp auth`, `/mcp cancel-auth`, `/mcp logout` for remote MCP OAuth; MCP-panel shortcuts `^A`/`^X`/`^R`.
+- **Expanded MCP OAuth** (2.12.0) — `clientSecret` + custom `redirectUri` callback paths + skip Dynamic Client Registration with your own `clientId` (e.g., Figma); more accurate approval prompts for combined-flag commands; full ASCII mode.
+- **Introspect subagent + Global Hooks (V3)** (2.13.0) — a built-in introspect subagent for learning Kiro's features, and **global hooks in `~/.kiro/hooks/`** that fire across every workspace (this is what makes our `~/.kiro/hooks/formatters.json` apply everywhere).
 - **V3 stability + Entra ID session refresh** (2.9.0) — V3 approval-loop fixes for compound shell commands, Entra ID (Azure AD) session refresh, and compact sub-agent tool cards.
 - **Config Hot-Reload** (2.10.0) — agent and MCP config changes reconcile **live on save**: no session restart, only affected MCP servers restart, conversation context preserved, order-independent diff (reordering env vars won't trigger a restart). Editing an agent JSON or `mcp.json` now takes effect immediately. Also adds `chat.disableInheritingDefaultResources` to stop custom agents from inheriting default steering/skills/AGENTS.md (they inherit by default since 2.7.0).
 
