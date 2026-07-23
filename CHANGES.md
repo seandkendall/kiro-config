@@ -160,3 +160,7 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - All 22 agents now dual-format: validate.sh → 22 V3 agents + parity + self-test green; V3 startup 22 registered / 0 failures (all 4 confirmed); V2 no warnings
 - README: Agents (22) + 4 table rows + intro count; gitignored `agents/v2-backup/` entirely (machine-local backup)
 - `[0.28.0]` in `CHANGELOG.md`; committing and pushing the full session (Rounds 9–20), excluding `settings/cli.json` CLI drift
+
+## Round 21 — 2026-07-22 19:30:44 -06:00
+
+- Untracked `models/` (86.9 MB Kiro embedding-model cache swept in by `git add -A`; GitHub flagged the 86 MB onnx file) and gitignored it — blob remains in history; rewrite offered but not performed

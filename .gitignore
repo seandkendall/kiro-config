@@ -69,3 +69,6 @@ settings/permissions.yaml
 
 # Pre-V3-migration backup (machine-local, never commit)
 agents/v2-backup/
+
+# Kiro CLI embedding-model cache (auto-downloaded, 86+ MB — never commit)
+models/
