@@ -164,3 +164,8 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 ## Round 21 — 2026-07-22 19:30:44 -06:00
 
 - Untracked `models/` (86.9 MB Kiro embedding-model cache swept in by `git add -A`; GitHub flagged the 86 MB onnx file) and gitignored it — blob remains in history; rewrite offered but not performed
+
+## Round 22 — 2026-07-27 18:19:55 -06:00
+
+- Rewrote the README AI-led install: no manual clone — user just `cd ~/.kiro` + starts Kiro; agent clones to a temp dir (GitHub API fallback), then NON-DESTRUCTIVELY merges with any existing config (add-only, per-file questions on conflicts, never-touch list for personal/runtime files, cli.json merges missing keys only, git init for fresh setups, temp cleanup + merge report)
+- `[0.28.1]` in `CHANGELOG.md`

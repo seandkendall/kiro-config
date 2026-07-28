@@ -65,11 +65,12 @@ npm install -g prettier
 
 <br>
 
-Clone the repo into your Kiro config directory:
+No manual cloning needed — the agent fetches the repo and does all the work, including merging with any Kiro config you already have.
+
+Go to your Kiro config directory (created if it doesn't exist yet):
 
 ```bash
-git clone https://github.com/seandkendall/kiro-config.git ~/.kiro
-cd ~/.kiro
+mkdir -p ~/.kiro && cd ~/.kiro
 ```
 
 Start Kiro CLI:
@@ -81,24 +82,44 @@ kiro-cli chat -a -r
 Then paste this prompt:
 
 ```text
-Please set up and verify my Kiro/Kiro CLI configuration in this directory
-(~/.kiro). It ships DUAL-FORMAT agents that must work on BOTH engines:
-V2 (kiro-cli chat) loads agents/*.json, and V3 (kiro-cli chat --v3) loads
-agents/*.md. Both formats describe the same agents and must stay in sync.
+Set up (or upgrade) my Kiro/Kiro CLI configuration in ~/.kiro using this
+config repo: https://github.com/seandkendall/kiro-config
+Do ALL the work yourself — I have NOT cloned anything.
 
-STEP 1 — Install prerequisites: read the "Local Tooling Required by MCP
+CONTEXT: You are running inside ~/.kiro (verify with pwd before writing
+anything). I may already have an existing Kiro config here — it MUST be
+preserved and merged with the repo's config, never wiped. The repo ships
+DUAL-FORMAT agents that work on BOTH engines: V2 (kiro-cli chat) loads
+agents/*.json and V3 (kiro-cli chat --v3) loads agents/*.md. Both formats
+describe the same agents and must stay in sync.
+
+STEP 1 — Acquire the repo WITHOUT touching my config yet: clone it to a
+temp directory (git clone https://github.com/seandkendall/kiro-config.git
+/tmp/kiro-config). If git or network access fails, fetch the files via
+the GitHub API / raw.githubusercontent.com instead.
+
+STEP 2 — Merge into ~/.kiro (NON-DESTRUCTIVE — ask when unsure):
+- Fresh setup (no agents/steering/skills here yet): copy everything over
+  (agents/, steering/, skills/, prompts/, hooks/, settings/, tests/,
+  validate.sh, sync-agents.py, import.sh, README.md, CHANGELOG.md,
+  .gitignore), then initialize git (git init, remote add origin, fetch,
+  reset --soft to origin/main) so I can pull future updates.
+- Existing config: ADD files I don't have. For any file that exists in
+  both with different content, show me a short summary of the differences
+  and ask per file (or batched by type): keep mine / take repo's / merge.
+- NEVER overwrite or delete: steering/personal-*.md, agents/personal-*,
+  agents/accounting.*, prompts/accounting.md, or local runtime state
+  (logs/, sessions/, models/, workspace-roots/, settings/permissions.yaml).
+  For settings/cli.json, merge in missing keys only — keep my existing
+  values.
+- Ask me questions whenever a merge decision isn't obvious.
+
+STEP 3 — Install prerequisites: read the "Local Tooling Required by MCP
 Servers" table in README.md and install anything missing (uv/uvx, node/npx,
 awscli, awsdac, ruff, prettier, shfmt, git-delta; swiftformat if on macOS
 and iOS work is planned). If import.sh exists, prefer running it.
 
-STEP 2 — Verify the full config is present for BOTH engines:
-- agents/*.md (V3) and agents/*.json (V2) — the curated sets must contain
-  the same agent names (ignore agents/v2-backup/ which is a pristine backup,
-  and any gitignored personal-*/accounting/*_acp_* files)
-- hooks/formatters.json (V3 global hooks: PostFileSave + {{filePath}})
-- steering/*.md, skills/, prompts/, settings/cli.json
-
-STEP 3 — Validate:
+STEP 4 — Validate BOTH engines:
 - Run ./validate.sh — it must print "All checks passed. Safe to push."
 - V2: run `kiro-cli agent list` — expect all agents listed with master as
   default and NO warnings
@@ -109,7 +130,7 @@ STEP 3 — Validate:
   tools: [*] (must be tools: ["*"]) and permissions: as a bare array (must
   be an object with a rules: list). See steering/kiro-cli-v3-migration.md.
 
-STEP 4 — MCP servers: for any MCP server that requires an API key
+STEP 5 — MCP servers: for any MCP server that requires an API key
 (GITHUB_PERSONAL_ACCESS_TOKEN, TWENTY_FIRST_API_KEY, FIGMA_API_KEY), check
 if the key exists on my machine. If missing, ask me for it; if I decline,
 remove that MCP server from the agent's .md file and run ./sync-agents.py
@@ -118,14 +139,15 @@ Google OAuth file
 (~/.config/google-drive-mcp/gcp-oauth.keys.json) — if absent, leave the
 agent installed but tell me it won't connect until I set that up.
 
-STEP 5 — Research current state: check the Kiro changelogs
+STEP 6 — Research current state: check the Kiro changelogs
 (https://kiro.dev/changelog/cli/ and /ide/ /models/ /general/) for anything
 newer than what steering/AGENTS.md documents, and the Agent Toolkit for AWS
 (https://aws.amazon.com/products/developer-tools/agent-toolkit-for-aws/)
 for new capabilities. Propose (don't auto-apply) updates for anything new.
 
-Finally, report: agents working on V2, agents working on V3, hooks status,
-any MCP servers disabled and why, and anything that needs my attention.
+Finally, clean up the temp clone and report: what was merged vs kept vs
+skipped, agents working on V2, agents working on V3, hooks status, any MCP
+servers disabled and why, and anything that needs my attention.
 ```
 
 </details>

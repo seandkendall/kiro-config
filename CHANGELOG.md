@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.28.1] - Zero-clone AI-led install
+
+### Changed
+
+- **`README.md` — "Quick Install Using Your AI Agent" rewritten for zero manual cloning.** The user now just runs `mkdir -p ~/.kiro && cd ~/.kiro` and starts Kiro; the agent acquires the repo itself (temp-dir git clone, GitHub API/raw fallback) and performs a **NON-DESTRUCTIVE merge** with any existing Kiro config: fresh setups copy everything + initialize git for future pulls; existing configs get only missing files, with per-file keep-mine/take-repo/merge questions on conflicts. Explicit never-touch list (personal steering/agents, accounting files, runtime state; `settings/cli.json` merges missing keys only). Validation, MCP-key, and research steps retained (now steps 3–6); ends with a merged-vs-kept-vs-skipped report and temp-clone cleanup.
+
 ## [0.28.0] - Legacy agents converted to V3; full config now dual-format
 
 ### Added
