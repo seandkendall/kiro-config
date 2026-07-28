@@ -18,47 +18,9 @@ Multi-agent AWS development environment for the Kiro CLI — master orchestrator
 
 See [Releases](https://github.com/seandkendall/kiro-config/releases) for the latest version notes.
 
-## Prerequisites
+## Installation
 
-- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.13.0**; V3 opt-in early access via `kiro-cli chat --v3` — see `steering/kiro-cli-v3-migration.md`)
-- Python 3.14+ with `uv` and `uvx`
-- Node.js 24+ with `npx`
-- AWS CLI v2 configured with named profiles
-- Git
-
-## Local Tooling Required by MCP Servers
-
-Several MCP servers shell out to local tools. **If you're using an AI coding agent to set this config up automatically, the agent must install everything below before any MCP server will work.** The included `import.sh` handles all of this on macOS.
-
-| Tool                                         | Install (macOS)                                                                                   | Install (Linux)                                                                           | Used by                                                                                                                        |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **Homebrew**                                 | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` | n/a — use distro package manager                                                          | Mac base                                                                                                                       |
-| **`uv` / `uvx`**                             | `curl -LsSf https://astral.sh/uv/install.sh \| sh`                                                | same                                                                                      | All `uvx` MCP servers (AWS toolkit, DuckDuckGo, etc.)                                                                          |
-| **`node` / `npx`**                           | `brew install node`                                                                               | `apt install nodejs npm` (or nvm)                                                         | Context7, GitHub, Playwright, shadcn, 21st.dev, Figma, Browser Lens, Sequential Thinking, Fetch, Chrome DevTools, Google Drive |
-| **AWS CLI v2**                               | `brew install awscli`                                                                             | [AWS docs](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) | All AWS-flavored agents (configured profiles required)                                                                         |
-| **`awsdac`**                                 | `brew install awsdac`                                                                             | `go install github.com/awslabs/diagram-as-code/cmd/awsdac@latest`                         | `aws-diagram-png` skill (PNG architecture diagrams with real AWS icons)                                                        |
-| **Playwright browsers**                      | `npx playwright install --with-deps chromium firefox webkit`                                      | same                                                                                      | `@playwright/mcp` server (E2E testing, browser automation) on `frontend`, `testing`, `web-builder` agents                      |
-| **`graphviz`**                               | `brew install graphviz`                                                                           | `apt install graphviz`                                                                    | Optional — needed if anyone uses Python `diagrams` for ad-hoc PNG output                                                       |
-| **`ruff`, `prettier`, `shfmt`, `git-delta`** | `brew install ruff shfmt git-delta && npm i -g prettier`                                          | apt/npm equivalents                                                                       | PostToolUse formatter hooks (auto-format files after writes)                                                                   |
-
-**Rule of thumb for AI agents setting this up autonomously:** if `import.sh` is available, run it — it installs everything above interactively. If you must script it from scratch, install Homebrew first, then `uv`, then `node`, then `awscli`, then `awsdac`, then the formatter tools — in that order.
-
-### One-shot install (macOS, AI-agent friendly)
-
-```bash
-# Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# uv (Python package runner)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Everything else via Homebrew
-brew install node awscli awsdac graphviz ruff shfmt git-delta
-npm install -g prettier
-
-# Then run the importer (handles MCP keys + Google Workspace OAuth + agent installs)
-./import.sh
-```
+The **AI-assisted install is the primary path** — your Kiro agent fetches the repo, merges with any existing config, installs tooling, and validates both engines. The manual clone and the macOS one-shot script (below, under Local Tooling) are fallbacks.
 
 <details open>
 <summary><strong>🚀 Quick Install Using Your AI Agent (Kiro)</strong></summary>
@@ -167,6 +129,49 @@ cp -r kiro-config/{agents,steering,skills,prompts,settings,hooks} ~/.kiro/
 ```
 
 </details>
+
+## Prerequisites
+
+- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.13.0**; V3 opt-in early access via `kiro-cli chat --v3` — see `steering/kiro-cli-v3-migration.md`)
+- Python 3.14+ with `uv` and `uvx`
+- Node.js 24+ with `npx`
+- AWS CLI v2 configured with named profiles
+- Git
+
+## Local Tooling Required by MCP Servers
+
+Several MCP servers shell out to local tools. **If you're using an AI coding agent to set this config up automatically, the agent must install everything below before any MCP server will work.** The included `import.sh` handles all of this on macOS.
+
+| Tool                                         | Install (macOS)                                                                                   | Install (Linux)                                                                           | Used by                                                                                                                        |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Homebrew**                                 | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` | n/a — use distro package manager                                                          | Mac base                                                                                                                       |
+| **`uv` / `uvx`**                             | `curl -LsSf https://astral.sh/uv/install.sh \| sh`                                                | same                                                                                      | All `uvx` MCP servers (AWS toolkit, DuckDuckGo, etc.)                                                                          |
+| **`node` / `npx`**                           | `brew install node`                                                                               | `apt install nodejs npm` (or nvm)                                                         | Context7, GitHub, Playwright, shadcn, 21st.dev, Figma, Browser Lens, Sequential Thinking, Fetch, Chrome DevTools, Google Drive |
+| **AWS CLI v2**                               | `brew install awscli`                                                                             | [AWS docs](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) | All AWS-flavored agents (configured profiles required)                                                                         |
+| **`awsdac`**                                 | `brew install awsdac`                                                                             | `go install github.com/awslabs/diagram-as-code/cmd/awsdac@latest`                         | `aws-diagram-png` skill (PNG architecture diagrams with real AWS icons)                                                        |
+| **Playwright browsers**                      | `npx playwright install --with-deps chromium firefox webkit`                                      | same                                                                                      | `@playwright/mcp` server (E2E testing, browser automation) on `frontend`, `testing`, `web-builder` agents                      |
+| **`graphviz`**                               | `brew install graphviz`                                                                           | `apt install graphviz`                                                                    | Optional — needed if anyone uses Python `diagrams` for ad-hoc PNG output                                                       |
+| **`ruff`, `prettier`, `shfmt`, `git-delta`** | `brew install ruff shfmt git-delta && npm i -g prettier`                                          | apt/npm equivalents                                                                       | PostToolUse formatter hooks (auto-format files after writes)                                                                   |
+
+**Rule of thumb for AI agents setting this up autonomously:** if `import.sh` is available, run it — it installs everything above interactively. If you must script it from scratch, install Homebrew first, then `uv`, then `node`, then `awscli`, then `awsdac`, then the formatter tools — in that order.
+
+### One-shot install (macOS, AI-agent friendly)
+
+```bash
+# Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# uv (Python package runner)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Everything else via Homebrew
+brew install node awscli awsdac graphviz ruff shfmt git-delta
+npm install -g prettier
+
+# Then run the importer (handles MCP keys + Google Workspace OAuth + agent installs)
+./import.sh
+```
+
 
 ## What's Included
 

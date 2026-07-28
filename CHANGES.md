@@ -169,3 +169,8 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 
 - Rewrote the README AI-led install: no manual clone — user just `cd ~/.kiro` + starts Kiro; agent clones to a temp dir (GitHub API fallback), then NON-DESTRUCTIVELY merges with any existing config (add-only, per-file questions on conflicts, never-touch list for personal/runtime files, cli.json merges missing keys only, git init for fresh setups, temp cleanup + merge report)
 - `[0.28.1]` in `CHANGELOG.md`
+
+## Round 23 — 2026-07-27 19:11:07 -06:00
+
+- Moved the install blocks into a new `## Installation` section right after the README intro — AI-assisted install primary (open), Manual second, one-shot script remains a fallback under Local Tooling
+- `[0.28.2]` in `CHANGELOG.md`
