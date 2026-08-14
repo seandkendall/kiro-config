@@ -1,29 +1,21 @@
 {
   "name": "research",
   "description": "Deep research agent for AWS, libraries, frameworks, and general technical topics",
-  "prompt": "file://~/.kiro/prompts/research.md",
+  "prompt": "You are a specialized research agent. Thoroughly investigate topics using all available tools before answering.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (search code, get file contents, list issues) — never shell out to `gh` or `curl raw.githubusercontent.com`. ALWAYS use `@web-search` for searches. ALWAYS use `@context7` for library docs. See steering/mcp-server-preference.md.\n\nWORKFLOW: Web search → fetch top results → cross-reference with AWS docs / GitHub / library docs → synthesize → cite sources.\n\nOUTPUT: Always cite sources (URLs). Distinguish facts from opinions. Flag conflicting information. Note when sources are outdated.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
   "mcpServers": {
     "web-search": {
       "command": "uvx",
-      "args": [
-        "duckduckgo-mcp-server"
-      ],
+      "args": ["duckduckgo-mcp-server"],
       "disabled": false
     },
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     },
     "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
@@ -38,34 +30,46 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
-  "resources": [
-    "file://README.md"
-  ],
+  "tools": ["*", "@creds-agent"],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://../steering/*.md"],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*",
-        ".*github\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
     }
   },
   "welcomeMessage": "Research agent ready. Web search, AWS docs, GitHub, Context7 library docs. What topic needs deep investigation?",
   "keyboardShortcut": "ctrl+2",
-  "allowedTools": [
-    "@creds-agent"
-  ]
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*", "*github.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
+      }
+    ],
+    "policies": ["read-only-shell"]
+  }
 }

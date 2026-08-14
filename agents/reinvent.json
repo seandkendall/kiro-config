@@ -1,7 +1,7 @@
 {
   "name": "reinvent",
   "description": "AWS Serverless backend builder with SAM, Lambda, API Gateway, DynamoDB",
-  "prompt": "file://~/.kiro/prompts/reinvent.md",
+  "prompt": "file://../prompts/reinvent.md",
   "mcpServers": {
     "aws-mcp-server": {
       "command": "uvx",
@@ -12,26 +12,42 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*"
-  ],
-  "resources": [
-    "file://README.md"
-  ],
+  "tools": ["*", "@creds-agent"],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://../steering/*.md"],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
+  },
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
+      }
+    ]
   }
 }

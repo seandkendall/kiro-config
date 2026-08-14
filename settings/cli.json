@@ -1,6 +1,6 @@
 {
   "chat.defaultAgent": "master",
-  "chat.defaultModel": "claude-opus-4.8",
+  "chat.defaultModel": "claude-fable-5",
   "chat.enableKnowledge": true,
   "chat.enableNotifications": true,
   "chat.enablePromptHints": false,
@@ -15,5 +15,6 @@
   "chat.disableTrustAllConfirmation": true,
   "toolSearch.enabled": true,
   "chat.enableTodoList": true,
-  "chat.diffTool": "delta"
+  "chat.diffTool": "delta",
+  "mcp.loadedBefore": true
 }

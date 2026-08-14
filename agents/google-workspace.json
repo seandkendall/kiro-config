@@ -1,40 +1,47 @@
 {
   "name": "google-workspace",
-  "description": "Google Docs, Sheets, and Drive read-only agent - search, read, and summarize Google Workspace content",
-  "prompt": "file://~/.kiro/prompts/google-workspace.md",
+  "description": "Google Docs, Sheets, and Drive read-only agent — search, read, and summarize Google Workspace content",
+  "prompt": "file://../prompts/google-workspace.md",
   "mcpServers": {
     "google-drive": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@piotr-agier/google-drive-mcp"
-      ],
+      "args": ["-y", "@piotr-agier/google-drive-mcp"],
       "env": {
         "GOOGLE_DRIVE_OAUTH_CREDENTIALS": "${HOME}/.config/google-drive-mcp/gcp-oauth.keys.json",
         "GOOGLE_DRIVE_MCP_SCOPES": "drive.readonly"
       },
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
-  "resources": [
-    "file://README.md"
-  ],
+  "tools": ["*", "@creds-agent"],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://../steering/*.md"],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     }
   },
   "welcomeMessage": "Google Workspace agent ready (read-only). I can search Drive, read Docs, and pull data from Sheets. What would you like to look up?",
-  "allowedTools": [
-    "@creds-agent"
-  ]
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
+      }
+    ],
+    "policies": ["read-only-shell"]
+  }
 }

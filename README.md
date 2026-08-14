@@ -11,7 +11,6 @@ Multi-agent AWS development environment for the Kiro CLI — master orchestrator
 > **💡 Tips for AI Agents working on this repo**
 >
 > - **NEVER push directly to `main` without running `./validate.sh` first.** It validates every agent JSON, JSON syntax, bash syntax, and the gitignore privacy guard. The script prints `✓ All checks passed. Safe to push.` when green. Run after ANY change to `agents/`, `prompts/`, `skills/`, `steering/`, `settings/`, or `import.sh`.
-> - **Agents are dual-format; the V3 `agents/*.md` files are canonical.** To change an agent, edit its `.md` then run `./sync-agents.py` — it regenerates the V2 `agents/*.json` + `prompts/*.md`. `validate.sh` fails on any V2/V3 drift.
 > - Prefer the configured **MCP servers** over CLI commands (`gh`, `aws`, `curl`, etc.) for the same operation. See `steering/mcp-server-preference.md` for the full mapping table.
 > - Don't recommend CI/CD pipelines or git hooks — both are explicitly banned in `steering/post-task-recommendations.md`. Validation belongs in `./validate.sh` and `deploy.sh`, not automation hooks.
 > - When generating recommendations, follow the user/AI Agent split in `steering/post-task-recommendations.md`.
@@ -20,7 +19,7 @@ See [Releases](https://github.com/seandkendall/kiro-config/releases) for the lat
 
 ## Installation
 
-The **AI-assisted install is the primary path** — your Kiro agent fetches the repo, merges with any existing config, installs tooling, and validates both engines. The manual clone and the macOS one-shot script (below, under Local Tooling) are fallbacks.
+The **AI-assisted install is the primary path** — your Kiro agent fetches the repo, merges with any existing config, installs tooling, and validates the config. The manual clone and the macOS one-shot script (below, under Local Tooling) are fallbacks.
 
 <details open>
 <summary><strong>🚀 Quick Install Using Your AI Agent (Kiro)</strong></summary>
@@ -50,10 +49,7 @@ Do ALL the work yourself — I have NOT cloned anything.
 
 CONTEXT: You are running inside ~/.kiro (verify with pwd before writing
 anything). I may already have an existing Kiro config here — it MUST be
-preserved and merged with the repo's config, never wiped. The repo ships
-DUAL-FORMAT agents that work on BOTH engines: V2 (kiro-cli chat) loads
-agents/*.json and V3 (kiro-cli chat --v3) loads agents/*.md. Both formats
-describe the same agents and must stay in sync.
+preserved and merged with the repo's config, never wiped.
 
 STEP 1 — Acquire the repo WITHOUT touching my config yet: clone it to a
 temp directory (git clone https://github.com/seandkendall/kiro-config.git
@@ -62,16 +58,16 @@ the GitHub API / raw.githubusercontent.com instead.
 
 STEP 2 — Merge into ~/.kiro (NON-DESTRUCTIVE — ask when unsure):
 - Fresh setup (no agents/steering/skills here yet): copy everything over
-  (agents/, steering/, skills/, prompts/, hooks/, settings/, tests/,
-  validate.sh, sync-agents.py, import.sh, README.md, CHANGELOG.md,
-  .gitignore), then initialize git (git init, remote add origin, fetch,
-  reset --soft to origin/main) so I can pull future updates.
+  (agents/, steering/, skills/, prompts/, settings/, import.sh, README.md,
+  CHANGELOG.md, .gitignore, validate.sh), then initialize git (git init,
+  remote add origin, fetch, reset --soft to origin/main) so I can pull
+  future updates.
 - Existing config: ADD files I don't have. For any file that exists in
   both with different content, show me a short summary of the differences
   and ask per file (or batched by type): keep mine / take repo's / merge.
 - NEVER overwrite or delete: steering/personal-*.md, agents/personal-*,
   agents/accounting.*, prompts/accounting.md, or local runtime state
-  (logs/, sessions/, models/, workspace-roots/, settings/permissions.yaml).
+  (logs/, sessions/, workspace-roots/).
   For settings/cli.json, merge in missing keys only — keep my existing
   values.
 - Ask me questions whenever a merge decision isn't obvious.
@@ -81,23 +77,16 @@ Servers" table in README.md and install anything missing (uv/uvx, node/npx,
 awscli, awsdac, ruff, prettier, shfmt, git-delta; swiftformat if on macOS
 and iOS work is planned). If import.sh exists, prefer running it.
 
-STEP 4 — Validate BOTH engines:
+STEP 4 — Validate:
 - Run ./validate.sh — it must print "All checks passed. Safe to push."
-- V2: run `kiro-cli agent list` — expect all agents listed with master as
+- Run `kiro-cli agent list` — expect all agents listed with master as
   default and NO warnings
-- V3: launch `kiro-cli chat --v3` once, then check the newest
-  ~/.kiro/logs/*/kiro.log for "Registered user profile:" lines (expect one
-  per agent) and ZERO "[ProfileLoader] Failed to parse" lines
-- If any V3 agent fails to parse: the two known pitfalls are unquoted
-  tools: [*] (must be tools: ["*"]) and permissions: as a bare array (must
-  be an object with a rules: list). See steering/kiro-cli-v3-migration.md.
 
 STEP 5 — MCP servers: for any MCP server that requires an API key
 (GITHUB_PERSONAL_ACCESS_TOKEN, TWENTY_FIRST_API_KEY, FIGMA_API_KEY), check
 if the key exists on my machine. If missing, ask me for it; if I decline,
-remove that MCP server from the agent's .md file and run ./sync-agents.py
-to regenerate the matching .json. The google-workspace agent needs a local
-Google OAuth file
+remove that MCP server from the agent's config. The google-workspace agent
+needs a local Google OAuth file
 (~/.config/google-drive-mcp/gcp-oauth.keys.json) — if absent, leave the
 agent installed but tell me it won't connect until I set that up.
 
@@ -108,8 +97,8 @@ newer than what steering/AGENTS.md documents, and the Agent Toolkit for AWS
 for new capabilities. Propose (don't auto-apply) updates for anything new.
 
 Finally, clean up the temp clone and report: what was merged vs kept vs
-skipped, agents working on V2, agents working on V3, hooks status, any MCP
-servers disabled and why, and anything that needs my attention.
+skipped, agents working, any MCP servers disabled and why, and anything
+that needs my attention.
 ```
 
 </details>
@@ -132,7 +121,7 @@ cp -r kiro-config/{agents,steering,skills,prompts,settings,hooks} ~/.kiro/
 
 ## Prerequisites
 
-- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.13.0**; V3 opt-in early access via `kiro-cli chat --v3` — see `steering/kiro-cli-v3-migration.md`)
+- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.13.0**)
 - Python 3.14+ with `uv` and `uvx`
 - Node.js 24+ with `npx`
 - AWS CLI v2 configured with named profiles
@@ -172,7 +161,6 @@ npm install -g prettier
 ./import.sh
 ```
 
-
 ## What's Included
 
 ### Agents (22)
@@ -194,13 +182,13 @@ npm install -g prettier
 | `research`         | Deep research with web search, AWS docs, GitHub                                                                      |
 | `web-builder`      | React + AWS full-stack web apps; delegates AI features to `ai-builder`                                               |
 | `ios`              | Native iOS: Swift, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first MVVM                |
-| `ios-testing`      | iOS tests: XCTest, XCUITest, swift-snapshot-testing, performance tests, protocol-based mocking                      |
-| `ring`             | Amazon Ring integrations: Ring App Store apps + device APIs, events/webhooks (official Ring MCP)                    |
+| `ios-testing`      | iOS tests: XCTest, XCUITest, swift-snapshot-testing, performance tests, protocol-based mocking                       |
+| `ring`             | Amazon Ring integrations: Ring App Store apps + device APIs, events/webhooks (official Ring MCP)                     |
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                                               |
-| `stocks`           | Stock trading research and analysis (Yahoo Finance MCP)                                                             |
-| `shopify`          | Shopify + AWS serverless integration builder (Shopify dev MCP)                                                      |
-| `reinvent`         | AWS serverless backend builder — SAM-first (Lambda, API GW, DynamoDB)                                               |
-| `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                     |
+| `stocks`           | Stock trading research and analysis (Yahoo Finance MCP)                                                              |
+| `shopify`          | Shopify + AWS serverless integration builder (Shopify dev MCP)                                                       |
+| `reinvent`         | AWS serverless backend builder — SAM-first (Lambda, API GW, DynamoDB)                                                |
+| `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                      |
 
 ### Steering Docs (22)
 
@@ -210,11 +198,11 @@ Rules and standards automatically loaded into every session: accessibility, API 
 
 ### Skills (16)
 
-| Source                 | Skills                                                                                                                                                                                                                                                                              |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Custom (11)            | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management, email template rendering, Cognito email migration, Cypress-to-Playwright migration |
-| AWS Agent Toolkit (2)  | Amazon Bedrock (incl. AgentCore), MCP tool discovery — the other 14 vendored toolkit skills were retired 2026-07-21; the managed AWS MCP Server now serves them on demand via `aws___retrieve_skill` / Agent SOPs (see `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`) |
-| iOS reference (3)      | Amazon Location Service, Amazon Polly generative voices, Cognito passkey auth (loaded by the `ios` agent) |
+| Source                | Skills                                                                                                                                                                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Custom (11)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management, email template rendering, Cognito email migration, Cypress-to-Playwright migration |
+| AWS Agent Toolkit (2) | Amazon Bedrock (incl. AgentCore), MCP tool discovery — the other 14 vendored toolkit skills were retired 2026-07-21; the managed AWS MCP Server now serves them on demand via `aws___retrieve_skill` / Agent SOPs (see `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`)                   |
+| iOS reference (3)     | Amazon Location Service, Amazon Polly generative voices, Cognito passkey auth (loaded by the `ios` agent)                                                                                                                                                                      |
 
 ### MCP Servers
 

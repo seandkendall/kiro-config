@@ -2,7 +2,7 @@
 inclusion: fileMatch
 fileMatchPattern: '{**/CarPlay/**/*,**/*CarPlay*,**/*CPTemplate*,**/*CPNavigation*}'
 name: ios-carplay
-description: "CarPlay development guidelines — template architecture, navigation sessions, audio sessions, Apple HIG for automotive. Use when implementing CarPlay features."
+description: 'CarPlay development guidelines — template architecture, navigation sessions, audio sessions, Apple HIG for automotive. Use when implementing CarPlay features.'
 ---
 
 # CarPlay Development Standards
@@ -38,7 +38,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
     var interfaceController: CPInterfaceController?
     var mapTemplate: CPMapTemplate?
     private var navigationSession: CPNavigationSession?
-    
+
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController
@@ -49,7 +49,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
         self.mapTemplate = mapTemplate
         interfaceController.setRootTemplate(mapTemplate, animated: true)
     }
-    
+
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didDisconnect interfaceController: CPInterfaceController
@@ -129,6 +129,7 @@ func configureAudioSession() throws {
 ```
 
 Key rules:
+
 - Category: `.playback` (not `.ambient`)
 - Mode: `.spokenAudio` for podcast content
 - Options: `.duckOthers` to lower music during announcements
@@ -140,7 +141,7 @@ Key rules:
 func setupNowPlaying() {
     let nowPlayingTemplate = CPNowPlayingTemplate.shared
     nowPlayingTemplate.add(self)  // CPNowPlayingTemplateObserver
-    
+
     // Buttons: skip, repeat, custom ("Tell me more")
     let skipButton = CPNowPlayingPlaybackRateButton(handler: { [weak self] _ in
         self?.skipSegment()
@@ -156,11 +157,11 @@ extension CarPlaySceneDelegate: CPMapTemplateDelegate {
     func mapTemplate(_ mapTemplate: CPMapTemplate, panWith direction: CPMapTemplate.PanDirection) {
         // Handle user panning the map
     }
-    
+
     func mapTemplate(_ mapTemplate: CPMapTemplate, didEndPanGestureWithVelocity velocity: CGPoint) {
         // Re-center on user location after pan
     }
-    
+
     func mapTemplateDidShowPanningInterface(_ mapTemplate: CPMapTemplate) {
         // Show pan controls
     }
@@ -180,6 +181,7 @@ extension CarPlaySceneDelegate: CPMapTemplateDelegate {
 ## State Synchronization
 
 The CarPlay scene and phone scene share state:
+
 - Navigation state (route, position, maneuvers)
 - Audio playback state (now playing, queue)
 - Trip state (active, paused)

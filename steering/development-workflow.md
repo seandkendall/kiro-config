@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: development-workflow
-description: "Mandatory core development rules: no time estimates, timestamped output, Kiro Specs before code, TODO lists, chain of thought, file modification in-place (no _v2/_new files), rule acknowledgment, response format with post-task recommendations, documentation sync, settings-change confirmation, stage-specific git adds. Use for every code/build/fix task."
+description: 'Mandatory core development rules: no time estimates, timestamped output, Kiro Specs before code, TODO lists, chain of thought, file modification in-place (no _v2/_new files), rule acknowledgment, response format with post-task recommendations, documentation sync, settings-change confirmation, stage-specific git adds. Use for every code/build/fix task.'
 ---
 
 # Development Workflow (Core Rules)

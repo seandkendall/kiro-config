@@ -1,29 +1,21 @@
 {
   "name": "master",
-  "description": "Master orchestrator agent - routes any task to the right specialist subagent",
-  "prompt": "file://~/.kiro/prompts/master.md",
+  "description": "Master orchestrator agent — routes any task to the right specialist subagent",
+  "prompt": "file://../prompts/master.md",
   "mcpServers": {
     "web-search": {
       "command": "uvx",
-      "args": [
-        "duckduckgo-mcp-server"
-      ],
+      "args": ["duckduckgo-mcp-server"],
       "disabled": false
     },
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     },
     "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
@@ -31,10 +23,7 @@
     },
     "sequentialthinking": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "disabled": false
     },
     "aws-mcp-server": {
@@ -49,21 +38,28 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": [
-        "bedrock-image-mcp-server@latest"
-      ],
+      "args": ["bedrock-image-mcp-server@latest"],
       "env": {
         "AWS_REGION": "us-east-1",
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*"
-  ],
+  "tools": ["*", "@creds-agent"],
   "resources": [
-    "file://README.md"
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://../steering/*.md",
+    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
+    "skill://~/.kiro/skills/react-frontend-patterns.md",
+    "skill://~/.kiro/skills/aws-serverless-patterns.md",
+    "skill://~/.kiro/skills/testing-patterns.md",
+    "skill://~/.kiro/skills/mcp-tool-discovery.md"
   ],
   "toolsSettings": {
     "subagent": {
@@ -108,29 +104,77 @@
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*",
-        ".*github\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
     }
   },
   "keyboardShortcut": "ctrl+1",
-  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent, generate images and diagrams, and write deploy.sh scripts. What are we building?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
+  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (16 available), generate images and diagrams, and write deploy.sh scripts. What are we building?",
+  "hooks": [
+    {
+      "name": "postToolUse-0",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
       },
-      {
-        "matcher": "fs_write",
+      "timeout": 10
+    },
+    {
+      "name": "postToolUse-1",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
+      },
+      "timeout": 10
+    }
+  ],
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*", "*github.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "subagent",
+        "match": [
+          "ai-builder",
+          "architect",
+          "data",
+          "devops",
+          "docs",
+          "frontend",
+          "google-workspace",
+          "image-gen",
+          "ios",
+          "ios-testing",
+          "research",
+          "ring",
+          "security",
+          "serverless",
+          "testing",
+          "web-builder"
+        ],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
       }
-    ]
+    ],
+    "policies": ["read-only-shell"]
   }
 }

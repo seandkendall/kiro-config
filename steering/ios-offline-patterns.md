@@ -2,7 +2,7 @@
 inclusion: fileMatch
 fileMatchPattern: '{**/*.swift,**/CoreData/**/*,**/Persistence/**/*,**/Cache/**/*,**/Offline/**/*}'
 name: ios-offline-patterns
-description: "Offline-first iOS patterns — Core Data, NWPathMonitor, cache management, sync strategies, silent failover. Use when implementing offline capabilities or data persistence."
+description: 'Offline-first iOS patterns — Core Data, NWPathMonitor, cache management, sync strategies, silent failover. Use when implementing offline capabilities or data persistence.'
 ---
 
 # iOS Offline-First Patterns
@@ -23,18 +23,18 @@ actor ConnectivityMonitor {
         case poor        // <1 Mbps or >500ms latency
         case offline     // No connectivity
     }
-    
+
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "connectivity")
     @Published private(set) var state: ConnectionState = .offline
-    
+
     func start() {
         monitor.pathUpdateHandler = { [weak self] path in
             Task { await self?.evaluate(path) }
         }
         monitor.start(queue: queue)
     }
-    
+
     private func evaluate(_ path: NWPath) {
         guard path.status == .satisfied else {
             state = .offline
@@ -54,12 +54,12 @@ actor ConnectivityMonitor {
 
 ## Behavior per Connection State
 
-| State | Navigation | Podcast | Downloads | Sync |
-|-------|-----------|---------|-----------|------|
-| Excellent | Live routing + traffic | Stream if not cached | Active pre-fetch | Real-time |
-| Good | Live routing | Play from cache, fetch next 2 | Opportunistic | Every 5 min |
-| Poor | Cached route | Cache only | None | Queue for later |
-| Offline | Cached route + GPS | Cache only | None | Queue all |
+| State     | Navigation             | Podcast                       | Downloads        | Sync            |
+| --------- | ---------------------- | ----------------------------- | ---------------- | --------------- |
+| Excellent | Live routing + traffic | Stream if not cached          | Active pre-fetch | Real-time       |
+| Good      | Live routing           | Play from cache, fetch next 2 | Opportunistic    | Every 5 min     |
+| Poor      | Cached route           | Cache only                    | None             | Queue for later |
+| Offline   | Cached route + GPS     | Cache only                    | None             | Queue all       |
 
 ## Cache Architecture
 
@@ -81,6 +81,7 @@ protocol CacheLayer {
 ### Content Priority Queue
 
 When downloading content, priority order:
+
 1. Active trip: next 60 minutes of audio segments
 2. Active trip: remaining segments
 3. Map tiles for route corridor
@@ -94,7 +95,7 @@ struct CacheBudget {
     static let audioMaxMB: Int = 2000      // 2GB for podcast audio
     static let mapTilesMaxMB: Int = 1000   // 1GB for offline map tiles
     static let metadataMaxMB: Int = 100    // 100MB for trip/user data
-    
+
     // User-configurable total limit
     var userLimit: Int = 5000  // 5GB default, configurable in settings
 }
@@ -107,7 +108,7 @@ final class CacheEvictor {
     func evictIfNeeded(budget: CacheBudget) async {
         let currentSize = await calculateCacheSize()
         guard currentSize > budget.userLimit else { return }
-        
+
         // Priority-based eviction (lowest priority evicted first):
         // 1. Completed trips older than 30 days (audio)
         // 2. Map tiles for non-active routes
@@ -125,7 +126,7 @@ final class CacheEvictor {
 final class PersistenceController {
     static let shared = PersistenceController()
     let container: NSPersistentContainer
-    
+
     init() {
         container = NSPersistentContainer(name: "RoadCast")
         container.loadPersistentStores { description, error in
@@ -134,7 +135,7 @@ final class PersistenceController {
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
-    
+
     func backgroundContext() -> NSManagedObjectContext {
         let context = container.newBackgroundContext()
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
@@ -160,7 +161,7 @@ struct PendingOperation: Codable {
     let createdAt: Date
     let retryCount: Int
     let maxRetries: Int
-    
+
     enum OperationType: String, Codable {
         case syncAnalytics
         case reportContent
@@ -171,12 +172,12 @@ struct PendingOperation: Codable {
 
 actor OfflineQueue {
     private var queue: [PendingOperation] = []
-    
+
     func enqueue(_ operation: PendingOperation) {
         queue.append(operation)
         persistToDisk()
     }
-    
+
     func flush() async {
         // Process in order, retry on failure, DLQ after maxRetries
     }
@@ -202,18 +203,18 @@ func downloadOfflineTiles(for route: MKRoute, buffer: CLLocationDistance = 10_00
 actor AudioCacheManager {
     private let fileManager = FileManager.default
     private let cacheDirectory: URL
-    
+
     func cacheAudioSegment(segmentId: String, from url: URL) async throws -> URL {
         let localPath = cacheDirectory.appendingPathComponent("\(segmentId).mp3")
         guard !fileManager.fileExists(atPath: localPath.path) else {
             return localPath  // Already cached
         }
-        
+
         let (tempURL, _) = try await URLSession.shared.download(from: url)
         try fileManager.moveItem(at: tempURL, to: localPath)
         return localPath
     }
-    
+
     func localURL(for segmentId: String) -> URL? {
         let path = cacheDirectory.appendingPathComponent("\(segmentId).mp3")
         return fileManager.fileExists(atPath: path.path) ? path : nil

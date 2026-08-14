@@ -44,5 +44,8 @@
   "segments-pagination-contract": "sess_a20872eb-b0b1-468d-8bcb-dedaaa42e587",
   "web-audio-prefetch": "sess_a20872eb-b0b1-468d-8bcb-dedaaa42e587",
   "ios-ui-tests": "sess_a20872eb-b0b1-468d-8bcb-dedaaa42e587",
-  "schema-retry-classification": "sess_a20872eb-b0b1-468d-8bcb-dedaaa42e587"
+  "schema-retry-classification": "sess_a20872eb-b0b1-468d-8bcb-dedaaa42e587",
+  "retry-visibility": "sess_a20872eb-b0b1-468d-8bcb-dedaaa42e587",
+  "segment-titles": "sess_a20872eb-b0b1-468d-8bcb-dedaaa42e587",
+  "cadence-leg-subdivision": "sess_a20872eb-b0b1-468d-8bcb-dedaaa42e587"
 }

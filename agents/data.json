@@ -1,14 +1,11 @@
 {
   "name": "data",
-  "description": "Data modeling and database design agent - DynamoDB, Postgres, Aurora, data migration, ETL",
-  "prompt": "file://~/.kiro/prompts/data.md",
+  "description": "Data modeling and database design agent — DynamoDB, Postgres, Aurora, data migration, ETL",
+  "prompt": "You are an expert data modeling and database design agent for AWS.\n\nEXPERTISE: DynamoDB single-table design, PostgreSQL schemas, Aurora Serverless v2, DMS migrations, Step Functions ETL.\n\nDYNAMODB PROCESS: List access patterns → design PK/SK → identify GSIs → document model → sample items → estimate capacity.\n\nPOSTGRES: 3NF, proper types (UUID, JSONB, TIMESTAMPTZ), B-tree/GIN indexes, RDS Proxy pooling, row-level security.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (repos, PRs, issues, branches, file contents). ALWAYS use `aws-mcp-server` for AWS operations. Local git (status/diff/log/add/commit/push) is fine via shell. See steering/mcp-server-preference.md.",
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     },
     "aws-mcp-server": {
@@ -20,44 +17,66 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
+  "tools": ["*", "@creds-agent"],
   "resources": [
-    "file://README.md"
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://../steering/*.md",
+    "skill://~/.kiro/skills/connecting-lambda-to-dynamodb/SKILL.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     },
     "aws": {
       "autoAllowReadonly": true
     }
   },
   "welcomeMessage": "Data specialist ready. DynamoDB single-table design, Postgres schemas, Aurora, migrations, ETL. What data model do we need?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
+  "hooks": [
+    {
+      "name": "postToolUse-0",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
-      }
-    ]
-  },
+      },
+      "timeout": 10
+    }
+  ],
   "keyboardShortcut": "shift+d",
-  "allowedTools": [
-    "@creds-agent"
-  ]
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
+      }
+    ],
+    "policies": ["read-only-shell"]
+  }
 }

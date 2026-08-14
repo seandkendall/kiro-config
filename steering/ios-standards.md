@@ -2,7 +2,7 @@
 inclusion: fileMatch
 fileMatchPattern: '{**/*.swift,**/*.xib,**/*.storyboard,**/Package.swift,**/Info.plist}'
 name: ios-standards
-description: "iOS/Swift development standards — SwiftUI, MVVM+Combine, naming conventions, project structure, accessibility, performance. Use when writing or reviewing Swift/SwiftUI code."
+description: 'iOS/Swift development standards — SwiftUI, MVVM+Combine, naming conventions, project structure, accessibility, performance. Use when writing or reviewing Swift/SwiftUI code.'
 ---
 
 # iOS Development Standards
@@ -27,16 +27,16 @@ description: "iOS/Swift development standards — SwiftUI, MVVM+Combine, naming 
 
 ## Naming Conventions
 
-| Type | Convention | Example |
-|------|-----------|---------|
-| Types | UpperCamelCase | `TripPlanningViewModel` |
-| Properties/Methods | lowerCamelCase | `isNavigationActive` |
-| Protocols | Adjective or noun + Protocol suffix | `TripServiceProtocol` |
-| Enum cases | lowerCamelCase | `case navigating` |
-| Constants | lowerCamelCase | `static let maxCacheSizeMB = 500` |
-| Boolean properties | `is`, `has`, `should`, `can` prefix | `isOffline`, `hasDownloaded` |
-| Actions | verb phrase | `didTapStartTrip()`, `handleRouteDeviation()` |
-| Files | Match primary type name | `TripPlanningView.swift` |
+| Type               | Convention                          | Example                                       |
+| ------------------ | ----------------------------------- | --------------------------------------------- |
+| Types              | UpperCamelCase                      | `TripPlanningViewModel`                       |
+| Properties/Methods | lowerCamelCase                      | `isNavigationActive`                          |
+| Protocols          | Adjective or noun + Protocol suffix | `TripServiceProtocol`                         |
+| Enum cases         | lowerCamelCase                      | `case navigating`                             |
+| Constants          | lowerCamelCase                      | `static let maxCacheSizeMB = 500`             |
+| Boolean properties | `is`, `has`, `should`, `can` prefix | `isOffline`, `hasDownloaded`                  |
+| Actions            | verb phrase                         | `didTapStartTrip()`, `handleRouteDeviation()` |
+| Files              | Match primary type name             | `TripPlanningView.swift`                      |
 
 ## SwiftUI Rules
 

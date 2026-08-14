@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: change-logging
-description: "Mandatory per-project change log. Every project MUST have a CHANGES.md at its root. Before returning to the user after any set of changes, append a timestamped, round-numbered entry (date/time header + bullet list) so the file renders cleanly on GitHub. Use whenever you create, modify, or delete files in a project."
+description: 'Mandatory per-project change log. Every project MUST have a CHANGES.md at its root. Before returning to the user after any set of changes, append a timestamped, round-numbered entry (date/time header + bullet list) so the file renders cleanly on GitHub. Use whenever you create, modify, or delete files in a project.'
 ---
 
 # Change Logging (MANDATORY)

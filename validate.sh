@@ -35,80 +35,26 @@ echo ""
 # Step 1: Validate every agent JSON
 # ----------------------------------------------------------------------------
 
-echo "Step 1: Validating V3 agent configs (Markdown + YAML frontmatter)..."
-# V3 agents are Markdown with YAML frontmatter (kiro-cli's `agent validate` is JSON-only,
-# so we validate the frontmatter directly). V2 JSON backups live in agents/v2-backup/.
-set +e
-python3 - "$KIRO/agents" <<'PY'
-import sys, glob, os
-try:
-    import yaml
-except Exception as e:
-    print(f"  pyyaml not available: {e}")
-    sys.exit(2)
-agents_dir = sys.argv[1]
-files = sorted(glob.glob(os.path.join(agents_dir, "*.md")))
-if not files:
-    print("  no V3 (.md) agents found")
-    sys.exit(3)
-valid_tags = {"read", "write", "shell", "web", "subagent", "knowledge",
-              "todo_list", "@mcp", "@builtin", "*"}
-bad, warn = [], []
-for f in files:
-    name = os.path.basename(f)
-    txt = open(f).read()
-    if not txt.startswith("---"):
-        bad.append((name, "missing YAML frontmatter")); continue
-    parts = txt.split("---", 2)
-    if len(parts) < 3:
-        bad.append((name, "unterminated frontmatter")); continue
-    try:
-        fm = yaml.safe_load(parts[1])
-    except Exception as e:
-        bad.append((name, str(e).splitlines()[0])); continue
-    if not isinstance(fm, dict):
-        bad.append((name, "frontmatter is not a mapping")); continue
-    tools = fm.get("tools")
-    if tools is None:
-        bad.append((name, "missing 'tools'")); continue
-    unknown = [t for t in tools if t not in valid_tags]
-    if unknown:
-        warn.append((name, f"unrecognized tool tag(s): {unknown}"))
-    perms = fm.get("permissions")
-    if perms is not None and not (isinstance(perms, dict) and isinstance(perms.get("rules"), list)):
-        bad.append((name, "permissions must be an object with a 'rules:' list (V3 schema), not a bare array")); continue
-for n, m in warn:
-    print(f"  ! {n}: {m}")
-if bad:
-    for n, m in bad:
-        print(f"  x {n}: {m}")
-    sys.exit(1)
-print(f"  validated {len(files)} V3 agents")
-sys.exit(0)
-PY
-RC=$?
-set -e
-if [[ $RC -ne 0 ]]; then
-  echo -e "  ${RED}✗${NC} V3 agent validation failed (rc=$RC)"
+echo "Step 1: Validating agent configs..."
+PASS=0
+FAIL=0
+FAIL_LIST=()
+for agent_file in "$KIRO/agents"/*.json; do
+  [[ ! -f "$agent_file" ]] && continue
+  if kiro-cli agent validate --path "$agent_file" >/dev/null 2>&1; then
+    PASS=$((PASS + 1))
+  else
+    FAIL=$((FAIL + 1))
+    FAIL_LIST+=("$(basename "$agent_file")")
+  fi
+done
+
+if [[ $FAIL -eq 0 ]]; then
+  echo -e "  ${GREEN}✓${NC} all $PASS agents validate"
+else
+  echo -e "  ${RED}✗${NC} $PASS passed, $FAIL failed: ${FAIL_LIST[*]}"
   exit 1
 fi
-echo -e "  ${GREEN}✓${NC} all V3 agents validate (Markdown frontmatter + tool tags)"
-
-# ----------------------------------------------------------------------------
-# Step 1.5: V2/V3 parity — the .md files are canonical; .json must match
-# ----------------------------------------------------------------------------
-
-echo ""
-echo "Step 1.5: V2/V3 agent parity (sync-agents.py --check)..."
-set +e
-python3 "$KIRO/sync-agents.py" --check
-RC=$?
-set -e
-if [[ $RC -ne 0 ]]; then
-  echo -e "  ${RED}✗${NC} V2 JSON out of sync with V3 Markdown — run ./sync-agents.py"
-  exit 1
-fi
-echo -e "  ${GREEN}✓${NC} V2 JSON + prompts/ in sync with V3 Markdown"
 
 # ----------------------------------------------------------------------------
 # Step 2: JSON syntax check on all settings + agents
@@ -116,7 +62,7 @@ echo -e "  ${GREEN}✓${NC} V2 JSON + prompts/ in sync with V3 Markdown"
 
 echo ""
 echo "Step 2: JSON syntax check..."
-for f in "$KIRO/settings"/*.json "$KIRO/hooks"/*.json "$KIRO/agents"/*.json "$KIRO/agents"/v2-backup/*.json; do
+for f in "$KIRO/settings"/*.json "$KIRO/agents"/*.json; do
   [[ ! -f "$f" ]] && continue
   if ! python3 -c "import json; json.load(open('$f'))" 2>/dev/null; then
     echo -e "  ${RED}✗${NC} invalid JSON: $f"
@@ -141,22 +87,6 @@ done
 echo -e "  ${GREEN}✓${NC} import.sh, validate.sh syntactically valid"
 
 # ----------------------------------------------------------------------------
-# Step 3.5: sync-agents.py self-test
-# ----------------------------------------------------------------------------
-
-echo ""
-echo "Step 3.5: sync-agents.py self-test..."
-set +e
-python3 "$KIRO/tests/test_sync_agents.py" >/dev/null 2>&1
-RC=$?
-set -e
-if [[ $RC -ne 0 ]]; then
-  echo -e "  ${RED}✗${NC} sync-agents self-test failed — run: python3 tests/test_sync_agents.py"
-  exit 1
-fi
-echo -e "  ${GREEN}✓${NC} sync-agents self-test passed"
-
-# ----------------------------------------------------------------------------
 # Step 4: Privacy guard — no tracked file should match personal-* patterns
 # ----------------------------------------------------------------------------
 
@@ -165,10 +95,6 @@ echo "Step 4: Privacy guard check..."
 LEAKS=$(cd "$KIRO" && git ls-files \
   'agents/personal-*.json' \
   'agents/accounting.json' \
-  'agents/personal-*.md' \
-  'agents/accounting.md' \
-  'agents/v2-backup/personal-*.json' \
-  'agents/v2-backup/accounting.json' \
   'prompts/personal-*.md' \
   'prompts/accounting.md' \
   'steering/personal-*.md' 2>/dev/null \

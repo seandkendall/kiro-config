@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: post-task-recommendations
-description: "Mandatory post-task recommendation format with user vs AI Agent split, priority sorting, and \"Continue\" interaction model. Use when completing any code, infrastructure, or system-building task."
+description: 'Mandatory post-task recommendation format with user vs AI Agent split, priority sorting, and "Continue" interaction model. Use when completing any code, infrastructure, or system-building task.'
 ---
 
 # Post-Task Recommendations (MANDATORY)

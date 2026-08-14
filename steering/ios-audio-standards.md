@@ -2,7 +2,7 @@
 inclusion: fileMatch
 fileMatchPattern: '{**/*.swift,**/Audio/**/*,**/Podcast/**/*,**/Music/**/*}'
 name: ios-audio-standards
-description: "iOS audio standards — AVAudioSession, audio ducking/smart-fade, MusicKit integration, background audio, CarPlay audio. Use when implementing audio playback or music features."
+description: 'iOS audio standards — AVAudioSession, audio ducking/smart-fade, MusicKit integration, background audio, CarPlay audio. Use when implementing audio playback or music features.'
 ---
 
 # iOS Audio Standards
@@ -14,7 +14,7 @@ description: "iOS audio standards — AVAudioSession, audio ducking/smart-fade, 
 ```swift
 final class AudioSessionManager {
     static let shared = AudioSessionManager()
-    
+
     func configure() throws {
         let session = AVAudioSession.sharedInstance()
         try session.setCategory(
@@ -26,7 +26,7 @@ final class AudioSessionManager {
             ]
         )
         try session.setActive(true, options: .notifyOthersOnDeactivation)
-        
+
         // Listen for interruptions (phone calls, Siri, etc.)
         NotificationCenter.default.addObserver(
             self,
@@ -35,13 +35,13 @@ final class AudioSessionManager {
             object: nil
         )
     }
-    
+
     @objc private func handleInterruption(_ notification: Notification) {
         guard let info = notification.userInfo,
               let typeValue = info[AVAudioSessionInterruptionTypeKey] as? UInt,
               let type = AVAudioSession.InterruptionType(rawValue: typeValue)
         else { return }
-        
+
         switch type {
         case .began:
             // Pause podcast, note position
@@ -68,21 +68,21 @@ actor SmartFadeController {
     private let podcastPlayer: PodcastPlayerProtocol
     private let fadeDuration: TimeInterval = 2.0
     private let duckLevel: Float = 0.15  // 15% volume during podcast
-    
+
     func triggerPodcastSegment(_ segment: PodcastSegment) async {
         // 1. Fade music down (2 seconds)
         await musicPlayer.fadeVolume(to: duckLevel, duration: fadeDuration)
-        
+
         // 2. Play podcast segment at full volume
         await podcastPlayer.play(segment)
-        
+
         // 3. Wait for segment to finish (or user skip)
         await podcastPlayer.awaitCompletion()
-        
+
         // 4. Fade music back up (2 seconds)
         await musicPlayer.fadeVolume(to: musicPlayer.userVolume, duration: fadeDuration)
     }
-    
+
     func skipCurrentSegment() async {
         await podcastPlayer.stop()
         await musicPlayer.fadeVolume(to: musicPlayer.userVolume, duration: 0.5)
@@ -98,7 +98,7 @@ extension AVAudioPlayer {
         let steps = 20
         let interval = duration / Double(steps)
         let volumeStep = (target - volume) / Float(steps)
-        
+
         for _ in 0..<steps {
             volume += volumeStep
             try? await Task.sleep(for: .milliseconds(Int(interval * 1000)))
@@ -126,33 +126,33 @@ func requestMusicAccess() async -> MusicAuthorization.Status {
 ```swift
 final class MusicService: ObservableObject {
     private let player = ApplicationMusicPlayer.shared
-    
+
     @Published var isPlaying = false
     @Published var nowPlaying: MusicKit.Song?
     @Published var currentArtwork: Artwork?
-    
+
     var userVolume: Float = 0.8
-    
+
     func play(playlist: Playlist) async throws {
         player.queue = [playlist]
         try await player.play()
         isPlaying = true
     }
-    
+
     func pause() {
         player.pause()
         isPlaying = false
     }
-    
+
     func skip() async throws {
         try await player.skipToNextEntry()
     }
-    
+
     func setVolume(_ level: Float) {
         // MusicKit doesn't expose volume directly — use MPVolumeView or system volume
         // For ducking: use AVAudioSession.duckOthers option instead
     }
-    
+
     func observeNowPlaying() {
         // Use player.state publisher for real-time updates
         Task {
@@ -192,15 +192,15 @@ final class PodcastPlayer: ObservableObject {
     @Published var isPlaying = false
     @Published var currentSegment: PodcastSegment?
     @Published var progress: Double = 0  // 0.0 to 1.0
-    
+
     private var completionContinuation: CheckedContinuation<Void, Never>?
-    
+
     func play(_ segment: PodcastSegment) async {
         guard let localURL = AudioCacheManager.shared.localURL(for: segment.id) else {
             // Content not cached — skip silently (offline-first rule)
             return
         }
-        
+
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: localURL)
             audioPlayer?.delegate = self
@@ -213,13 +213,13 @@ final class PodcastPlayer: ObservableObject {
             os_log(.error, "Failed to play segment: \(error)")
         }
     }
-    
+
     func awaitCompletion() async {
         await withCheckedContinuation { continuation in
             completionContinuation = continuation
         }
     }
-    
+
     func stop() {
         audioPlayer?.stop()
         isPlaying = false
@@ -270,7 +270,7 @@ func updateNowPlayingInfo(segment: PodcastSegment) {
 ```swift
 func setupRemoteCommands() {
     let center = MPRemoteCommandCenter.shared()
-    
+
     center.playCommand.addTarget { [weak self] _ in
         self?.resume()
         return .success
@@ -293,7 +293,7 @@ final class ContentTriggerService: CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     private let smartFade: SmartFadeController
     private var activeGeofences: [String: PodcastSegment] = [:]
-    
+
     func registerGeofences(for segments: [PodcastSegment]) {
         for segment in segments {
             let region = CLCircularRegion(
@@ -307,7 +307,7 @@ final class ContentTriggerService: CLLocationManagerDelegate {
             activeGeofences[segment.id] = segment
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         guard let segment = activeGeofences[region.identifier] else { return }
         Task {

@@ -1,6 +1,6 @@
 ---
 name: amazon-location-service
-description: "Amazon Location Service. Reference skill (loaded via skill:// from the ios agent)."
+description: 'Amazon Location Service. Reference skill (loaded via skill:// from the ios agent).'
 ---
 
 # Amazon Location Service
@@ -11,15 +11,15 @@ Amazon Location Service provides maps, routing, geofencing, geocoding, and track
 
 ## Core Capabilities for Navigation Apps
 
-| Feature | API | Use Case |
-|---------|-----|----------|
-| Route Calculation | CalculateRoute | Turn-by-turn directions with traffic |
-| Geofencing | CreateGeofenceCollection + PutGeofence | Trigger podcast content at locations |
-| Geocoding | SearchPlaceIndex | Convert addresses to coordinates |
-| Reverse Geocoding | SearchPlaceIndex | Convert coordinates to addresses |
-| Place Search | SearchPlaceIndex | Find POIs (restaurants, gas, etc.) |
-| Tracking | CreateTracker + BatchUpdateDevicePosition | Track driver position |
-| Maps | GetMapTile | Map display (if not using MapKit) |
+| Feature           | API                                       | Use Case                             |
+| ----------------- | ----------------------------------------- | ------------------------------------ |
+| Route Calculation | CalculateRoute                            | Turn-by-turn directions with traffic |
+| Geofencing        | CreateGeofenceCollection + PutGeofence    | Trigger podcast content at locations |
+| Geocoding         | SearchPlaceIndex                          | Convert addresses to coordinates     |
+| Reverse Geocoding | SearchPlaceIndex                          | Convert coordinates to addresses     |
+| Place Search      | SearchPlaceIndex                          | Find POIs (restaurants, gas, etc.)   |
+| Tracking          | CreateTracker + BatchUpdateDevicePosition | Track driver position                |
+| Maps              | GetMapTile                                | Map display (if not using MapKit)    |
 
 ## Route Calculation
 
@@ -270,6 +270,7 @@ location.CfnTrackerConsumer(self, 'TrackerConsumer',
 ## iOS Client Integration
 
 On the iOS side, you do NOT use Amazon Location SDK for map display (you use MapKit). But you DO call Amazon Location APIs for:
+
 - Route calculation (via API Gateway -> Lambda -> Location Service)
 - Position updates (via API Gateway -> Lambda -> Tracker)
 - Geofence evaluation results come back via push notification or WebSocket
@@ -285,6 +286,7 @@ The mobile app sends position updates to your backend API every 30 seconds. The 
 - **Maps**: 500,000 map tile requests/month free (first 3 months)
 
 After free tier:
+
 - Routes: $0.50 per 1,000 requests
 - Geofencing: $0.05 per 1,000 evaluations
 - Tracking: $0.05 per 1,000 positions

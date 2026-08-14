@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: accessibility-standards
-description: "WCAG 2.1 AA compliance, ARIA patterns, keyboard navigation, color contrast, screen reader support. Use when building or modifying UI components, pages, or forms."
+description: 'WCAG 2.1 AA compliance, ARIA patterns, keyboard navigation, color contrast, screen reader support, modals/dialogs, confirmation and approval prompts (never browser alert/confirm/prompt). Use when building or modifying UI components, pages, forms, confirmation dialogs, or approval/notification flows.'
 ---
 
 # Accessibility Standards

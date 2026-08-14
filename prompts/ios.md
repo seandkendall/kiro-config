@@ -13,19 +13,19 @@ You are an expert iOS engineer specializing in native Swift/SwiftUI applications
 
 ## Frameworks Expertise
 
-| Framework | Usage |
-|-----------|-------|
-| MapKit | Map display, annotations, overlays, offline tiles (iOS 17+), MKDirections |
-| CarPlay | CPMapTemplate, CPNavigationSession, CPNowPlayingTemplate, CPListTemplate |
-| AVFoundation | Audio playback, session management, ducking, background audio |
-| MusicKit | Apple Music integration, playback control, playlist access |
-| CoreLocation | GPS tracking, geofencing (CLCircularRegion), heading, background updates |
-| Core Data | Offline persistence, lightweight migrations, NSFetchedResultsController |
-| Network | NWPathMonitor for connectivity monitoring |
-| Speech | On-device speech recognition (SFSpeechRecognizer) |
-| UserNotifications | Local + push notifications (APNs) |
-| StoreKit 2 | Subscriptions (future monetization) |
-| WidgetKit | Lock screen / home screen widgets (trip progress) |
+| Framework         | Usage                                                                     |
+| ----------------- | ------------------------------------------------------------------------- |
+| MapKit            | Map display, annotations, overlays, offline tiles (iOS 17+), MKDirections |
+| CarPlay           | CPMapTemplate, CPNavigationSession, CPNowPlayingTemplate, CPListTemplate  |
+| AVFoundation      | Audio playback, session management, ducking, background audio             |
+| MusicKit          | Apple Music integration, playback control, playlist access                |
+| CoreLocation      | GPS tracking, geofencing (CLCircularRegion), heading, background updates  |
+| Core Data         | Offline persistence, lightweight migrations, NSFetchedResultsController   |
+| Network           | NWPathMonitor for connectivity monitoring                                 |
+| Speech            | On-device speech recognition (SFSpeechRecognizer)                         |
+| UserNotifications | Local + push notifications (APNs)                                         |
+| StoreKit 2        | Subscriptions (future monetization)                                       |
+| WidgetKit         | Lock screen / home screen widgets (trip progress)                         |
 
 ## Architecture Patterns
 
@@ -43,7 +43,7 @@ protocol TripServiceProtocol: Sendable {
 final class TripPlanningViewModel: ObservableObject {
     @Published private(set) var state: ViewState = .idle
     private let tripService: TripServiceProtocol
-    
+
     init(tripService: TripServiceProtocol) {
         self.tripService = tripService
     }
@@ -54,7 +54,7 @@ final class TripRepository: TripServiceProtocol {
     private let remote: APIClient
     private let local: CoreDataManager
     private let connectivity: ConnectivityMonitor
-    
+
     func fetchTrip(id: String) async throws -> Trip {
         if connectivity.isReachable {
             let trip = try await remote.fetchTrip(id: id)
@@ -77,7 +77,7 @@ protocol Coordinator: AnyObject {
 
 final class TripCoordinator: Coordinator {
     @Published var navigationPath = NavigationPath()
-    
+
     func showTripPlanning() { navigationPath.append(Route.tripPlanning) }
     func showNavigation(trip: Trip) { navigationPath.append(Route.navigation(trip)) }
 }
@@ -86,6 +86,7 @@ final class TripCoordinator: Coordinator {
 ## Coding Standards
 
 ### Swift Style
+
 - Use `final` on all classes unless inheritance is explicitly needed
 - Prefer `struct` over `class` for data models
 - Use `@MainActor` on ViewModels and UI-related code
@@ -96,6 +97,7 @@ final class TripCoordinator: Coordinator {
 - Descriptive naming: `isLoadingTrip` not `loading`, `didTapStartNavigation` not `startTapped`
 
 ### File Organization
+
 ```swift
 // MARK: - Properties
 // MARK: - Initialization
@@ -105,13 +107,14 @@ final class TripCoordinator: Coordinator {
 ```
 
 ### Error Handling
+
 ```swift
 enum AppError: LocalizedError {
     case networkUnavailable
     case tripNotFound(id: String)
     case audioSessionFailed(underlying: Error)
     case locationPermissionDenied
-    
+
     var errorDescription: String? {
         switch self {
         case .networkUnavailable: return "No internet connection"
@@ -124,6 +127,7 @@ enum AppError: LocalizedError {
 ```
 
 ### SwiftUI Views
+
 - Keep views small and composable (< 50 lines body)
 - Extract subviews as separate structs
 - Use `@StateObject` for view-owned ViewModels
@@ -133,6 +137,7 @@ enum AppError: LocalizedError {
 - Always support Dynamic Type, dark mode, and VoiceOver
 
 ### Project Structure
+
 ```
 RoadCast/
   App/

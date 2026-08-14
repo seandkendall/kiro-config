@@ -1,14 +1,14 @@
 ---
 inclusion: always
 name: security-policies
-description: "Security policies: Cognito + MFA + passkeys, secrets via SSM Parameter Store SecureString by default (Secrets Manager only when rotation/RDS/service integration requires it, never plaintext env vars), IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls."
+description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Parameter Store SecureString by default (Secrets Manager only when rotation/RDS/service integration requires it, never plaintext env vars), IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls.'
 ---
 
 # Security Policies
 
 ## Authentication
 
-- Amazon Cognito User Pools with MFA enabled
+- Amazon Cognito User Pools — MFA is **never forced by default**. Use Cognito's default `Mfa.OFF` unless a developer explicitly asks for MFA to be required or optional; when they do, apply exactly what they specify (`Mfa.OPTIONAL` or `Mfa.REQUIRED`) rather than defaulting to "more secure" on your own initiative. See `aws-standards.md` for the passkey/password baseline this pairs with.
 - JWT token validation on every API request
 - Token rotation and short expiry (1 hour access, 30 day refresh)
 - Programmatic session management with `cy.session()` in tests
@@ -36,7 +36,7 @@ description: "Security policies: Cognito + MFA + passkeys, secrets via SSM Param
 
 ## Data Protection
 
-- Encryption at rest: KMS for DynamoDB, S3, SQS, SNS, EBS
+- Encryption at rest: KMS for S3, SQS, SNS, EBS. **DynamoDB is the exception — always use its default encryption (AWS owned key), never KMS.** See `aws-standards.md` "DynamoDB Encryption".
 - Encryption in transit: TLS everywhere, ACM certificates
 - **ALWAYS use AWS managed KMS keys** (`aws/service-name`) over customer-managed keys unless there is a specific compliance requirement for key rotation control or cross-account access. Managed keys are simpler, cheaper, and sufficient for most workloads.
 - S3: Block all public access, use CloudFront with OAC for public content
@@ -51,7 +51,7 @@ description: "Security policies: Cognito + MFA + passkeys, secrets via SSM Param
 
 ## Logging & Audit
 
-- CloudTrail enabled for all API activity
+- **NEVER create a new AWS CloudTrail trail in any project.** The organization already provisions an org-wide CloudTrail by default (org-level trail applied via AWS Organizations) — every account, including this one, is already covered. Do NOT add `aws_cloudtrail.Trail` (CDK), `AWS::CloudTrail::Trail` (CloudFormation), or any `aws cloudtrail create-trail` call to a project's infrastructure code. If a project appears to need trail-level configuration (e.g., a specific S3 bucket for logs, event selectors, CloudWatch Logs integration), treat that as a signal to check with the user/org security team rather than provisioning a new trail — assume API activity is already logged org-wide.
 - VPC Flow Logs for network monitoring
 - S3 access logging for sensitive buckets
 - Lambda Powertools structured JSON logging with correlation IDs

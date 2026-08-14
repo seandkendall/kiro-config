@@ -1,6 +1,6 @@
 ---
 name: cognito-passkey-auth
-description: "Amazon Cognito — Custom UI with Passkeys, Social Login & Face ID. Reference skill (loaded via skill:// from the ios agent)."
+description: 'Amazon Cognito — Custom UI with Passkeys, Social Login & Face ID. Reference skill (loaded via skill:// from the ios agent).'
 ---
 
 # Amazon Cognito — Custom UI with Passkeys, Social Login & Face ID
@@ -8,6 +8,7 @@ description: "Amazon Cognito — Custom UI with Passkeys, Social Login & Face ID
 ## Overview
 
 Full custom authentication UI (no Hosted UI) using Cognito User Pools with:
+
 - Email + Password (standard)
 - Sign in with Apple
 - Sign in with Google
@@ -140,7 +141,7 @@ final class CognitoAuthService: AuthServiceProtocol {
     private let userPoolId: String
     private let clientId: String
     private let keychain: KeychainAccess.Keychain
-    
+
     func signIn(email: String, password: String) async throws -> AuthSession {
         let input = InitiateAuthInput(
             authFlow: .userPasswordAuth,
@@ -148,12 +149,12 @@ final class CognitoAuthService: AuthServiceProtocol {
             clientId: clientId
         )
         let response = try await client.initiateAuth(input: input)
-        
+
         guard let result = response.authenticationResult else {
             // MFA challenge or other challenge
             throw AuthError.challengeRequired(response.challengeName)
         }
-        
+
         let session = AuthSession(
             accessToken: result.accessToken!,
             idToken: result.idToken!,
@@ -180,11 +181,11 @@ func signInWithPasskey() async throws -> AuthSession {
     let request = provider.createCredentialAssertionRequest(
         challenge: try await fetchChallengeFromCognito()
     )
-    
+
     let controller = ASAuthorizationController(authorizationRequests: [request])
     controller.delegate = self
     controller.performRequests()
-    
+
     // After user authenticates with passkey/Face ID:
     // 2. Send assertion to Cognito custom auth Lambda
     // 3. Lambda verifies the assertion
@@ -204,7 +205,7 @@ func registerPasskey() async throws {
         name: currentUser.email,
         userID: Data(currentUser.id.utf8)
     )
-    
+
     let controller = ASAuthorizationController(authorizationRequests: [request])
     controller.delegate = self
     controller.performRequests()
@@ -221,23 +222,23 @@ import LocalAuthentication
 func signInWithBiometric() async throws -> AuthSession {
     let context = LAContext()
     var error: NSError?
-    
+
     guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
         throw AuthError.biometricNotAvailable
     }
-    
+
     let success = try await context.evaluatePolicy(
         .deviceOwnerAuthenticationWithBiometrics,
         localizedReason: "Sign in to RoadCast"
     )
-    
+
     guard success else { throw AuthError.biometricFailed }
-    
+
     // Retrieve refresh token from Keychain (stored after first password login)
     guard let refreshToken = keychain.get("refresh_token") else {
         throw AuthError.noStoredSession
     }
-    
+
     // Use refresh token to get new access/id tokens
     return try await refreshSession(with: refreshToken)
 }
@@ -251,10 +252,10 @@ import AuthenticationServices
 func signInWithApple() async throws -> AuthSession {
     let request = ASAuthorizationAppleIDProvider().createRequest()
     request.requestedScopes = [.email, .fullName]
-    
+
     let controller = ASAuthorizationController(authorizationRequests: [request])
     let result = try await performAppleSignIn(controller)
-    
+
     // Exchange Apple credential for Cognito tokens via your backend
     let response = try await apiClient.post("/auth/social/apple", body: [
         "identity_token": result.identityToken,
@@ -262,7 +263,7 @@ func signInWithApple() async throws -> AuthSession {
         "user": result.user,
         "name": result.fullName
     ])
-    
+
     return try JSONDecoder().decode(AuthSession.self, from: response.data)
 }
 ```
@@ -273,12 +274,12 @@ func signInWithApple() async throws -> AuthSession {
 actor TokenManager {
     private let keychain: Keychain
     private var session: AuthSession?
-    
+
     var isAuthenticated: Bool { session != nil && !session!.isExpired }
-    
+
     func getValidAccessToken() async throws -> String {
         guard let session else { throw AuthError.notAuthenticated }
-        
+
         if session.isExpired {
             let refreshed = try await refreshSession(with: session.refreshToken)
             self.session = refreshed
@@ -286,14 +287,14 @@ actor TokenManager {
         }
         return session.accessToken
     }
-    
+
     func saveSession(_ session: AuthSession) throws {
         self.session = session
         try keychain.set(session.accessToken, key: "access_token")
         try keychain.set(session.idToken, key: "id_token")
         try keychain.set(session.refreshToken, key: "refresh_token")
     }
-    
+
     func clearSession() throws {
         session = nil
         try keychain.removeAll()

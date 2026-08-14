@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: tech
-description: "Technology stack: React 19+/TypeScript strict + Tailwind + shadcn/ui + Vite, Python 3.14 Lambda + CDK Python, DynamoDB, API Gateway, AppSync, Cognito, CloudFront, S3, Kiro CLI 2.13.0+ tooling. Use as the canonical reference for which libraries, services, and versions to use."
+description: 'Technology stack: React 19+/TypeScript strict + Tailwind + shadcn/ui + Vite, Python 3.14 Lambda + CDK Python, DynamoDB, API Gateway, AppSync, Cognito, CloudFront, S3, Kiro CLI 2.13.0+ tooling. Use as the canonical reference for which libraries, services, and versions to use.'
 ---
 
 # Technology Stack

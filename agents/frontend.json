@@ -1,39 +1,26 @@
 {
   "name": "frontend",
   "description": "React + TypeScript + Tailwind CSS frontend development agent with shadcn/ui, accessibility, and performance optimization",
-  "prompt": "file://~/.kiro/prompts/frontend.md",
+  "prompt": "file://../prompts/frontend.md",
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     },
     "playwright": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@playwright/mcp@latest",
-        "--headless"
-      ],
+      "args": ["@playwright/mcp@latest", "--headless"],
       "disabled": false
     },
     "shadcn": {
       "command": "npx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ],
+      "args": ["shadcn@latest", "mcp"],
       "disabled": false
     },
     "21st-dev-magic": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@21st-dev/magic@latest"
-      ],
+      "args": ["-y", "@21st-dev/magic@latest"],
       "env": {
         "API_KEY": "${TWENTY_FIRST_API_KEY}"
       },
@@ -41,11 +28,7 @@
     },
     "figma": {
       "command": "npx",
-      "args": [
-        "-y",
-        "figma-developer-mcp",
-        "--stdio"
-      ],
+      "args": ["-y", "figma-developer-mcp", "--stdio"],
       "env": {
         "FIGMA_API_KEY": "${FIGMA_API_KEY}"
       },
@@ -53,18 +36,12 @@
     },
     "browser-lens": {
       "command": "npx",
-      "args": [
-        "-y",
-        "browser-lens-mcp@latest"
-      ],
+      "args": ["-y", "browser-lens-mcp@latest"],
       "disabled": false
     },
     "sequentialthinking": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "disabled": false
     },
     "chrome-devtools": {
@@ -80,44 +57,61 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": [
-        "bedrock-image-mcp-server@latest"
-      ],
+      "args": ["bedrock-image-mcp-server@latest"],
       "env": {
         "AWS_REGION": "us-east-1",
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
+  "tools": ["*", "@creds-agent"],
   "resources": [
-    "file://README.md"
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://../steering/*.md",
+    "skill://~/.kiro/skills/react-frontend-patterns.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     }
   },
   "keyboardShortcut": "ctrl+5",
   "welcomeMessage": "Frontend specialist ready. React 19+, TypeScript, Tailwind CSS, shadcn/ui, WCAG 2.1 AA. Equipped with Playwright, Figma, Browser Lens, 21st.dev Magic, and more. What are we building?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
+  "hooks": [
+    {
+      "name": "postToolUse-0",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+      },
+      "timeout": 10
+    }
+  ],
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
       }
-    ]
-  },
-  "allowedTools": [
-    "@creds-agent"
-  ]
+    ],
+    "policies": ["read-only-shell"]
+  }
 }

@@ -1,8 +1,16 @@
 {
-  "mcpServers" : {
-    "creds-agent" : {
-      "command" : "aim",
-      "args" : [ "mcp", "start-server", "local-creds-agent-mcp" ]
+  "mcpServers": {
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
+    },
+    "playwright-mcp": {
+      "command": "/Users/seandall/.local/bin/kirocrew",
+      "args": [
+        "mcp-playwright-proxy",
+        "--config",
+        "/Users/seandall/.kiro/crew/playwright-config.json"
+      ]
     }
   }
 }

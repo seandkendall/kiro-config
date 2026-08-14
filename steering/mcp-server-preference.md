@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: mcp-server-preference
-description: "Enforce MCP server usage over equivalent CLI commands. Prevents agents from shelling out to gh, aws, etc. when an MCP server provides the same capability."
+description: 'Enforce MCP server usage over equivalent CLI commands. Prevents agents from shelling out to gh, aws, etc. when an MCP server provides the same capability.'
 ---
 
 # MCP Server Preference (MANDATORY)

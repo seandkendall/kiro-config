@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: AGENTS
-description: "Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.13.0+ features (incl. V3, now migrated). Use when building or routing across agents."
+description: 'Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.13.0+ features. Use when building or routing across agents.'
 ---
 
 # AGENTS.md
@@ -32,7 +32,7 @@ Builder agents automatically delegate to these specialists:
 | `testing`          | pytest, Jest/Vitest, Playwright E2E (data-testid selectors, Page Objects, 100% coverage target)                  |
 | `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews                                                 |
 | `ios`              | Native iOS: Swift 5.9+, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first MVVM       |
-| `ios-testing`      | XCTest unit tests, XCUITest UI automation, swift-snapshot-testing, performance tests                              |
+| `ios-testing`      | XCTest unit tests, XCUITest UI automation, swift-snapshot-testing, performance tests                             |
 | `ai-builder`       | Bedrock, Strands Agents, prompt engineering, RAG                                                                 |
 | `devops`           | CloudWatch monitoring, alerting, cost optimization, incident response                                            |
 | `data`             | DynamoDB single-table design, Postgres, data modeling                                                            |
@@ -94,34 +94,9 @@ If unsure, use `subagent`. Never use `delegate` just because the task is long �
 - **Persistent model + effort prefs** (2.6.0) — `/model` and `/effort` choices stick across sessions automatically (no more `set-current-as-default`)
 - **`/goal`** (2.7.0) — start an iterative loop where the agent works toward an objective and must verify completion before stopping (default 5 iterations, `--max` configurable). Aligns with this config's quality-gate philosophy.
 - **Queue steering** (2.7.0) — send a correction while the agent is working; it picks it up at the next tool boundary. `Ctrl+S` toggles steer mode (inject mid-turn) vs queue mode (buffer until turn ends).
-- **CLI V3 early access** (2.8.0) — opt-in unified-harness engine (`kiro-cli chat --v3`) that also powers the IDE and Web. Brings capability-based permissions, standalone hooks, and tag-based Markdown agents. **This config has MIGRATED to V3** (Markdown agents in `agents/*.md`, `~/.kiro/hooks/formatters.json`, `settings/permissions.yaml`) — run with `kiro-cli chat --v3`. See `steering/kiro-cli-v3-migration.md`.
 - **MCP auth management** (2.11.0) — `/mcp auth`, `/mcp cancel-auth`, `/mcp logout` for remote MCP OAuth; MCP-panel shortcuts `^A`/`^X`/`^R`.
 - **Expanded MCP OAuth** (2.12.0) — `clientSecret` + custom `redirectUri` callback paths + skip Dynamic Client Registration with your own `clientId` (e.g., Figma); more accurate approval prompts for combined-flag commands; full ASCII mode.
-- **Introspect subagent + Global Hooks (V3)** (2.13.0) — a built-in introspect subagent for learning Kiro's features, and **global hooks in `~/.kiro/hooks/`** that fire across every workspace (this is what makes our `~/.kiro/hooks/formatters.json` apply everywhere).
-- **V3 stability + Entra ID session refresh** (2.9.0) — V3 approval-loop fixes for compound shell commands, Entra ID (Azure AD) session refresh, and compact sub-agent tool cards.
 - **Config Hot-Reload** (2.10.0) — agent and MCP config changes reconcile **live on save**: no session restart, only affected MCP servers restart, conversation context preserved, order-independent diff (reordering env vars won't trigger a restart). Editing an agent JSON or `mcp.json` now takes effect immediately. Also adds `chat.disableInheritingDefaultResources` to stop custom agents from inheriting default steering/skills/AGENTS.md (they inherit by default since 2.7.0).
-
-## Kiro CLI V3 (Early Access) — Readiness
-
-Kiro CLI **2.8.0** (Jun 17, 2026) shipped **CLI V3 as opt-in early access**. Opt in with `kiro-cli --v3`; it runs **alongside** your 2.x install and your current setup is unchanged until you opt in. V3 is built on the same unified agent harness that powers the Kiro IDE and Kiro Web (engine improvements ship to all surfaces at once).
-
-**Policy for this repo: stay on 2.x for now.** V3 is early access, the official v2→v3 migration guide is still "coming soon," V3 sessions are not backward-compatible, and V3 does not support Amazon Linux 2 or classic (non-TUI) mode. Do NOT migrate the agent JSONs, hooks, or `toolsSettings` yet. Track readiness via `steering/kiro-cli-v3-migration.md` (manual inclusion) and the draft prototype under `agents/v3-preview/`.
-
-> **`settings/permissions.yaml`** is V3's capability-permissions file. It stays **gitignored permanently**: per the V3 docs, user-scope (`~/.kiro/settings/permissions.yaml`) and workspace-scope (`~/.kiro/workspace-roots/<hash>/permissions.yaml`) rules are machine-local, per-user, and live OUTSIDE the repo by design ("a cloned repo cannot inject permission rules"). Repo-shareable permissions go in each agent profile's `permissions:` block (V3 Markdown agents), not in this file. See `steering/kiro-cli-v3-migration.md`.
-
-**Breaking changes that will affect THIS config when we migrate:**
-
-| Area            | v2 (current)                                                           | v3                                                                                                                |
-| --------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Permissions     | `toolsSettings` blocks per agent; `--trust-all-tools` / `/tools trust` | capability-based `permissions.yaml` (one rule allows/denies a whole category)                                     |
-| Hooks           | embedded `hooks` in agent JSON (our prettier/shfmt `postToolUse`)      | standalone `.kiro/hooks/*.json`, **PascalCase** triggers, versioned schema, 2 action types (shell + agent prompt) |
-| Agent config    | JSON, `tools: ["*"]`, explicit tool IDs                                | Markdown format, **tag-based** tool selection, unified `permissions` block, inline MCP servers                    |
-| `aws_tool`      | n/a (we already prefer MCP)                                            | removed — MCP servers only (aligns with `mcp-server-preference.md`)                                               |
-| Supervised mode | n/a                                                                    | removed — use `permissions.yaml`                                                                                  |
-| Sessions        | `~/.kiro/sessions/`                                                    | new format, NOT backward-compatible (back up before opting in)                                                    |
-| Platforms       | AL2 + classic OK                                                       | no Amazon Linux 2; TUI required (no classic engine)                                                               |
-
-When the migration guide lands, prototype on one agent (`master`) first, validate, then roll out. Use `kiro-cli diagnostic` to validate a V3 environment.
 
 ## Adaptive Thinking (Kiro CLI 2.2+)
 

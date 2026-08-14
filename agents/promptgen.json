@@ -1,13 +1,11 @@
 {
   "name": "promptgen",
   "description": "Generates agentic prompts for building and deploying full-stack AWS applications",
-  "prompt": "file://~/.kiro/prompts/promptgen.md",
+  "prompt": "file://../prompts/promptgen.md",
   "mcpServers": {
     "web-search": {
       "command": "uvx",
-      "args": [
-        "duckduckgo-mcp-server"
-      ],
+      "args": ["duckduckgo-mcp-server"],
       "disabled": false
     },
     "aws-mcp-server": {
@@ -19,26 +17,42 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*"
-  ],
-  "resources": [
-    "file://README.md"
-  ],
+  "tools": ["*", "@creds-agent"],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://../steering/*.md"],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
+  },
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
+      }
+    ]
   }
 }

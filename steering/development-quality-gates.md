@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: development-quality-gates
-description: "Build/test/lint quality gates and engineering standards: daily dependency upgrades, package management, pre-deployment quality gate (lint, build, pytest coverage, Playwright E2E, deprecations, audits), Playwright E2E standards (data-testid, storageState, no waitForTimeout), testing standards and test organization, documentation requirements, code review checklist, /code onboarding. Use when building, testing, linting, upgrading dependencies, reviewing code, or preparing a deployment."
+description: 'Build/test/lint quality gates and engineering standards: daily dependency upgrades, package management, pre-deployment quality gate (lint, build, pytest coverage, Playwright E2E, deprecations, audits), Playwright E2E standards (data-testid, storageState, no waitForTimeout), testing standards and test organization, documentation requirements, code review checklist, /code onboarding. Use when building, testing, linting, upgrading dependencies, reviewing code, or preparing a deployment.'
 ---
 
 # Development Quality Gates & Standards

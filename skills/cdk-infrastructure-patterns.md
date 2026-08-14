@@ -49,7 +49,8 @@ distribution = cloudfront.Distribution(self, "CDN",
 user_pool = cognito.UserPool(self, "UserPool",
     self_sign_up_enabled=True,
     sign_in_aliases=cognito.SignInAliases(email=True),
-    mfa=cognito.Mfa.REQUIRED,
+    # mfa omitted — CDK default is Mfa.OFF. Never force MFA unless a developer
+    # explicitly asks for it (see security-policies.md "Authentication").
     managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN,
 )
 ```
@@ -62,7 +63,8 @@ table = dynamodb.Table(self, "Table",
     sort_key=dynamodb.Attribute(name="SK", type=dynamodb.AttributeType.STRING),
     billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
     point_in_time_recovery=True,
-    encryption=dynamodb.TableEncryption.AWS_MANAGED,
+    # Do NOT set `encryption=` — omitting it keeps DynamoDB's default (AWS_OWNED) encryption.
+    # Never change to AWS_MANAGED/CUSTOMER_MANAGED. See steering/aws-standards.md "DynamoDB Encryption".
 )
 ```
 

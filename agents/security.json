@@ -1,13 +1,11 @@
 {
   "name": "security",
-  "description": "AWS security review agent - IAM, encryption, WAF, Cognito, cdk-nag, compliance",
-  "prompt": "file://~/.kiro/prompts/security.md",
+  "description": "AWS security review agent — IAM, encryption, WAF, Cognito, cdk-nag, compliance",
+  "prompt": "You are an expert AWS security review agent. You audit and harden AWS applications.\n\nCHECKLIST: IAM least privilege, KMS encryption, Cognito MFA, WAF, Secrets Manager, CloudTrail (audit the existing org-wide trail — NEVER create a new trail, see steering/security-policies.md), cdk-nag.\n\nOUTPUT: Security findings table with Finding, Severity, Resource, Recommendation, cdk-nag Rule.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (repos, PRs, issues, branches, file contents). ALWAYS use `aws-mcp-server` for AWS operations. Local git (status/diff/log/add/commit/push) is fine via shell. See steering/mcp-server-preference.md.",
   "mcpServers": {
     "iam-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.iam-mcp-server@latest"
-      ],
+      "args": ["awslabs.iam-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -15,9 +13,7 @@
     },
     "cloudtrail-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.cloudtrail-mcp-server@latest"
-      ],
+      "args": ["awslabs.cloudtrail-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -25,9 +21,7 @@
     },
     "well-architected-security-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.well-architected-security-mcp-server@latest"
-      ],
+      "args": ["awslabs.well-architected-security-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -42,48 +36,78 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
+  "tools": ["*", "@creds-agent"],
   "resources": [
-    "file://README.md"
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://../steering/*.md",
+    "skill://~/.kiro/skills/aws-iam/SKILL.md",
+    "skill://~/.kiro/skills/creating-secrets-using-best-practices/SKILL.md",
+    "skill://~/.kiro/skills/securing-s3-buckets/SKILL.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     },
     "aws": {
       "autoAllowReadonly": true
     }
   },
   "welcomeMessage": "Security specialist ready. IAM audit, encryption review, cdk-nag remediation, Well-Architected Security assessment. What needs hardening?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
+  "hooks": [
+    {
+      "name": "postToolUse-0",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       },
-      {
-        "matcher": "fs_write",
+      "timeout": 10
+    },
+    {
+      "name": "postToolUse-1",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
-      }
-    ]
-  },
+      },
+      "timeout": 10
+    }
+  ],
   "keyboardShortcut": "shift+s",
-  "allowedTools": [
-    "@creds-agent"
-  ]
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
+      }
+    ],
+    "policies": ["read-only-shell"]
+  }
 }

@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: error-handling
-description: "Error handling patterns for Lambda, React, API Gateway. Use when implementing try/catch, error responses, error boundaries, or exception handling."
+description: 'Error handling patterns for Lambda, React, API Gateway. Use when implementing try/catch, error responses, error boundaries, or exception handling.'
 ---
 
 # Error Handling Standards

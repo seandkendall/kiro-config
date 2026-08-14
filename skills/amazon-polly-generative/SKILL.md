@@ -1,6 +1,6 @@
 ---
 name: amazon-polly-generative
-description: "Amazon Polly Generative Voices. Reference skill (loaded via skill:// from the ios agent)."
+description: 'Amazon Polly Generative Voices. Reference skill (loaded via skill:// from the ios agent).'
 ---
 
 # Amazon Polly Generative Voices
@@ -11,13 +11,13 @@ Amazon Polly Generative engine produces the most human-like speech synthesis ava
 
 ## Available Generative Voices
 
-| Voice ID | Gender | Language | Best For |
-|----------|--------|----------|----------|
-| Matthew | Male | en-US | Conversational, energetic host |
-| Ruth | Female | en-US | Warm, articulate host |
-| Stephen | Male | en-US | Authoritative, documentary |
-| Gregory | Male | en-US | Calm, educational |
-| Danielle | Female | en-US | Professional, clear |
+| Voice ID | Gender | Language | Best For                       |
+| -------- | ------ | -------- | ------------------------------ |
+| Matthew  | Male   | en-US    | Conversational, energetic host |
+| Ruth     | Female | en-US    | Warm, articulate host          |
+| Stephen  | Male   | en-US    | Authoritative, documentary     |
+| Gregory  | Male   | en-US    | Calm, educational              |
+| Danielle | Female | en-US    | Professional, clear            |
 
 ## API Usage (boto3)
 
@@ -152,11 +152,11 @@ import io
 def stitch_dialogue(turns: list[dict], audio_clips: list[bytes]) -> bytes:
     """Stitch individual Polly clips into a single podcast segment."""
     combined = AudioSegment.empty()
-    
+
     for i, (turn, clip) in enumerate(zip(turns, audio_clips)):
         segment = AudioSegment.from_mp3(io.BytesIO(clip))
         combined += segment
-        
+
         # Add pause between speakers
         if i < len(turns) - 1:
             next_speaker = turns[i + 1]['speaker']
@@ -165,10 +165,10 @@ def stitch_dialogue(turns: list[dict], audio_clips: list[bytes]) -> bytes:
                 combined += AudioSegment.silent(duration=600)  # Speaker change: 600ms
             else:
                 combined += AudioSegment.silent(duration=300)  # Same speaker continuation: 300ms
-    
+
     # Normalize to -16 dBFS (broadcast standard)
     combined = combined.normalize()
-    
+
     output = io.BytesIO()
     combined.export(output, format='mp3', bitrate='128k')
     return output.getvalue()

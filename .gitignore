@@ -28,8 +28,25 @@ steering-backup-*/
 # Misc
 argv.json
 agents/agent_config.json.example
+
+# Kiro Crew (kirodotdev/KiroCrew) — separate first-party product, manages its own
+# agents/config in this shared ~/.kiro directory. Not part of this repo.
+agents/kirocrew*.json
+agents/kirocrew*.json.bak
+agents/kirocrew*.json.bak.*
+agents/kirocrew.lock
+crew/
 settings/survey_state.json
 settings/feed_state.json
+
+# Amazon Builder internal tooling — writes its own agents into this shared
+# ~/.kiro directory and its own internal-only steering docs. Not part of this
+# public repo; must never be committed (internal Amazon systems/tooling).
+agents/AmazonBuilderCoreAIAgents-*.json
+steering/amazon-builder/
+
+# Kiro CLI runtime session state — not part of this repo's config
+session-index/
 
 # Personal agents (local-only, never shared)
 agents/accounting.json

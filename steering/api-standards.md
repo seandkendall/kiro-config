@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: api-standards
-description: "REST and GraphQL API design patterns, error response formats, endpoint naming, pagination, authentication flows. Use when creating or modifying API endpoints, resolvers, or routes."
+description: 'REST and GraphQL API design patterns, error response formats, endpoint naming, pagination, authentication flows. Use when creating or modifying API endpoints, resolvers, or routes.'
 ---
 
 # API Standards

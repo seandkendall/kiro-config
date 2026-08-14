@@ -1,14 +1,11 @@
 {
   "name": "devops",
-  "description": "Monitoring and operations agent - CloudWatch, cost optimization, incident response, alerting",
-  "prompt": "file://~/.kiro/prompts/devops.md",
+  "description": "Monitoring and operations agent — CloudWatch, cost optimization, incident response, alerting",
+  "prompt": "You are an expert DevOps and cloud operations agent for AWS.\n\nEXPERTISE: CloudWatch dashboards/alarms/logs, X-Ray traces, cost optimization, incident response, runbooks, performance tuning.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (issues, PRs, repos) — never `gh` CLI. ALWAYS use `aws-mcp-server` for AWS API calls — never the `aws` CLI shell tool. See steering/mcp-server-preference.md for the complete operation→MCP mapping.\n\nWORKFLOW: Investigate symptoms → check CloudWatch metrics/logs → identify root cause → recommend fix → set up alarms to prevent recurrence.\n\nPROACTIVE: Always recommend log retention policies, alarm thresholds, and cost-optimization opportunities.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
   "mcpServers": {
     "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
@@ -16,9 +13,7 @@
     },
     "cloudwatch-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.cloudwatch-mcp-server@latest"
-      ],
+      "args": ["awslabs.cloudwatch-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -26,9 +21,7 @@
     },
     "cloudwatch-applicationsignals-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.cloudwatch-applicationsignals-mcp-server@latest"
-      ],
+      "args": ["awslabs.cloudwatch-applicationsignals-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -43,29 +36,30 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
+  "tools": ["*", "@creds-agent"],
   "resources": [
-    "file://README.md"
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://../steering/*.md",
+    "skill://~/.kiro/skills/aws-observability/SKILL.md",
+    "skill://~/.kiro/skills/setting-up-cloudwatch-alarm-notifications/SKILL.md",
+    "skill://~/.kiro/skills/troubleshooting-application-failures/SKILL.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*",
-        ".*github\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
     },
     "aws": {
       "autoAllowReadonly": true
@@ -73,19 +67,47 @@
   },
   "welcomeMessage": "DevOps specialist ready. CloudWatch monitoring, alerting, cost optimization. What monitoring or operations work do we need?",
   "keyboardShortcut": "ctrl+9",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
+  "hooks": [
+    {
+      "name": "postToolUse-0",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       },
-      {
-        "matcher": "fs_write",
+      "timeout": 10
+    },
+    {
+      "name": "postToolUse-1",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
+      },
+      "timeout": 10
+    }
+  ],
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*", "*github.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
       }
-    ]
-  },
-  "allowedTools": [
-    "@creds-agent"
-  ]
+    ],
+    "policies": ["read-only-shell"]
+  }
 }

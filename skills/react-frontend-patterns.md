@@ -80,7 +80,7 @@ function TransactionForm() {
 - All images have `alt` text (decorative: `alt=""`)
 - Form inputs have `<label>` or `aria-label`
 - Error messages use `role="alert"`
-- Use shadcn/ui Dialog instead of browser `alert()`/`confirm()`
+- NEVER use browser `alert()`, `confirm()`, or `prompt()` dialogs — for ANY purpose: informational messages, error/success notifications, confirmations, or approval prompts. Always use a modal component instead (shadcn/ui `Dialog` for messages/notifications, `AlertDialog` for confirmations/approvals that block on a user decision)
 
 ## Responsive Breakpoints
 

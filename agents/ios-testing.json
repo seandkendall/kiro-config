@@ -1,45 +1,56 @@
 {
   "name": "ios-testing",
-  "description": "iOS testing specialist - XCTest unit tests, XCUITest UI tests, snapshot testing, performance tests, mocking patterns",
-  "prompt": "file://~/.kiro/prompts/ios-testing.md",
+  "description": "iOS testing specialist — XCTest unit tests, XCUITest UI tests, snapshot testing, performance tests, mocking patterns",
+  "prompt": "You are an expert iOS testing engineer. You write comprehensive, maintainable tests for Swift/SwiftUI applications.\n\nFRAMEWORKS:\n- XCTest for unit tests (XCTestCase, XCTAssert*, async/await test methods)\n- XCUITest for UI automation (XCUIApplication, accessibility identifiers, Page Object pattern)\n- swift-snapshot-testing (Point-Free) for snapshot/regression tests\n- XCTest performance metrics (measure blocks, baselines)\n\nPATTERNS:\n- Protocol-based mocking (no third-party mock frameworks)\n- Dependency injection via protocols for testability\n- Test doubles: Spy, Stub, Fake, Mock — prefer Spy for verification\n- @MainActor-aware test patterns for SwiftUI ViewModels\n- Combine publisher testing with XCTestExpectation + sink\n- async/await testing with Swift concurrency\n\nCOVERAGE TARGETS:\n- Services/ViewModels: 90%+ line coverage\n- Critical paths (auth, navigation, offline sync): 100%\n- UI tests: cover every user-facing screen and critical flows\n- Snapshot tests: all custom components, dark/light mode, Dynamic Type sizes\n\nNAMING: test_<methodOrBehavior>_<scenario>_<expectedResult>\nExample: test_calculateRoute_withOfflineCache_returnsLastKnownRoute()\n\nSTRUCTURE:\n```\nTests/\n  UnitTests/\n    Services/\n    ViewModels/\n    Models/\n    Mocks/\n  UITests/\n    Pages/        (Page Objects)\n    Flows/        (E2E test flows)\n    Helpers/\n  SnapshotTests/\n    Components/\n    Screens/\n```\n\nRULES:\n- NEVER use force-unwrap in tests (use XCTUnwrap)\n- NEVER use sleep/delays (use XCTestExpectation with timeout)\n- Tests must be deterministic — no real network, no real GPS, no real clock\n- Mock all external dependencies (network, location, audio, Core Data)\n- Each test method tests ONE behavior\n- Arrange-Act-Assert structure\n- Test both success and failure paths\n\nCONTEXT TIPS: Use @path syntax to reference files inline.\n\nMCP PREFERENCE: See steering/mcp-server-preference.md.",
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
-  "resources": [
-    "file://README.md"
-  ],
+  "tools": ["*", "@creds-agent"],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://../steering/*.md"],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     }
   },
   "keyboardShortcut": "shift+t",
   "welcomeMessage": "iOS testing specialist ready. XCTest, XCUITest, snapshot testing, performance tests. What needs test coverage?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
+  "hooks": [
+    {
+      "name": "postToolUse-0",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "swiftformat --quiet \"$FILEPATH\" 2>/dev/null || true"
+      },
+      "timeout": 10
+    }
+  ],
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
       }
-    ]
-  },
-  "allowedTools": [
-    "@creds-agent"
-  ]
+    ],
+    "policies": ["read-only-shell"]
+  }
 }

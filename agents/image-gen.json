@@ -1,20 +1,16 @@
 {
   "name": "image-gen",
-  "description": "Image generation and editing - UI assets, logos, icons, mockups, marketing images, virtual try-on, sketch-to-2D, ambient art (Samsung Frame TV) via Bedrock (Nova Canvas + Stable Diffusion 3.5)",
-  "prompt": "file://~/.kiro/prompts/image-gen.md",
+  "description": "Image generation and editing — UI assets, logos, icons, mockups, marketing images, virtual try-on, sketch-to-2D, ambient art (Samsung Frame TV) via Bedrock (Nova Canvas + Stable Diffusion 3.5)",
+  "prompt": "file://../prompts/image-gen.md",
   "mcpServers": {
     "web-search": {
       "command": "uvx",
-      "args": [
-        "duckduckgo-mcp-server"
-      ],
+      "args": ["duckduckgo-mcp-server"],
       "disabled": false
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": [
-        "bedrock-image-mcp-server@latest"
-      ],
+      "args": ["bedrock-image-mcp-server@latest"],
       "env": {
         "AWS_REGION": "us-east-1",
         "FASTMCP_LOG_LEVEL": "ERROR"
@@ -30,32 +26,44 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
-  "resources": [
-    "file://README.md"
-  ],
+  "tools": ["*", "@creds-agent"],
+  "resources": ["file://AGENTS.md", "file://README.md", "file://../steering/*.md"],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
   },
   "welcomeMessage": "Image generation + editing ready. Nova Canvas + Stable Diffusion 3.5 via Bedrock. Logos, icons, mockups, virtual try-on, ambient art. What images do you need?",
   "keyboardShortcut": "shift+i",
-  "allowedTools": [
-    "@creds-agent"
-  ]
+  "allowedTools": ["@creds-agent"],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": ["creds-agent/*"],
+        "effect": "allow"
+      }
+    ]
+  }
 }

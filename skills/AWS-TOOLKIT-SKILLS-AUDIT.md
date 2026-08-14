@@ -16,6 +16,10 @@ Several skills bundled in this repo are **local copies of the same awslabs skill
 server can now retrieve on demand. This audit MARKS the overlap. **It does not delete anything** —
 trimming is destructive and requires explicit owner sign-off (see "Decision" below).
 
+## New Agent Toolkit core skills (retrieve on demand — do not vendor)
+
+- **`aws-auth`** (added Aug 2026) — Amazon Cognito user pool/identity pool setup, managed login/OAuth flows, tokens, JWT authorizers, passkey/WebAuthn, threat protection, Lambda triggers. Retrieve via `aws___retrieve_skill` when doing Cognito work — do NOT vendor a local copy (same on-demand pattern as the retired skills below). **Its default guidance recommends the Cognito hosted UI — this repo's `aws-standards.md` "Custom Login UI (MANDATORY)" rule overrides that; never follow the skill's hosted-UI steer.** See the cross-reference in `steering/aws-standards.md`.
+
 ## Bundled awslabs skills (trim candidates)
 
 These 15 directories were vendored from `awslabs/mcp` (each has a `SKILL.md`, dated 2026-05-06).

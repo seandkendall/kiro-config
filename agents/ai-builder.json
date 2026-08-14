@@ -1,13 +1,11 @@
 {
   "name": "ai-builder",
-  "description": "Bedrock & Strands Agents AI builder - AgentCore-first, model selection, prompt engineering, RAG, full agentic app development. SageMaker only for custom models not on Bedrock.",
-  "prompt": "file://~/.kiro/prompts/ai-builder.md",
+  "description": "Bedrock & Strands Agents AI builder — AgentCore-first, model selection, prompt engineering, RAG, full agentic app development. SageMaker only for custom models not on Bedrock.",
+  "prompt": "file://../prompts/ai-builder.md",
   "mcpServers": {
     "bedrock-agentcore-mcp-server": {
       "command": "uvx",
-      "args": [
-        "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
-      ],
+      "args": ["awslabs.amazon-bedrock-agentcore-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
@@ -15,9 +13,7 @@
     },
     "strands-agents": {
       "command": "uvx",
-      "args": [
-        "strands-agents-mcp-server@latest"
-      ],
+      "args": ["strands-agents-mcp-server@latest"],
       "env": {
         "FASTMCP_LOG_LEVEL": "INFO"
       },
@@ -25,10 +21,7 @@
     },
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "disabled": false
     },
     "aws-mcp-server": {
@@ -43,20 +36,19 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": [
-        "bedrock-image-mcp-server@latest"
-      ],
+      "args": ["bedrock-image-mcp-server@latest"],
       "env": {
         "AWS_REGION": "us-east-1",
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
     }
   },
-  "tools": [
-    "*",
-    "@creds-agent"
-  ],
+  "tools": ["*", "@creds-agent"],
   "allowedTools": [
     "@strands-agents/search_docs",
     "@strands-agents/fetch_doc",
@@ -65,21 +57,20 @@
     "@creds-agent"
   ],
   "resources": [
-    "file://README.md"
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://../steering/*.md",
+    "skill://~/.kiro/skills/amazon-bedrock/SKILL.md"
   ],
   "toolsSettings": {
     "shell": {
       "timeout": 300,
       "working_directory": ".",
       "autoAllowReadonly": true,
-      "deniedCommands": [
-        "git-defender.*"
-      ]
+      "deniedCommands": ["git-defender.*"]
     },
     "web_fetch": {
-      "trusted": [
-        ".*docs\\.aws\\.amazon\\.com.*"
-      ]
+      "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     },
     "subagent": {
       "availableAgents": [
@@ -109,22 +100,79 @@
       "autoAllowReadonly": true
     }
   },
-  "welcomeMessage": "AI builder ready. Default: Strands + AgentCore + Bedrock. SageMaker only for custom models not on Bedrock. Model selection, prompts, RAG, full app builds - what are we building?",
+  "welcomeMessage": "AI builder ready. Default: Strands + AgentCore + Bedrock. SageMaker only for custom models not on Bedrock. Model selection, prompts, RAG, full app builds — what are we building?",
   "keyboardShortcut": "ctrl+0",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
+  "hooks": [
+    {
+      "name": "postToolUse-0",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
       },
-      {
-        "matcher": "fs_write",
+      "timeout": 10
+    },
+    {
+      "name": "postToolUse-1",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
       },
-      {
-        "matcher": "fs_write",
+      "timeout": 10
+    },
+    {
+      "name": "postToolUse-2",
+      "trigger": "postToolUse",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
+      },
+      "timeout": 10
+    }
+  ],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git-defender*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": ["*docs.aws.amazon.com*"],
+        "effect": "allow"
+      },
+      {
+        "capability": "subagent",
+        "match": [
+          "architect",
+          "data",
+          "devops",
+          "docs",
+          "frontend",
+          "image-gen",
+          "security",
+          "serverless",
+          "testing"
+        ],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": [
+          "bedrock-agentcore-mcp-server/fetch_agentcore_doc",
+          "bedrock-agentcore-mcp-server/search_agentcore_docs",
+          "creds-agent/*",
+          "strands-agents/fetch_doc",
+          "strands-agents/search_docs"
+        ],
+        "effect": "allow"
       }
-    ]
+    ],
+    "policies": ["read-only-shell"]
   }
 }
