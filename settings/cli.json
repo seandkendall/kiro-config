@@ -1,6 +1,6 @@
 {
   "chat.defaultAgent": "master",
-  "chat.defaultModel": "claude-fable-5",
+  "chat.defaultModel": "claude-opus-5",
   "chat.enableKnowledge": true,
   "chat.enableNotifications": true,
   "chat.enablePromptHints": false,

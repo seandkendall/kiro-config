@@ -19,6 +19,7 @@ description: 'AWS MCP Server usage rules — prefer the managed MCP server, disc
 - When creating infrastructure, prefer infrastructure-as-code (AWS CDK in Python) over direct CLI commands.
 - When working with infrastructure, follow AWS Well-Architected Framework principles.
 - Use `aws___suggest_aws_commands` to get correct API syntax for newly released services that may not be in training data.
+- For AgentCore Gateway work specifically: prefer the built-in **Connectors** (Web Search Tool, Amazon Bedrock Managed Knowledge Bases) over hand-rolled MCP servers, and prefer fronting an AgentCore Runtime agent with a Gateway (**AgentCore Runtime target**, aka "Agent target") over connecting to the Runtime endpoint directly. Full guidance, setup code, and IAM policies: `skills/amazon-bedrock/references/agentcore-gateway.md`.
 
 ## AWS Support API Guard
 

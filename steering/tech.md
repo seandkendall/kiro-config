@@ -58,7 +58,7 @@ description: 'Technology stack: React 19+/TypeScript strict + Tailwind + shadcn/
 
 ## Kiro CLI Tooling
 
-- Kiro CLI 2.13.0+ with Claude Opus 4.8 (adaptive thinking) as default model
+- Kiro CLI 2.13.0+ with Claude Opus 5 (experimental preview, adaptive thinking) as default model
 - **Model reasoning effort** — tune depth with `/effort` (low / medium / high / xhigh / max), or set it at launch with `kiro-cli chat --effort <level>`. Lower effort = faster/cheaper for simple tasks; higher = more reasoning for complex work.
 - **Model + effort preferences persist automatically** (CLI 2.6.0+) — once you pick a `/model` or `/effort`, it carries into future sessions; no `set-current-as-default` step needed.
 - Master agent (`ctrl+1`) is the entry point — delegates to specialist subagents via `subagent` tool

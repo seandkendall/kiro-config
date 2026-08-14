@@ -100,4 +100,4 @@ If unsure, use `subagent`. Never use `delegate` just because the task is long â€
 
 ## Adaptive Thinking (Kiro CLI 2.2+)
 
-Claude Opus 4.8 with adaptive thinking is the default model. Reasoning automatically scales with task complexity and persists across multi-turn conversations. Keep `chat.enableThinking = true` (already set).
+Claude Opus 5 (experimental preview, 1M context window) is the default model. Reasoning automatically scales with task complexity and persists across multi-turn conversations. Keep `chat.enableThinking = true` (already set).

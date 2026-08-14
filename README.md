@@ -261,7 +261,7 @@ This file is a credential — keep it out of version control (it is gitignored h
 The default model and settings are in `settings/cli.json`. Key settings:
 
 - `chat.defaultAgent`: `master` (the orchestrator)
-- `chat.defaultModel`: `claude-opus-4.8`
+- `chat.defaultModel`: `claude-opus-5`
 - `chat.enableSubagent`: `true`
 - `chat.enableThinking`: `true`
 - `chat.enableTodoList`: `true`

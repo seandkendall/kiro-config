@@ -20,6 +20,10 @@ trimming is destructive and requires explicit owner sign-off (see "Decision" bel
 
 - **`aws-auth`** (added Aug 2026) — Amazon Cognito user pool/identity pool setup, managed login/OAuth flows, tokens, JWT authorizers, passkey/WebAuthn, threat protection, Lambda triggers. Retrieve via `aws___retrieve_skill` when doing Cognito work — do NOT vendor a local copy (same on-demand pattern as the retired skills below). **Its default guidance recommends the Cognito hosted UI — this repo's `aws-standards.md` "Custom Login UI (MANDATORY)" rule overrides that; never follow the skill's hosted-UI steer.** See the cross-reference in `steering/aws-standards.md`.
 
+## AgentCore Gateway Connectors — checked, no Agent Toolkit overlap (Aug 2026)
+
+`aws___search_documentation` (topic `agent_skills`) was queried for AgentCore/Gateway/Bedrock coverage while writing `skills/amazon-bedrock/references/agentcore-gateway.md`'s Connectors guidance (Web Search Tool, Managed Knowledge Bases). No matching skill exists in the managed registry — this is Bedrock/AgentCore **product** documentation, not an Agent Toolkit **skill**, so there's nothing to retrieve on demand here and no vendoring decision to make. Keep maintaining this guidance directly in the `amazon-bedrock` skill (already the "keep" exception above) rather than expecting the managed server to serve it.
+
 ## Bundled awslabs skills (trim candidates)
 
 These 15 directories were vendored from `awslabs/mcp` (each has a `SKILL.md`, dated 2026-05-06).

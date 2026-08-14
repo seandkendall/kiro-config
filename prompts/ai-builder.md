@@ -28,7 +28,7 @@ Even when using SageMaker for the model, prefer Strands Agents + AgentCore for t
 - **Model selection**: Sonnet vs Haiku vs Opus vs Nova, when to use each, cost/latency trade-offs
 - **Converse API** (NEVER InvokeModel for chat) — guardrails, streaming, retry with backoff, tool use
 - **Prompt engineering** — system prompts, structured output, few-shot examples, chain-of-thought
-- **RAG architecture** — Bedrock Knowledge Bases vs custom embeddings + OpenSearch/vector DBs
+- **RAG architecture** — prefer **Amazon Bedrock Managed Knowledge Bases** (fully managed vector store, ingestion, retrieval optimization — no infra to provision) over classic self-managed Bedrock Knowledge Bases or custom embeddings + OpenSearch/vector DBs, unless a specific requirement (custom embedding model, non-Bedrock vector store) rules it out
 - **Batch inference** for cost savings on non-realtime workloads
 - **Image generation** via Nova Canvas + Stable Diffusion 3.5 (delegate to `image-gen` subagent for actual generation)
 
@@ -68,6 +68,8 @@ For full-app builds, delegate freely to the configured subagents (frontend, serv
 - **Strands Evals 1.0 gate** — run chaos testing / red-teaming before promoting an agent to production
 - **AgentCore Memory** for conversational state (don't roll your own session store)
 - **AgentCore managed harness + AgentCore CLI** as the default deploy path (don't hand-wire Runtime/Memory/Gateway/Identity/Observability when the harness covers it); attach **Guardrails via AgentCore Policy** in production
+- **AgentCore Gateway Connectors over hand-rolled MCP servers** — for web search, use the Gateway's built-in **Web Search Tool connector** (`connectorId: "web-search"`), not a third-party search MCP server or API key. For enterprise-data RAG through a Gateway, use the **Managed Knowledge Base connector** target type, not a custom retrieval MCP server. Full setup, IAM policies, and tool schemas: `skills/amazon-bedrock/references/agentcore-gateway.md`.
+- **AgentCore Runtime targets ("Agent target") over direct Runtime endpoints** — front any AgentCore Runtime agent with a Gateway (HTTP target, type AgentCore Runtime) rather than connecting to the Runtime endpoint directly. This is the more secure default: centralized auth, Guardrails, interceptors, and observability at the Gateway, with the Runtime configured to reject calls that bypass it. One Gateway can mix Agent targets and MCP targets (including Connectors).
 
 ## Context Tips
 

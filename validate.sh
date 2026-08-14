@@ -142,11 +142,15 @@ echo "Step 6: Cypress regression guard..."
 #   - skills/cypress-to-playwright-migration.md (the runbook with intentional Cypress examples)
 #   - skills/playwright-fixtures.template.ts (migration helper; header docs what it replaces)
 #   - validate.sh (this file; the regex pattern itself is a literal-string false positive)
+#   - skills/AWS-TOOLKIT-SKILLS-AUDIT.md (names cypress-to-playwright-migration as a kept
+#     custom skill; mentions the word "cypress" only as that skill's filename, no actual
+#     Cypress usage)
 CYPRESS_LEAKS=$(cd "$KIRO" && git ls-files \
   | grep -v '^CHANGELOG\.md$' \
   | grep -v '^skills/cypress-to-playwright-migration\.md$' \
   | grep -v '^skills/playwright-fixtures\.template\.ts$' \
   | grep -v '^validate\.sh$' \
+  | grep -v '^skills/AWS-TOOLKIT-SKILLS-AUDIT\.md$' \
   | xargs grep -l -E "cypress|data-cy" 2>/dev/null || true)
 
 if [[ -n "$CYPRESS_LEAKS" ]]; then
