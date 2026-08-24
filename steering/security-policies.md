@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: security-policies
-description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Parameter Store SecureString by default (Secrets Manager only when rotation/RDS/service integration requires it, never plaintext env vars), IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls.'
+description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Parameter Store SecureString by default (Secrets Manager only when rotation/RDS/service integration requires it), with an explicit opt-in exception for committing plaintext secrets in private solo repos, IAM least privilege, KMS managed keys preferred, encryption at rest + in transit, S3 OAC, input validation, OWASP prevention, dependency security. Use when reviewing or implementing security controls.'
 ---
 
 # Security Policies
@@ -21,10 +21,23 @@ description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Param
   - **An AWS service that requires a Secrets Manager secret ARN** to connect a client (e.g., MSK SASL/SCRAM, Amazon MQ event-source credentials, some Bedrock Knowledge Base vector-store connectors)
   - **Automatic credential rotation** — Secrets Manager has built-in rotation; Parameter Store does not
   - **Cross-account secret sharing**, or values larger than the Parameter Store limit
-- **Never put secrets in plaintext environment variables** — Lambda env vars are visible in the console, `GetFunctionConfiguration`, and CloudFormation. Fetch from SSM `SecureString` or Secrets Manager at runtime and cache outside the handler (e.g., the Lambda Powertools `parameters` utility).
+- **In production and any shared/public repo, never put secrets in plaintext environment variables** — Lambda env vars are visible in the console, `GetFunctionConfiguration`, and CloudFormation. Fetch from SSM `SecureString` or Secrets Manager at runtime and cache outside the handler (e.g., the Lambda Powertools `parameters` utility).
 - Encrypt with KMS — prefer AWS managed keys unless a compliance requirement dictates customer-managed (see KMS rule below).
-- Never hardcode API keys, passwords, or tokens in code.
+- **In production and any shared/public repo, never hardcode API keys, passwords, or tokens in code.** (For private solo repos, see "Committing Secrets in Private Repos" below — the user may opt into this.)
 - Use plain SSM Parameter Store (`String`) for non-secret configuration; environment variables are acceptable for **non-secret** config only.
+
+## Committing Secrets in Private Repos (user opt-in)
+
+The rules above (SSM/Secrets Manager, no plaintext, no hardcoding, gitignore `.env`) are the **default** and remain mandatory for production, shared, team, or public repositories.
+
+**However**, when the user is working in a **private, single-owner repository** — common for demos, prototypes, and throwaway projects — they may deliberately choose to commit API keys, secrets, passwords, and other credentials in plaintext files under version control. This is a legitimate, informed tradeoff for a repo only they can access.
+
+When this applies:
+
+- **Honor it without pushback.** Do NOT repeatedly refuse, warn, or re-litigate the decision once the user has expressed it. Do NOT add `.env`/secret patterns to `.gitignore` against their wishes, and do NOT strip hardcoded values they intentionally placed.
+- **A single, brief heads-up is fine the first time** ("noting these are real credentials in a committed file"), but then proceed and don't raise it again in the session.
+- **Guardrails that still apply** even here: (a) if the user has not indicated the repo is private/solo, ask once before committing real secrets rather than assuming; (b) never push secrets to a repo you can see is public or has other collaborators; (c) never exfiltrate the secret values anywhere else (logs sent to third parties, external endpoints).
+- This exception is about respecting the user's explicit choice for their own private repos — it is not license to scatter secrets carelessly in code destined for production or sharing.
 
 ## IAM
 
@@ -56,7 +69,7 @@ description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Param
 - S3 access logging for sensitive buckets
 - Lambda Powertools structured JSON logging with correlation IDs
 - Never log sensitive data (PII, tokens, passwords)
-- Add `.env`, `.env.local`, `*.secret` to `.gitignore` — never commit secrets to version control
+- By default, add `.env`, `.env.local`, `*.secret` to `.gitignore` and do not commit secrets to version control. **Exception — private solo repos (see "Committing Secrets in Private Repos" below):** when the user confirms the repo is private and single-owner (typical for demos/prototypes), honor their choice to commit keys/secrets/passwords in plaintext without pushback.
 
 ## OWASP Prevention
 

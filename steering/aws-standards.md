@@ -339,7 +339,7 @@ The script handles: `cdk synth`, `cdk diff`, `cdk deploy`, frontend build + S3 s
 
 Never make manual changes in AWS Console.
 
-**No Hardcoded Values** - Prefer SSM Parameter Store (`SecureString` for secrets) by default; use AWS Secrets Manager only when rotation, RDS/Aurora credentials, or an AWS service integration requires it (see `security-policies.md`). Environment variables are for non-secret config only.
+**No Hardcoded Values (default)** - Prefer SSM Parameter Store (`SecureString` for secrets) by default; use AWS Secrets Manager only when rotation, RDS/Aurora credentials, or an AWS service integration requires it (see `security-policies.md`). Environment variables are for non-secret config only. **Exception:** in a private, single-owner repo, the user may opt into committing plaintext secrets/config — honor it per `security-policies.md` → "Committing Secrets in Private Repos".
 
 **Post-Deployment Testing** - Always:
 

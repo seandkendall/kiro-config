@@ -6,7 +6,7 @@
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
 [![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
-Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 20 specialist subagents (incl. native iOS + iOS-testing + Amazon Ring), 22 steering docs, 16 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
+Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 20 specialist subagents (incl. native iOS + iOS-testing + Amazon Ring), 26 steering docs, 16 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
 > **💡 Tips for AI Agents working on this repo**
 >
@@ -190,9 +190,9 @@ npm install -g prettier
 | `reinvent`         | AWS serverless backend builder — SAM-first (Lambda, API GW, DynamoDB)                                                |
 | `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                      |
 
-### Steering Docs (22)
+### Steering Docs (26)
 
-Rules and standards automatically loaded into every session: accessibility, API design, AWS/CDK patterns, AWS Agent Toolkit usage, change logging, development workflow, error handling, performance, Python standards, security policies, iOS (Swift/SwiftUI, CarPlay, audio, offline-first — loaded on Swift files), and more.
+Rules and standards automatically loaded into every session: accessibility, API design, AWS/CDK patterns, AWS Agent Toolkit usage, change logging, development workflow, error handling, no-CI/CD, performance, Python standards, security policies, iOS (Swift/SwiftUI, CarPlay, audio, offline-first — loaded on Swift files), and more.
 
 > **Personal steering** — say "always …" / "from now on …" / "I prefer …" or repeat a preference 2+ times in a session, and the agent will offer to save it as a `personal-<topic>.md` steering doc on your machine. These files are gitignored and ALWAYS win over base rules. No extra tooling required — they just work via Kiro's existing steering loader. See `steering/personal-rules-protocol.md` and `skills/personal-rules-management.md`.
 
