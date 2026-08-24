@@ -1,5 +1,6 @@
 # Sessions and history
 sessions/
+spec-sessions/
 .cli_bash_history
 
 # IDE extensions
