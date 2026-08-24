@@ -6,9 +6,13 @@ description: 'Email template standards — never use default service emails (Cog
 
 # Email Standards (MANDATORY)
 
-Every user-facing email this system sends — account creation, email verification codes, password reset, magic-link login, welcome, security notifications, billing receipts, plan changes — MUST be a custom, brand-matched HTML email. No defaults. No quick wins. Every email is a touchpoint that should feel like part of the same product the user signed up for.
+**The rule in one sentence:** every email this system sends to a real user MUST be a custom, brand-matched HTML email that this project built — never an email a service (Cognito, SES, Amplify) generates and sends automatically using its own built-in template.
+
+This applies to every user-facing email: account creation, email verification codes, password reset, magic-link login, welcome, security notifications, billing receipts, plan changes. Every one of these is a touchpoint that should feel like part of the same product the user signed up for — not a plain, unstyled system notice.
 
 ## What's Banned
+
+Concretely, an agent implementing any of these email types must NOT let the underlying AWS service send its own default email. Each bullet below is a specific default template/behavior to avoid — if you catch yourself about to enable one of these without also wiring a custom Lambda/template, stop and build the custom version instead:
 
 - The default Cognito verification email ("Your verification code is XXXXXX" with no styling)
 - The default SES "Welcome" template
@@ -96,7 +100,7 @@ The Lambda receives the Cognito event, decrypts the code, builds the HTML using 
 
 ### SES Templates
 
-For non-Cognito emails (welcome, billing, notifications), register reusable templates with SES:
+For non-Cognito emails (welcome, billing, notifications), register reusable templates with SES. `aws_cdk.aws_ses` has no L2 construct for templates as of this writing (verified — still L1-only); `CfnTemplate` is the correct and current choice, not a stopgap:
 
 ```python
 from aws_cdk import aws_ses as ses

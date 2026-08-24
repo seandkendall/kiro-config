@@ -28,5 +28,5 @@ AWS serverless web applications with React frontends and CDK infrastructure
 
 - Rapid development and deployment
 - Cost-effective serverless architecture — scales to zero when idle, minimizes operational overhead for small teams
-- Secure, scalable applications following AWS Well-Architected principles
+- Secure, scalable applications
 - Maintainable, well-documented code with close to 100% test coverage

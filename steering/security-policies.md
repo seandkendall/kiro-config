@@ -11,7 +11,7 @@ description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Param
 - Amazon Cognito User Pools — MFA is **never forced by default**. Use Cognito's default `Mfa.OFF` unless a developer explicitly asks for MFA to be required or optional; when they do, apply exactly what they specify (`Mfa.OPTIONAL` or `Mfa.REQUIRED`) rather than defaulting to "more secure" on your own initiative. See `aws-standards.md` for the passkey/password baseline this pairs with.
 - JWT token validation on every API request
 - Token rotation and short expiry (1 hour access, 30 day refresh)
-- Programmatic session management with `cy.session()` in tests
+- Programmatic session management in Playwright tests via `storageState` (see `development-quality-gates.md` → "Playwright E2E Standards") — never a UI login flow, and never a Cypress-style `cy.session()` call (this project is Playwright-only)
 
 ## Secrets Management
 
@@ -41,19 +41,20 @@ When this applies:
 
 ## IAM
 
-- Least privilege — no wildcard (`*`) actions or resources in production
-- Separate read/write policies
-- Use condition keys (aws:SourceArn, aws:PrincipalOrgID) to restrict scope
-- Permission boundaries for delegated administration
-- No inline policies — use managed policies only
+- **Least privilege for high-risk areas** — no wildcard (`*`) actions or resources in production for anything touching sensitive data, destructive operations, cross-account access, or privilege escalation surfaces (e.g., a Lambda writing PII, anything with `iam:*`/`s3:Delete*`/admin-adjacent actions). Use condition keys (`aws:SourceArn`, `aws:PrincipalOrgID`), permission boundaries for delegated administration, and separate read/write policies here.
+- **Minimize role count for low-risk areas** — for routine, non-sensitive operations (e.g., a handful of Lambdas reading/writing the same DynamoDB table, internal utility functions with no external attack surface), it's fine to reuse a single well-scoped IAM role across them rather than minting a new role per function. The goal is not zero roles or a role-per-resource maximalism — it's the fewest roles that still keep high-risk permissions isolated.
+- Judgment call, not a hard threshold: when unsure whether something is high-risk, treat it as high-risk and isolate it.
+- No inline policies — use managed policies only, regardless of risk tier.
 
 ## Data Protection
 
-- Encryption at rest: KMS for S3, SQS, SNS, EBS. **DynamoDB is the exception — always use its default encryption (AWS owned key), never KMS.** See `aws-standards.md` "DynamoDB Encryption".
-- Encryption in transit: TLS everywhere, ACM certificates
-- **ALWAYS use AWS managed KMS keys** (`aws/service-name`) over customer-managed keys unless there is a specific compliance requirement for key rotation control or cross-account access. Managed keys are simpler, cheaper, and sufficient for most workloads.
-- S3: Block all public access, use CloudFront with OAC for public content
-- DynamoDB: Enable point-in-time recovery
+- **Encryption at rest is always on — no exceptions.** For every resource, prefer the **AWS-owned key** (no KMS involvement, no cost, no key policy to manage) when the service offers one as its default. **DynamoDB always uses its AWS-owned default** — never switch it to an AWS-managed or customer-managed KMS key. See `aws-standards.md` "DynamoDB Encryption".
+- For services where an AWS-owned key isn't an option (e.g., S3, SQS, SNS, EBS default to no encryption or require you to opt into a KMS key), use an **AWS-managed KMS key** (`aws/service-name`) as the next-best default — not customer-managed.
+- **Customer-managed KMS keys are the last resort** — use them only when a specific compliance requirement mandates control over key rotation or cross-account access. Don't reach for one "to be safe"; it adds cost, complexity, and IAM/key-policy surface area with no security benefit over AWS-managed for most workloads.
+- So the order of preference, every time: AWS-owned (if available) → AWS-managed KMS → customer-managed KMS (only if compliance requires it).
+- Encryption in transit: TLS everywhere, ACM certificates.
+- S3: Block all public access, use CloudFront with OAC for public content.
+- DynamoDB: Enable point-in-time recovery.
 
 ## Input Validation
 
@@ -65,8 +66,8 @@ When this applies:
 ## Logging & Audit
 
 - **NEVER create a new AWS CloudTrail trail in any project.** The organization already provisions an org-wide CloudTrail by default (org-level trail applied via AWS Organizations) — every account, including this one, is already covered. Do NOT add `aws_cloudtrail.Trail` (CDK), `AWS::CloudTrail::Trail` (CloudFormation), or any `aws cloudtrail create-trail` call to a project's infrastructure code. If a project appears to need trail-level configuration (e.g., a specific S3 bucket for logs, event selectors, CloudWatch Logs integration), treat that as a signal to check with the user/org security team rather than provisioning a new trail — assume API activity is already logged org-wide.
-- VPC Flow Logs for network monitoring
-- S3 access logging for sensitive buckets
+- **VPC Flow Logs are OFF by default — never enable them unless the user explicitly asks.** They add cost (data ingestion + storage) and noise; don't provision them speculatively "for visibility."
+- **S3 access logging is OFF by default — never enable it unless the user explicitly asks.** Same reasoning: real cost and storage overhead for logs most demo/prototype projects never look at. Enable it per-bucket only when requested, not as a blanket default for "sensitive buckets."
 - Lambda Powertools structured JSON logging with correlation IDs
 - Never log sensitive data (PII, tokens, passwords)
 - By default, add `.env`, `.env.local`, `*.secret` to `.gitignore` and do not commit secrets to version control. **Exception — private solo repos (see "Committing Secrets in Private Repos" below):** when the user confirms the repo is private and single-owner (typical for demos/prototypes), honor their choice to commit keys/secrets/passwords in plaintext without pushback.

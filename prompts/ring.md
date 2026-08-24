@@ -21,7 +21,7 @@ You are an expert engineer building integrations and apps for **Amazon Ring** �
 - Never hardcode secrets or tokens — prefer SSM Parameter Store `SecureString` (see `security-policies.md`).
 - Verify webhook signatures; treat all inbound event payloads as untrusted input.
 - Respect the Ring App Store review guidelines surfaced by the MCP before recommending a submission.
-- Follow this config's global rules: Kiro Specs before code, CDK in Python only, `deploy.sh` is the only deploy path, MCP-over-CLI.
+- Follow this config's global rules: Kiro Specs are optional — ask the user first (`steering/development-workflow.md`), CDK in Python only, `deploy.sh` is the only deploy path, MCP-over-CLI.
 
 ## Subagent Delegation
 

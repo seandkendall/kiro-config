@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: AGENTS
-description: 'Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.13.0+ features. Use when building or routing across agents.'
+description: 'Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.19.0+ features. Use when building or routing across agents.'
 ---
 
 # AGENTS.md
@@ -45,7 +45,7 @@ Builder agents automatically delegate to these specialists:
 
 ## Delegation Rules
 
-- Up to 4 subagents can run in parallel
+- This config has been run with up to 4 subagents in parallel without issue; there's no confirmed hard ceiling documented by Kiro as of this writing (their own docs don't state a fixed max — the practical limit is more about context/cost tradeoffs than a hardcoded number). Don't assume 4 is a real cap — if a task genuinely benefits from more parallel subagents, try it; scale back only if you hit actual resource/rate issues.
 - Subagents cannot communicate with each other — only report back to the parent
 - Use @path syntax to reference files inline — saves tool calls and tokens
 - **Orchestrators can call other orchestrators.** `master` delegates to `web-builder` for full-stack web app scaffolds and to `ai-builder` for full agentic apps. `web-builder` delegates to `ai-builder` when an app needs AI features. `ai-builder` delegates to `web-builder`'s subagents (frontend, serverless) for the surrounding app shell. Orchestrator-to-orchestrator calls are useful when one orchestrator's scope nests inside another's task — keep the chain shallow (max 2 hops) to avoid context fragmentation.
@@ -71,16 +71,16 @@ Keep `max_iterations` low (2–3) for demos and tight for production so a stuck 
 
 Both tools spawn separate work streams, but they have different semantics. Pick the right one:
 
-| Tool                                  | Semantics                                                                                                                                    | When to use                                                                                                                                                                     |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`subagent`** (alias `use_subagent`) | **Synchronous**, parallel, isolated context. Up to 4 at once. Returns results to parent. Configurable via `availableAgents`/`trustedAgents`. | DEFAULT. Use whenever the parent needs the result to continue (orchestration, parallel research, multi-step pipelines). This is the master agent's primary tool.                |
-| **`delegate`**                        | **Asynchronous** background task. No config. Check status with `/delegate status`.                                                           | NICHE. Only for long-running work where the user keeps doing other things in the foreground (e.g., "scan the entire monorepo for unused exports while I work on this feature"). |
+| Tool                                  | Semantics                                                                                                                                                                                                                                           | When to use                                                                                                                                                                     |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`subagent`** (alias `use_subagent`) | **Synchronous**, parallel, isolated context. This config typically runs up to 4 at once, but that's not a documented hard cap — scale up if a task benefits from it. Returns results to parent. Configurable via `availableAgents`/`trustedAgents`. | DEFAULT. Use whenever the parent needs the result to continue (orchestration, parallel research, multi-step pipelines). This is the master agent's primary tool.                |
+| **`delegate`**                        | **Asynchronous** background task. No config. Check status with `/delegate status`.                                                                                                                                                                  | NICHE. Only for long-running work where the user keeps doing other things in the foreground (e.g., "scan the entire monorepo for unused exports while I work on this feature"). |
 
 If unsure, use `subagent`. Never use `delegate` just because the task is long — use it only when the result genuinely doesn't need to be in-band with the current conversation.
 
 > **Custom orchestrator agents must declare the `subagent` tool.** If you build a new agent that needs to spawn subagents, include `subagent` in its `tools` array (or use `"tools": ["*"]` / `"@builtin"` to inherit all built-ins). Without it, the agent silently fails to delegate. Agents currently configured for delegation: `master`, `web-builder`, `ai-builder`.
 
-## Kiro CLI Features Worth Knowing (through 2.13.0)
+## Kiro CLI Features Worth Knowing (through 2.19.1)
 
 - **Agent output side channels** (2.3.0) — `$AGENT_DISPLAY_OUT` and `$AGENT_CONTEXT_OUT` env vars in shell commands route verbose output to the user TUI without polluting agent context (used by `deploy.sh`)
 - **OAuth Client ID for HTTP MCP servers** (2.3.0) — set `oauth.clientId` in MCP config to use Slack/GitHub/Figma HTTP MCP servers without DCR (we don't need this — our MCPs are stdio)
@@ -97,7 +97,13 @@ If unsure, use `subagent`. Never use `delegate` just because the task is long �
 - **MCP auth management** (2.11.0) — `/mcp auth`, `/mcp cancel-auth`, `/mcp logout` for remote MCP OAuth; MCP-panel shortcuts `^A`/`^X`/`^R`.
 - **Expanded MCP OAuth** (2.12.0) — `clientSecret` + custom `redirectUri` callback paths + skip Dynamic Client Registration with your own `clientId` (e.g., Figma); more accurate approval prompts for combined-flag commands; full ASCII mode.
 - **Config Hot-Reload** (2.10.0) — agent and MCP config changes reconcile **live on save**: no session restart, only affected MCP servers restart, conversation context preserved, order-independent diff (reordering env vars won't trigger a restart). Editing an agent JSON or `mcp.json` now takes effect immediately. Also adds `chat.disableInheritingDefaultResources` to stop custom agents from inheriting default steering/skills/AGENTS.md (they inherit by default since 2.7.0).
+- **`/upgrade-agent`** (2.14.0) — migrates a V2 agent config in place to the universal format that works with both V2 and V3, without a full V3 rewrite.
+- **Guided spec creation + Plan auto-execution** (2.15.0) — `/spec new` asks for a description before drafting requirements instead of guessing from the name alone; in Plan mode, approving a plan now starts execution immediately (no manual mode switch).
+- **Tangent side-conversations** (2.16.0) — `/tangent` branches into a side-conversation that inherits full history, explores freely, then returns to the main thread; `/tangent ls` shows a visual picker; `/context` gains a per-tool token breakdown.
+- **Cloud sessions (preview)** (2.17.0) — `kiro-cli --cloud` runs a session in a managed cloud sandbox; disconnect and resume from any machine with `--resume-id`. Slash-command menu gained substring matching.
+- **`/voice`** (2.18.0) — dictate prompts via on-device Whisper transcription (no audio leaves the machine, no cloud API key). Spec review screen gained a checkpoint comment-and-revise flow (`Ctrl+X`). **`AGENTS.md` files now load as steering context from anywhere in the workspace tree**, not just the root and `~/.kiro/steering/` — an `AGENTS.md` next to the code it describes gets picked up automatically.
+- **Mouse support + stream resilience** (2.19.0) — mouse support in the spec review screen (scroll/click, toggle with `m`); an idle-stream watchdog + automatic retry-with-backoff + 60-minute streaming timeout mean a dropped/throttled connection no longer hangs or ends a turn (tunable via `api.streamIdleSoftTimeout` / `api.streamIdleHardTimeout` / `api.timeout`).
 
 ## Adaptive Thinking (Kiro CLI 2.2+)
 
-Claude Opus 5 (experimental preview, 1M context window) is the default model. Reasoning automatically scales with task complexity and persists across multi-turn conversations. Keep `chat.enableThinking = true` (already set).
+Adaptive thinking scales reasoning automatically with task complexity and persists across multi-turn conversations. Keep `chat.enableThinking = true` (already set). The default model itself is a setting, not steering guidance — see `settings/cli.json` → `chat.defaultModel` (or run `kiro-cli chat --list-models` to see the current default and all available models). Don't duplicate the model name here; it drifts out of sync with the actual setting.

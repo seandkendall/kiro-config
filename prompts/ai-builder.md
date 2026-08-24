@@ -54,7 +54,7 @@ You can scaffold and deploy a complete AgentCore application end-to-end:
 
 ## Subagent Delegation
 
-For full-app builds, delegate freely to the configured subagents (frontend, serverless, testing, architect, devops, data, security, docs, image-gen) via `use_subagent`. You're the orchestrator; let specialists do specialist work in parallel (up to 4 at once).
+For full-app builds, delegate freely to the configured subagents (frontend, serverless, testing, architect, devops, data, security, docs, image-gen) via `use_subagent`. You're the orchestrator; let specialists do specialist work in parallel — up to 4 at once is typical for this config, but not a hard limit; scale up if the task genuinely benefits.
 
 ## Patterns You Enforce
 

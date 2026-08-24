@@ -41,8 +41,7 @@ For ANY GitHub operation, use the `github` MCP server. Do NOT run `gh` CLI comma
 
 For AWS API calls, prefer `aws-mcp-server` (Agent Toolkit for AWS) over the `aws` CLI shell tool.
 
-- Use `aws___call_aws` instead of `aws s3 ls`, `aws lambda invoke`, etc. — same authentication, structured output, sandboxed
-- Use `aws___run_script` for multi-step Python operations against AWS instead of chaining shell commands
+- Use `aws___run_script` (sandboxed Python + `call_boto3()`) for most AWS API calls — prefer it over `aws___call_aws`, which is now deprecated in favor of `run_script`, and over chaining `aws` CLI shell commands
 - Use `aws___search_documentation` instead of `web_fetch` against `docs.aws.amazon.com`
 - Use `aws___retrieve_skill` to load curated guidance instead of guessing API patterns
 
@@ -54,14 +53,21 @@ The same rule applies to every configured MCP server:
 
 | Capability               | Prefer                                      | Over                                |
 | ------------------------ | ------------------------------------------- | ----------------------------------- |
-| Web search               | `@web-search/search` (DuckDuckGo MCP)       | `web_search` built-in               |
 | Library docs             | `@context7/...`                             | Guessing from training data         |
 | Browser automation       | `@playwright/...` or `@chrome-devtools/...` | `curl` against the URL              |
 | Component installation   | `@shadcn/...`                               | `npm install @radix-ui/*` manually  |
 | Figma design data        | `@figma/...`                                | `web_fetch` against figma.com       |
 | Google Drive/Docs/Sheets | `@google-drive/...` (read-only)             | `web_fetch` against docs.google.com |
 | Image generation         | `@bedrock-image-mcp-server/...`             | Asking the user to find an image    |
-| Sequential reasoning     | `@sequentialthinking/sequentialthinking`    | Long inline reasoning blocks        |
+
+**No longer needed as MCP servers — now built into Kiro CLI directly, use the built-in tool instead:**
+
+- **Web search** — `web_search` is a built-in Kiro CLI tool (since 1.21; confirmed still built-in at 2.19.x). Do NOT add a DuckDuckGo (or any other) web-search MCP server — it duplicates a capability the agent already has natively and costs unnecessary MCP context/tokens for zero benefit.
+- **Web page fetching** — `web_fetch` is likewise built-in. Don't configure a separate "fetch" MCP server for the same job.
+- **Code intelligence** (symbol search, document outlines, definitions) — Tree-sitter-based code intelligence across 18 languages (Bash, C, C++, C#, Elixir, Go, Java, JavaScript, Kotlin, Lua, PHP, Python, Ruby, Rust, Scala, Swift, TSX, TypeScript) is built in via the `code` tool. Don't add a separate code-intelligence/LSP MCP server for languages already on that list.
+- **Sequential reasoning** — the built-in thinking/reasoning capability covers most cases now; only add a dedicated sequential-thinking MCP server if a specific workflow needs its structured multi-step output. If one is configured, prefer it over sprawling inline reasoning blocks (`@sequentialthinking/sequentialthinking` over long inline reasoning).
+
+**Rule of thumb going forward:** before adding any new MCP server, check whether Kiro CLI has since absorbed that capability natively — the unified agent harness (CLI 3.0+) ships new built-in tools regularly, and each one absorbed removes a server you no longer need to maintain, configure API keys for, or pay a context-token tax on.
 
 ## Discovery
 

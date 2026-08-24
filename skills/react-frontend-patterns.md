@@ -84,9 +84,12 @@ function TransactionForm() {
 
 ## Responsive Breakpoints
 
-- Mobile: 375px (default, mobile-first)
-- Tablet: `md:` (768px)
-- Desktop: `lg:` (1280px)
+Four tiers, covering phones through TV/dashboard displays (kept in sync with `tech.md` and `accessibility-standards.md`):
+
+- Mobile (phones): 375px (default, mobile-first)
+- Tablet / small laptop: `md:` (768px)
+- Desktop / widescreen: `lg:` (1280px)
+- TV / dashboard (large displays, kiosks, car dashboards): `2xl:` (1920px)
 - Touch targets: minimum 44x44px on mobile
 
 ## data-testid Selectors (MANDATORY — for Playwright)

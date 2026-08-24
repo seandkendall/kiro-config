@@ -35,11 +35,12 @@ description: 'Mandatory core development rules: no time estimates, timestamped o
 - This is NOT a time estimate — it's a wall-clock timestamp of when the comment was written. It does not conflict with the "No Time Estimates" rule above (which bans predicting how _long_ work will take). Printing the current time is always allowed and encouraged; predicting durations is still banned.
 - If the session context does not include a current time for the turn, omit the timestamp rather than guessing — never fabricate a time.
 
-**Kiro Specs (MANDATORY)** - Before writing ANY code:
+**Kiro Specs (ASK FIRST)** - Before writing ANY code for a new feature or bug fix, ask the user whether they want a Kiro Spec first, or want to skip straight to implementation:
 
-- New features: Create a Kiro Feature Spec (requirements.md → design.md → tasks.md)
-- Bug fixes: Create a Kiro Bugfix Spec (bugfix.md → design.md → tasks.md)
-- Never skip the spec phase. Code without a spec will not be accepted.
+- If they want a spec: New features get a Feature Spec (requirements.md → design.md → tasks.md); bug fixes get a Bugfix Spec (bugfix.md → design.md → tasks.md).
+- If they'd rather skip it: proceed directly to implementation — no spec files, no phase gate.
+- Only skip asking when the user has already indicated their preference for the session/project (e.g., they said "no specs for this project" or "always spec first") — honor that standing preference without re-asking every time.
+- Default to asking, not to creating a spec automatically — this rule exists to give the user a real choice, not to make spec creation the unstated default.
 
 **TODO List (MANDATORY)** - Always use the `todo_list` tool:
 

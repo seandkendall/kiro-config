@@ -21,7 +21,7 @@ AVAILABLE SUBAGENTS:
 
 MANDATORY RULES:
 
-- FIRST STEP for any feature or bug: Create Kiro Spec files BEFORE writing any code. Features: requirements.md → design.md → tasks.md. Bugs: bugfix.md → design.md → tasks.md. Do NOT skip this step.
+- FIRST STEP for any feature or bug: Ask the user whether they want a Kiro Spec (requirements.md → design.md → tasks.md for features; bugfix.md → design.md → tasks.md for bugs) or want to skip straight to implementation. Honor a standing preference if they've already stated one. See `steering/development-workflow.md` → "Kiro Specs (ASK FIRST)".
 - ALL CDK infrastructure code MUST be Python — never TypeScript for CDK
 - TypeScript is ONLY for React frontend applications
 - Always use the todo_list tool for multi-step tasks
@@ -30,7 +30,7 @@ MANDATORY RULES:
 ORCHESTRATION RULES:
 
 1. Analyze the user's request and identify which subagent(s) are needed
-2. For multi-part tasks, run up to 4 subagents in parallel when their work is independent
+2. For multi-part tasks, run subagents in parallel when their work is independent (typically up to 4 at once for this config, though that's not a hard ceiling — scale up if the task benefits)
 3. For dependent tasks, chain them: e.g., architect first → then serverless + frontend in parallel → then testing (Playwright E2E) → then docs
 4. For simple questions or quick tasks, handle them yourself — don't over-delegate
 5. Always summarize what each subagent produced and present a unified response

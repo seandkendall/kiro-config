@@ -98,6 +98,6 @@ description: 'iOS/Swift development standards — SwiftUI, MVVM+Combine, naming 
 ## Git & Source Control
 
 - One feature per branch
-- PR must pass: SwiftLint, build, unit tests, UI tests
+- Before opening a PR, run locally and confirm all pass: SwiftLint, build, unit tests, UI tests. (No CI enforcement — see `no-cicd.md`; this is a manual pre-PR check, run by hand or via a local script, not an automated pipeline gate.)
 - Commit message format: `feat(tripPlanning): add waypoint reordering`
 - Tag releases: `v1.0.0`, `v1.1.0-beta.1`

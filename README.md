@@ -121,7 +121,7 @@ cp -r kiro-config/{agents,steering,skills,prompts,settings,hooks} ~/.kiro/
 
 ## Prerequisites
 
-- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.13.0**)
+- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.19.1**)
 - Python 3.14+ with `uv` and `uvx`
 - Node.js 24+ with `npx`
 - AWS CLI v2 configured with named profiles

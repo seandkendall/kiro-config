@@ -24,7 +24,10 @@ description: 'Directory and file organization conventions: cdk-backend/lambda/fu
 ├── tests/
 │   └── integration/
 ├── deploy.sh
-└── .kiro/steering/
+├── CHANGES.md
+├── .kiro/
+│   ├── steering/
+│   └── specs/
 ```
 
 ## File Organization
@@ -35,6 +38,8 @@ description: 'Directory and file organization conventions: cdk-backend/lambda/fu
 - Playwright E2E tests: `tests/e2e/*.spec.ts`
 - Playwright Page Objects: `tests/e2e/pages/*.ts`
 - Steering docs: `.kiro/steering/`
+- Kiro Specs (when the user opts in — see `development-workflow.md`): `.kiro/specs/<spec-name>/{requirements,design,tasks}.md` for features, `{bugfix,design,tasks}.md` for bug fixes
+- Change log (mandatory, every project — see `change-logging.md`): `CHANGES.md` at the project root
 
 ## Naming Conventions
 

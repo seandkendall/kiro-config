@@ -1,12 +1,14 @@
 ---
 inclusion: auto
 name: accessibility-standards
-description: 'WCAG 2.1 AA compliance, ARIA patterns, keyboard navigation, color contrast, screen reader support, modals/dialogs, confirmation and approval prompts (never browser alert/confirm/prompt). Use when building or modifying UI components, pages, forms, confirmation dialogs, or approval/notification flows.'
+description: 'WCAG 2.2 AA compliance, ARIA patterns, keyboard navigation, color contrast, screen reader support, modals/dialogs, confirmation and approval prompts (never browser alert/confirm/prompt), accessible authentication, target size, dragging alternatives. Use when building or modifying UI components, pages, forms, confirmation dialogs, login/auth flows, or approval/notification flows.'
 ---
 
 # Accessibility Standards
 
-## WCAG 2.1 AA Compliance (Required)
+## WCAG 2.2 AA Compliance (Required)
+
+WCAG 2.2 became the W3C Recommendation in October 2023 and supersedes 2.1 as the current standard — it keeps everything from 2.1 AA and adds a small set of AA criteria on top. Target 2.2 AA for all new work; 2.1-only compliance is stale.
 
 ### Perceivable
 
@@ -34,6 +36,15 @@ description: 'WCAG 2.1 AA compliance, ARIA patterns, keyboard navigation, color 
 - ARIA roles only when native HTML semantics are insufficient
 - Test with screen readers (VoiceOver on macOS)
 - NEVER use browser `alert()`, `confirm()`, or `prompt()` dialogs — always use a modal component (shadcn/ui Dialog or AlertDialog) instead
+
+### New in WCAG 2.2 AA (on top of 2.1 — don't skip these)
+
+- **Focus Not Obscured (Minimum)** — when an element receives keyboard focus, it must not be entirely hidden by other content (sticky headers/footers, cookie banners). Ensure focused elements scroll into view and aren't covered.
+- **Dragging Movements** — any functionality that requires a dragging gesture (reorder lists, sliders, drag-to-dismiss) MUST have a single-pointer alternative that doesn't require dragging (e.g., up/down buttons alongside drag-to-reorder).
+- **Target Size (Minimum)** — touch/click targets at least 24×24px, unless the target is inline in text, has an equivalent larger target elsewhere, or is a native control the browser/OS already sizes. (Our 44×44px mobile touch-target rule below already exceeds this — keep it; this criterion mainly affects desktop click targets that aren't otherwise covered.)
+- **Consistent Help** — if a help mechanism (contact link, chat, FAQ) appears on multiple pages, keep it in the same relative order/location across the app rather than moving it around.
+- **Redundant Entry** — don't make a user re-enter the same information twice in one process (e.g., shipping address again for billing) unless re-entry is essential (e.g., re-typing a password to confirm) or the previously entered value is displayed for them to reuse.
+- **Accessible Authentication (Minimum)** — login/registration MUST NOT rely on a cognitive function test (e.g., solving a puzzle, remembering/transcribing something, a manually-solved math problem) as the only way to authenticate, unless an alternative is provided. Directly relevant to this repo's Cognito auth rules (`aws-standards.md`): password managers, autofill, and passkeys MUST work without interference (no blocking paste-into-password-field, no disabling browser autofill) — this is a big part of _why_ passkeys are worth offering as the optional method they already are.
 
 ## React Component Patterns
 
@@ -64,7 +75,7 @@ description: 'WCAG 2.1 AA compliance, ARIA patterns, keyboard navigation, color 
 ## Responsive Design
 
 - Mobile-first approach: design for 375px, then scale up
-- All pages must render correctly at: 375px (mobile), 768px (tablet), 1280px (desktop)
-- Use Tailwind responsive prefixes: `sm:`, `md:`, `lg:`
+- All pages must render correctly at four tiers: 375px (mobile/phones), 768px (tablet/small laptop), 1280px (desktop/widescreen), 1920px (TV/dashboard — kiosks, car dashboards, large displays)
+- Use Tailwind responsive prefixes: `sm:`, `md:`, `lg:`, `2xl:`
 - Touch targets: minimum 44x44px on mobile
-- Test responsive layouts in Playwright E2E at all three breakpoints
+- Test responsive layouts in Playwright E2E at all four breakpoints

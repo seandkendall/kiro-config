@@ -13,13 +13,15 @@ description: 'AWS development standards: CDK Python (never TypeScript), resource
 
 **Language Requirement** - ALL CDK code MUST be written in Python. No TypeScript CDK. Lambda functions in Python.
 
-**CDK Alpha Modules (MANDATORY)** - Before using any `*_alpha` CDK module, check whether it has graduated to stable in `aws-cdk-lib`. Alpha modules are separate `pip` packages (`aws-cdk.aws-<service>-alpha`) with no backward-compatibility guarantee; most eventually graduate into `aws-cdk-lib` and the alpha package is then deprecated.
+**CDK Alpha Modules** - Before using any `*_alpha` CDK module, check whether it has graduated to stable in `aws-cdk-lib`. Alpha modules are separate `pip` packages (`aws-cdk.aws-<service>-alpha`) with no backward-compatibility guarantee; most eventually graduate into `aws-cdk-lib` and the alpha package is then deprecated.
 
-- **Always prefer the stable module** when one exists. Stable constructs live in `aws-cdk-lib` and import as `from aws_cdk import aws_<service>`.
-- **Verify before using an alpha** — use `aws___search_documentation` (AWS MCP server) or check the module's PyPI page. If the PyPI page says "deprecated / moved to aws-cdk-lib" or the Development Status is "Inactive", the alpha is dead; use the stable path.
+- **Prefer the stable module when one exists.** Stable constructs live in `aws-cdk-lib` and import as `from aws_cdk import aws_<service>`.
+- **It's fine to use an alpha module when the stable path doesn't exist yet, or is missing features the alpha has** — don't avoid alpha modules on principle; they exist because the stable API isn't ready. Verify current status with `aws___search_documentation` (AWS MCP server) or the module's PyPI page before choosing it.
+- **Periodically re-check every alpha module already in use** — as part of the daily-maintenance dependency upgrade (`development-quality-gates.md`), confirm whether each alpha module you depend on has since graduated to stable. If it has, migrate the project to the stable import in the same maintenance pass rather than leaving it on a deprecated alpha package indefinitely.
+- If the PyPI page says "deprecated / moved to aws-cdk-lib" or Development Status is "Inactive", the alpha is dead; use the stable path immediately.
 - **Known graduations** (use the stable path, NOT the alpha):
   - `aws-cdk.aws-apigatewayv2-alpha` → **deprecated Dec 2023**. Use `aws_cdk.aws_apigatewayv2` (HTTP/WebSocket API: `HttpApi`, `CorsPreflightOptions`, `HttpMethod`, `DomainName`), `aws_cdk.aws_apigatewayv2_integrations` (`HttpLambdaIntegration`, `HttpUrlIntegration`, etc.), and `aws_cdk.aws_apigatewayv2_authorizers` (`HttpJwtAuthorizer`, etc.). All three are now in `aws-cdk-lib` — no separate `pip install` needed.
-- **Still alpha** (verified at CDK **2.260.0** on 2026-06-23 — publishes as `2.260.0a0`, Development Status: Beta; re-check before relying on it): `aws_lambda_python_alpha` (`PythonFunction`). It has NOT graduated — the alpha package is still required. (We no longer use `aws_servicecatalogappregistry_alpha` / `ApplicationAssociator`: AWS Service Catalog AppRegistry moved to maintenance on 2026-06-30 — use the stable `aws_resourcegroups.CfnGroup` instead; see "AWS Resource Groups" below.)
+- **Currently in active use, still alpha** (verified at CDK **2.260.0** on 2026-06-23 — publishes as `2.260.0a0`, Development Status: Beta; re-check on next upgrade): `aws_lambda_python_alpha` (`PythonFunction`). It has NOT graduated — the alpha package is still required. (We no longer use `aws_servicecatalogappregistry_alpha` / `ApplicationAssociator`: AWS Service Catalog AppRegistry moved to maintenance on 2026-06-30 — use the stable `aws_resourcegroups.CfnGroup` instead; see "AWS Resource Groups" below.)
 
 **Construct Level (MANDATORY) — prefer L2/L3 over L1** - Always use the highest-level construct available. Prefer **L3** (patterns) and **L2** (curated resources with sensible defaults) over **L1** (`Cfn*`, raw CloudFormation 1:1).
 
@@ -180,13 +182,7 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
 
 ## Authentication
 
-**Cognito Configuration** - Use newer managed login version:
-
-```python
-managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN
-```
-
-**Custom Login UI (MANDATORY)** - NEVER use the Cognito Hosted UI. Always build custom pages:
+**Custom Login UI (MANDATORY)** - NEVER use the Cognito Hosted UI or Cognito's managed login. Always build custom pages:
 
 - Custom **login page** — username/password MUST always be supported as the baseline sign-in method; passkey is an additional, optional method offered alongside it (see "Passkeys" below)
 - Custom **registration page** with email verification; when the user sets a password, ALWAYS require both a **password** field and a **confirm password** field (client-side match check before submit, in addition to server-side validation)
@@ -246,10 +242,10 @@ managed_login_version=cognito.ManagedLoginVersion.NEWER_MANAGED_LOGIN
 - Block ALL public access on S3 buckets serving via CloudFront
 - Use API Gateway with authentication for dynamic access
 
-**Lambda Functions** - Avoid Lambda function URLs:
+**Lambda Functions** - NEVER use Lambda function URLs (mandatory):
 
-- Prefer API Gateway with proper authentication
-- Implement authorization at API Gateway level
+- Always use API Gateway with proper authentication instead — no exceptions, not even for quick demos or internal-only endpoints
+- Implement authorization at the API Gateway level
 
 ## Deployment
 
@@ -329,7 +325,7 @@ When `-y` is set, the script MUST NOT issue any interactive prompts. This includ
 
 The same AWS account often hosts multiple projects sharing infrastructure (Route53 hosted zones, ACM certs, VPCs, Cognito user pools). The `deploy.sh` script MUST NOT break sibling projects:
 
-- **Discover by tag, not by name pattern.** Use the `project=<name>` tag (the same tag the stack's AWS Resource Group is built on) to identify resources owned by THIS stack. Never delete resources matching a name prefix or substring — name collisions across projects are real.
+- **Discover by tag, and by CloudFormation stack, not by name pattern.** Use the `project=<name>` tag (the same tag the stack's AWS Resource Group is built on) to identify resources owned by THIS stack. The stack's own CloudFormation stack (list its resources via `describe-stack-resources` / `list-stack-resources`) is an equally valid discovery source — use whichever is more complete for a given resource type (some resources are taggable but not always tagged consistently; the CFN stack listing catches those). Never delete resources matching a name prefix or substring — name collisions across projects are real.
 - **Touch shared zones surgically.** When this stack created records in a Route53 hosted zone owned by another project (or by a shared infra stack), delete only the records this stack added (typically by `name` + `type`). Never delete the hosted zone itself unless this stack owns it end-to-end.
 - **Pre-flight check on `--delete`.** Before destroying, list all resources tagged with this project's tag and show them to the user (or skip the listing under `-y`). Resources NOT tagged with this project are NEVER touched.
 - **Shared certificates.** ACM certs in `us-east-1` are commonly reused (CloudFront only accepts certs there). If the cert was imported by another stack, this stack MUST NOT delete it on teardown — even if it imported the cert via `Certificate.fromCertificateArn`. Delete-on-teardown applies only to certs this stack created.
