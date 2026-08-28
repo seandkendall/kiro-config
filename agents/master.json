@@ -40,7 +40,7 @@
       "command": "uvx",
       "args": ["bedrock-image-mcp-server@latest"],
       "env": {
-        "AWS_REGION": "us-east-1",
+        "AWS_REGION": "us-west-2",
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
