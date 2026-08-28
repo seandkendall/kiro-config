@@ -16,5 +16,6 @@
   "toolSearch.enabled": true,
   "chat.enableTodoList": true,
   "chat.diffTool": "delta",
-  "mcp.loadedBefore": true
+  "mcp.loadedBefore": true,
+  "chat.enableAutoAgentUpgrade": true
 }
