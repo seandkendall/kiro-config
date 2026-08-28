@@ -1,7 +1,7 @@
 ---
 inclusion: auto
 name: development-quality-gates
-description: 'Build/test/lint quality gates and engineering standards: daily dependency upgrades, package management, pre-deployment quality gate (lint, build, pytest coverage, Playwright E2E, deprecations, audits), Playwright E2E standards (data-testid, storageState, no waitForTimeout), testing standards and test organization, documentation requirements, code review checklist, /code onboarding. Use when building, testing, linting, upgrading dependencies, reviewing code, or preparing a deployment.'
+description: 'Build/test/lint quality gates and engineering standards: daily dependency upgrades, package management, pre-deployment quality gate (lint, build, pytest coverage, Playwright E2E, deprecations, audits), Playwright E2E standards (data-testid, storageState, no waitForTimeout), testing standards and test organization, property-based testing (fast-check, hypothesis), documentation requirements, code review checklist, /code onboarding. Use when building, testing, linting, upgrading dependencies, reviewing code, writing property or invariant tests, or preparing a deployment.'
 ---
 
 # Development Quality Gates & Standards
@@ -133,6 +133,46 @@ test('renders button with text', () => {
 - Playwright E2E tests: `tests/e2e/*.spec.ts`
 - Playwright Page Objects: `tests/e2e/pages/*.ts`
 
+**Property-Based Testing** - For pure functions, add a property test alongside the example tests:
+
+- JS/TS + Vitest → **`fast-check`** (generates hundreds of inputs per run and shrinks failures to a minimal repro; less universally known than `hypothesis` but the standard choice for Vitest/Jest)
+- Python + pytest → **`hypothesis`** (`@given(...)` composes directly with a normal `def test_...` — name the file `test_<subject>_pbt.py`)
+
+```python
+from hypothesis import given, strategies as st
+
+@given(st.text(min_size=1))
+def test_slugify_round_trips_and_satisfies_contract(raw: str) -> None:
+    slug = slugify(raw)
+    assert re.fullmatch(r"[a-zA-Z0-9._~-]+", slug) or slug == ""
+    assert slugify(slug) == slug  # idempotent
+```
+
+Strongest candidates: encode/decode round-trips, slug/ID generation, pricing and tax
+math, validation and sanitization helpers, geometry, rate-limit/flood counters,
+aggregate calculations — and specifically the **Python↔TypeScript serialization contract**
+in `api-standards.md` (a round-trip property test is the natural way to catch a
+`.nullable()` vs `.optional()` mismatch before it ships).
+
+Assert **invariants**, not a restatement of the implementation:
+
+- round-trip — `decode(encode(x)) === x`
+- output always satisfies a contract — e.g. a slug always matches `[a-zA-Z0-9._~-]+`
+- idempotence — `normalize(normalize(x)) === normalize(x)`
+- total — never throws, never returns `undefined`, for any input in the domain
+
+Property tests **complement** example tests: keep concrete cases as regression pins for
+known-tricky values, and pin cross-language parity with a **shared fixed fixture**
+rather than generated data (generated inputs can't force two languages to agree on the
+same number).
+
+Do NOT reach for property testing on React components, AWS-integration code, or anything
+needing mocks — use Vitest/RTL, pytest+moto, and Playwright there. Generated data through
+a mock is slow and asserts very little.
+
+Property tests count toward the coverage targets in "Pre-Deployment Quality Gate" below —
+they run in the same `pytest --cov` / `npx vitest --coverage` invocation, no separate step.
+
 ## Playwright E2E Standards
 
 **Playwright is mandatory for all E2E testing.**
@@ -164,3 +204,4 @@ Before considering any feature complete, verify:
 - [ ] No hardcoded values — all config via env vars or SSM
 - [ ] No `console.log` in production code — use structured logging
 - [ ] Accessibility: keyboard navigable, proper ARIA, color contrast passes
+- [ ] Pure functions with round-trip/idempotence/contract invariants have a property test (`fast-check`/`hypothesis`), not just example cases
