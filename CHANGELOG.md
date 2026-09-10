@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.29.5] - Fixed "Tool is not available" errors for subagent invocation
+
+### Fixed
+
+- **Same root cause as 0.29.4, different tool.** A user reported `Tool "invoke_sub_agent" is not available` from another session. This repo's steering (`steering/AGENTS.md`) and 9 prompt files hardcoded `use_subagent` as if it were the one stable, callable name for the built-in subagent-invocation tool — but that name is not stable across sessions/CLI versions. Confirmed three distinct variants in practice: `subagent`/`use_subagent` (this repo's assumption), `orchestrate_subagent` (this session's actual tool list), and `invoke_sub_agent` (the user's reported error).
+- **`steering/AGENTS.md`** — the "subagent vs delegate" table and surrounding guidance no longer present `subagent`/`use_subagent` as literal callable strings. Added an explicit warning listing the confirmed name variants and a recovery procedure (check the session's actual available tools; don't retry the same literal string) mirroring the AWS MCP Server fix in `aws-agent-toolkit.md`.
+- **`prompts/accounting.md`, `ai-builder.md`, `image-gen.md`, `master.md`, `promptgen.md`, `shopify.md`, `stocks.md`, `web-builder.md`** — rewrote every "...using the use_subagent tool" directive to describe delegation by capability/intent instead, with a pointer to `steering/AGENTS.md` for the naming caveat.
+
 ## [0.29.4] - Fixed "Tool is not available" errors for AWS MCP Server calls
 
 ### Fixed

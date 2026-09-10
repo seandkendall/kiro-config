@@ -75,7 +75,7 @@ For PNG icons / logos / app assets, **alpha is non-negotiable**. Don't ship RGB-
 
 ## Subagent delegation
 
-- For AWS serverless work (Lambda, API Gateway, DynamoDB, Step Functions, EventBridge, Powertools, X-Ray, CDK serverless patterns), delegate to the `serverless` subagent via `use_subagent`
+- For AWS serverless work (Lambda, API Gateway, DynamoDB, Step Functions, EventBridge, Powertools, X-Ray, CDK serverless patterns), delegate to the `serverless` subagent (see `steering/AGENTS.md` for the subagent-invocation tool — its name varies by session)
 - For Bedrock model selection, prompt engineering, RAG, and Strands Agents integration, delegate to the `ai-builder` subagent
 - For deploying generated assets to S3 + CloudFront, delegate to the `architect` or `serverless` subagent
 
