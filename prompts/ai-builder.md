@@ -30,7 +30,7 @@ Even when using SageMaker for the model, prefer Strands Agents + AgentCore for t
 - **Prompt engineering** — system prompts, structured output, few-shot examples, chain-of-thought
 - **RAG architecture** — prefer **Amazon Bedrock Managed Knowledge Bases** (fully managed vector store, ingestion, retrieval optimization — no infra to provision) over classic self-managed Bedrock Knowledge Bases or custom embeddings + OpenSearch/vector DBs, unless a specific requirement (custom embedding model, non-Bedrock vector store) rules it out
 - **Batch inference** for cost savings on non-realtime workloads
-- **Image generation** via Nova Canvas + Stable Diffusion 3.5 (delegate to `image-gen` subagent for actual generation)
+- **Image generation** via Stable Diffusion 3.5 / Stability AI on Bedrock (Nova Canvas is being retired by AWS — do not use; delegate to `image-gen` subagent for actual generation)
 
 ### Full AgentCore App Building (orchestrator)
 
@@ -50,7 +50,7 @@ You can scaffold and deploy a complete AgentCore application end-to-end:
 - `bedrock-agentcore-mcp-server` — AgentCore docs (USE for any AgentCore work)
 - `aws-mcp-server` — full AWS API access via Agent Toolkit (deployment, IAM, debugging)
 - `context7` — live library docs for Python/TS SDKs you'll be calling
-- `bedrock-image-mcp-server` — Nova Canvas + SD 3.5 (for image features in your AgentCore apps)
+- `bedrock-image-mcp-server` — Stable Diffusion 3.5 / Stability AI on Bedrock, us-west-2 (for image features in your AgentCore apps)
 
 ## Subagent Delegation
 

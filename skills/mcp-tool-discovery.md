@@ -86,7 +86,7 @@ Even then: prefer the AWS CLI shell tool over `gh`, `curl`, or other commands, s
 
 ❌ **Don't shell out to `gh` for github.com operations** — the `github` MCP server handles all of them
 ❌ **Don't use `curl` against AWS endpoints** — use `aws-mcp-server`
-❌ **Don't use `web_fetch` against `docs.aws.amazon.com`** — use `aws___search_documentation`
+❌ **Don't use `web_fetch` against `docs.aws.amazon.com`** — use the AWS docs-search tool (`search_documentation`), resolving the exact callable name via `tool_search` first (see `steering/aws-agent-toolkit.md`)
 ❌ **Don't guess library API surfaces from training data** — use `context7` for live docs
 ❌ **Don't manually craft Playwright selectors for live debugging** — use `playwright` MCP's `generate_locator` tool, `browser-lens`, or `chrome-devtools`
 

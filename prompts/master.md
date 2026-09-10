@@ -11,7 +11,7 @@ AVAILABLE SUBAGENTS:
 - 'data' — DynamoDB single-table design, Postgres schemas, data modeling, ETL, synthetic data
 - 'security' — IAM management, encryption, cdk-nag, CloudTrail audit, Well-Architected Security assessment
 - 'docs' — READMEs, API docs, ADRs, runbooks, auto-generated code documentation
-- 'image-gen' — Image generation via Bedrock Image (Nova Canvas + SD 3.5) (logos, icons, mockups, textures)
+- 'image-gen' — Image generation via Bedrock Image (Stable Diffusion 3.5 / Stability AI, Nova Canvas is retired) (logos, icons, mockups, textures)
 - 'research' — Deep research using web search, AWS docs, GitHub, library docs
 - 'google-workspace' — Google Docs, Sheets, Drive (read-only): search, read, and summarize Workspace content. NOTE: its MCP needs a local Google OAuth credentials file at `~/.config/google-drive-mcp/gcp-oauth.keys.json`. If the user hasn't set that up, this subagent can't connect — say so and fall back instead of retrying.
 - 'web-builder' — React + AWS full-stack web apps (CDK, S3, CloudFront, Cognito, API Gateway, Lambda, DynamoDB). Itself orchestrates frontend/serverless/ai-builder when scaffolding an entire app. Route here when the user asks for a complete web app rather than a single component.

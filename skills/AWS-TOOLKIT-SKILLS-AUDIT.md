@@ -19,6 +19,7 @@ trimming is destructive and requires explicit owner sign-off (see "Decision" bel
 ## New Agent Toolkit core skills (retrieve on demand — do not vendor)
 
 - **`aws-auth`** (added Aug 2026) — Amazon Cognito user pool/identity pool setup, managed login/OAuth flows, tokens, JWT authorizers, passkey/WebAuthn, threat protection, Lambda triggers. Retrieve via `aws___retrieve_skill` when doing Cognito work — do NOT vendor a local copy (same on-demand pattern as the retired skills below). **Its default guidance recommends the Cognito hosted UI — this repo's `aws-standards.md` "Custom Login UI (MANDATORY)" rule overrides that; never follow the skill's hosted-UI steer.** See the cross-reference in `steering/aws-standards.md`.
+- **Amazon Redshift skills** (added under the `aws-data-analytics` plugin, Aug 2026) — SQL syntax reference, metadata discovery, data loading patterns, materialized views, and migration workflows (discovery → schema/SQL conversion → data movement → validation → performance comparison) for both provisioned clusters and Serverless workgroups. Retrieve via `aws___retrieve_skill` when doing Redshift work — no local vendoring needed, same on-demand pattern. Not yet used in any project this repo has built.
 
 ## AgentCore Gateway Connectors — checked, no Agent Toolkit overlap (Aug 2026)
 
@@ -53,10 +54,18 @@ The managed server can serve equivalents via `aws___retrieve_skill` / Agent SOPs
 `testing-patterns`, `deploy-on-aws`, `deploy.sh.template`, `gitignore.template`,
 `aws-architecture-diagram`, `aws-diagram-png`, `mcp-tool-discovery`,
 `email-template-rendering` + `email-templates/`, `cognito-email-migration`,
-`cypress-to-playwright-migration` (+ playwright templates), `personal-rules-management`.
+`cypress-to-playwright-migration` (+ playwright templates), `personal-rules-management`,
+`openobserve-telemetry`.
 
 These encode this repo's opinions (CDK-Python-only, deploy.sh contract, Playwright-only E2E,
 custom email standards, personal-rules protocol) and have **no managed-server equivalent**. Keep all.
+
+`openobserve-telemetry` (added 2026-07-28) is a special case: it documents one specific,
+live, account-owned OpenObserve deployment (real SSM parameter paths, a real ingest-user
+credential rotation story, a real CloudFormation stack to re-verify the ingest URL against).
+This can never be served by the AWS Agent Toolkit's managed skill registry — it isn't AWS's
+content, it's this account's own telemetry setup. Required by the `reinvent` agent (mandatory
+full-OTel guidance); do not delete or attempt to replace with a generic AWS observability skill.
 
 ## Trade-off (why this is "mark," not auto-"trim")
 

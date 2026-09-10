@@ -27,12 +27,12 @@ Default to **dev-sized** (cost-conscious: small instance sizes, minimal redundan
 
 ## MCP Server Usage (AWS Agent Toolkit)
 
-Use the unified **AWS MCP Server** (`aws-mcp-server`, via `mcp-proxy-for-aws`) for all AWS interactions:
+Use the unified **AWS MCP Server** (`aws-mcp-server`, via `mcp-proxy-for-aws`) for all AWS interactions. Resolve the actual callable tool name via `tool_search` before invoking any of these — see `steering/aws-agent-toolkit.md` → "Resolving the correct tool name" if a call fails with "Tool is not available":
 
-- **Architecture decisions**: `aws___search_documentation` (filter by `agent_skills`) and `aws___retrieve_skill` to load curated guidance before designing
-- **API knowledge**: `aws___search_documentation` and `aws___suggest_aws_commands` to verify the exact API/CLI syntax — never guess
-- **Cost estimates**: `aws___call_aws` to invoke Pricing API or Cost Explorer directly. **Always present costs before generating IaC** so the user can adjust before committing
-- **IaC validation**: `aws___run_script` for sandboxed Python checks (e.g., synth a CDK stack and inspect the template)
+- **Architecture decisions**: the AWS docs-search tool (`search_documentation`, filter by `agent_skills`) and the skill-retrieval tool (`retrieve_skill`) to load curated guidance before designing
+- **API knowledge**: the AWS docs-search tool (topic `current_awareness` or `reference_documentation`) to verify the exact API/CLI syntax — never guess. There is no dedicated "suggest commands" tool; docs search is the current path for this.
+- **Cost estimates**: the sandboxed-Python tool (`run_script`) to invoke the Pricing API or Cost Explorer directly (prefer this over the deprecated `call_aws` tool). **Always present costs before generating IaC** so the user can adjust before committing
+- **IaC validation**: the sandboxed-Python tool (`run_script`) for sandboxed Python checks (e.g., synth a CDK stack and inspect the template)
 
 ## deploy.sh Contract (MANDATORY)
 

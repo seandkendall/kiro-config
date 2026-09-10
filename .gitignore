@@ -36,6 +36,7 @@ agents/kirocrew*.json
 agents/kirocrew*.json.bak
 agents/kirocrew*.json.bak.*
 agents/kirocrew.lock
+prompts/kirocrew*.md
 crew/
 settings/survey_state.json
 settings/feed_state.json
@@ -45,6 +46,25 @@ settings/feed_state.json
 # public repo; must never be committed (internal Amazon systems/tooling).
 agents/AmazonBuilderCoreAIAgents-*.json
 steering/amazon-builder/
+
+# AIM (Amazon internal) core-skills provisioning — installs its own skill
+# bundles into this shared ~/.kiro/skills directory, marked with a
+# .aim-managed file in each skill dir. Not part of this public repo.
+skills/.aim-core-skills.json
+skills/.aim-staging/
+skills/agent-sop-author/
+skills/brazil/
+skills/brazil-build-analyzer-skill/
+skills/builder-insights/
+skills/builderhub-create/
+skills/crux-code-reviews/
+skills/deployment-fixer/
+skills/fix-integration-test/
+skills/golden-path-recommendations/
+skills/improve-integration-test-coverage/
+skills/tell-asbx-that/
+skills/tst/
+skills/wiki-edit/
 
 # Kiro CLI runtime session state — not part of this repo's config
 session-index/

@@ -5,7 +5,7 @@ description: AWS Lambda, API Gateway, DynamoDB, Step Functions, EventBridge patt
 
 # AWS Serverless Patterns
 
-> When uncertain about an AWS API parameter, IAM action, or service quota, use `aws___search_documentation` from the `aws-mcp-server` MCP server. If unsure which MCP tool covers your task, see `skills/mcp-tool-discovery.md` for the discovery flow.
+> When uncertain about an AWS API parameter, IAM action, or service quota, resolve and call the AWS docs-search tool (`search_documentation`) from the `aws-mcp-server` MCP server — see `steering/aws-agent-toolkit.md` → "Resolving the correct tool name" if the literal tool name doesn't resolve on first try. If unsure which MCP tool covers your task, see `skills/mcp-tool-discovery.md` for the discovery flow.
 
 ## Lambda Function Template
 

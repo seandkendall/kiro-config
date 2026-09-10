@@ -174,3 +174,106 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 
 - Moved the install blocks into a new `## Installation` section right after the README intro — AI-assisted install primary (open), Manual second, one-shot script remains a fallback under Local Tooling
 - `[0.28.2]` in `CHANGELOG.md`
+
+## Round 24 — 2026-07-28 -06:00
+
+- Made `reinvent` AWS-SAM-only per user request: removed all CDK mentions from `prompts/reinvent.md` (previously "SAM or AWS CDK" / "CDK when appropriate") — AWS SAM is now the agent's sole, non-negotiable IaC tool
+- Added Lambda Durable Functions and Amazon Bedrock integration to `prompts/reinvent.md`'s expertise list (previously undocumented despite being implied by the agent's description)
+- Added a `SKILLS:` section to `prompts/reinvent.md` directing the agent to retrieve the AWS Agent Toolkit's `aws-serverless` (core) and `aws-lambda-durable-functions` (specialized) skills on demand via `aws___retrieve_skill`, confirmed via research since no standalone "AWS SAM" skill exists in the toolkit catalog — SAM guidance lives inside the `aws-serverless` core skill
+- Corrected mid-task error: initially overwrote `prompts/reinvent.md` and `agents/reinvent.json` based on a stale context summary that incorrectly claimed the agent has no subagents; re-diffed against git HEAD, found real content (subagent delegation paragraph, `../steering/*.md` resource, Well-Architected framing) and restored it, applying only the SAM-only + skills changes on top instead of a full rewrite
+- Updated `agents/reinvent.json` description and `README.md` agent table row to reflect AWS SAM only (previously "with SAM" / "SAM-first", implying CDK was still an option)
+- Verified `./validate.sh` green (33 agents validate, JSON/bash syntax OK, no Cypress regressions); confirmed `settings/cli.json` trailing-newline drift is pre-existing CLI noise, not staged
+
+## Round 25 — 2026-07-28 -06:00
+
+- Confirmed exact skill names authoritatively via the AWS MCP Server (fully-qualified `mcp_aws_mcp_server_aws___*` invocation, working around the bare `aws___*` alias being unreachable this session): `aws-serverless` (core skill, description explicitly names SAM/CDK/SAM templates) and `aws-lambda-durable-functions` (specialized serverless skill) — both retrieved and their SKILL.md content verified, superseding last round's web-search-only confirmation
+- Added a routing rule to `prompts/reinvent.md`'s `SKILLS:` section: when a user requests orchestration/workflow coordination without naming a technology, the agent must surface the Step Functions vs. Lambda Durable Functions choice rather than silently picking one — this is a rule the `aws-serverless` skill itself mandates, and `reinvent`'s heavy Durable Functions expertise made it a real risk of being silently defaulted
+- Re-verified `./validate.sh` green after the prompt edit
+
+## Round 26 — 2026-07-28 -06:00
+
+- Trimmed `reinvent` to the user's exact real-world stack per explicit scope statement: React UI on S3/CloudFront, API Gateway, Lambda Durable Functions (all compute), DynamoDB, CloudWatch/X-Ray/OpenTelemetry observability, SAM for IaC and local testing
+- Removed all Amazon Bedrock references (expertise bullet, `ai-builder` subagent delegation) — not part of this agent's stack
+- Removed the Step Functions vs. Durable Functions routing rule added last round, and all EventBridge mentions — explicitly excluded by the user; added an explicit line telling the agent not to introduce services/tools outside the fixed stack without an explicit per-project request
+- Added the previously-missing S3/CloudFront static hosting layer and AWS X-Ray to the expertise list — both were part of the user's stated stack but absent from the prompt
+- Narrowed `SKILLS:` guidance to `aws-lambda-durable-functions` (primary) and `aws-serverless` (general serverless build/deploy/debug) — dropped Step Functions/Bedrock skill considerations
+- Updated `agents/reinvent.json` description and `README.md` row to the trimmed stack description
+- Verified `./validate.sh` green after the rewrite
+
+## Round 27 — 2026-07-28 -06:00
+
+- Made `reinvent` fully self-contained per explicit user request to get closer to `master-demo`: removed ALL subagent delegation (`frontend`, `data`, `testing`, `devops`, `security`, `docs`, `image-gen`) — the agent now builds the React UI, DynamoDB modeling, and everything else itself
+- Root cause for cutting `frontend` too (not just testing/devops/security/docs/image-gen as literally requested): the `frontend` subagent has Playwright wired directly into its own MCP servers (`agents/frontend.json`), so keeping frontend delegation would have transitively reintroduced Playwright even after removing the `testing` subagent — flagged and cut both to honor "NO playwright guidance in this agent" fully
+- Replaced the removed `devops` delegation with direct, mandatory prompt guidance: enable AWS X-Ray active tracing on every Lambda function and API Gateway stage, and integrate the ADOT Lambda layer into every function, on every build — no separate monitoring subagent
+- Added an explicit `TESTING:` section banning Playwright/Cypress/E2E browser testing outright; verification is via curl / `sam local invoke` / `sam local start-api`
+- Updated `agents/reinvent.json` description and `README.md` row to reflect "No subagents; X-Ray/ADOT observability built in"
+- Verified `./validate.sh` green after the rewrite
+
+## Round 28 — 2026-07-28 -06:00
+
+- Removed all AWS X-Ray requirements from `reinvent` per user confirmation: the target account already pipes CloudWatch Logs to OpenObserve via Kinesis Data Firehose, and ADOT/OpenTelemetry exports traces+metrics directly via OTLP to OpenObserve — X-Ray would be a redundant, separately-billed tracing backend with no consumer in this setup
+- Rewrote `OBSERVABILITY (MANDATORY)` section: mandatory OpenTelemetry via the ADOT Lambda layer on every function, exporting via OTLP to OpenObserve; explicit "do not enable X-Ray" with the reasoning inline; kept guidance to structure Lambda logs (structured JSON) so they flow cleanly through the existing CloudWatch → Firehose → OpenObserve pipeline
+- Scrubbed remaining X-Ray mentions from the expertise list and `SUBAGENT DELEGATION` line (leftover text from the prior round); the only two remaining X-Ray mentions are the explicit "do not introduce/do not enable" exclusions, which are intentional
+- Updated `agents/reinvent.json` description and `README.md` row to "OpenTelemetry/ADOT observability into OpenObserve, no X-Ray"
+- Verified `./validate.sh` green after the rewrite
+
+## Round 29 — 2026-07-28 -06:00
+
+- Item 5: researched ADOT + Lambda Durable Functions IAM requirements via `aws___search_documentation` — AWS's own durable-execution SDK auto-instrumentation plugins (`ExecutionOtelPlugin`/`InvocationOtelPlugin`) rely on X-Ray's trace-ID propagation (`_X_AMZN_TRACE_ID`) and require `Tracing: Active` + `AWSXRayDaemonWriteAccess` purely for internal span plumbing — not for using X-Ray as a backend. Added an `IAM NOTE FOR DURABLE FUNCTIONS + OTEL` section to `prompts/reinvent.md` documenting this nuance and the alternative (manual `AWSOpenTelemetryDistro*` layer + plain OTLP exporter) that avoids the X-Ray IAM dependency entirely, rather than silently contradicting the prior round's "no X-Ray" mandate
+- Item 6: found and fixed dangling `skill://` resource paths in `agents/master-demo.json`, `agents/serverless.json`, `agents/architect.json` — all referenced skill directories deleted in the 2026-07-21 toolkit-skills audit (`aws-serverless`, `connecting-lambda-to-api-gateway`, `connecting-lambda-to-dynamodb`, `debugging-lambda-timeouts`, `aws-messaging-and-streaming`, `routing-traffic-with-route53-and-cloudfront`, `aws-cloudformation`, `aws-billing-and-cost-management`) but never removed from the `resources` arrays; kept only entries pointing at files/directories confirmed still present on disk
+- Item 7: deleted all 28 `agents/*.bak*` files (none tracked in git — confirmed via `git ls-files` before deleting)
+- Item 4: re-ran `./validate.sh` after the full batch — 33 agents validate, JSON/bash syntax OK, no privacy leaks, no Cypress regressions, all green
+
+## Round 30 — 2026-07-28 -06:00
+
+- Added an `OTEL COLLECTOR CONFIG (SSM)` section to `prompts/reinvent.md` per user request: OpenObserve OTLP connection details resolved from SSM Parameter Store rather than hardcoded or asked-for-each-session — `/reinvent/otel/otlp-endpoint` (`String`, → `OTEL_EXPORTER_OTLP_ENDPOINT`), `/reinvent/otel/otlp-headers` (`SecureString`, → `OTEL_EXPORTER_OTLP_HEADERS`, resolved via `{{resolve:ssm-secure:...}}` in SAM templates, never printed/logged/hardcoded), `/reinvent/otel/org` (`String`, optional)
+- Paths are flat/shared across all projects (`/reinvent/...`, no per-project namespace) per explicit user instruction — user will create these parameters in their own project's CDK/SSM setup
+- Verified `./validate.sh` green after the addition
+
+## Round 31 — 2026-07-28 -06:00
+
+- Created `skills/openobserve-telemetry/SKILL.md` from the user's own account-verified instructions (`/Users/seandall/Downloads/PROJECTS/reinvent/reimburse/OpenObserve/docs/SENDING-TELEMETRY.md`): connection details (SSM-backed, not hardcoded), connectivity check, ADOT Lambda instrumentation, API Gateway trace continuity, log delivery options, naming/tagging, account-specific constraints (7-day retention, 24h late/future data rejection, sampling), a definition-of-done checklist, and troubleshooting steps
+- Corrected a real error from earlier rounds: the source doc requires enabling `Tracing: Active` on API Gateway stages specifically for X-Ray's `X-Amzn-Trace-Id` header propagation — without it, API Gateway and Lambda traces split into two disconnected traces. This is NOT the same as using X-Ray as a viewing backend (still correctly excluded), but the prior "do not enable X-Ray" prompt language was too broad and would have broken trace continuity. Added an explicit `X-RAY:` section to `prompts/reinvent.md` distinguishing "no X-Ray backend/console" from "X-Ray propagation on API Gateway is required and non-optional"
+- Corrected the SSM/endpoint shape to match the real, verified setup: base URL ends at `/api/default` (no signal path — SDK appends `/v1/traces` etc.), dedicated `otel-ingest` user (not root, `admin` role due to OSS-tier role restrictions) rather than an unspecified credential
+- Rewrote `prompts/reinvent.md`'s `OBSERVABILITY`/`OTEL COLLECTOR CONFIG`/`IAM NOTE` sections to defer to the new skill as the authoritative source rather than duplicating/paraphrasing OTel setup details inline
+- Wired `skill://~/.kiro/skills/openobserve-telemetry/SKILL.md` into `agents/reinvent.json`'s `resources` array
+- Marked `openobserve-telemetry` as a permanent custom-skill "keep" in `skills/AWS-TOOLKIT-SKILLS-AUDIT.md` — it documents this account's own live OpenObserve deployment and can never be served by the AWS Agent Toolkit's managed registry
+- Updated README skills table/count (16 → 17) and intro summary line
+- Verified `./validate.sh` green after the full change
+
+## Round 32 — 2026-07-28 -06:00
+
+- User caught a real error: the invented `/reinvent/otel/otlp-endpoint`, `/reinvent/otel/otlp-headers`, `/reinvent/otel/org` SSM paths from earlier rounds were never in the source doc — confirmed by re-checking `SENDING-TELEMETRY.md` directly. Corrected `skills/openobserve-telemetry/SKILL.md` and `prompts/reinvent.md` to follow the doc exactly:
+  - Only ONE SSM parameter: `/openobserve/otlp-basic-token` (`SecureString`) for the auth token
+  - The OTLP endpoint is NOT stored in SSM at all — it's derived live from `aws cloudformation describe-stacks --stack-name OpenObserveEksDemoStack-us-east-1` each time, since the CloudFront domain can change and a cached SSM copy would risk going stale
+  - Org (`default`) is a fixed constant baked into the API path, never a stored parameter
+- Rewrote the skill's section 1 (connection details), section 2 (connectivity check script), and section 3.2 (Lambda env vars) to match; flagged that the exact stored-token format (raw token vs. full `Authorization=Basic <token>` string) needs confirming against what the user actually puts in the parameter
+- Updated `prompts/reinvent.md`'s `OTEL COLLECTOR CONFIG` section to describe the single-parameter + live-CloudFormation-lookup pattern instead of the invented two-or-three-parameter scheme
+- Verified `./validate.sh` green; confirmed no remaining `/reinvent/otel/...` references anywhere
+
+## Round 33 — 2026-07-28 -06:00
+
+- Added a `FRONTEND HOSTING (FIXED INFRASTRUCTURE — MANDATORY)` section to `prompts/reinvent.md`, scoped only to this agent per explicit instruction: every React project is hosted at the pre-existing CloudFront distribution `https://d5bldcvijpt3d.cloudfront.net/` backed by the existing S3 bucket `seandall-reinvent2026-website-hosting`; caching is off on that distribution. Never create a new `AWS::S3::Bucket` or `AWS::CloudFront::Distribution` for frontend hosting in a project's SAM template — reference the existing bucket instead. Deploy step is always `aws s3 sync ./build s3://seandall-reinvent2026-website-hosting --delete`, never `cp --recursive` or manual uploads
+- Updated the top expertise bullet and "do not introduce other services" line to say "pre-existing CloudFront distribution (never a new one per project)"
+- Explicitly noted this fixed-hosting rule applies only to `reinvent` — `serverless`/`web-builder` still create their own CloudFront distributions per project as normal
+- Verified `./validate.sh` green
+
+
+## Round 34 — 2026-07-28 -06:00
+
+- Confirmed via `aws___search_documentation`/web search that AWS is retiring Amazon Nova Canvas: Legacy since 2026-03-30, full EOL 2026-09-30 — matches the deprecation notices already present in the `bedrock-image-mcp-server` tool descriptions (`generate_image`, `generate_image_with_colors` both marked DEPRECATED there)
+- Removed all Nova Canvas guidance across the repo: `prompts/image-gen.md` (full rewrite — model table now maps to actual current tools: `generate_image_ultra`/`_sd35`/`_core` plus edit/upscale tools), `prompts/ai-builder.md`, `prompts/master.md`, `agents/image-gen.json` (description + welcomeMessage), `README.md`, `steering/AGENTS.md`
+- Confirmed via AWS's official regional-availability docs that Stable Image Ultra, SD 3.5 Large, and Stable Image Core are `us-west-2`-only on Bedrock (no In-Region availability elsewhere); some editing/upscaling tools (`structure_control`, `upscale_conservative`/`_fast`, `sketch_to_image`) have wider availability (`us-east-1`/`us-east-2`/`us-west-2`) but this repo keeps everything on `us-west-2` for consistency
+- Checked all 6 `bedrock-image-mcp-server` MCP configs (`accounting`, `ai-builder`, `frontend`, `image-gen`, `master`, `web-builder`) — all already set `AWS_REGION=us-west-2`, so no MCP server config change was needed, only prompt/doc guidance
+- Left historical `CHANGELOG.md` entries describing past Nova Canvas additions unchanged (append-only history)
+- Verified `./validate.sh` green
+
+
+## Round 35 — 2026-07-28 -06:00
+
+- Found the root cause of the user-reported "Tool ... is not available" errors: `steering/aws-agent-toolkit.md` and 8 other files instructed agents to hardcode literal AWS MCP tool names (`aws___search_documentation`, `aws___retrieve_skill`, etc.) as if they were guaranteed callable strings — directly contradicting `skills/mcp-tool-discovery.md`'s own rule to resolve names via `tool_search`, not hardcode them. The AWS MCP Server's tools resolve under different forms depending on the session (bare `aws___x` vs. fully-qualified `mcp_aws_mcp_server_aws___x`), so either hardcoded form fails intermittently
+- Added a new "Resolving the correct tool name (MANDATORY)" section to `steering/aws-agent-toolkit.md`: on any "Tool is not available" error, resolve via `tool_search` first, try the other naming convention once if that also fails, verify the server is alive via a trivial call before concluding it's broken, never fabricate a workaround
+- Live-verified the fix in this session: reproduced the exact failure (`aws___search_documentation` → not available), then confirmed `mcp_aws_mcp_server_aws___search_documentation` succeeds — this is a tested fix, not a guess
+- Updated 9 files' hardcoded tool-name mentions to reference tools by short name + a pointer to the new resolution procedure: `prompts/reinvent.md`, `skills/deploy-on-aws.md`, `skills/cdk-infrastructure-patterns.md` (2 spots), `skills/aws-serverless-patterns.md`, `skills/mcp-tool-discovery.md`, `skills/openobserve-telemetry/SKILL.md`, `steering/aws-standards.md` (2 spots), `steering/mcp-server-preference.md`
+- Left historical CHANGELOG.md/CHANGES.md/AWS-TOOLKIT-SKILLS-AUDIT.md mentions unchanged (append-only history)
+- Verified `./validate.sh` green

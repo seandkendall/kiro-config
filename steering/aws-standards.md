@@ -7,7 +7,7 @@ description: 'AWS development standards: CDK Python (never TypeScript), resource
 
 # AWS Development Standards
 
-> When uncertain about an AWS service, API, IAM action, or limit, use `aws___search_documentation` and `aws___retrieve_skill` from the `aws-mcp-server` MCP server. If unsure which MCP tool covers your task, see `skills/mcp-tool-discovery.md` for the discovery flow.
+> When uncertain about an AWS service, API, IAM action, or limit, resolve and call the AWS docs-search / skill-retrieval tools (`search_documentation`, `retrieve_skill`) from the `aws-mcp-server` MCP server — see `steering/aws-agent-toolkit.md` → "Resolving the correct tool name" if the literal tool name doesn't resolve on first try. If unsure which MCP tool covers your task, see `skills/mcp-tool-discovery.md` for the discovery flow.
 
 ## CDK Infrastructure
 
@@ -16,7 +16,7 @@ description: 'AWS development standards: CDK Python (never TypeScript), resource
 **CDK Alpha Modules** - Before using any `*_alpha` CDK module, check whether it has graduated to stable in `aws-cdk-lib`. Alpha modules are separate `pip` packages (`aws-cdk.aws-<service>-alpha`) with no backward-compatibility guarantee; most eventually graduate into `aws-cdk-lib` and the alpha package is then deprecated.
 
 - **Prefer the stable module when one exists.** Stable constructs live in `aws-cdk-lib` and import as `from aws_cdk import aws_<service>`.
-- **It's fine to use an alpha module when the stable path doesn't exist yet, or is missing features the alpha has** — don't avoid alpha modules on principle; they exist because the stable API isn't ready. Verify current status with `aws___search_documentation` (AWS MCP server) or the module's PyPI page before choosing it.
+- **It's fine to use an alpha module when the stable path doesn't exist yet, or is missing features the alpha has** — don't avoid alpha modules on principle; they exist because the stable API isn't ready. Verify current status with the AWS docs-search tool (`search_documentation`, via `aws-mcp-server` — resolve the callable name via `tool_search` first, see `aws-agent-toolkit.md`) or the module's PyPI page before choosing it.
 - **Periodically re-check every alpha module already in use** — as part of the daily-maintenance dependency upgrade (`development-quality-gates.md`), confirm whether each alpha module you depend on has since graduated to stable. If it has, migrate the project to the stable import in the same maintenance pass rather than leaving it on a deprecated alpha package indefinitely.
 - If the PyPI page says "deprecated / moved to aws-cdk-lib" or Development Status is "Inactive", the alpha is dead; use the stable path immediately.
 - **Known graduations** (use the stable path, NOT the alpha):
@@ -25,7 +25,7 @@ description: 'AWS development standards: CDK Python (never TypeScript), resource
 
 **Construct Level (MANDATORY) — prefer L2/L3 over L1** - Always use the highest-level construct available. Prefer **L3** (patterns) and **L2** (curated resources with sensible defaults) over **L1** (`Cfn*`, raw CloudFormation 1:1).
 
-- Whenever guidance, a snippet, or generated code reaches for an **L1 `Cfn<Resource>`** construct, first **verify whether the current `aws-cdk-lib` now ships an L2/L3** for that resource — use `aws___search_documentation` (AWS MCP server) or the construct's PyPI/API-reference page — and **propose the higher-level construct instead**.
+- Whenever guidance, a snippet, or generated code reaches for an **L1 `Cfn<Resource>`** construct, first **verify whether the current `aws-cdk-lib` now ships an L2/L3** for that resource — use the AWS docs-search tool (`search_documentation`, resolve the callable name via `tool_search` first) or the construct's PyPI/API-reference page — and **propose the higher-level construct instead**.
 - Only fall back to an L1 `Cfn*` when **no L2/L3 exists** (or the L2 genuinely can't express what you need). When you do, leave a short comment saying so and noting it should be revisited.
 - **Re-check on every CDK upgrade.** L2s graduate continuously; an L1 you used last quarter may have an L2 now. The daily-maintenance dependency upgrade (`development-workflow.md`) is the natural point to re-evaluate.
 - Current known L1-only exception in this config: **`aws_resourcegroups.CfnGroup`** — `aws-cdk-lib` has **no L2** for Resource Groups as of CDK 2.260 (verified 2026-06-23), so L1 is correct here for now; re-check on upgrade.

@@ -1,6 +1,6 @@
 {
   "name": "image-gen",
-  "description": "Image generation and editing — UI assets, logos, icons, mockups, marketing images, virtual try-on, sketch-to-2D, ambient art (Samsung Frame TV) via Bedrock (Nova Canvas + Stable Diffusion 3.5)",
+  "description": "Image generation and editing — UI assets, logos, icons, mockups, marketing images, virtual try-on, sketch-to-2D, ambient art (Samsung Frame TV) via Bedrock (Stability AI: Stable Image Ultra/Core, Stable Diffusion 3.5, us-west-2)",
   "prompt": "file://../prompts/image-gen.md",
   "mcpServers": {
     "web-search": {
@@ -44,7 +44,7 @@
       "trusted": [".*docs\\.aws\\.amazon\\.com.*"]
     }
   },
-  "welcomeMessage": "Image generation + editing ready. Nova Canvas + Stable Diffusion 3.5 via Bedrock. Logos, icons, mockups, virtual try-on, ambient art. What images do you need?",
+  "welcomeMessage": "Image generation + editing ready. Stable Image Ultra/Core + Stable Diffusion 3.5 via Bedrock (us-west-2). Logos, icons, mockups, virtual try-on, ambient art. What images do you need?",
   "keyboardShortcut": "shift+i",
   "allowedTools": ["@creds-agent"],
   "permissions": {

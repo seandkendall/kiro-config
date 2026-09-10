@@ -29,12 +29,7 @@
     "file://README.md",
     "file://../steering/*.md",
     "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
-    "skill://~/.kiro/skills/aws-serverless-patterns.md",
-    "skill://~/.kiro/skills/connecting-lambda-to-api-gateway/SKILL.md",
-    "skill://~/.kiro/skills/connecting-lambda-to-dynamodb/SKILL.md",
-    "skill://~/.kiro/skills/debugging-lambda-timeouts/SKILL.md",
-    "skill://~/.kiro/skills/aws-serverless/SKILL.md",
-    "skill://~/.kiro/skills/aws-messaging-and-streaming/SKILL.md"
+    "skill://~/.kiro/skills/aws-serverless-patterns.md"
   ],
   "toolsSettings": {
     "shell": {

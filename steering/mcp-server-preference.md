@@ -41,9 +41,10 @@ For ANY GitHub operation, use the `github` MCP server. Do NOT run `gh` CLI comma
 
 For AWS API calls, prefer `aws-mcp-server` (Agent Toolkit for AWS) over the `aws` CLI shell tool.
 
-- Use `aws___run_script` (sandboxed Python + `call_boto3()`) for most AWS API calls — prefer it over `aws___call_aws`, which is now deprecated in favor of `run_script`, and over chaining `aws` CLI shell commands
-- Use `aws___search_documentation` instead of `web_fetch` against `docs.aws.amazon.com`
-- Use `aws___retrieve_skill` to load curated guidance instead of guessing API patterns
+- Use the sandboxed-Python/`call_boto3()` tool (`run_script`) for most AWS API calls — prefer it over the deprecated `call_aws` tool, and over chaining `aws` CLI shell commands
+- Use the AWS docs-search tool (`search_documentation`) instead of `web_fetch` against `docs.aws.amazon.com`
+- Use the skill-retrieval tool (`retrieve_skill`) to load curated guidance instead of guessing API patterns
+- **None of these are guaranteed literal, callable tool-name strings.** The AWS MCP Server's tools resolve under different names depending on the session (bare `aws___x` vs. fully-qualified `mcp_aws_mcp_server_aws___x`), and calling either blind risks a `Tool "X" is not available` error even when the capability exists. Resolve the actual callable name via `tool_search` first — see `steering/aws-agent-toolkit.md` → "Resolving the correct tool name" for the full recovery procedure.
 
 The built-in `aws` shell tool is acceptable as a fallback when `aws-mcp-server` isn't available, but it should NOT be the first choice.
 

@@ -5,6 +5,108 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.29.4] - Fixed "Tool is not available" errors for AWS MCP Server calls
+
+### Fixed
+
+- **Root cause of recurring `Tool "aws___search_documentation" is not available` (and equivalent) errors**: `steering/aws-agent-toolkit.md` and downstream files (`prompts/reinvent.md`, `skills/deploy-on-aws.md`, `skills/cdk-infrastructure-patterns.md`, `skills/aws-serverless-patterns.md`, `skills/mcp-tool-discovery.md`, `skills/openobserve-telemetry/SKILL.md`, `steering/aws-standards.md`, `steering/mcp-server-preference.md`) instructed agents to call AWS MCP tools by hardcoded literal names (`aws___search_documentation`, `aws___retrieve_skill`, etc.), contradicting `skills/mcp-tool-discovery.md`'s own rule to resolve tool names via `tool_search` rather than hardcoding. The AWS MCP Server's tools resolve under different callable forms depending on the session (bare `aws___x` vs. fully-qualified `mcp_aws_mcp_server_aws___x`), so hardcoding either one fails intermittently even when the capability exists.
+- **Live-verified the fix this session**: reproduced the exact failure (`aws___search_documentation` → "not available"), then confirmed the fully-qualified form succeeds — the recovery procedure added below is not theoretical, it's the tested fix for the reported error.
+
+### Added
+
+- **`steering/aws-agent-toolkit.md`** — new "Resolving the correct tool name (MANDATORY)" section: on any "Tool is not available" error, resolve via `tool_search` first (never retry the same literal string), try the other naming convention once if the tool_search-confirmed name also fails, verify the server itself is alive via a trivial tool call before concluding it's broken, and never fabricate a workaround. Reworded the tool list to present names as identifiers to discover, not literal strings to hardcode.
+
+### Changed
+
+- **`prompts/reinvent.md`, `skills/deploy-on-aws.md`, `skills/cdk-infrastructure-patterns.md` (×2 spots), `skills/aws-serverless-patterns.md`, `skills/mcp-tool-discovery.md`, `skills/openobserve-telemetry/SKILL.md`, `steering/aws-standards.md` (×2 spots), `steering/mcp-server-preference.md`** — all hardcoded `aws___x` tool-name mentions rewritten to reference the tool by its short name with a pointer to `steering/aws-agent-toolkit.md`'s resolution procedure, instead of presenting a literal string as directly callable. Historical `CHANGELOG.md`/`CHANGES.md`/`AWS-TOOLKIT-SKILLS-AUDIT.md` entries left unchanged (append-only history).
+
+## [0.29.3] - Removed Amazon Nova Canvas guidance (AWS retirement); Stability AI models only, us-west-2
+
+### Fixed
+
+- **AWS is retiring Amazon Nova Canvas** (Legacy since 2026-03-30, full EOL 2026-09-30 — confirmed via AWS docs and the `bedrock-image-mcp-server` tool descriptions' own deprecation notices) — its recommendation as an image model has been removed everywhere it appeared: `prompts/image-gen.md`, `prompts/ai-builder.md`, `prompts/master.md`, `agents/image-gen.json` (description + welcome message), `README.md`, `steering/AGENTS.md`.
+
+### Changed
+
+- **`prompts/image-gen.md`** — rewritten to Stability AI only: model selection table now maps use case → the correct `generate_image_*`/edit/upscale tool (`_ultra`, `_sd35`, `_core`, plus editing/upscaling tools), replacing the old Nova-vs-SD35 table. Added a `Regional constraint` section confirming (via AWS's official regional-availability docs) that Stable Image Ultra, SD 3.5 Large, and Stable Image Core are **`us-west-2`-only** on Bedrock — some editing/upscaling tools have wider availability (`us-east-1`/`us-east-2`/`us-west-2`), but this agent keeps everything on `us-west-2` for consistency. Confirmed all 6 `bedrock-image-mcp-server` MCP configs (`accounting`, `ai-builder`, `frontend`, `image-gen`, `master`, `web-builder`) already set `AWS_REGION=us-west-2` — no config change needed there.
+- Historical `CHANGELOG.md` entries describing past Nova Canvas additions were left unchanged (append-only history, not a living doc).
+
+## [0.29.2] - `reinvent` fixed frontend hosting infrastructure (existing CloudFront/S3, no new distributions)
+
+### Added
+
+- **`prompts/reinvent.md`** — `FRONTEND HOSTING (FIXED INFRASTRUCTURE — MANDATORY)` section, scoped only to `reinvent`: every project's React UI is hosted at the pre-existing CloudFront distribution `https://d5bldcvijpt3d.cloudfront.net/` backed by the existing S3 bucket `seandall-reinvent2026-website-hosting` (caching off). Never create a new S3 bucket or CloudFront distribution for hosting in a project's SAM template — reference the existing bucket instead. Deploy step is always `aws s3 sync ./build s3://seandall-reinvent2026-website-hosting --delete`. Other agents (`serverless`, `web-builder`) are unaffected and continue creating their own distributions per project.
+
+## [0.29.1] - Corrected `openobserve-telemetry` SSM scheme to match the source doc exactly
+
+### Fixed
+
+- **`skills/openobserve-telemetry/SKILL.md`**, **`prompts/reinvent.md`** — the previous round invented `/reinvent/otel/otlp-endpoint`, `/reinvent/otel/otlp-headers`, `/reinvent/otel/org` SSM paths that do not exist in the source doc. Corrected to match `SENDING-TELEMETRY.md` exactly: a single SSM `SecureString` parameter (`/openobserve/otlp-basic-token`) for the auth token; the OTLP endpoint is derived live from `aws cloudformation describe-stacks --stack-name OpenObserveEksDemoStack-us-east-1` each build/deploy rather than cached in a second SSM parameter (the CloudFront domain can change); `org` (`default`) is a fixed constant in the API path, never a stored parameter.
+
+## [0.29.0] - New `openobserve-telemetry` skill; `reinvent` X-Ray guidance corrected
+
+### Added
+
+- **`skills/openobserve-telemetry/SKILL.md`** — new custom skill built from the user's own account-verified OpenObserve instructions. Covers SSM-backed connection details, a connectivity check, ADOT Lambda instrumentation, API Gateway trace continuity, CloudWatch→Firehose log delivery, naming/tagging conventions, account-specific constraints (7-day retention, 24h late/future data rejection, sampling), a definition-of-done checklist, and troubleshooting. Wired into `agents/reinvent.json` as a `skill://` resource and required by `prompts/reinvent.md`'s `OBSERVABILITY` section on every build.
+
+### Fixed
+
+- **`prompts/reinvent.md`** — corrected overly broad "do not enable X-Ray" guidance from 0.28.6–0.28.8. The account's real OpenObserve setup requires `Tracing: Active` on API Gateway stages for X-Ray's trace-ID header propagation (`X-Amzn-Trace-Id`); without it, API Gateway and Lambda traces split into two disconnected traces. Added an explicit `X-RAY:` section distinguishing "no X-Ray backend/console" (still true) from "X-Ray propagation on API Gateway is required" (previously missing/contradicted).
+
+### Changed
+
+- **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** — marked `openobserve-telemetry` as a permanent custom-skill keep; it documents this account's own live deployment and has no AWS Agent Toolkit equivalent.
+- **`README.md`** — skills count 16 → 17, table and intro summary updated.
+
+## [0.28.8] - `reinvent` OTel collector config sourced from SSM Parameter Store
+
+### Added
+
+- **`prompts/reinvent.md`** — `OTEL COLLECTOR CONFIG (SSM)` section: OpenObserve OTLP endpoint/auth resolved from SSM Parameter Store at build/deploy time instead of being asked for each session or hardcoded. Flat, shared paths (no per-project namespace): `/reinvent/otel/otlp-endpoint` (`String`), `/reinvent/otel/otlp-headers` (`SecureString`), `/reinvent/otel/org` (`String`, optional). The secure header value is never printed, logged, or hardcoded — resolved via SSM at deploy time.
+
+## [0.28.7] - ADOT/X-Ray IAM nuance documented; dangling skill paths + stale .bak files cleaned up
+
+### Fixed
+
+- **`agents/master-demo.json`, `agents/serverless.json`, `agents/architect.json`** — removed dangling `skill://` resource entries pointing at skill directories deleted in the 2026-07-21 toolkit-skills audit (`aws-serverless`, `connecting-lambda-to-api-gateway`, `connecting-lambda-to-dynamodb`, `debugging-lambda-timeouts`, `aws-messaging-and-streaming`, `routing-traffic-with-route53-and-cloudfront`, `aws-cloudformation`, `aws-billing-and-cost-management`); kept only entries confirmed still present on disk.
+
+### Changed
+
+- **`prompts/reinvent.md`** — added an `IAM NOTE FOR DURABLE FUNCTIONS + OTEL` section: AWS's Durable Execution SDK OTel auto-instrumentation plugins require `Tracing: Active` + `AWSXRayDaemonWriteAccess` purely for internal trace-ID plumbing (not for using X-Ray as a backend); documents the alternative manual `AWSOpenTelemetryDistro*` + plain OTLP setup that avoids the X-Ray IAM dependency entirely.
+
+### Removed
+
+- **`agents/*.bak*`** (28 files) — stale local-only backup files, none tracked in git.
+
+## [0.28.6] - `reinvent` observability moved to OpenTelemetry/OpenObserve, X-Ray removed
+
+### Changed
+
+- **`prompts/reinvent.md`** — `OBSERVABILITY` section rewritten: mandatory OpenTelemetry via the ADOT Lambda layer on every function, exporting traces/metrics via OTLP to OpenObserve (already installed on the target account). Removed all AWS X-Ray requirements — CloudWatch Logs already reach OpenObserve via an existing Kinesis Data Firehose pipe, and ADOT/OTLP covers traces and metrics directly, making X-Ray a redundant, separately-billed tracing backend with no consumer here. Scrubbed leftover X-Ray mentions from the expertise list and delegation line; the two remaining mentions are intentional "do not enable X-Ray" exclusions.
+- **`agents/reinvent.json`** / **`README.md`** — description/row updated to "OpenTelemetry/ADOT observability into OpenObserve, no X-Ray."
+
+## [0.28.5] - `reinvent` made fully self-contained, no subagents, X-Ray/ADOT mandatory
+
+### Changed
+
+- **`prompts/reinvent.md`** — removed all subagent delegation (`frontend`, `data`, `testing`, `devops`, `security`, `docs`, `image-gen`); the agent now builds the React UI, DynamoDB modeling, and everything else itself, closer to `master-demo`'s single-agent design. `frontend` was cut in addition to `testing` because it bundles Playwright directly in its own MCP servers — keeping frontend delegation would have transitively reintroduced the E2E tooling the user explicitly banned. Replaced the removed `devops` delegation with mandatory direct guidance: enable AWS X-Ray active tracing on every Lambda function and API Gateway stage, and integrate the ADOT Lambda layer into every function, on every build. Added a `TESTING:` section banning Playwright/Cypress/E2E browser testing outright — verification is via curl/`sam local invoke`/`sam local start-api`.
+- **`agents/reinvent.json`** / **`README.md`** — description/row updated to "No subagents; X-Ray/ADOT observability built in."
+
+## [0.28.4] - `reinvent` scoped to exact user stack, Bedrock/EventBridge/Step Functions removed
+
+### Changed
+
+- **`prompts/reinvent.md`** — rewritten to the user's exact stack: React UI on S3/CloudFront, API Gateway, Lambda Durable Functions for all compute, DynamoDB, CloudWatch/X-Ray/OpenTelemetry observability, SAM for IaC and local testing. Removed Amazon Bedrock, EventBridge, and the Step Functions-vs-Durable-Functions routing rule added in 0.28.3 — none are part of this agent's stack. Added an explicit instruction not to introduce out-of-stack services/tools without an explicit per-project request. Added S3/CloudFront and X-Ray, which were part of the stated stack but missing from the prompt. Dropped the `ai-builder` subagent delegation line (no AI features in scope).
+- **`agents/reinvent.json`** / **`README.md`** — description/table row updated to the trimmed stack.
+
+## [0.28.3] - `reinvent` agent made AWS-SAM-only, Durable Functions skill wired in
+
+### Changed
+
+- **`prompts/reinvent.md`** — removed all AWS CDK mentions ("SAM or CDK", "CDK when appropriate"); AWS SAM is now the agent's sole, non-negotiable infrastructure-as-code tool. Added Lambda Durable Functions and Amazon Bedrock integration to the expertise list. Added a `SKILLS:` section directing the agent to retrieve the AWS Agent Toolkit's `aws-serverless` (core) and `aws-lambda-durable-functions` (specialized) skills on demand via `aws___retrieve_skill` — no standalone "AWS SAM" skill exists in the toolkit catalog, so SAM guidance is sourced from the `aws-serverless` core skill.
+- **`agents/reinvent.json`** — description updated to drop "SAM" ambiguity in favor of explicit AWS-SAM-only framing.
+- **`README.md`** — `reinvent` agent table row updated to "AWS SAM only".
+
 ## [0.28.2] - Installation section moved to top; AI-assisted install is primary
 
 ### Changed

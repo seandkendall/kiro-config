@@ -6,7 +6,7 @@
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
 [![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
-Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 20 specialist subagents (incl. native iOS + iOS-testing + Amazon Ring), 27 steering docs, 16 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
+Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 20 specialist subagents (incl. native iOS + iOS-testing + Amazon Ring), 27 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
 > **💡 Tips for AI Agents working on this repo**
 >
@@ -165,30 +165,30 @@ npm install -g prettier
 
 ### Agents (22)
 
-| Agent              | Description                                                                                                          |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `master`           | Orchestrator — routes to the right specialist subagent                                                               |
-| `master-demo`      | Single-agent demo for serverless backend builds — only `aws-mcp-server`, no subagents, CORS-aware, no UI/WAF/Route53 |
-| `serverless`       | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools                                                        |
-| `frontend`         | React, TypeScript, Tailwind CSS, shadcn/ui, Playwright, Figma                                                        |
-| `testing`          | pytest, Jest/Vitest, Playwright E2E via subagent                                                                     |
-| `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews                                                     |
-| `ai-builder`       | Amazon Bedrock, Strands Agents, prompt engineering, RAG, AgentCore (full agentic apps)                               |
-| `devops`           | CloudWatch monitoring, alerting, cost optimization                                                                   |
-| `data`             | DynamoDB single-table design, data modeling                                                                          |
-| `security`         | IAM, encryption, cdk-nag, CloudTrail                                                                                 |
-| `docs`             | READMEs, API docs, ADRs, runbooks                                                                                    |
-| `image-gen`        | Image generation via Bedrock (Nova Canvas + SD 3.5)                                                                  |
-| `research`         | Deep research with web search, AWS docs, GitHub                                                                      |
-| `web-builder`      | React + AWS full-stack web apps; delegates AI features to `ai-builder`                                               |
-| `ios`              | Native iOS: Swift, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first MVVM                |
-| `ios-testing`      | iOS tests: XCTest, XCUITest, swift-snapshot-testing, performance tests, protocol-based mocking                       |
-| `ring`             | Amazon Ring integrations: Ring App Store apps + device APIs, events/webhooks (official Ring MCP)                     |
-| `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                                               |
-| `stocks`           | Stock trading research and analysis (Yahoo Finance MCP)                                                              |
-| `shopify`          | Shopify + AWS serverless integration builder (Shopify dev MCP)                                                       |
-| `reinvent`         | AWS serverless backend builder — SAM-first (Lambda, API GW, DynamoDB)                                                |
-| `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                      |
+| Agent              | Description                                                                                                                                                         |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `master`           | Orchestrator — routes to the right specialist subagent                                                                                                              |
+| `master-demo`      | Single-agent demo for serverless backend builds — only `aws-mcp-server`, no subagents, CORS-aware, no UI/WAF/Route53                                                |
+| `serverless`       | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools                                                                                                       |
+| `frontend`         | React, TypeScript, Tailwind CSS, shadcn/ui, Playwright, Figma                                                                                                       |
+| `testing`          | pytest, Jest/Vitest, Playwright E2E via subagent                                                                                                                    |
+| `architect`        | Architecture diagrams, cost estimation, Well-Architected reviews                                                                                                    |
+| `ai-builder`       | Amazon Bedrock, Strands Agents, prompt engineering, RAG, AgentCore (full agentic apps)                                                                              |
+| `devops`           | CloudWatch monitoring, alerting, cost optimization                                                                                                                  |
+| `data`             | DynamoDB single-table design, data modeling                                                                                                                         |
+| `security`         | IAM, encryption, cdk-nag, CloudTrail                                                                                                                                |
+| `docs`             | READMEs, API docs, ADRs, runbooks                                                                                                                                   |
+| `image-gen`        | Image generation via Bedrock (Stable Diffusion 3.5 / Stability AI, us-west-2)                                                                                       |
+| `research`         | Deep research with web search, AWS docs, GitHub                                                                                                                     |
+| `web-builder`      | React + AWS full-stack web apps; delegates AI features to `ai-builder`                                                                                              |
+| `ios`              | Native iOS: Swift, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first MVVM                                                               |
+| `ios-testing`      | iOS tests: XCTest, XCUITest, swift-snapshot-testing, performance tests, protocol-based mocking                                                                      |
+| `ring`             | Amazon Ring integrations: Ring App Store apps + device APIs, events/webhooks (official Ring MCP)                                                                    |
+| `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                                                                                              |
+| `stocks`           | Stock trading research and analysis (Yahoo Finance MCP)                                                                                                             |
+| `shopify`          | Shopify + AWS serverless integration builder (Shopify dev MCP)                                                                                                      |
+| `reinvent`         | AWS Serverless builder — React/S3/CloudFront UI, API Gateway, Lambda Durable Functions, DynamoDB, SAM. No subagents; OpenTelemetry/ADOT into OpenObserve, no X-Ray. |
+| `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                                                                     |
 
 ### Steering Docs (27)
 
@@ -196,13 +196,13 @@ Rules and standards automatically loaded into every session: accessibility, API 
 
 > **Personal steering** — say "always …" / "from now on …" / "I prefer …" or repeat a preference 2+ times in a session, and the agent will offer to save it as a `personal-<topic>.md` steering doc on your machine. These files are gitignored and ALWAYS win over base rules. No extra tooling required — they just work via Kiro's existing steering loader. See `steering/personal-rules-protocol.md` and `skills/personal-rules-management.md`.
 
-### Skills (16)
+### Skills (17)
 
-| Source                | Skills                                                                                                                                                                                                                                                                         |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Custom (11)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management, email template rendering, Cognito email migration, Cypress-to-Playwright migration |
-| AWS Agent Toolkit (2) | Amazon Bedrock (incl. AgentCore), MCP tool discovery — the other 14 vendored toolkit skills were retired 2026-07-21; the managed AWS MCP Server now serves them on demand via `aws___retrieve_skill` / Agent SOPs (see `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`)                   |
-| iOS reference (3)     | Amazon Location Service, Amazon Polly generative voices, Cognito passkey auth (loaded by the `ios` agent)                                                                                                                                                                      |
+| Source                | Skills                                                                                                                                                                                                                                                                                                                                                      |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Custom (12)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management, email template rendering, Cognito email migration, Cypress-to-Playwright migration, OpenObserve telemetry (account-specific OTel setup, required by `reinvent`) |
+| AWS Agent Toolkit (2) | Amazon Bedrock (incl. AgentCore), MCP tool discovery — the other 14 vendored toolkit skills were retired 2026-07-21; the managed AWS MCP Server now serves them on demand via `aws___retrieve_skill` / Agent SOPs (see `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`)                                                                                                |
+| iOS reference (3)     | Amazon Location Service, Amazon Polly generative voices, Cognito passkey auth (loaded by the `ios` agent)                                                                                                                                                                                                                                                   |
 
 ### MCP Servers
 

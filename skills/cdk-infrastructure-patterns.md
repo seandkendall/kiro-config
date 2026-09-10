@@ -5,7 +5,7 @@ description: AWS CDK Python patterns for stacks, constructs, tagging, cdk-nag, C
 
 # CDK Infrastructure Patterns
 
-> When uncertain about a CloudFormation/CDK construct, IAM action, or service limit, use `aws___search_documentation` and `aws___retrieve_skill` from the `aws-mcp-server` MCP server. If unsure which MCP tool to invoke, see `skills/mcp-tool-discovery.md` for the discovery flow.
+> When uncertain about a CloudFormation/CDK construct, IAM action, or service limit, resolve and call the AWS docs-search / skill-retrieval tools from the `aws-mcp-server` MCP server (`search_documentation`, `retrieve_skill`) — see `steering/aws-agent-toolkit.md` → "Resolving the correct tool name" before hardcoding either the bare `aws___x` or fully-qualified `mcp_aws_mcp_server_aws___x` form, since either can fail with "Tool is not available" depending on the session. If unsure which MCP tool to invoke, see `skills/mcp-tool-discovery.md` for the discovery flow.
 
 ## Stack Template
 
@@ -97,5 +97,5 @@ Keep tagging every stack with `project=<name>` (see Stack Template). Full rule +
 - Let CDK auto-generate S3 bucket names
 - Only add/remove ONE GSI per deploy
 - Always include cdk-nag AwsSolutionsChecks
-- Prefer L2/L3 constructs; use an L1 `Cfn*` only when no L2/L3 exists — when you reach for an L1, check whether the current `aws-cdk-lib` now ships a higher-level construct (via `aws___search_documentation` / PyPI) and propose it instead; re-check on each CDK upgrade
+- Prefer L2/L3 constructs; use an L1 `Cfn*` only when no L2/L3 exists — when you reach for an L1, check whether the current `aws-cdk-lib` now ships a higher-level construct (via the AWS docs-search tool, resolved through `tool_search` per `steering/aws-agent-toolkit.md`, or PyPI) and propose it instead; re-check on each CDK upgrade
 - deploy.sh is the ONLY deployment method
