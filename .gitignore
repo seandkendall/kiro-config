@@ -106,6 +106,16 @@ workspace-roots/
 # git regardless) — never commit.
 memories/
 
+# Kiro CLI global MCP config (settings/mcp.json + settings/mcp.lock) — this
+# repo's convention is self-contained per-agent mcpServers blocks (see May
+# 2026 commit "Remove stray global settings/mcp.json - agents are
+# self-contained"). Kiro CLI/Kiro Crew silently re-write this file with
+# machine-local servers (creds-agent, playwright-mcp) between sessions, and
+# the user may deliberately add their own machine-local global entries (e.g.
+# google-drive) on top — either way this is local-only state, never commit.
+settings/mcp.json
+settings/mcp.lock
+
 # Kiro CLI V3 capability-permissions file (keep gitignored — permanently).
 # Per the V3 docs, user-scope (~/.kiro/settings/permissions.yaml) and workspace-scope
 # (~/.kiro/workspace-roots/<hash>/permissions.yaml) rules are machine-local, per-user, and

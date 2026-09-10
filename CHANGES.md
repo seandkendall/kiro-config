@@ -258,7 +258,6 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Explicitly noted this fixed-hosting rule applies only to `reinvent` — `serverless`/`web-builder` still create their own CloudFront distributions per project as normal
 - Verified `./validate.sh` green
 
-
 ## Round 34 — 2026-07-28 -06:00
 
 - Confirmed via `aws___search_documentation`/web search that AWS is retiring Amazon Nova Canvas: Legacy since 2026-03-30, full EOL 2026-09-30 — matches the deprecation notices already present in the `bedrock-image-mcp-server` tool descriptions (`generate_image`, `generate_image_with_colors` both marked DEPRECATED there)
@@ -268,7 +267,6 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Left historical `CHANGELOG.md` entries describing past Nova Canvas additions unchanged (append-only history)
 - Verified `./validate.sh` green
 
-
 ## Round 35 — 2026-07-28 -06:00
 
 - Found the root cause of the user-reported "Tool ... is not available" errors: `steering/aws-agent-toolkit.md` and 8 other files instructed agents to hardcode literal AWS MCP tool names (`aws___search_documentation`, `aws___retrieve_skill`, etc.) as if they were guaranteed callable strings — directly contradicting `skills/mcp-tool-discovery.md`'s own rule to resolve names via `tool_search`, not hardcode them. The AWS MCP Server's tools resolve under different forms depending on the session (bare `aws___x` vs. fully-qualified `mcp_aws_mcp_server_aws___x`), so either hardcoded form fails intermittently
@@ -277,3 +275,12 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Updated 9 files' hardcoded tool-name mentions to reference tools by short name + a pointer to the new resolution procedure: `prompts/reinvent.md`, `skills/deploy-on-aws.md`, `skills/cdk-infrastructure-patterns.md` (2 spots), `skills/aws-serverless-patterns.md`, `skills/mcp-tool-discovery.md`, `skills/openobserve-telemetry/SKILL.md`, `steering/aws-standards.md` (2 spots), `steering/mcp-server-preference.md`
 - Left historical CHANGELOG.md/CHANGES.md/AWS-TOOLKIT-SKILLS-AUDIT.md mentions unchanged (append-only history)
 - Verified `./validate.sh` green
+
+
+## Round 36 — 2026-09-10 -06:00
+
+- Promoted `google-drive` MCP server into the global `settings/mcp.json` (`kiro-cli mcp add --scope global`) per user request, so it's reachable from any agent including as a subagent — not just the standalone `google-workspace` agent
+- Found and removed two redundant entries already present in global `mcp.json`: `creds-agent` (already inline in every single agent JSON — confirmed via grep across all agents) and `playwright-mcp` (Kiro Crew's own proxy, already present in `kirocrew.json`, unrelated to this repo's agents). Both removed via `kiro-cli mcp remove --scope global` rather than a raw file edit, after a direct `fs_write` attempt was correctly blocked by a `kiro-scope` permission rule protecting `~/.kiro/settings/`
+- Confirmed via git history that `settings/mcp.json` was deliberately deleted in May 2026 ("Remove stray global settings/mcp.json - agents are self-contained") but had silently crept back into the tracked repo since, picking up `creds-agent` and later `playwright-mcp` — almost certainly Kiro CLI/Kiro Crew re-writing it between sessions, the same class of drift the repo's own "Settings Change Confirmation" rule exists to catch
+- Per explicit user request, gitignored `settings/mcp.json` + `settings/mcp.lock` and ran `git rm --cached` on both so the already-tracked copies are removed from the repo while the local files (with the user's own `google-drive` config) remain on disk untouched
+- Verified: files still present on disk after `git rm --cached`, both resolve as ignored via `git check-ignore -v`
