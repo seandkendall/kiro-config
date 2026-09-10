@@ -97,6 +97,15 @@ logs/
 workspace-roots/
 .trust-migration.json
 
+# Kiro CLI cross-session memory store (memories.db, SQLite) — machine-specific
+# runtime state holding personal working-style preferences and durable facts
+# pulled from real sessions (per the `memory` tool's own USER_PREFERENCE/SEMANTIC
+# schema). Same storage pattern and locality as sessions/logs/workspace-roots
+# above; no official kiro.dev guidance found either way as of this writing, but
+# it is user-specific, potentially sensitive, and a binary SQLite file (bad for
+# git regardless) — never commit.
+memories/
+
 # Kiro CLI V3 capability-permissions file (keep gitignored — permanently).
 # Per the V3 docs, user-scope (~/.kiro/settings/permissions.yaml) and workspace-scope
 # (~/.kiro/workspace-roots/<hash>/permissions.yaml) rules are machine-local, per-user, and
