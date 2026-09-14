@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.29.5] - Fixed "Tool is not available" errors for subagent invocation
+## [0.29.6] - New `docker-standards.md` steering doc — Docker cleanup, suggest-don't-auto-run
+
+### Added
+
+- **`steering/docker-standards.md`** (new, `inclusion: auto`) — per user request: for Docker/Docker Compose projects, the agent may suggest `docker system prune -a --volumes` for disk-space cleanup, but must never run it proactively or on a schedule. Requires listing affected resources (`docker system df`, `docker volume ls`) and flagging volumes that look like real data before asking for explicit confirmation — consistent with this repo's destructive-action safety guardrails and `no-cicd.md` (manual, user-approved action, never wired into an automated hook). Offers the non-destructive `docker system prune` (no `-a`/`--volumes`) as a safer alternative when the user is unsure how aggressive to be.
+- **`README.md`** — steering docs count 27 → 28, intro summary and Steering Docs section description updated.
 
 ### Fixed
 

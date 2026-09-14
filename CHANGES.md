@@ -276,7 +276,6 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Left historical CHANGELOG.md/CHANGES.md/AWS-TOOLKIT-SKILLS-AUDIT.md mentions unchanged (append-only history)
 - Verified `./validate.sh` green
 
-
 ## Round 36 — 2026-09-10 -06:00
 
 - Promoted `google-drive` MCP server into the global `settings/mcp.json` (`kiro-cli mcp add --scope global`) per user request, so it's reachable from any agent including as a subagent — not just the standalone `google-workspace` agent
@@ -285,7 +284,6 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Per explicit user request, gitignored `settings/mcp.json` + `settings/mcp.lock` and ran `git rm --cached` on both so the already-tracked copies are removed from the repo while the local files (with the user's own `google-drive` config) remain on disk untouched
 - Verified: files still present on disk after `git rm --cached`, both resolve as ignored via `git check-ignore -v`
 
-
 ## Round 37 — 2026-09-10 -06:00
 
 - Diagnosed a user-reported error from another session: `Tool "invoke_sub_agent" is not available` — confirmed via grep that no file in this repo ever references `invoke_sub_agent` literally; the repo's own steering/prompts hardcode `use_subagent` instead
@@ -293,3 +291,11 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Updated `steering/AGENTS.md`'s "subagent vs delegate" section: removed the `subagent`/`use_subagent` literal-name framing, added an explicit warning that the name varies by session (confirmed variants: `subagent`, `use_subagent`, `orchestrate_subagent`, `invoke_sub_agent`) and a recovery procedure mirroring the AWS MCP fix (don't retry the same string; check the session's actual available tools; the agent's `tools` array config, not the specific tool name, is what actually needs to declare the capability)
 - Rewrote all 9 prompt files that hardcoded `use_subagent` as a directive ("...using the use_subagent tool") to instead describe delegation by capability/intent and point to `steering/AGENTS.md` for the tool-name caveat: `prompts/accounting.md`, `ai-builder.md`, `image-gen.md`, `master.md`, `promptgen.md`, `shopify.md`, `stocks.md`, `web-builder.md` (2 spots)
 - Verified `./validate.sh` green; confirmed no remaining hardcoded-as-directive mentions (remaining `use_subagent` references are all now "do not assume this name" cautions, not instructions to call it)
+
+
+## Round 38 — 2026-09-10 -06:00
+
+- Added new `steering/docker-standards.md` (`inclusion: auto`) per user request: routine Docker disk cleanup via `docker system prune -a --volumes`, framed as suggest-don't-auto-run per this repo's safety guardrails — `-a --volumes` is destructive (removes all unused images and all volumes not attached to a running container, which can hold real local data like databases/uploads)
+- Rule requires listing affected resources (`docker system df`, `docker volume ls`) and flagging data-looking volume names before asking for explicit confirmation; never wired into an automated hook, consistent with `no-cicd.md`; offers the non-destructive `docker system prune` (no flags) as a softer alternative
+- Updated `README.md` steering docs count 27 → 28, intro summary and section description
+- Verified `./validate.sh` green
