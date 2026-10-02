@@ -5,6 +5,120 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.30.9] - Removed `template-skeleton.yaml`; `reinvent` guidance is technical only
+
+### Removed
+
+- **`skills/reinvent-stack-toolkit/references/template-skeleton.yaml`** — deleted per user request; the annotated SAM template made builds too prescriptive. Still recoverable from this repo's git history.
+
+### Changed
+
+- **`agents/reinvent.json`** (inline prompt) — SKILLS now says the toolkit is for how to wire the stack, not what to build; the app's design, data model, and flow come from the build prompt. Removed the instructions to copy the template, rename `Item`/`Record`/`SUBMITTER`/`REVIEWER` nouns, and fill in the auto-resolve business rule (TIME BUDGET). Removed "templates"/"domain" wording from PRE-FLIGHT and the template sentence from OBSERVABILITY.
+- **`skills/reinvent-stack-toolkit/SKILL.md`** — rewritten as technical guidance only. Dropped the "shaped like submit something, an AI or a human decides" framing and the template read-order step; each pattern file is now described by the technique it shows.
+- **`references/eventbridge-publish-and-handle-pattern.py`** — docstring no longer points to the deleted template; states the Lambda permission a rule target needs instead.
+
+## [0.30.8] - Kickoff prompt now states the hosting bucket and test URL
+
+### Changed
+
+- **`demo-prompts/reimburse-kickoff.md`** — added a frontend paragraph: build the React app against the deployed API, sync it to the existing `seandall-reinvent2026-website-hosting` bucket (already behind CloudFront), and give the user https://d5bldcvijpt3d.cloudfront.net/ for testing once the deployment is done. "Build and deploy everything with AWS SAM" narrowed to "the backend", since the frontend is an S3 sync, not a SAM deploy. Header comment no longer lists hosting as omitted.
+
+## [0.30.7] - Kickoff prompt updated from the user's working version
+
+### Changed
+
+- **`demo-prompts/reimburse-kickoff.md`** — replaced with a cleaned-up copy of the prompt the user has been testing with. Removed the `deploy.sh` instruction (the `env.json` step now happens "after deploying"). Kept the user's additions: show any failure in the UI, build and deploy with SAM, and observability everywhere via AWS X-Ray and CloudWatch (reworded as native OpenTelemetry into X-Ray and CloudWatch, including inside the approval workflow's steps, to match the SVS343-R abstract). Merged the two failure instructions into one paragraph and fixed typos. Header comment now points to `agents/reinvent.json` instead of the removed `prompts/reinvent.md`.
+
+## [0.30.6] - `reinvent` prompt inlined into the agent config
+
+### Changed
+
+- **`agents/reinvent.json`** — the `prompt` field now holds the full system prompt inline instead of `file://../prompts/reinvent.md`. Content is unchanged. The file is now written with real UTF-8 characters (em dashes) instead of `\u` escapes, 2-space indent, same key order.
+
+### Removed
+
+- **`prompts/reinvent.md`** — no longer used (nothing else referenced it). A backup is kept at `prompts/.reinvent.md.bak`, and the previous agent config at `agents/.reinvent.json.bak`.
+
+## [0.30.5] - Dropped the "do not create a deploy.sh" instruction from `reinvent`
+
+### Changed
+
+- **`prompts/reinvent.md`** — removed the sentence telling the agent not to create a `deploy.sh` or wrapper script (added in 0.30.4). Per user: the agent won't create one unless instructed, so no mention is needed. The deploy-order sentence now reads "Deploy in this order: `sam build`, `sam deploy --express`, then build the frontend against the stack's `ApiUrl` output and sync it to the hosting bucket." No `deploy.sh` references remain in any file the `reinvent` agent loads.
+
+## [0.30.4] - Removed `deploy.sh` guidance from the `reinvent` agent
+
+### Removed
+
+- **`skills/reinvent-stack-toolkit/references/deploy-sh-template.sh`** — deleted per user request; `deploy.sh` is not wanted for the SVS343-R demo.
+
+### Changed
+
+- **`prompts/reinvent.md`** — removed the requirement that every project have a `deploy.sh` copied from the template. The agent now runs `sam build`, `sam deploy --express`, the frontend build against the `ApiUrl` output, and the S3 sync directly, and is told not to create a `deploy.sh` or other wrapper script. Removed `deploy-sh-template.sh` from the SKILLS reference list.
+- **`skills/reinvent-stack-toolkit/SKILL.md`** — removed the deploy-script step from the read order (frontend notes are now step 4).
+- **`references/frontend-toolkit-notes.md`**, **`references/api-handler-pattern.py`** — removed pointers to the deleted template and a stale "pitfalls.md item 4 (deploy.sh section)" reference.
+- **`demo-prompts/reimburse-kickoff.md`** — removed `deploy.sh` from the header comment; the `env.json` step now happens "after the deploy" instead of inside `deploy.sh`.
+
+## [0.30.3] - Kickoff prompt aligned with the `reinvent` agent and the SVS343-R session abstract
+
+### Changed
+
+- **`demo-prompts/reimburse-kickoff.md`** — rewritten (~580 → ~330 words). Removed the local-testing paragraph (`sam local invoke`/`start-api`/local test runner), which contradicted the agent's validate-then-deploy-once policy. Removed restated agent rules (durable-function/state-machine wording, shared-layer rationale). Model ID changed from `anthropic.claude-sonnet-5` to `amazon.nova-lite-v2:0`, stated "exactly as written; access is already sorted." Extraction stays downstream of EventBridge so the request path crosses Lambda → EventBridge → DynamoDB. Added: failed receipts marked failed without retrying; local iteration support (`VITE_API_URL`, localhost CORS origin, `env.json` written by `deploy.sh`) without asking the agent to run anything; file icon instead of thumbnail for PDF/Word to keep the scope inside 7 minutes. Header comment updated to match what the agent actually enforces.
+
+## [0.30.2] - Kickoff session code SVS343 → SVS343-R
+
+### Changed
+
+- **`demo-prompts/reimburse-kickoff.md`** — session code updated from `SVS343` to `SVS343-R` (header and final styling paragraph) to match the session-detail listing.
+
+## [0.30.1] - Removed the pre-built project skeletons from `reinvent-stack-toolkit`; kickoff session code SVS304 → SVS343
+
+### Removed
+
+- **`skills/reinvent-stack-toolkit/references/backend-skeleton/`** and **`.../frontend-skeleton/`** — deleted both pre-built, ready-to-deploy project shells (31 files) per user request ("the skeletons can go away … kinda like cheating anyways"). The toolkit now keeps only the reference code examples: the annotated `template-skeleton.yaml`, the five handler pattern files (`api-handler-pattern.py`, `decision-handler-pattern.py`, `durable-workflow-pattern.py`, `bedrock-structured-extraction-pattern.py`, `eventbridge-publish-and-handle-pattern.py`), `deploy-sh-template.sh`, `pitfalls.md`, and `frontend-toolkit-notes.md`. Each project is now scaffolded from scratch using these references rather than copied from a shell.
+
+### Changed
+
+- **`skills/reinvent-stack-toolkit/SKILL.md`** — rewrote the "Read order" (removed the skeleton-first step 0; `template-skeleton.yaml` is now step 1) and reframed the skill as reference-patterns-to-scaffold-from, with an explicit note that there is deliberately no ready-to-deploy shell. Updated `frontend-toolkit-notes.md`'s described purpose to "scaffolding the frontend from scratch."
+- **`prompts/reinvent.md`** — removed the warm-path/cold-path split in TIME BUDGET (there is no skeleton warm path anymore); the target is now a single 7-minute scaffold-from-references path. Rewrote the SKILLS section to point at the reference templates/patterns instead of the deleted skeleton directories, and adjusted the OBSERVABILITY line's "skeletons ship observability-free" → "reference templates ship observability-free."
+- **`demo-prompts/reimburse-kickoff.md`** — session code corrected from `SVS304` to `SVS343` (both the header and the final styling paragraph).
+
+## [0.30.0] - Removed all OTEL/OpenObserve from `reinvent`; observability now per-build via native AWS
+
+### Removed
+
+- **`skills/openobserve-telemetry/`** — deleted the entire skill. The `reinvent` agent no longer routes telemetry to the account's OpenObserve instance. Going forward, observability is specified per-project in the build prompt using native AWS services (OpenTelemetry into CloudWatch — ADOT layer, CloudWatch Transaction Search, Application Signals / X-Ray trace map).
+- **`agents/reinvent.json`** — dropped the `skill://.../openobserve-telemetry/SKILL.md` resource and the "OpenTelemetry/ADOT observability into OpenObserve, no X-Ray" clause from the description.
+- **`prompts/reinvent.md`** — removed the `OBSERVABILITY (MANDATORY)`, `X-RAY`, `OTEL COLLECTOR CONFIG`, and `IAM NOTE FOR DURABLE FUNCTIONS + OTEL` sections, the ADOT runtime-pin paragraph, the ADOT `sam local` prohibition, and the OpenObserve/OTel clauses in the expertise list, stack description, `SKILLS`, `SUBAGENT DELEGATION`, and `TIME BUDGET`. Replaced with a neutral `OBSERVABILITY` pointer: not baked in; the build prompt specifies any instrumentation.
+
+### Changed
+
+- **`skills/reinvent-stack-toolkit/`** — stripped the ADOT layer, `AWS_LAMBDA_EXEC_WRAPPER`/`OTEL_*` env vars, `Tracing: Active`, `AWSXRayDaemonWriteAccess`, API-GW `TracingEnabled`, and the `OtelExporterOtlpHeaders` parameter from both `template-skeleton.yaml` and `backend-skeleton/template.yaml`; removed the OpenObserve OTLP token resolution + header parameter-override from `deploy-sh-template.sh`; removed the OTel-package-shadowing and ADOT-`sam local`-hang pitfalls from `pitfalls.md` (renumbered the remaining pitfalls and all cross-references); removed the `InvocationOtelPlugin` import/decorator from `durable-workflow-pattern.py` and `backend-skeleton/src/durable_workflow/app.py`; removed the `aws-durable-execution-sdk-python-otel`, `aws-xray-sdk`, and `opentelemetry-propagator-aws-xray` deps from the five handler `requirements.txt`; updated `SKILL.md` and `backend-skeleton/README.md`. Skeletons now ship observability-free.
+- **`skills/aws-serverless-patterns.md`** — removed the `reinvent`-specific ADOT runtime-pin note and the durable-function OTel-plugin paragraph (which referenced the deleted skill). Left the generic "enable X-Ray tracing" line in the Step Functions section untouched — it serves the CDK agents (`master`/`serverless`/`web-builder`), not `reinvent`.
+- **`demo-prompts/reimburse-kickoff.md`** — replaced the OpenObserve observability paragraph with native OpenTelemetry-to-CloudWatch guidance (ADOT layer + Transaction Search + trace map); dropped `ADOT` from the "already enforced by the agent" boilerplate comment.
+- **`README.md`** / **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** — updated the `reinvent` row and the custom-skills inventory (Custom 12 → 11); replaced the "do not delete openobserve-telemetry" keep-note with a retirement note.
+
+## [0.30.9] - Restored deploy.sh/package.json/gitignore templates after dangling-reference audit
+
+### Fixed
+
+- **`skills/deploy.sh.template`, `skills/package.json.template`, `skills/gitignore.template`** — restored from git history. These were deleted alongside a `reinvent`-specific cleanup, but `steering/aws-standards.md`'s MANDATORY `deploy.sh` contract, `skills/deploy-on-aws.md`, `steering/kiro-cli-troubleshooting.md`, and `prompts/ai-builder.md` still reference them for `serverless`/`web-builder`/`master`/`architect`. Confirmed `reinvent` has no reference to any of the three (it was never using the `deploy.sh` contract), so restoring them does not reintroduce it there.
+
+### Removed
+
+- **`skills/cypress-to-playwright-migration.md`, `skills/playwright-auth-setup.template.ts`, `skills/playwright-config.template.ts`, `skills/playwright-fixtures.template.ts`** — confirmed intentional; the Cypress→Playwright migration is complete across every project in this config, so the migration runbook and its example templates no longer serve a purpose.
+- **`agents/powers-test.json`, `demo-prompts/reimburse-kickoff.md`** — removed per explicit user request; both were untracked/uncommitted test/demo artifacts with no references elsewhere in the repo.
+
+### Changed
+
+- **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** — "Custom skills (KEEP)" list updated to match current disk state: dropped the removed Cypress/Playwright entries, added `reinvent-stack-toolkit`, documented the brief deletion-then-restoration of the three templates.
+- **`validate.sh`** — Step 6's Cypress regression guard allow-list cleaned up to drop references to the now-deleted migration runbook/template.
+
+## [0.29.7] - Documented 4th subagent-tool-name variant (`subagent_<agentname>`)
+
+### Fixed
+
+- **`steering/AGENTS.md`** — a user reported `Tool "subagent_architect" is not available` from another session. Same root cause as 0.29.5, a new confirmed variant: some sessions expose subagent delegation as one discrete tool per target agent (`subagent_<agentname>`) instead of a single generic tool. No config gap — `architect` was already correctly listed as an available/trusted subagent everywhere it should be; the orchestrator just called a tool name this session's steering hadn't documented yet. Added the variant to the naming-instability warning and recovery note.
+
 ## [0.29.6] - New `docker-standards.md` steering doc — Docker cleanup, suggest-don't-auto-run
 
 ### Added

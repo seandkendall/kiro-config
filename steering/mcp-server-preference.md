@@ -61,14 +61,6 @@ The same rule applies to every configured MCP server:
 | Google Drive/Docs/Sheets | `@google-drive/...` (read-only)             | `web_fetch` against docs.google.com |
 | Image generation         | `@bedrock-image-mcp-server/...`             | Asking the user to find an image    |
 
-**No longer needed as MCP servers — now built into Kiro CLI directly, use the built-in tool instead:**
-
-- **Web search** — `web_search` is a built-in Kiro CLI tool (since 1.21; confirmed still built-in at 2.19.x). Do NOT add a DuckDuckGo (or any other) web-search MCP server — it duplicates a capability the agent already has natively and costs unnecessary MCP context/tokens for zero benefit.
-- **Web page fetching** — `web_fetch` is likewise built-in. Don't configure a separate "fetch" MCP server for the same job.
-- **Code intelligence** (symbol search, document outlines, definitions) — Tree-sitter-based code intelligence across 18 languages (Bash, C, C++, C#, Elixir, Go, Java, JavaScript, Kotlin, Lua, PHP, Python, Ruby, Rust, Scala, Swift, TSX, TypeScript) is built in via the `code` tool. Don't add a separate code-intelligence/LSP MCP server for languages already on that list.
-- **Sequential reasoning** — the built-in thinking/reasoning capability covers most cases now; only add a dedicated sequential-thinking MCP server if a specific workflow needs its structured multi-step output. If one is configured, prefer it over sprawling inline reasoning blocks (`@sequentialthinking/sequentialthinking` over long inline reasoning).
-
-**Rule of thumb going forward:** before adding any new MCP server, check whether Kiro CLI has since absorbed that capability natively — the unified agent harness (CLI 3.0+) ships new built-in tools regularly, and each one absorbed removes a server you no longer need to maintain, configure API keys for, or pay a context-token tax on.
 
 ## Discovery
 

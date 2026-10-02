@@ -5,7 +5,10 @@
   "mcpServers": {
     "shopify-dev-mcp": {
       "command": "npx",
-      "args": ["-y", "@shopify/dev-mcp@latest"]
+      "args": [
+        "-y",
+        "@shopify/dev-mcp@latest"
+      ]
     },
     "aws-mcp-server": {
       "command": "uvx",
@@ -19,45 +22,52 @@
     },
     "creds-agent": {
       "command": "aim",
-      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
+      "args": [
+        "mcp",
+        "start-server",
+        "local-creds-agent-mcp"
+      ]
     }
   },
-  "tools": ["*", "@creds-agent"],
-  "resources": ["file://AGENTS.md", "file://README.md", "file://../steering/*.md"],
-  "toolsSettings": {
-    "shell": {
-      "timeout": 300,
-      "working_directory": ".",
-      "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
-    }
-  },
-  "hooks": [
-    {
-      "name": "postToolUse-0",
-      "trigger": "postToolUse",
-      "matcher": "fs_write",
-      "action": {
-        "type": "command",
-        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
-      },
-      "timeout": 10
-    }
+  "tools": [
+    "*",
+    "@creds-agent"
   ],
-  "allowedTools": ["@creds-agent"],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://../steering/*.md"
+  ],
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "ruff check --fix --quiet \"$FILEPATH\" 2>/dev/null; ruff format --quiet \"$FILEPATH\" 2>/dev/null || true"
+      }
+    ]
+  },
+  "allowedTools": [
+    "@creds-agent"
+  ],
   "permissions": {
     "rules": [
       {
         "capability": "shell",
-        "match": ["git-defender*"],
+        "match": [
+          "git-defender*"
+        ],
         "effect": "deny"
       },
       {
         "capability": "mcp",
-        "match": ["creds-agent/*"],
+        "match": [
+          "creds-agent/*"
+        ],
         "effect": "allow"
       }
     ],
-    "policies": ["read-only-shell"]
+    "policies": [
+      "read-only-shell"
+    ]
   }
 }

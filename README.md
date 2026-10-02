@@ -187,7 +187,7 @@ npm install -g prettier
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                                                                                              |
 | `stocks`           | Stock trading research and analysis (Yahoo Finance MCP)                                                                                                             |
 | `shopify`          | Shopify + AWS serverless integration builder (Shopify dev MCP)                                                                                                      |
-| `reinvent`         | AWS Serverless builder — React/S3/CloudFront UI, API Gateway, Lambda Durable Functions, DynamoDB, SAM. No subagents; OpenTelemetry/ADOT into OpenObserve, no X-Ray. |
+| `reinvent`         | AWS Serverless builder — React/S3/CloudFront UI, API Gateway, Lambda Durable Functions, DynamoDB, SAM. No subagents. |
 | `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                                                                     |
 
 ### Steering Docs (28)
@@ -200,7 +200,7 @@ Rules and standards automatically loaded into every session: accessibility, API 
 
 | Source                | Skills                                                                                                                                                                                                                                                                                                                                                      |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Custom (12)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management, email template rendering, Cognito email migration, Cypress-to-Playwright migration, OpenObserve telemetry (account-specific OTel setup, required by `reinvent`) |
+| Custom (11)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management, email template rendering, Cognito email migration, Cypress-to-Playwright migration |
 | AWS Agent Toolkit (2) | Amazon Bedrock (incl. AgentCore), MCP tool discovery — the other 14 vendored toolkit skills were retired 2026-07-21; the managed AWS MCP Server now serves them on demand via `aws___retrieve_skill` / Agent SOPs (see `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`)                                                                                                |
 | iOS reference (3)     | Amazon Location Service, Amazon Polly generative voices, Cognito passkey auth (loaded by the `ios` agent)                                                                                                                                                                                                                                                   |
 

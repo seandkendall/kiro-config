@@ -1,29 +1,25 @@
 {
   "name": "master",
-  "description": "Master orchestrator agent — routes any task to the right specialist subagent",
+  "description": "Master orchestrator agent \u2014 routes any task to the right specialist subagent",
   "prompt": "file://../prompts/master.md",
   "mcpServers": {
-    "web-search": {
-      "command": "uvx",
-      "args": ["duckduckgo-mcp-server"],
-      "disabled": false
-    },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false
     },
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
-      "disabled": false
-    },
-    "sequentialthinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "disabled": false
     },
     "aws-mcp-server": {
@@ -38,7 +34,9 @@
     },
     "bedrock-image-mcp-server": {
       "command": "uvx",
-      "args": ["bedrock-image-mcp-server@latest"],
+      "args": [
+        "bedrock-image-mcp-server@latest"
+      ],
       "env": {
         "AWS_REGION": "us-west-2",
         "FASTMCP_LOG_LEVEL": "ERROR"
@@ -47,14 +45,20 @@
     },
     "creds-agent": {
       "command": "aim",
-      "args": ["mcp", "start-server", "local-creds-agent-mcp"]
+      "args": [
+        "mcp",
+        "start-server",
+        "local-creds-agent-mcp"
+      ]
     }
   },
-  "tools": ["*", "@creds-agent"],
+  "tools": [
+    "*",
+    "@creds-agent"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
-    "file://../steering/*.md",
     "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
     "skill://~/.kiro/skills/react-frontend-patterns.md",
     "skill://~/.kiro/skills/aws-serverless-patterns.md",
@@ -64,92 +68,89 @@
   "toolsSettings": {
     "subagent": {
       "availableAgents": [
-        "serverless",
-        "frontend",
-        "testing",
-        "architect",
+        "accounting",
         "ai-builder",
-        "devops",
+        "architect",
         "data",
-        "security",
+        "devops",
         "docs",
-        "image-gen",
-        "research",
+        "frontend",
         "google-workspace",
-        "web-builder",
+        "image-gen",
         "ios",
         "ios-testing",
-        "ring"
+        "promptgen",
+        "reinvent",
+        "research",
+        "security",
+        "serverless",
+        "shopify",
+        "stocks",
+        "testing",
+        "web-builder"
       ],
       "trustedAgents": [
-        "serverless",
-        "frontend",
-        "testing",
-        "architect",
+        "accounting",
         "ai-builder",
-        "devops",
+        "architect",
         "data",
-        "security",
+        "devops",
         "docs",
-        "image-gen",
-        "research",
+        "frontend",
         "google-workspace",
-        "web-builder",
+        "image-gen",
         "ios",
         "ios-testing",
-        "ring"
+        "promptgen",
+        "reinvent",
+        "research",
+        "security",
+        "serverless",
+        "shopify",
+        "stocks",
+        "testing",
+        "web-builder"
       ]
-    },
-    "shell": {
-      "timeout": 300,
-      "working_directory": ".",
-      "autoAllowReadonly": true,
-      "deniedCommands": ["git-defender.*"]
-    },
-    "web_fetch": {
-      "trusted": [".*docs\\.aws\\.amazon\\.com.*", ".*github\\.com.*"]
     }
   },
   "keyboardShortcut": "ctrl+1",
-  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (16 available), generate images and diagrams, and write deploy.sh scripts. What are we building?",
-  "hooks": [
-    {
-      "name": "postToolUse-0",
-      "trigger": "postToolUse",
-      "matcher": "fs_write",
-      "action": {
-        "type": "command",
+  "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (20 available), generate images and diagrams, and write deploy.sh scripts. What are we building?",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
         "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
       },
-      "timeout": 10
-    },
-    {
-      "name": "postToolUse-1",
-      "trigger": "postToolUse",
-      "matcher": "fs_write",
-      "action": {
-        "type": "command",
+      {
+        "matcher": "fs_write",
         "command": "shfmt -w \"$FILEPATH\" 2>/dev/null || true"
-      },
-      "timeout": 10
-    }
+      }
+    ]
+  },
+  "allowedTools": [
+    "@creds-agent"
   ],
-  "allowedTools": ["@creds-agent"],
   "permissions": {
     "rules": [
       {
         "capability": "shell",
-        "match": ["git-defender*"],
+        "match": [
+          "git-defender*"
+        ],
         "effect": "deny"
       },
       {
         "capability": "web_fetch",
-        "match": ["*docs.aws.amazon.com*", "*github.com*"],
+        "match": [
+          "*docs.aws.amazon.com*",
+          "*github.com*"
+        ],
         "effect": "allow"
       },
       {
         "capability": "subagent",
         "match": [
+          "accounting",
           "ai-builder",
           "architect",
           "data",
@@ -160,10 +161,13 @@
           "image-gen",
           "ios",
           "ios-testing",
+          "promptgen",
+          "reinvent",
           "research",
-          "ring",
           "security",
           "serverless",
+          "shopify",
+          "stocks",
           "testing",
           "web-builder"
         ],
@@ -171,10 +175,14 @@
       },
       {
         "capability": "mcp",
-        "match": ["creds-agent/*"],
+        "match": [
+          "creds-agent/*"
+        ],
         "effect": "allow"
       }
     ],
-    "policies": ["read-only-shell"]
+    "policies": [
+      "read-only-shell"
+    ]
   }
 }

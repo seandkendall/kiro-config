@@ -78,6 +78,10 @@ After migrating: update IAM policies/endpoints/SDK clients per "What changed" ab
 
 Verify availability in the new namespace: `aws agent-registry-control list-registry-records --registry-id <registry-id> --region <region> --endpoint-url https://agent-registry-control.<region>.api.aws`.
 
+### Cross-Account Sharing (Aug 2026)
+
+AWS Agent Registry supports sharing a registry across accounts via **AWS Resource Access Manager (RAM)**, with four managed permission levels: **ReadOnly**, **Consumer**, **Publisher**, and **Admin**. Use this instead of duplicating a registry per account or hand-rolling cross-account IAM trust for Registry access — RAM is the AWS-native mechanism for this. Not yet used in any project this repo has built; documenting for when a multi-account Registry sharing need comes up.
+
 ## Evaluations Service
 
 Automated agent quality assessment using LLM-as-a-Judge. **Not affected by the Registry namespace migration above** — Evaluations stays under `bedrock-agentcore`.

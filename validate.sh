@@ -137,18 +137,15 @@ fi
 
 echo ""
 echo "Step 6: Cypress regression guard..."
-# Allow:
-#   - CHANGELOG.md (historical migration notes)
-#   - skills/cypress-to-playwright-migration.md (the runbook with intentional Cypress examples)
-#   - skills/playwright-fixtures.template.ts (migration helper; header docs what it replaces)
+# The migration (v0.12.0) is complete and skills/cypress-to-playwright-migration.md +
+# skills/playwright-fixtures.template.ts have been removed — this guard now just confirms
+# no new Cypress references leak back into the repo. Allow:
+#   - CHANGELOG.md, CHANGES.md (historical migration notes)
 #   - validate.sh (this file; the regex pattern itself is a literal-string false positive)
-#   - skills/AWS-TOOLKIT-SKILLS-AUDIT.md (names cypress-to-playwright-migration as a kept
-#     custom skill; mentions the word "cypress" only as that skill's filename, no actual
-#     Cypress usage)
+#   - skills/AWS-TOOLKIT-SKILLS-AUDIT.md (historical note referencing the retired skill by name)
 CYPRESS_LEAKS=$(cd "$KIRO" && git ls-files \
   | grep -v '^CHANGELOG\.md$' \
-  | grep -v '^skills/cypress-to-playwright-migration\.md$' \
-  | grep -v '^skills/playwright-fixtures\.template\.ts$' \
+  | grep -v '^CHANGES\.md$' \
   | grep -v '^validate\.sh$' \
   | grep -v '^skills/AWS-TOOLKIT-SKILLS-AUDIT\.md$' \
   | xargs grep -l -E "cypress|data-cy" 2>/dev/null || true)

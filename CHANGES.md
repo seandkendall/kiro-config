@@ -299,3 +299,20 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Rule requires listing affected resources (`docker system df`, `docker volume ls`) and flagging data-looking volume names before asking for explicit confirmation; never wired into an automated hook, consistent with `no-cicd.md`; offers the non-destructive `docker system prune` (no flags) as a softer alternative
 - Updated `README.md` steering docs count 27 → 28, intro summary and section description
 - Verified `./validate.sh` green
+
+## Round 39 — 2026-09-10 -06:00
+
+- Diagnosed user-reported error from another session: `Tool "subagent_architect" is not available`. Confirmed this is the same tool-naming-instability bug fixed in Rounds 35/37, now with a 4th confirmed variant: some sessions expose subagent delegation as one discrete tool per target agent (`subagent_<agentname>`, e.g. `subagent_architect`) rather than a single generic tool — matches what this session's own tool list shows (`subagent_architect`, `subagent_ai-builder`, etc.)
+- Verified no actual config gap: `architect` is correctly present in `availableAgents`/`trustedAgents`/`permissions.subagent.match` in `master.json`, `accounting.json`, `ai-builder.json`, and `web-builder.json` — the orchestrator correctly decided to delegate to `architect`, it just called a tool name that doesn't exist in that session's runtime
+- Updated `steering/AGENTS.md`'s naming-instability warning and recovery note to include the `subagent_<agentname>` per-target-agent variant
+- Verified `./validate.sh` green
+
+## Round 40 — 2026-10-02 -06:00
+
+- Investigated a large uncommitted working-tree diff found while fixing the `subagent_architect` tool-naming issue — confirmed with the user this was their own prior work this session (agent-format reformatting, `reinvent` rewrite, `openobserve-telemetry` removal, `master-demo`/`ring` deletion, Playwright/template cleanup), not something to revert
+- Found two real dangling-reference gaps from the template cleanup: `skills/deploy.sh.template`, `skills/package.json.template`, `skills/gitignore.template` were deleted but still referenced as MANDATORY by `steering/aws-standards.md`, `skills/deploy-on-aws.md`, `steering/kiro-cli-troubleshooting.md`, and `prompts/ai-builder.md` — none of which are `reinvent`-specific (they serve `serverless`/`web-builder`/`master`/`architect`). Restored all three from `git show HEAD:...` per user confirmation; verified `reinvent.json`/`prompts/reinvent.md`-equivalent (now inlined) has no reference to any of the three, so the restore doesn't reintroduce the `deploy.sh` contract to `reinvent`
+- Updated `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`'s "Custom skills (KEEP)" list: removed `cypress-to-playwright-migration` + Playwright templates (confirmed intentionally gone, migration complete), kept the three restored templates, added `reinvent-stack-toolkit` to the list, added a note on why the three templates were briefly deleted then restored
+- Cleaned up `validate.sh` Step 6's Cypress-guard allow-list comment/grep-excludes — removed the now-nonexistent `cypress-to-playwright-migration.md`/`playwright-fixtures.template.ts` entries
+- Deleted `agents/powers-test.json` and `demo-prompts/reimburse-kickoff.md` per explicit user request — both untracked/uncommitted, no references found elsewhere, confirmed safe
+- Kept `skills/reinvent-stack-toolkit/`, `settings/session-response-indexing.json`, and the `settings/cli.json` additions (`chat.enableKnowledge`, `chat.sessionDashboard.indexResponses`, `chat.modelDefaults`) per explicit user approval — no changes made to these
+- Verified `./validate.sh` green: 22 agents validate, JSON/bash OK, no privacy leaks, no Cypress regressions

@@ -52,20 +52,27 @@ The managed server can serve equivalents via `aws___retrieve_skill` / Agent SOPs
 
 `cdk-infrastructure-patterns`, `react-frontend-patterns`, `aws-serverless-patterns`,
 `testing-patterns`, `deploy-on-aws`, `deploy.sh.template`, `gitignore.template`,
-`aws-architecture-diagram`, `aws-diagram-png`, `mcp-tool-discovery`,
+`package.json.template`, `aws-architecture-diagram`, `aws-diagram-png`, `mcp-tool-discovery`,
 `email-template-rendering` + `email-templates/`, `cognito-email-migration`,
-`cypress-to-playwright-migration` (+ playwright templates), `personal-rules-management`,
-`openobserve-telemetry`.
+`personal-rules-management`, `reinvent-stack-toolkit`.
 
-These encode this repo's opinions (CDK-Python-only, deploy.sh contract, Playwright-only E2E,
-custom email standards, personal-rules protocol) and have **no managed-server equivalent**. Keep all.
+These encode this repo's opinions (CDK-Python-only, deploy.sh contract, custom email
+standards, personal-rules protocol) and have **no managed-server equivalent**. Keep all.
 
-`openobserve-telemetry` (added 2026-07-28) is a special case: it documents one specific,
-live, account-owned OpenObserve deployment (real SSM parameter paths, a real ingest-user
-credential rotation story, a real CloudFormation stack to re-verify the ingest URL against).
-This can never be served by the AWS Agent Toolkit's managed skill registry — it isn't AWS's
-content, it's this account's own telemetry setup. Required by the `reinvent` agent (mandatory
-full-OTel guidance); do not delete or attempt to replace with a generic AWS observability skill.
+`cypress-to-playwright-migration.md` and its companion Playwright/Cypress migration templates
+(`playwright-fixtures.template.ts`, etc.) were removed — the Cypress→Playwright migration is
+complete across every project in this config, so the migration runbook and its examples no
+longer serve a purpose. `openobserve-telemetry` was retired on 2026-09-28. The `reinvent`
+agent no longer uses OpenObserve or any baked-in OTel baseline; observability is now
+specified per-project in the build prompt using native AWS services (OpenTelemetry into
+CloudWatch). The skill and all OTel/OpenObserve wiring were removed from the `reinvent`
+agent, its prompt, and the `reinvent-stack-toolkit` skill.
+
+Note: `deploy.sh.template`/`gitignore.template`/`package.json.template` were briefly deleted
+alongside the `reinvent`-specific template cleanup, then restored (2026-10-02) — `reinvent`
+never used these three (it has no `deploy.sh` contract and no file-based skeleton), but
+`serverless`/`web-builder`/`master`/`architect` and the repo-wide `deploy.sh` MANDATORY
+contract (`steering/aws-standards.md`, `skills/deploy-on-aws.md`) still depend on them.
 
 ## Trade-off (why this is "mark," not auto-"trim")
 
