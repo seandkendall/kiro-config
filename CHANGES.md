@@ -316,3 +316,16 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Deleted `agents/powers-test.json` and `demo-prompts/reimburse-kickoff.md` per explicit user request — both untracked/uncommitted, no references found elsewhere, confirmed safe
 - Kept `skills/reinvent-stack-toolkit/`, `settings/session-response-indexing.json`, and the `settings/cli.json` additions (`chat.enableKnowledge`, `chat.sessionDashboard.indexResponses`, `chat.modelDefaults`) per explicit user approval — no changes made to these
 - Verified `./validate.sh` green: 22 agents validate, JSON/bash OK, no privacy leaks, no Cypress regressions
+
+## Round 41 — 2026-10-02 -06:00
+
+- Ran a full repo-wide validation sweep per user request to catch anything missed in the reinvent/template cleanup. Found and fixed:
+  - **`agents/stocks.json`**: inlined prompt had reverted the `use_subagent` naming fix from Round 37 (the inlining process used a stale pre-fix snapshot) — re-applied the fix
+  - **`prompts/master-demo.md`, `prompts/ring.md`**: orphaned prompt files left on disk after `agents/master-demo.json`/`agents/ring.json` were deleted — deleted both
+  - **`README.md`**: agent table still listed `master-demo` and `ring` (both deleted); agent count 22 → 20; steering docs count 28 → 29 (was already stale before Docker was added); skills table rewritten to match the already-corrected `AWS-TOOLKIT-SKILLS-AUDIT.md` categorization (dropped removed Cypress/Playwright entries, added `reinvent-stack-toolkit`, Custom 11 → 15)
+  - **`steering/AGENTS.md`**: removed the dead `/agent master-demo` line from "When to Use Which Agent"; removed `master`/`master-demo` from the hooks-duplication pairing list
+  - **`prompts/master.md`**: removed `ring` from both the AVAILABLE SUBAGENTS list and the COMMON WORKFLOWS line (agent no longer exists; `master.json`'s actual `availableAgents`/`trustedAgents` arrays never included it, so this was prompt-text-only drift, not a functional gap)
+  - **`skills/deploy-on-aws.md`, `steering/aws-standards.md`**: both referenced "`master-demo`" by name for the `-y` deploy.sh flag rationale — reworded to not name a dead agent
+  - **`.gitignore`**: fixed a comment citing `steering/kiro-cli-v3-migration.md`, which doesn't exist anywhere in the repo (confirmed via file_search) — reworded without the dangling citation
+- Confirmed via `git ls-files` that there are genuinely 20 tracked agent JSONs (not 22) and 29 tracked steering `.md` files (not 28/27)
+- Verified `./validate.sh` green throughout; final sweep for `master-demo`/`\bring\b`/`kiro-cli-v3-migration` across all non-changelog `.md`/`.json` files returned zero matches

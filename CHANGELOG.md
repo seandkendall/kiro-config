@@ -97,6 +97,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`demo-prompts/reimburse-kickoff.md`** — replaced the OpenObserve observability paragraph with native OpenTelemetry-to-CloudWatch guidance (ADOT layer + Transaction Search + trace map); dropped `ADOT` from the "already enforced by the agent" boilerplate comment.
 - **`README.md`** / **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** — updated the `reinvent` row and the custom-skills inventory (Custom 12 → 11); replaced the "do not delete openobserve-telemetry" keep-note with a retirement note.
 
+## [0.31.0] - Full repo validation sweep: fixed stale counts, dead agent references, inlining regression
+
+### Fixed
+
+- **`agents/stocks.json`** — its inlined prompt had reverted the `use_subagent` naming fix from 0.29.5 (the agent-format inlining process used a stale pre-fix snapshot). Re-applied the fix.
+- **`README.md`** — agent table dropped `master-demo`/`ring` (both deleted earlier this session), count 22 → 20; steering docs count corrected to 29 (actual tracked count, already drifted before this session); skills table rewritten to match `AWS-TOOLKIT-SKILLS-AUDIT.md`'s already-corrected categorization (Custom 11 → 15, added `reinvent-stack-toolkit`, dropped removed Cypress/Playwright entries).
+- **`steering/AGENTS.md`** — removed the dead `/agent master-demo` line and the `master`/`master-demo` hooks-duplication pairing.
+- **`prompts/master.md`** — removed `ring` from the AVAILABLE SUBAGENTS list and COMMON WORKFLOWS (the agent's actual `availableAgents` config never listed it — this was prompt-text drift only, not a functional delegation gap).
+- **`skills/deploy-on-aws.md`, `steering/aws-standards.md`** — both named the deleted `master-demo` agent as the rationale for the `deploy.sh -y` flag; reworded without the dead reference.
+- **`.gitignore`** — removed a comment citing `steering/kiro-cli-v3-migration.md`, which does not exist anywhere in this repo.
+
+### Removed
+
+- **`prompts/master-demo.md`, `prompts/ring.md`** — orphaned prompt files left on disk after their agent JSONs were deleted earlier this session.
+
 ## [0.30.9] - Restored deploy.sh/package.json/gitignore templates after dangling-reference audit
 
 ### Fixed

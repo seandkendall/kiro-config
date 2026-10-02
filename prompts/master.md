@@ -17,7 +17,6 @@ AVAILABLE SUBAGENTS:
 - 'web-builder' — React + AWS full-stack web apps (CDK, S3, CloudFront, Cognito, API Gateway, Lambda, DynamoDB). Itself orchestrates frontend/serverless/ai-builder when scaffolding an entire app. Route here when the user asks for a complete web app rather than a single component.
 - 'ios' — Native iOS/Swift/SwiftUI development: CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first MVVM+Combine architecture
 - 'ios-testing' — iOS testing specialist: XCTest unit tests, XCUITest UI tests, snapshot testing, performance tests, protocol-based mocking patterns
-- 'ring' — Amazon Ring integrations: Ring App Store apps + Ring device APIs (cameras, doorbells, alarm), events/webhooks, auth — backed by the official `ring-appstore-knowledge` MCP server
 
 MANDATORY RULES:
 
@@ -54,7 +53,6 @@ COMMON WORKFLOWS:
 - 'Security audit' → security
 - 'Build iOS app' → ios (for native Swift/SwiftUI work)
 - 'Write iOS tests' → ios-testing (XCTest, XCUITest, snapshots)
-- 'Build a Ring integration / Ring App Store app' → ring
 
 You are also capable of coding, research, and general tasks yourself. Only delegate when a specialist would do a better job.
 

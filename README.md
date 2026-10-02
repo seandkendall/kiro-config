@@ -6,7 +6,7 @@
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
 [![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
-Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 20 specialist subagents (incl. native iOS + iOS-testing + Amazon Ring), 28 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
+Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 19 specialist subagents (incl. native iOS + iOS-testing), 29 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
 > **💡 Tips for AI Agents working on this repo**
 >
@@ -163,12 +163,11 @@ npm install -g prettier
 
 ## What's Included
 
-### Agents (22)
+### Agents (20)
 
 | Agent              | Description                                                                                                                                                         |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `master`           | Orchestrator — routes to the right specialist subagent                                                                                                              |
-| `master-demo`      | Single-agent demo for serverless backend builds — only `aws-mcp-server`, no subagents, CORS-aware, no UI/WAF/Route53                                                |
 | `serverless`       | AWS Lambda, API Gateway, DynamoDB, Step Functions, Powertools                                                                                                       |
 | `frontend`         | React, TypeScript, Tailwind CSS, shadcn/ui, Playwright, Figma                                                                                                       |
 | `testing`          | pytest, Jest/Vitest, Playwright E2E via subagent                                                                                                                    |
@@ -183,25 +182,24 @@ npm install -g prettier
 | `web-builder`      | React + AWS full-stack web apps; delegates AI features to `ai-builder`                                                                                              |
 | `ios`              | Native iOS: Swift, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first MVVM                                                               |
 | `ios-testing`      | iOS tests: XCTest, XCUITest, swift-snapshot-testing, performance tests, protocol-based mocking                                                                      |
-| `ring`             | Amazon Ring integrations: Ring App Store apps + device APIs, events/webhooks (official Ring MCP)                                                                    |
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                                                                                              |
 | `stocks`           | Stock trading research and analysis (Yahoo Finance MCP)                                                                                                             |
 | `shopify`          | Shopify + AWS serverless integration builder (Shopify dev MCP)                                                                                                      |
 | `reinvent`         | AWS Serverless builder — React/S3/CloudFront UI, API Gateway, Lambda Durable Functions, DynamoDB, SAM. No subagents. |
 | `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                                                                     |
 
-### Steering Docs (28)
+### Steering Docs (29)
 
 Rules and standards automatically loaded into every session: accessibility, API design, AWS/CDK patterns, AWS Agent Toolkit usage, change logging, development workflow, Docker cleanup/disk hygiene, error handling, no-CI/CD, performance, Python standards, security policies, semantic anchors (manual-load meta-rule for writing steering docs), iOS (Swift/SwiftUI, CarPlay, audio, offline-first — loaded on Swift files), and more.
 
 > **Personal steering** — say "always …" / "from now on …" / "I prefer …" or repeat a preference 2+ times in a session, and the agent will offer to save it as a `personal-<topic>.md` steering doc on your machine. These files are gitignored and ALWAYS win over base rules. No extra tooling required — they just work via Kiro's existing steering loader. See `steering/personal-rules-protocol.md` and `skills/personal-rules-management.md`.
 
-### Skills (17)
+### Skills (19)
 
 | Source                | Skills                                                                                                                                                                                                                                                                                                                                                      |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Custom (11)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws, AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), personal rules management, email template rendering, Cognito email migration, Cypress-to-Playwright migration |
-| AWS Agent Toolkit (2) | Amazon Bedrock (incl. AgentCore), MCP tool discovery — the other 14 vendored toolkit skills were retired 2026-07-21; the managed AWS MCP Server now serves them on demand via `aws___retrieve_skill` / Agent SOPs (see `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`)                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Custom (15)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws (+ `deploy.sh.template`, `package.json.template`, `gitignore.template`), AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), MCP tool discovery, personal rules management, email template rendering (+ templates), Cognito email migration, `reinvent-stack-toolkit` (for the `reinvent` agent) |
+| AWS Agent Toolkit (1) | Amazon Bedrock (incl. AgentCore) — the other 14 vendored toolkit skills were retired 2026-07-21; the managed AWS MCP Server now serves them on demand via `aws___retrieve_skill` / Agent SOPs (see `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`)                                                                                                |
 | iOS reference (3)     | Amazon Location Service, Amazon Polly generative voices, Cognito passkey auth (loaded by the `ios` agent)                                                                                                                                                                                                                                                   |
 
 ### MCP Servers

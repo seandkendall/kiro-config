@@ -117,11 +117,10 @@ settings/mcp.json
 settings/mcp.lock
 
 # Kiro CLI V3 capability-permissions file (keep gitignored — permanently).
-# Per the V3 docs, user-scope (~/.kiro/settings/permissions.yaml) and workspace-scope
+# User-scope (~/.kiro/settings/permissions.yaml) and workspace-scope
 # (~/.kiro/workspace-roots/<hash>/permissions.yaml) rules are machine-local, per-user, and
-# live OUTSIDE the repo by design — "a cloned repo cannot inject permission rules."
-# Repo-shareable permissions belong in each agent profile's `permissions:` block (V3 Markdown
-# agents), NOT here. See steering/kiro-cli-v3-migration.md.
+# live OUTSIDE the repo by design — a cloned repo cannot inject permission rules this way.
+# Repo-shareable permissions belong in each agent's own `permissions:` block in its JSON.
 settings/permissions.yaml
 
 # Pre-V3-migration backup (machine-local, never commit)

@@ -52,7 +52,7 @@ Per-profile state lives in `.deploy-state.json` (gitignored). When the user re-r
 
 Multi-project safety: `--delete` discovers resources by the `project=<name>` tag (NOT by name prefix). Resources without that tag are never touched, so sibling projects in the same account are safe. The `CDKToolkit` bootstrap stack is never destroyed by `deploy.sh --delete`.
 
-`-y` is intended for CI-like usage and the `master-demo` agent. Without `-y`, the script prompts at every destructive step.
+`-y` is intended for CI-like or fast-iteration usage. Without `-y`, the script prompts at every destructive step.
 
 ### Use Agent Output Side Channels (Kiro CLI 2.3.0+)
 
