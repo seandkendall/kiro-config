@@ -114,7 +114,7 @@ git clone https://github.com/seandkendall/kiro-config.git ~/.kiro
 
 # Or clone elsewhere and copy over
 git clone https://github.com/seandkendall/kiro-config.git
-cp -r kiro-config/{agents,steering,skills,prompts,settings,hooks} ~/.kiro/
+cp -r kiro-config/{agents,steering,skills,prompts,settings,hooks,hooks-bin} ~/.kiro/
 ```
 
 </details>
@@ -140,7 +140,7 @@ Several MCP servers shell out to local tools. **If you're using an AI coding age
 | **`awsdac`**                                 | `brew install awsdac`                                                                             | `go install github.com/awslabs/diagram-as-code/cmd/awsdac@latest`                         | `aws-diagram-png` skill (PNG architecture diagrams with real AWS icons)                                                        |
 | **Playwright browsers**                      | `npx playwright install --with-deps chromium firefox webkit`                                      | same                                                                                      | `@playwright/mcp` server (E2E testing, browser automation) on `frontend`, `testing`, `web-builder` agents                      |
 | **`graphviz`**                               | `brew install graphviz`                                                                           | `apt install graphviz`                                                                    | Optional — needed if anyone uses Python `diagrams` for ad-hoc PNG output                                                       |
-| **`ruff`, `prettier`, `shfmt`, `git-delta`** | `brew install ruff shfmt git-delta && npm i -g prettier`                                          | apt/npm equivalents                                                                       | PostToolUse formatter hooks (auto-format files after writes)                                                                   |
+| **`ruff`, `prettier`, `shfmt`, `git-delta`** | `brew install ruff shfmt git-delta && npm i -g prettier`                                          | apt/npm equivalents                                                                       | PostToolUse formatter hook (`hooks-bin/format-written-file.sh`, auto-formats the written file)                                  |
 
 **Rule of thumb for AI agents setting this up autonomously:** if `import.sh` is available, run it — it installs everything above interactively. If you must script it from scratch, install Homebrew first, then `uv`, then `node`, then `awscli`, then `awsdac`, then the formatter tools — in that order.
 

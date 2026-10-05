@@ -94,7 +94,7 @@
     "postToolUse": [
       {
         "matcher": "fs_write",
-        "command": "npx prettier --write \"$FILEPATH\" 2>/dev/null || true"
+        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
       }
     ]
   },

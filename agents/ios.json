@@ -60,7 +60,7 @@
     "postToolUse": [
       {
         "matcher": "fs_write",
-        "command": "swiftformat --quiet \"$FILEPATH\" 2>/dev/null || true"
+        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
       }
     ]
   },

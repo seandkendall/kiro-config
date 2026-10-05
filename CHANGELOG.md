@@ -5,6 +5,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.31.0] - Fixed the format-on-save hook, which reformatted the whole repo on every write
+
+### Fixed
+
+- **`agents/*.json` (14 tracked agents) + `hooks-bin/format-written-file.sh` (new)** — every
+  `postToolUse` formatter hook passed `"$FILEPATH"`, which **Kiro does not set**. Hook context
+  arrives as JSON on **stdin**, so the variable expanded to an empty string.
+
+  `npx prettier --write ""` does not no-op: proven by experiment, an empty argument makes
+  prettier process **every eligible file in the working directory**, and the working directory is
+  the **workspace root** regardless of what was written. So every `fs_write`, anywhere,
+  reformatted the whole repo. Demonstrated by writing a file in `/tmp` and watching three tracked
+  files change in an unrelated git repository.
+
+  Damage seen before it was caught: four false diffs in one session, de-indented list
+  continuations and a stripped blockquote marker in hand-written markdown (changing what the
+  markdown *means*), and finally a broken `biome check` in a project whose format gate it was
+  supposedly helping. Until that last one it read as harmless noise — and it trained the agent to
+  run `git checkout --` reflexively, which is how a genuinely unintended change gets waved
+  through.
+
+  All 23 broken hook entries across 14 agents are replaced by one call to a tested script that:
+  resolves the written path from the stdin JSON (several key spellings, since the schema is
+  undocumented), **does nothing at all when it cannot** (formatting everything is never the safe
+  reading of "I don't know what changed"), acts on exactly one real file, skips build and
+  dependency directories, dispatches to `ruff`/`shfmt`/`swiftformat`/`biome`/`prettier` by
+  extension, and **never formats markdown**.
+
+- ⚠️ **Only the `prettier` hook was destructive.** Verified: with an empty argument `ruff` exits
+  with `a value is required for '[FILES]...'` and `shfmt` with `lstat : no such file or
+  directory`, both changing nothing. The 10 `ruff` and 7 `shfmt` hooks had therefore never
+  formatted a single file since the day they were written — broken, but harmless. Routing them
+  through the script makes them do the job they claimed to do.
+
+- ⚠️ **Markdown is now excluded on purpose.** Nothing in these projects gates markdown style, so a
+  hook rewriting it imposes a format no check asks for, and prose with deliberate layout (tables,
+  nested blockquotes) is exactly what it damages. That one line would have prevented every
+  instance of the churn above.
+
+### Added
+
+- **`hooks-bin/test-format-written-file.sh`** — 23 tests. The negative cases are the ones with
+  teeth: empty context, non-JSON context, a path that is not a file, a directory path, and "never
+  touches a sibling file" for each supported language. The replaced hook formatted everything when
+  it knew nothing, so *fails closed* is the property under test.
+- `KIRO_HOOK_DEBUG=1` logs any hook payload the script could not interpret to
+  `$TMPDIR/kiro-hook-unresolved.log`. The context schema is undocumented and could not be observed
+  in the session that wrote this (hooks load at session start, so a config edit does not take
+  effect until the next one) — this is how to confirm the path key next session.
+
 ## [0.30.9] - Removed `template-skeleton.yaml`; `reinvent` guidance is technical only
 
 ### Removed
