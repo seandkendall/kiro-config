@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.31.1] - web_fetch is now unrestricted for every agent
+
+### Changed
+
+- **16 `agents/*.json`** — removed the `web_fetch` domain-allowlist permissions rule
+  (`*docs.aws.amazon.com*`, `*github.com*`, and similar `match` lists) so `web_fetch` is
+  unrestricted everywhere, matching the 6 agents that already had no restriction. This was
+  inconsistent legacy config, not a documented security policy.
+- **`agents/quickwork_acp_kiro.json`** — also removed the redundant
+  `toolsSettings.web_fetch.trusted` allowlist block (a second, separate restriction mechanism
+  only this agent used alongside the permissions rule).
+
 ## [0.31.0] - Fixed the format-on-save hook, which reformatted the whole repo on every write
 
 ### Fixed

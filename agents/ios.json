@@ -77,16 +77,6 @@
         "effect": "deny"
       },
       {
-        "capability": "web_fetch",
-        "match": [
-          "*developer.apple.com*",
-          "*docs.aws.amazon.com*",
-          "*swiftpackageindex.com*",
-          "*github.com*"
-        ],
-        "effect": "allow"
-      },
-      {
         "capability": "mcp",
         "match": [
           "creds-agent/*"

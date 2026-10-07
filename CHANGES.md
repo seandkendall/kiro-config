@@ -368,3 +368,12 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Item 11 (AWS MCP Server regional expansion) — no action per user's explicit decline
 - Updated `README.md`'s documented default model (`claude-opus-5` → `claude-opus-5.5`)
 - Verified `./validate.sh` green throughout
+
+## Round 46 — 2026-10-07 -06:00
+
+- Live-steered change: removed `web_fetch` domain allowlisting from every agent so `web_fetch` is unrestricted everywhere, per explicit mid-session instruction. Confirmed via grep this was legacy per-agent config drift, not a documented security policy in any steering doc (no match for the pattern in `steering/*.md`).
+- Removed the `{"capability": "web_fetch", "match": [...], "effect": "allow"}` permissions rule from 16 agents: `ai-builder.json`, `architect.json`, `accounting.json`, `data.json`, `devops.json`, `docs.json`, `image-gen.json`, `ios.json`, `master.json`, `promptgen.json`, `quickwork_acp_kiro.json`, `reinvent.json`, `research.json`, `security.json`, `serverless.json`, `signals.json`, `testing.json`
+- Also removed the redundant `toolsSettings.web_fetch.trusted` allowlist block from `agents/quickwork_acp_kiro.json` (the only agent using that second, separate restriction mechanism alongside the permissions rule)
+- Fixed a trailing-comma JSON syntax error introduced in `agents/quickwork_acp_kiro.json` while removing the `toolsSettings.web_fetch` block, caught by `./validate.sh` Step 2
+- Confirmed 6 agents (`frontend.json`, `web-builder.json`, `shopify.json`, `stocks.json`, `google-workspace.json`, `ios-testing.json`) already had no `web_fetch` restriction — no change needed
+- Verified `./validate.sh` green: all 23 agents validate, all JSON parses, no privacy-guard regressions

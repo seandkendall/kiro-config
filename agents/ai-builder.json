@@ -124,13 +124,6 @@
         "effect": "deny"
       },
       {
-        "capability": "web_fetch",
-        "match": [
-          "*docs.aws.amazon.com*"
-        ],
-        "effect": "allow"
-      },
-      {
         "capability": "subagent",
         "match": [
           "architect",

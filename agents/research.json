@@ -65,14 +65,6 @@
         "effect": "deny"
       },
       {
-        "capability": "web_fetch",
-        "match": [
-          "*docs.aws.amazon.com*",
-          "*github.com*"
-        ],
-        "effect": "allow"
-      },
-      {
         "capability": "mcp",
         "match": [
           "creds-agent/*"
