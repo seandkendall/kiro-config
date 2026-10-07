@@ -147,6 +147,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`demo-prompts/reimburse-kickoff.md`** — replaced the OpenObserve observability paragraph with native OpenTelemetry-to-CloudWatch guidance (ADOT layer + Transaction Search + trace map); dropped `ADOT` from the "already enforced by the agent" boilerplate comment.
 - **`README.md`** / **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** — updated the `reinvent` row and the custom-skills inventory (Custom 12 → 11); replaced the "do not delete openobserve-telemetry" keep-note with a retirement note.
 
+## [0.31.3] - Untracked settings/cli.json.lock; documented lsp.json and installed user's manual reinvent edits
+
+### Fixed
+
+- **`.gitignore`** — added `settings/cli.json.lock` (process-specific lock file: PID + acquisition timestamp for a single running Kiro CLI session, meaningless on any other machine or even the next launch on this one — must never be committed). Removed via `git rm --cached` (file remains on disk). Caught and fixed a self-inflicted editing mistake in the same change: an earlier `str_replace` had accidentally dropped the pre-existing `models/` rule while inserting this one — restored it immediately, confirmed via `git ls-files` that `models/` (87 MB embedding-model cache) was never actually tracked, so no cleanup was needed, only prevention.
+- **`README.md`** — documented `settings/lsp.json`'s local tooling dependency (per-language LSP server binaries: `typescript-language-server`, `pyright`, `rust-analyzer`, `jdtls`, `gopls`, `solargraph`, `clangd`) in the "Local Tooling Required by MCP Servers" table, since the file stays tracked and shared going forward.
+
+### Changed
+
+- **`agents/reinvent.json`, `skills/aws-serverless-patterns.md`, `skills/reinvent-stack-toolkit/SKILL.md`** — user's own manual edits from concurrent `reinvent` agent usage (a model-ID correction, a stray-whitespace cleanup, a description string update) committed per explicit confirmation.
+
+### Kept as-is (user confirmed)
+
+- **`settings/lsp.json`** stays tracked — generic, portable per-language LSP server command mappings with no personal data, same category as the already-shared `settings/cli.json`.
+
 ## [0.31.2] - Gitignore audit: untracked 3 accidentally-committed machine-local files, added tasks/knowledge_bases rules
 
 ### Fixed

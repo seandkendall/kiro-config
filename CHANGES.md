@@ -349,3 +349,11 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Ran a secret-scan across every tracked file (AWS access keys, private key headers, GitHub/Slack tokens, password-shaped key=value pairs) — zero matches
 - Confirmed `agents/quickwork_acp_kiro.json` (gitignored, machine-local) was never tracked, consistent with its existing `agents/*_acp_*.json` rule
 - Verified `./validate.sh` green: 23 agents validate, no privacy-guard failures, `tasks/`/`knowledge_bases/`/the 3 settings files all confirmed ignored via `git check-ignore -v`
+
+## Round 44 — 2026-10-07 -06:00
+
+- Answered the lsp.json/cli.json.lock question: lsp.json configures Kiro CLI's built-in code intelligence (per-language LSP server command mappings — typescript-language-server, pyright, rust-analyzer, jdtls, gopls, solargraph, clangd), generic/portable/no personal data, recommended keeping tracked; cli.json.lock is an ephemeral process lock file ({"pid", "acquired_at_ms"}), meaningless across machines/launches, added to .gitignore and untracked via git rm --cached
+- Self-caught and fixed an editing mistake made while adding the cli.json.lock rule: a str_replace had accidentally dropped the pre-existing `models/` gitignore rule. Caught immediately via git check-ignore before committing; confirmed models/ (87MB embedding-model cache) was never actually tracked, so this was prevention only, not cleanup
+- Documented settings/lsp.json's local tooling dependency in README's "Local Tooling Required by MCP Servers" table
+- Committed the user's confirmed-intentional manual edits: agents/reinvent.json, skills/aws-serverless-patterns.md, skills/reinvent-stack-toolkit/SKILL.md
+- Verified ./validate.sh green with zero remaining drift flagged (Step 5 now clean)

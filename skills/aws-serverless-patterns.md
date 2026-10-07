@@ -117,7 +117,7 @@ decision = json.loads(raw_decision) if isinstance(raw_decision, str) else raw_de
 # WRONG -- nested step inside the submitter, breaks replay
 def submit(callback_id: str, ctx) -> None:
     context.step(persist_callback_id(callback_id), name="persist")  # NonDeterministicExecutionError
-
+ 
 # CORRECT -- plain call, no nested durable operation
 def submit(callback_id: str, ctx) -> None:
     persist_callback_id_directly(callback_id)  # ordinary function call, not context.step(...)
