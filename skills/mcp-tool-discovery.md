@@ -47,7 +47,7 @@ tool_search(query="browser screenshot")
 
 # Looking for AWS Cost Explorer
 tool_search(query="aws cost")
-→ returns: aws-mcp-server::call_aws (use for Cost Explorer + Pricing API)
+→ returns: aws-mcp-server::run_script (sandboxed Python with call_boto3() — use for Cost Explorer + Pricing API; call_aws was removed Aug 31, 2026)
 ```
 
 After `tool_search` activates a matched tool, invoke it with **just the `tool_name`** (not the prefixed `server_name::tool_name`). For example, if the search returned `github::create_repository`, call `create_repository`, not `github::create_repository`.
@@ -59,7 +59,7 @@ After `tool_search` activates a matched tool, invoke it with **just the `tool_na
 | Create a GitHub repo                              | `github`                          | `create_repository`                 |
 | Read a file from GitHub                           | `github`                          | `get_file_contents`                 |
 | Search code on GitHub                             | `github`                          | `search_code`                       |
-| Make any AWS API call                             | `aws-mcp-server`                  | `call_aws`                          |
+| Make any AWS API call                             | `aws-mcp-server`                  | `run_script` (sandboxed Python, `call_boto3()`) |
 | Run sandboxed Python with AWS access              | `aws-mcp-server`                  | `run_script`                        |
 | Search AWS docs                                   | `aws-mcp-server`                  | `search_documentation`              |
 | Search the web                                    | `web-search`                      | `search`                            |

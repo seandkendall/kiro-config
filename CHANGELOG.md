@@ -147,6 +147,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`demo-prompts/reimburse-kickoff.md`** — replaced the OpenObserve observability paragraph with native OpenTelemetry-to-CloudWatch guidance (ADOT layer + Transaction Search + trace map); dropped `ADOT` from the "already enforced by the agent" boilerplate comment.
 - **`README.md`** / **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** — updated the `reinvent` row and the custom-skills inventory (Custom 12 → 11); replaced the "do not delete openobserve-telemetry" keep-note with a retirement note.
 
+## [0.31.4] - Model defaults upgraded to 5.5 generation; call_aws removal reflected in steering/skills
+
+### Changed
+
+- **`settings/cli.json`** — `chat.defaultModel` upgraded `claude-opus-5` → `claude-opus-5.5` (cheaper: 2.0x vs 2.2x credit multiplier, stronger agentic coding per Kiro's model changelog). `chat.modelDefaults` migrated from `claude-sonnet-5` to `claude-sonnet-5.5`, keeping the existing `thinking: disabled` override — flagged to the user that Sonnet 5.5 has adaptive thinking on by default, so the override's original rationale may be worth revisiting.
+- **`README.md`** — documented default model updated to match.
+
+### Fixed
+
+- **`skills/mcp-tool-discovery.md`, `skills/deploy-on-aws.md`, `steering/aws-agent-toolkit.md`, `steering/mcp-server-preference.md`** — all described `call_aws` as "deprecated, use as a fallback." AWS fully removed `call_aws` on Aug 31, 2026 (deprecated Jul 15, 2026) — it is not a usable fallback, it does not exist. Corrected all 4 to state removal explicitly and point to `run_script` as the only AWS-API-call tool; `mcp-tool-discovery.md`'s cheat-sheet row and example output (which named `call_aws` as the primary mapping) were the most actively wrong.
+
+### Added
+
+- **`steering/email-standards.md`** — cross-reference to the new AWS Agent Toolkit End User Messaging/SES skills (added Sep 2026, retrievable via `aws___retrieve_skill`), matching the existing `aws-auth` skill pointer style. Explicitly notes these skills cover account/channel setup only and do not override the mandatory custom-branded-template rule. No deeper changes — this repo has no multi-channel (SMS/WhatsApp) messaging usage yet.
+
 ## [0.31.3] - Untracked settings/cli.json.lock; documented lsp.json and installed user's manual reinvent edits
 
 ### Fixed

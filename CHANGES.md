@@ -357,3 +357,14 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Documented settings/lsp.json's local tooling dependency in README's "Local Tooling Required by MCP Servers" table
 - Committed the user's confirmed-intentional manual edits: agents/reinvent.json, skills/aws-serverless-patterns.md, skills/reinvent-stack-toolkit/SKILL.md
 - Verified ./validate.sh green with zero remaining drift flagged (Step 5 now clean)
+
+## Round 45 — 2026-10-07 -06:00
+
+- Delegated deep research on Kiro/Kiro CLI changes from the last 2-3 months (~Jul-Oct 2026) to the research subagent, covering CLI/IDE/models/general changelogs, AWS Agent Toolkit, kirodotdev GitHub repos, V3 GA status, and subagent-tool-naming stability. Presented 12 numbered findings as individual approve/disapprove items; user approved items on default model, Sonnet 5.5 migration, the call_aws grep/fix, and an SES/messaging-skill guidance review, declined action on item 11
+- Set `chat.defaultModel` to `claude-opus-5.5` via `kiro-cli settings chat.defaultModel claude-opus-5.5` (confirmed valid model ID via `kiro-cli chat --list-models`; Opus 5.5 is cheaper than Opus 5 — 2.0x vs 2.2x multiplier — and the research-cited successor)
+- Migrated `chat.modelDefaults` override block from `claude-sonnet-5` to `claude-sonnet-5.5`, keeping `thinking: disabled` as instructed; flagged to the user that Sonnet 5.5 has adaptive thinking on by default per research, so the override's original rationale may be worth revisiting (did not remove it unilaterally since the user said to keep it as-is pending their own check)
+- Ran the `call_aws` grep across all `.md` files: found 4 files (`skills/mcp-tool-discovery.md`, `skills/deploy-on-aws.md`, `steering/aws-agent-toolkit.md`, `steering/mcp-server-preference.md`) describing `call_aws` as "deprecated, use as fallback" — all now corrected to state it was fully removed Aug 31, 2026 and is not a usable fallback; `mcp-tool-discovery.md`'s cheat-sheet row and example `tool_search` output (which named `call_aws` as the primary AWS-API-call tool) were the most actively wrong and are now fixed to point at `run_script`
+- Reviewed item 10 (new AWS End User Messaging / SES skills, Sep 2026): confirmed this repo has no SMS/WhatsApp/multi-channel messaging usage anywhere and already enforces a stricter-than-default SES/email standard (`email-standards.md` — custom branded templates always, never service defaults). Added a one-line cross-reference pointer to the new skills (same style as the existing `aws-auth` skill pointer) with an explicit note that they don't override the mandatory custom-template rule — no deeper guidance needed since nothing in this repo touches multi-channel messaging yet
+- Item 11 (AWS MCP Server regional expansion) — no action per user's explicit decline
+- Updated `README.md`'s documented default model (`claude-opus-5` → `claude-opus-5.5`)
+- Verified `./validate.sh` green throughout

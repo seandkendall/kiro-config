@@ -204,3 +204,5 @@ Decision rules:
 - `aws-standards.md` — Cognito custom UI rule (same spirit: never use the defaults)
 - `accessibility-standards.md` — WCAG 2.1 AA color contrast and semantic HTML
 - `security-policies.md` — Secrets management for SES API keys, sender domain verification
+
+> **Agent Toolkit AWS End User Messaging / SES skills (added Sep 2026)** — new skills in the managed AWS MCP Server cover SMS/RCS and WhatsApp via End User Messaging, and SES sending-identity/production-access verification. Retrieve via `aws___retrieve_skill` per `aws-agent-toolkit.md` if a project needs multi-channel (SMS/WhatsApp) notifications or help getting an SES account out of the sandbox — this repo has no multi-channel messaging usage yet. **These skills do not override the mandatory custom-template rule above** — they cover account/channel setup and delivery mechanics, not template content; every SES send still goes through a custom brand-matched template per this file, never a skill-suggested default.
