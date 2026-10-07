@@ -6,7 +6,7 @@
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
 [![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
-Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 19 specialist subagents (incl. native iOS + iOS-testing), 29 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
+Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 19 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 29 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
 > **💡 Tips for AI Agents working on this repo**
 >
@@ -163,7 +163,7 @@ npm install -g prettier
 
 ## What's Included
 
-### Agents (20)
+### Agents (21)
 
 | Agent              | Description                                                                                                                                                         |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -187,6 +187,7 @@ npm install -g prettier
 | `shopify`          | Shopify + AWS serverless integration builder (Shopify dev MCP)                                                                                                      |
 | `reinvent`         | AWS Serverless builder — React/S3/CloudFront UI, API Gateway, Lambda Durable Functions, DynamoDB, SAM. No subagents. |
 | `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                                                                     |
+| `signals`          | Standalone AWS observability agent — CloudWatch Application Signals (service health, SLOs, distributed tracing, root cause analysis). No subagents; not callable as a subagent by other agents. |
 
 ### Steering Docs (29)
 

@@ -1,0 +1,92 @@
+{
+  "name": "signals",
+  "description": "Standalone AWS observability agent for Amazon CloudWatch Application Signals \u2014 service health, SLO compliance, distributed tracing, root cause analysis. No subagents; not used as a subagent by other agents.",
+  "prompt": "file://../prompts/signals.md",
+  "mcpServers": {
+    "cloudwatch-applicationsignals-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.cloudwatch-applicationsignals-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false
+    },
+    "aws-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=us-east-1"
+      ],
+      "disabled": false
+    },
+    "creds-agent": {
+      "command": "aim",
+      "args": [
+        "mcp",
+        "start-server",
+        "local-creds-agent-mcp"
+      ]
+    }
+  },
+  "tools": [
+    "*",
+    "@creds-agent"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://README.md",
+    "file://../steering/*.md"
+  ],
+  "welcomeMessage": "Application Signals specialist ready. Service health audits, SLO compliance, distributed tracing, canary failure analysis \u2014 against the default AWS account. What needs investigating?",
+  "keyboardShortcut": "shift+a",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
+      }
+    ]
+  },
+  "allowedTools": [
+    "@creds-agent"
+  ],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "subagent",
+        "match": [
+          "*"
+        ],
+        "effect": "deny"
+      },
+      {
+        "capability": "shell",
+        "match": [
+          "git-defender*"
+        ],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": [
+          "*docs.aws.amazon.com*"
+        ],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": [
+          "creds-agent/*"
+        ],
+        "effect": "allow"
+      }
+    ],
+    "policies": [
+      "read-only-shell"
+    ]
+  }
+}

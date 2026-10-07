@@ -13,6 +13,7 @@ This workspace uses a multi-agent architecture with a master orchestrator and sp
 ## When to Use Which Agent
 
 - **`/agent master`** (ctrl+1) — Default. Routes to the right specialist.
+- **`/agent signals`** (shift+a) — Standalone AWS observability: CloudWatch Application Signals (service health, SLOs, distributed tracing, root cause analysis). No subagents.
 - **`/agent serverless`** (ctrl+4) — AWS Lambda, API Gateway, DynamoDB, Powertools, X-Ray
 - **`/agent ios`** (ctrl+7) — Native iOS: Swift, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, offline-first
 - **`/agent ios-testing`** (ctrl+9) — iOS tests: XCTest, XCUITest, snapshot tests, performance tests

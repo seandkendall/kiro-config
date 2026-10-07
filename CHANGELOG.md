@@ -147,6 +147,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`demo-prompts/reimburse-kickoff.md`** — replaced the OpenObserve observability paragraph with native OpenTelemetry-to-CloudWatch guidance (ADOT layer + Transaction Search + trace map); dropped `ADOT` from the "already enforced by the agent" boilerplate comment.
 - **`README.md`** / **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** — updated the `reinvent` row and the custom-skills inventory (Custom 12 → 11); replaced the "do not delete openobserve-telemetry" keep-note with a retirement note.
 
+## [0.31.1] - New standalone `signals` agent; `quickwork_acp_kiro` rebuilt to mirror `master`
+
+### Added
+
+- **`agents/signals.json` + `prompts/signals.md`** (new) — standalone agent for Amazon CloudWatch Application Signals: service health audits, SLO compliance monitoring, distributed trace analysis, root cause analysis, canary failure analysis. Uses `cloudwatch-applicationsignals-mcp-server` against the default configured AWS account/profile only (never prompts for or switches accounts), plus `aws-mcp-server` for supplemental AWS calls. Explicitly denies the `subagent` capability — never used as a subagent and never delegates. Shortcut `shift+a`.
+- **`README.md`, `steering/AGENTS.md`** — new agent documented; agent count 20 → 21.
+
+### Changed
+
+- **`agents/quickwork_acp_kiro.json`** (gitignored, machine-local) — rebuilt to functionally mirror `agents/master.json`: identical MCP servers, subagent roster, prompt, and permissions, so Amazon Quick's ACP bridge gets the same experience as `master` in Kiro CLI. Confirmed `master.json` never references `quickwork_acp_kiro` as a subagent (and still doesn't after this change).
+- **`settings/cli.json`** — `chat.agentEngine` set to `v3` globally per user request, so `kiro-cli chat` defaults to the V3 agent engine without requiring `--v3` on every invocation.
+
+### Flagged for user approval (not applied)
+
+- `cloudwatch-mcp-server` (alarms/metrics/log analysis) was released alongside `cloudwatch-applicationsignals-mcp-server` as a companion server (July 2025 AWS announcement) and is already paired with it in `devops.json`. Not added to `signals` without explicit approval.
+
 ## [0.31.0] - Full repo validation sweep: fixed stale counts, dead agent references, inlining regression
 
 ### Fixed

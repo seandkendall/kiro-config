@@ -17,5 +17,17 @@
   "chat.enableTodoList": true,
   "chat.diffTool": "delta",
   "mcp.loadedBefore": true,
-  "chat.enableAutoAgentUpgrade": true
+  "chat.enableAutoAgentUpgrade": true,
+  "chat.sessionDashboard.indexResponses": true,
+  "chat.modelDefaults": {
+    "claude-sonnet-5": {
+      "output_config": {
+        "effort": "medium"
+      },
+      "thinking": {
+        "type": "disabled"
+      }
+    }
+  },
+  "chat.agentEngine": "v3"
 }
