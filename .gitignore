@@ -68,6 +68,8 @@ skills/wiki-edit/
 
 # Kiro CLI runtime session state — not part of this repo's config
 session-index/
+tasks/
+knowledge_bases/
 
 # Personal agents (local-only, never shared)
 agents/accounting.json
@@ -128,3 +130,14 @@ agents/v2-backup/
 
 # Kiro CLI embedding-model cache (auto-downloaded, 86+ MB — never commit)
 models/
+
+# Machine-local Kiro CLI preference/environment files — accidentally committed
+# in past sessions (likely swept in by a broad `git add -A`), same category as
+# settings/survey_state.json and settings/feed_state.json above. None contain
+# secrets, but none are shareable project config either: amazon-internal.json
+# is an environment flag (sandbox detection), kiro_cli_theme.json is per-user
+# UI theme preference, session-response-indexing.json is a per-user dashboard
+# toggle. Removed from tracking 2026-10-02.
+settings/amazon-internal.json
+settings/kiro_cli_theme.json
+settings/session-response-indexing.json

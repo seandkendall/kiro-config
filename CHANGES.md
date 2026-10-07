@@ -339,3 +339,13 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Checked keyboard shortcuts in use across all 21 agents before assigning `shift+a` to `signals` (confirmed free)
 - Updated `README.md` (agent count 20→21, new table row, intro summary) and `steering/AGENTS.md` ("When to Use Which Agent" — new `/agent signals` line)
 - Verified `./validate.sh` green: 23 agents validate (includes gitignored personal/externally-managed ones not tracked in git)
+
+## Round 43 — 2026-10-07 -06:00
+
+- Fixed the `.gitignore` gap flagged last round: added `tasks/` and `knowledge_bases/` (both Kiro CLI runtime state for unrelated spec-execution/KB tracking — confirmed neither was ever tracked in git, so no cleanup needed, just prevention)
+- Audited every tracked top-level directory/file against what's actually in `git ls-files` to check for anything that shouldn't have been pushed. Found 3 real accidental inclusions, all from past sessions' broad `git add -A` sweeps (confirmed via `git log --follow`, first appearing in the V3-migration commit `a0a4280` and a later `reinvent` commit): `settings/amazon-internal.json` (environment sandbox flag), `settings/kiro_cli_theme.json` (per-user UI theme), `settings/session-response-indexing.json` (per-user dashboard toggle) — none contain secrets, but none are shareable project config either, matching the already-excluded `survey_state.json`/`feed_state.json` pattern
+- Removed all three from git tracking via `git rm --cached` (files remain on disk, untouched) and added them to `.gitignore` with an explanatory comment
+- Flagged `settings/lsp.json` as borderline (generic language-server command mappings, no personal data, arguably legitimate shared config like `cli.json`) — left tracked, did not remove without asking
+- Ran a secret-scan across every tracked file (AWS access keys, private key headers, GitHub/Slack tokens, password-shaped key=value pairs) — zero matches
+- Confirmed `agents/quickwork_acp_kiro.json` (gitignored, machine-local) was never tracked, consistent with its existing `agents/*_acp_*.json` rule
+- Verified `./validate.sh` green: 23 agents validate, no privacy-guard failures, `tasks/`/`knowledge_bases/`/the 3 settings files all confirmed ignored via `git check-ignore -v`

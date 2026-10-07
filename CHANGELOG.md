@@ -147,6 +147,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`demo-prompts/reimburse-kickoff.md`** — replaced the OpenObserve observability paragraph with native OpenTelemetry-to-CloudWatch guidance (ADOT layer + Transaction Search + trace map); dropped `ADOT` from the "already enforced by the agent" boilerplate comment.
 - **`README.md`** / **`skills/AWS-TOOLKIT-SKILLS-AUDIT.md`** — updated the `reinvent` row and the custom-skills inventory (Custom 12 → 11); replaced the "do not delete openobserve-telemetry" keep-note with a retirement note.
 
+## [0.31.2] - Gitignore audit: untracked 3 accidentally-committed machine-local files, added tasks/knowledge_bases rules
+
+### Fixed
+
+- **`.gitignore`** — added `tasks/` and `knowledge_bases/` (Kiro CLI runtime state for spec-execution tracking and knowledge bases of unrelated projects on this shared machine). Neither was ever tracked in git — this closes the gap before anything could leak.
+- **Repo-wide push audit**: checked every tracked top-level directory against `git ls-files` for anything that shouldn't have been committed. Found and removed 3 accidental inclusions from past sessions' `git add -A` sweeps: `settings/amazon-internal.json`, `settings/kiro_cli_theme.json`, `settings/session-response-indexing.json` — all machine-local preference/environment files, none containing secrets, matching the already-excluded `survey_state.json`/`feed_state.json` pattern. Removed via `git rm --cached` (files remain on disk) and added to `.gitignore` with an explanatory comment.
+- **Secret scan**: searched all tracked files for AWS access keys, private key headers, GitHub/Slack tokens, and password-shaped values — zero matches, confirming no credentials have leaked into this public repo.
+
+### Noted, not changed
+
+- `settings/lsp.json` (generic language-server command mappings, no personal data) was flagged as borderline-shareable and left tracked pending user confirmation.
+
 ## [0.31.1] - New standalone `signals` agent; `quickwork_acp_kiro` rebuilt to mirror `master`
 
 ### Added
