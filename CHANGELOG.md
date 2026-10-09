@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.32.1] - email-research now splits large searches into smaller windows
+
+### Changed
+
+- **`agents/email-research.json`** — added a `SEARCH STRATEGY (MANDATORY)` section to the
+  agent's prompt: never issue a single unfiltered/full-mailbox search (the provider rejects
+  these outright on large mailboxes, confirmed live against a 10,000+ message account);
+  always scope by date range, sender, keyword, or folder; decompose long date ranges into
+  sequential smaller windows (e.g. weekly) rather than one wide call; on a failed/rejected
+  call, narrow further and retry instead of widening; merge and dedupe results across
+  windows; always report actual search coverage to the user. Live-tested against a real
+  mailbox: a 30-day "invoice" search was correctly split into 5 weekly windows, with one
+  failing window re-split and retried successfully.
+
 ## [0.32.0] - New optional `email-research` agent (IMAP/SMTP via MCP)
 
 ### Added
