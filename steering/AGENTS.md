@@ -42,6 +42,7 @@ Builder agents automatically delegate to these specialists:
 | `research`         | Web search, AWS docs, GitHub, library docs                                                                       |
 | `web-builder`      | React + AWS full-stack web apps; itself orchestrates frontend/serverless/ai-builder when scaffolding entire apps |
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                                           |
+| `email-research`   | IMAP/SMTP mailbox search, read, organize via MCP (optional, local credentials only)                              |
 
 ## Delegation Rules
 

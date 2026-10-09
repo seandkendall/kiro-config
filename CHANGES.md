@@ -377,3 +377,21 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Fixed a trailing-comma JSON syntax error introduced in `agents/quickwork_acp_kiro.json` while removing the `toolsSettings.web_fetch` block, caught by `./validate.sh` Step 2
 - Confirmed 6 agents (`frontend.json`, `web-builder.json`, `shopify.json`, `stocks.json`, `google-workspace.json`, `ios-testing.json`) already had no `web_fetch` restriction — no change needed
 - Verified `./validate.sh` green: all 23 agents validate, all JSON parses, no privacy-guard regressions
+
+## Round 47 — 2026-10-07 -06:00
+
+- Per user's explicit choice ("just increase the timeout of google-drive MCP, keep everything the same"): fixed the `signals` MCP startup failure by raising only the default-scope `google-drive` MCP server's launch timeout to 180000ms via `kiro-cli mcp add --scope default ... --timeout 180000 --force` (the CLI's own mechanism, not a manual file edit)
+- `settings/mcp.json` is gitignored (machine-local, per existing repo convention) so this change has no git diff to commit
+- Did NOT set `chat.disableInheritingDefaultResources` (reverted in the prior round after diagnosis) and did NOT change any agent JSON for this fix, per the user's "keep everything the same" instruction
+- Verified the fix: `signals` agent now starts cleanly both under `kiro-cli chat --agent signals --no-interactive --require-mcp-startup` (with `KIRO_REQUIRE_MCP_STARTUP_TIMEOUT_SECS=180`, since that flag has its own independent 30s default gate separate from any one server's `timeout`) and under normal non-strict startup (no `--require-mcp-startup`), confirming the `google-drive` cold-start was the actual bottleneck
+
+## Round 48 — 2026-10-07 -06:00
+
+- Added new agent `email-research`: reads, searches, and organizes an IMAP/SMTP mailbox via the `mcp-email-server` MCP server (`uvx mcp-email-server@latest stdio`), optional and gitignore-free (ships in the public repo with no credentials, matching the `google-workspace` precedent)
+- Researched the server's `MCP_EMAIL_SERVER_*` environment-variable config interface (`Wh1isper/mcp-email-server` docs) to wire credentials via env vars rather than its TOML/keyring config path, since this repo distributes agent config as JSON+env, not per-user interactive setup
+- Set `agents/email-research.json`'s `email` MCP server to default `MCP_EMAIL_SERVER_ALLOWED_MUTATIONS=draft,organize` (no delete/send/append) as a safety default; sending additionally requires the user to set a non-empty `MCP_EMAIL_SERVER_ALLOWED_RECIPIENTS`, which stays empty (disabled) unless they opt in
+- Wired `email-research` into `master.json`'s and the gitignored `quickwork_acp_kiro.json`'s `toolsSettings.subagent.availableAgents`/`trustedAgents` lists, `prompts/master.md`'s subagent roster and workflow list, bumping both welcome messages' subagent count to 21
+- Updated `steering/AGENTS.md`'s subagent table and `README.md` (agent count 21 → 22, intro specialist-subagent count corrected 19 → 21 to match the actual current roster, agent table row, MCP server table row, new "Email Research agent (optional, local-only setup)" section documenting `MCP_EMAIL_SERVER_*` env vars and the AWS WorkMail IMAP/SMTP endpoint table per region)
+- Researched Amazon WorkMail's documented IMAP/SMTP connection details (`docs.aws.amazon.com/workmail/latest/userguide/using_IMAP.html`): IMAP `imap.mail.us-east-1.awsapps.com:993` (implicit TLS), SMTP `smtp.mail.us-east-1.awsapps.com:465` (implicit TLS only, no STARTTLS); confirmed the IMAP/SMTP username must be the full email address, not WorkMail's separate short web-client username
+- Per explicit user instruction, configured this machine's `~/.zshrc` (outside the git repo) with the user's own `sean@k5l.ca` WorkMail IMAP/SMTP credentials as `MCP_EMAIL_SERVER_*` env vars — local-only, not committed, consistent with how `GITHUB_PERSONAL_ACCESS_TOKEN`/`TWENTY_FIRST_API_KEY`/`FIGMA_API_KEY` are already handled
+- Verified: `./validate.sh` green (24 agents validate, all JSON parses); TLS connection test to `imap.mail.us-east-1.awsapps.com:993` confirmed reachable and returned the expected `Amazon WorkMail IMAP Proxy` banner (connectivity only, no login attempted from a script); `uvx mcp-email-server@latest stdio` installed and started cleanly against the configured env vars

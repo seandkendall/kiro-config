@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.32.0] - New optional `email-research` agent (IMAP/SMTP via MCP)
+
+### Added
+
+- **`agents/email-research.json`** (new) — reads, searches, and organizes an IMAP/SMTP mailbox
+  via the `mcp-email-server` MCP server (`uvx mcp-email-server@latest stdio`). Ships in the
+  public repo with no credentials configured — each user supplies their own
+  `MCP_EMAIL_SERVER_*` env vars locally, matching the `google-workspace` agent's "optional,
+  local-only setup" pattern. Defaults to `MCP_EMAIL_SERVER_ALLOWED_MUTATIONS=draft,organize`
+  (no delete/send/append) until the user widens it. Shortcut `shift+e`.
+- **`README.md`** — new "Email Research agent (optional, local-only setup)" section
+  documenting the required env vars and the Amazon WorkMail IMAP/SMTP endpoint table per AWS
+  Region; agent count 21 → 22; agent table and MCP server table rows added; intro specialist
+  subagent count corrected 19 → 21 (previously stale by one, now matches the actual roster).
+- **`steering/AGENTS.md`** — subagent table row added.
+- **`agents/master.json`, `prompts/master.md`** (+ the gitignored, master-mirroring
+  `agents/quickwork_acp_kiro.json`) — `email-research` added to the subagent roster
+  (`availableAgents`/`trustedAgents`), routing hint, and welcome-message subagent count.
+
 ## [0.31.1] - web_fetch is now unrestricted for every agent
 
 ### Changed

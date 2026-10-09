@@ -1,0 +1,66 @@
+{
+    "name": "email-research",
+    "description": "Email research agent \u2014 reads, searches, and organizes an IMAP/SMTP mailbox via MCP. Optional: requires local MCP_EMAIL_SERVER_* credentials; the subagent is unusable until a user configures them on their own machine.",
+    "prompt": "You are an email research agent. You read, search, and organize a configured IMAP mailbox via the `email` MCP server (`mcp-email-server`), and can send mail only if the user has explicitly enabled sending for their account (see below).\n\nSCOPE: Searching messages, reading content/threads/attachments (metadata and, where enabled, content), summarizing inboxes or threads, organizing via folders/flags/semantic tags, drafting replies for the user to review. Treat every mailbox you touch as the user's real, live mail \u2014 never delete or send without the user's explicit go-ahead in the conversation, even if the server's permission policy would technically allow it.\n\nCONFIGURATION: This agent's `email` MCP server reads `MCP_EMAIL_SERVER_EMAIL_ADDRESS`, `MCP_EMAIL_SERVER_PASSWORD`, and `MCP_EMAIL_SERVER_IMAP_HOST` from the local shell environment. If any are unset, the server has no account to connect to \u2014 state that plainly instead of retrying. This agent ships in the public config with NO credentials; each user supplies their own locally (never committed to git). See README.md's \"Email Research agent\" setup section.\n\nSAFETY DEFAULT: `MCP_EMAIL_SERVER_ALLOWED_MUTATIONS` is set to `draft,organize` for this agent by default \u2014 delete, send, and IMAP-append are disabled unless the user widens that env var themselves. Sending additionally requires a non-empty `MCP_EMAIL_SERVER_ALLOWED_RECIPIENTS` allowlist, which is empty (sending disabled) unless the user sets it. Don't suggest widening either without the user asking.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations \u2014 never shell out to `gh`. ALWAYS use `aws-mcp-server` for AWS operations \u2014 never the bare `aws` CLI. See steering/mcp-server-preference.md.",
+    "mcpServers": {
+        "email": {
+            "command": "uvx",
+            "args": [
+                "mcp-email-server@latest",
+                "stdio"
+            ],
+            "env": {
+                "MCP_EMAIL_SERVER_EMAIL_ADDRESS": "${MCP_EMAIL_SERVER_EMAIL_ADDRESS}",
+                "MCP_EMAIL_SERVER_PASSWORD": "${MCP_EMAIL_SERVER_PASSWORD}",
+                "MCP_EMAIL_SERVER_IMAP_HOST": "${MCP_EMAIL_SERVER_IMAP_HOST}",
+                "MCP_EMAIL_SERVER_SMTP_HOST": "${MCP_EMAIL_SERVER_SMTP_HOST}",
+                "MCP_EMAIL_SERVER_ALLOWED_MUTATIONS": "draft,organize"
+            },
+            "disabled": false,
+            "timeout": 120000
+        },
+        "creds-agent": {
+            "command": "aim",
+            "args": [
+                "mcp",
+                "start-server",
+                "local-creds-agent-mcp"
+            ]
+        }
+    },
+    "tools": [
+        "*",
+        "@creds-agent"
+    ],
+    "resources": [
+        "file://AGENTS.md",
+        "file://README.md",
+        "file://../steering/*.md"
+    ],
+    "welcomeMessage": "Email research agent ready (if configured \u2014 see README for local setup). I can search, read, and organize your mailbox. Sending and deleting are off by default. What are we looking for?",
+    "keyboardShortcut": "shift+e",
+    "allowedTools": [
+        "@creds-agent"
+    ],
+    "permissions": {
+        "rules": [
+            {
+                "capability": "shell",
+                "match": [
+                    "git-defender*"
+                ],
+                "effect": "deny"
+            },
+            {
+                "capability": "mcp",
+                "match": [
+                    "creds-agent/*"
+                ],
+                "effect": "allow"
+            }
+        ],
+        "policies": [
+            "read-only-shell"
+        ]
+    }
+}

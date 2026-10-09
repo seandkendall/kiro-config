@@ -6,7 +6,7 @@
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
 [![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
-Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 19 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 29 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
+Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 21 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 29 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
 > **💡 Tips for AI Agents working on this repo**
 >
@@ -164,7 +164,7 @@ npm install -g prettier
 
 ## What's Included
 
-### Agents (21)
+### Agents (22)
 
 | Agent              | Description                                                                                                                                                         |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -184,6 +184,7 @@ npm install -g prettier
 | `ios`              | Native iOS: Swift, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, CoreLocation, offline-first MVVM                                                               |
 | `ios-testing`      | iOS tests: XCTest, XCUITest, swift-snapshot-testing, performance tests, protocol-based mocking                                                                      |
 | `google-workspace` | Google Docs, Sheets, Drive (read-only)                                                                                                                              |
+| `email-research`   | IMAP/SMTP mailbox search, read, organize (optional, requires local credentials)                                                                                     |
 | `stocks`           | Stock trading research and analysis (Yahoo Finance MCP)                                                                                                             |
 | `shopify`          | Shopify + AWS serverless integration builder (Shopify dev MCP)                                                                                                      |
 | `reinvent`         | AWS Serverless builder — React/S3/CloudFront UI, API Gateway, Lambda Durable Functions, DynamoDB, SAM. No subagents. |
@@ -223,6 +224,7 @@ Agents configure their own MCP servers. Key servers used across agents:
 | Chrome DevTools     | frontend, web-builder, testing                             | Chrome debugging                     |
 | Bedrock Image       | master, image-gen, frontend, web-builder, ai-builder       | Image generation                     |
 | Google Drive        | google-workspace                                           | Google Docs/Sheets/Drive (read-only) |
+| mcp-email-server    | email-research                                             | IMAP/SMTP mailbox access (optional, local credentials only) |
 
 ## Environment Variables
 
@@ -255,6 +257,32 @@ To enable it:
 3. Restart Kiro CLI; the agent runs read-only (`drive.readonly` scope).
 
 This file is a credential — keep it out of version control (it is gitignored here as `gcp-oauth.keys.json`).
+
+### Email Research agent (optional, local-only setup)
+
+The `email-research` subagent (reachable from `master`) uses the [`mcp-email-server`](https://github.com/Wh1isper/mcp-email-server) MCP server (IMAP/SMTP) via `uvx`. It ships in this public repo with **no credentials configured** — most users will not have an account wired up, and the subagent simply won't connect until one is, while every other agent works normally.
+
+To enable it, set these in `~/.zshrc` (never commit them):
+
+```bash
+export MCP_EMAIL_SERVER_EMAIL_ADDRESS="you@example.com"
+export MCP_EMAIL_SERVER_USER_NAME="you@example.com"   # full address, not a short username
+export MCP_EMAIL_SERVER_PASSWORD="your-password"
+export MCP_EMAIL_SERVER_IMAP_HOST="imap.example.com"
+export MCP_EMAIL_SERVER_SMTP_HOST="smtp.example.com"  # omit to disable sending
+```
+
+For Amazon WorkMail (same account/region as this repo's other AWS services), the endpoints follow the AWS Region hosting the mailbox:
+
+| Region              | IMAP host                             | SMTP host (port 465, implicit TLS, no STARTTLS) |
+| ------------------- | -------------------------------------- | ------------------------------------------------- |
+| US East (N. Virginia) | `imap.mail.us-east-1.awsapps.com`   | `smtp.mail.us-east-1.awsapps.com`                |
+| US West (Oregon)      | `imap.mail.us-west-2.awsapps.com`   | `smtp.mail.us-west-2.awsapps.com`                |
+| Europe (Ireland)      | `imap.mail.eu-west-1.awsapps.com`   | `smtp.mail.eu-west-1.awsapps.com`                |
+
+IMAP port is 993 (implicit TLS). The IMAP/SMTP username is the **full email address**, not the short WorkMail web-client username.
+
+By default this agent's `email` MCP server is restricted to `draft,organize` mutations — reading, searching, and organizing are allowed; **deleting and sending are disabled** unless you widen `MCP_EMAIL_SERVER_ALLOWED_MUTATIONS` (and, for sending, set a non-empty `MCP_EMAIL_SERVER_ALLOWED_RECIPIENTS` allowlist) yourself in the agent's `mcpServers.email.env` block.
 
 ## Configuration
 
