@@ -84,6 +84,9 @@ prompts/personal-*.md
 # Externally-managed ACP agent configs (machine-specific, auto-generated — e.g. QuickWork)
 agents/*_acp_*.json
 
+# Standalone local-only demo agent (contains a live Databricks workspace URL + bearer token)
+agents/keyera-databricks.json
+
 # Personal steering rules (self-evolving, user-specific, never shared)
 steering/personal-*.md
 # Exception: the protocol file itself lives in the public repo
