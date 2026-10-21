@@ -64,7 +64,7 @@ table = dynamodb.Table(self, "Table",
     billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
     point_in_time_recovery=True,
     # Do NOT set `encryption=` — omitting it keeps DynamoDB's default (AWS_OWNED) encryption.
-    # Never change to AWS_MANAGED/CUSTOMER_MANAGED. See steering/aws-standards.md "DynamoDB Encryption".
+    # Never change to AWS_MANAGED/CUSTOMER_MANAGED. See steering/aws-cdk-core.md "DynamoDB".
 )
 ```
 
@@ -89,7 +89,7 @@ resourcegroups.CfnGroup(self, "AppResourceGroup",
 )
 ```
 
-Keep tagging every stack with `project=<name>` (see Stack Template). Full rule + the NON-DESTRUCTIVE AppRegistry→Resource Groups migration procedure: `steering/aws-standards.md`.
+Keep tagging every stack with `project=<name>` (see Stack Template). Full rule + the NON-DESTRUCTIVE AppRegistry→Resource Groups migration procedure: `steering/aws-cdk-core.md`.
 
 ## Rules
 

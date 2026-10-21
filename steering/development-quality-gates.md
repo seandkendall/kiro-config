@@ -81,13 +81,7 @@ npm run lint
 
 ## Onboarding to an Existing Project
 
-When opening an unfamiliar codebase for the first time, run `/code overview` to get a high-level structural snapshot in seconds — symbols, top-level files, language breakdown, key entry points. This is faster than manually reading the README + grepping the code, and works on 18 languages out of the box (Python, TS/JS, Rust, Go, Java, Kotlin, Swift, Ruby, PHP, etc.).
-
-For deeper exploration without LSP setup:
-
-- `/code search <symbol>` — find a class, function, or method by name
-- `/code overview` (with `--silent` for cleaner output) — quick structural map
-- The `code` tool's `pattern_search` and `pattern_rewrite` use AST patterns (not regex) — safer refactors
+When opening an unfamiliar codebase for the first time, run `/code overview` for a structural snapshot (symbols, top-level files, language breakdown, entry points) — faster than reading the README + grepping, works on 18 languages out of the box. For deeper exploration: `/code search <symbol>`, `/code overview --silent`, and the `code` tool's AST-based `pattern_search`/`pattern_rewrite` (safer than regex for refactors).
 
 ## Testing Standards
 

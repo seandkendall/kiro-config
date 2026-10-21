@@ -5,7 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.32.1] - email-research now splits large searches into smaller windows
+## [0.33.0] - Prompts inlined for cloud sync; steering files split under the 10K sync limit
+
+### Changed
+
+- **13 `agents/*.json`** (`accounting`, `ai-builder`, `frontend`, `google-workspace`, `image-gen`, `ios`,
+  `master`, `promptgen`, `quickwork_acp_kiro`, `serverless`, `shopify`, `signals`, `web-builder`) —
+  every `"prompt": "file://../prompts/<name>.md"` reference replaced with the full prompt text
+  inlined directly in the JSON. Kiro Web's Configuration Sync cannot resolve local `file://` URIs
+  (the cloud sandbox has no access to `~/.kiro/prompts/`), so the indirection silently broke
+  cloud-config sync. Content is unchanged — only the indirection was removed. The `prompts/`
+  directory and all 12 of its files were deleted; every doc referencing the old pattern
+  (`README.md`, `CONTRIBUTING.md`, `validate.sh`, `.gitignore`, two steering docs) was updated.
+- **`steering/aws-standards.md` (28,985 chars) split into 4 files**, each well under Kiro Web's
+  per-file sync character limit: `aws-cdk-core.md`, `aws-auth-cognito.md`,
+  `aws-deploy-contract.md`, `aws-lambda-resilience.md`. Same `fileMatch` scope, same content,
+  reorganized by topic. All cross-references repo-wide updated to point at the correct new file.
+- **`steering/AGENTS.md` (17,679 → 8,956 chars)** — moved the Kiro CLI version-by-version feature
+  changelog to a new manual-inclusion `steering/kiro-cli-features-log.md`; tightened delegation
+  rules and the `subagent`/`delegate` comparison using semantic anchoring (no content dropped).
+- **`steering/email-standards.md` (14,253 → 9,893 chars)** and **`steering/development-quality-gates.md`
+  (10,084 → 9,834 chars)** — condensed via semantic anchoring (naming CAN-SPAM/CASL/MIME instead of
+  re-describing them) and tighter prose; no rules removed.
+- **`README.md`** — steering-doc count 29 → 32; specialist-subagent count corrected to 21 (was
+  stale at 19/20 from prior rounds).
+
+### Removed
+
+- **`steering/personal-aws-deploy-target.md`** (gitignored, local-only) — removed per explicit user
+  request. Never tracked in git; no repo change required for the removal itself.
+
 
 ### Changed
 

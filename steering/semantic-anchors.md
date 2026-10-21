@@ -35,7 +35,7 @@ Terms that fail this test only _look_ like instructions:
 - **"make it secure"** — fails Rich and Attributable. Carries a mood, not a method.
 - **"clean code"** — fails Precise. Points at a vague aspiration, not a specific rule set.
 
-When a term fails the test, write the behavior out instead of pretending the name carries it — this is exactly what most of this repo's existing MANDATORY rules already do correctly (e.g., the exact deploy.sh flag contract in `aws-standards.md` is Tier 3 by nature — there's no canonical spec for it, so it's fully spelled out, which is correct).
+When a term fails the test, write the behavior out instead of pretending the name carries it — this is exactly what most of this repo's existing MANDATORY rules already do correctly (e.g., the exact deploy.sh flag contract in `aws-deploy-contract.md` is Tier 3 by nature — there's no canonical spec for it, so it's fully spelled out, which is correct).
 
 ## Three-Tier Classification
 
@@ -47,10 +47,10 @@ Classify a rule before deciding how to write it. Examples below are drawn from t
 
 - **Tier 2 — an anchor exists but this repo adds a delta.** Name the anchor, then state only the divergence.
   - `python-standards.md` is implicitly PEP 8 + house deltas (f-strings over `.format()`, `pathlib` over `os.path`, dataclasses/pydantic over plain dicts) — it could be tightened to explicitly anchor on PEP 8 first, then list only the deltas, rather than restating general Python style from scratch.
-  - `aws-standards.md`'s Cognito password-policy rule is a good existing Tier 2 example: "Use Cognito's **default** password policy... unless a developer explicitly requests different rules" — it doesn't re-derive what a good password policy is, it anchors on the service default and states the override condition as the only delta.
+  - `aws-auth-cognito.md`'s Cognito password-policy rule is a good existing Tier 2 example: "Use Cognito's **default** password policy... unless a developer explicitly requests different rules" — it doesn't re-derive what a good password policy is, it anchors on the service default and states the override condition as the only delta.
 
 - **Tier 3 — no anchor exists, so the content itself is the signal.** Write it out in full; there's nothing for the model to recall.
-  - `aws-standards.md`'s exact `deploy.sh` flag contract (`--profile`, `--domain`, `--delete`, `-y`, `-h`) and its deep-cleanup-on-delete behavior are pure house convention — no upstream spec defines them, so every detail must stay written out.
+  - `aws-deploy-contract.md`'s exact `deploy.sh` flag contract (`--profile`, `--domain`, `--delete`, `-y`, `-h`) and its deep-cleanup-on-delete behavior are pure house convention — no upstream spec defines them, so every detail must stay written out.
   - `change-logging.md`'s `CHANGES.md` round-numbering format is a coined, repo-specific convention — write it out in full (this doc already does).
 
 ## A concrete fix this repo can apply

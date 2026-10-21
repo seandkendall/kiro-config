@@ -18,9 +18,11 @@ The agent config references an MCP server name that conflicts with Tool Search's
 
 Add `subagent` to the agent's `tools` array, or use `"tools": ["*"]` / `"@builtin"` to inherit all built-in tools. Without this, the agent can't spawn subagents.
 
-### Agent validation fails: "File URI not found"
+### Agent validation fails: "File URI not found" (historical — no longer applies)
 
-Relative `file://` URIs in agent JSON (`prompt`, `resources`) resolve against the **agent file's own parent directory** (`~/.kiro/agents/`), not against `~/.kiro/` itself. Verified empirically: `file://prompts/master.md` resolves to `~/.kiro/agents/prompts/master.md` (wrong — `kiro-cli agent list` errors "File URI not found"). The correct relative form is one level up: `file://../prompts/master.md` and `file://../steering/*.md`. Absolute home-expansion (`file://~/.kiro/prompts/master.md`) also works on V2, but the CLI's `/upgrade-agent` diagnostic flags absolute `file://` URIs as rejected by V3, which resolves relative paths against the workspace root instead — the two engines disagree on the resolution base, so there is no single relative spelling that satisfies both.
+**This repo no longer uses `file://` prompt references.** As of the cloud-sync compatibility pass, every agent's `prompt` field holds its full system prompt inline — Kiro Web's Configuration Sync cannot resolve local `file://` URIs (the cloud sandbox has no access to `~/.kiro/prompts/`), so the indirection broke cloud sync and was removed entirely. If a new agent is added, write its prompt inline in the JSON's `prompt` field — do not reintroduce a `prompts/*.md` + `file://../prompts/<name>.md` pattern.
+
+The historical issue (kept for reference, in case an old backup or fork still uses this pattern): relative `file://` URIs in agent JSON (`prompt`, `resources`) resolve against the **agent file's own parent directory** (`~/.kiro/agents/`), not against `~/.kiro/` itself. `file://prompts/master.md` resolves to `~/.kiro/agents/prompts/master.md` (wrong). The working relative form was one level up: `file://../prompts/master.md`. Absolute home-expansion (`file://~/.kiro/prompts/master.md`) worked on V2, but V3 resolves relative paths against the workspace root instead — the two engines disagreed on the resolution base.
 
 ## MCP Server Issues
 

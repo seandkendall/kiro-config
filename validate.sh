@@ -95,8 +95,6 @@ echo "Step 4: Privacy guard check..."
 LEAKS=$(cd "$KIRO" && git ls-files \
   'agents/personal-*.json' \
   'agents/accounting.json' \
-  'prompts/personal-*.md' \
-  'prompts/accounting.md' \
   'steering/personal-*.md' 2>/dev/null \
   | grep -v 'steering/personal-rules-protocol.md' || true)
 

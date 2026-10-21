@@ -18,7 +18,7 @@ trimming is destructive and requires explicit owner sign-off (see "Decision" bel
 
 ## New Agent Toolkit core skills (retrieve on demand — do not vendor)
 
-- **`aws-auth`** (added Aug 2026) — Amazon Cognito user pool/identity pool setup, managed login/OAuth flows, tokens, JWT authorizers, passkey/WebAuthn, threat protection, Lambda triggers. Retrieve via `aws___retrieve_skill` when doing Cognito work — do NOT vendor a local copy (same on-demand pattern as the retired skills below). **Its default guidance recommends the Cognito hosted UI — this repo's `aws-standards.md` "Custom Login UI (MANDATORY)" rule overrides that; never follow the skill's hosted-UI steer.** See the cross-reference in `steering/aws-standards.md`.
+- **`aws-auth`** (added Aug 2026) — Amazon Cognito user pool/identity pool setup, managed login/OAuth flows, tokens, JWT authorizers, passkey/WebAuthn, threat protection, Lambda triggers. Retrieve via `aws___retrieve_skill` when doing Cognito work — do NOT vendor a local copy (same on-demand pattern as the retired skills below). **Its default guidance recommends the Cognito hosted UI — this repo's `aws-auth-cognito.md` "Custom Login UI (MANDATORY)" rule overrides that; never follow the skill's hosted-UI steer.** See the cross-reference in `steering/aws-auth-cognito.md`.
 - **Amazon Redshift skills** (added under the `aws-data-analytics` plugin, Aug 2026) — SQL syntax reference, metadata discovery, data loading patterns, materialized views, and migration workflows (discovery → schema/SQL conversion → data movement → validation → performance comparison) for both provisioned clusters and Serverless workgroups. Retrieve via `aws___retrieve_skill` when doing Redshift work — no local vendoring needed, same on-demand pattern. Not yet used in any project this repo has built.
 
 ## AgentCore Gateway Connectors — checked, no Agent Toolkit overlap (Aug 2026)
@@ -72,7 +72,7 @@ Note: `deploy.sh.template`/`gitignore.template`/`package.json.template` were bri
 alongside the `reinvent`-specific template cleanup, then restored (2026-10-02) — `reinvent`
 never used these three (it has no `deploy.sh` contract and no file-based skeleton), but
 `serverless`/`web-builder`/`master`/`architect` and the repo-wide `deploy.sh` MANDATORY
-contract (`steering/aws-standards.md`, `skills/deploy-on-aws.md`) still depend on them.
+contract (`steering/aws-deploy-contract.md`, `skills/deploy-on-aws.md`) still depend on them.
 
 ## Trade-off (why this is "mark," not auto-"trim")
 

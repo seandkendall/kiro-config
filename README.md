@@ -6,11 +6,11 @@
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
 [![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
-Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 21 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 29 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
+Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 21 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 32 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
 > **💡 Tips for AI Agents working on this repo**
 >
-> - **NEVER push directly to `main` without running `./validate.sh` first.** It validates every agent JSON, JSON syntax, bash syntax, and the gitignore privacy guard. The script prints `✓ All checks passed. Safe to push.` when green. Run after ANY change to `agents/`, `prompts/`, `skills/`, `steering/`, `settings/`, or `import.sh`.
+> - **NEVER push directly to `main` without running `./validate.sh` first.** It validates every agent JSON, JSON syntax, bash syntax, and the gitignore privacy guard. The script prints `✓ All checks passed. Safe to push.` when green. Run after ANY change to `agents/`, `skills/`, `steering/`, `settings/`, or `import.sh`.
 > - Prefer the configured **MCP servers** over CLI commands (`gh`, `aws`, `curl`, etc.) for the same operation. See `steering/mcp-server-preference.md` for the full mapping table.
 > - Don't recommend CI/CD pipelines or git hooks — both are explicitly banned in `steering/post-task-recommendations.md`. Validation belongs in `./validate.sh` and `deploy.sh`, not automation hooks.
 > - When generating recommendations, follow the user/AI Agent split in `steering/post-task-recommendations.md`.
@@ -58,7 +58,7 @@ the GitHub API / raw.githubusercontent.com instead.
 
 STEP 2 — Merge into ~/.kiro (NON-DESTRUCTIVE — ask when unsure):
 - Fresh setup (no agents/steering/skills here yet): copy everything over
-  (agents/, steering/, skills/, prompts/, settings/, import.sh, README.md,
+  (agents/, steering/, skills/, settings/, import.sh, README.md,
   CHANGELOG.md, .gitignore, validate.sh), then initialize git (git init,
   remote add origin, fetch, reset --soft to origin/main) so I can pull
   future updates.
@@ -66,7 +66,7 @@ STEP 2 — Merge into ~/.kiro (NON-DESTRUCTIVE — ask when unsure):
   both with different content, show me a short summary of the differences
   and ask per file (or batched by type): keep mine / take repo's / merge.
 - NEVER overwrite or delete: steering/personal-*.md, agents/personal-*,
-  agents/accounting.*, prompts/accounting.md, or local runtime state
+  agents/accounting.json, or local runtime state
   (logs/, sessions/, workspace-roots/).
   For settings/cli.json, merge in missing keys only — keep my existing
   values.
@@ -191,7 +191,7 @@ npm install -g prettier
 | `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                                                                     |
 | `signals`          | Standalone AWS observability agent — CloudWatch Application Signals (service health, SLOs, distributed tracing, root cause analysis). No subagents; not callable as a subagent by other agents. |
 
-### Steering Docs (29)
+### Steering Docs (32)
 
 Rules and standards automatically loaded into every session: accessibility, API design, AWS/CDK patterns, AWS Agent Toolkit usage, change logging, development workflow, Docker cleanup/disk hygiene, error handling, no-CI/CD, performance, Python standards, security policies, semantic anchors (manual-load meta-rule for writing steering docs), iOS (Swift/SwiftUI, CarPlay, audio, offline-first — loaded on Swift files), and more.
 

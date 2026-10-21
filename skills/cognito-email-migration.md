@@ -217,4 +217,4 @@ Once the migration is stable in production for a week:
 - `skills/email-template-rendering.md` — CSS inlining build pipeline
 - `skills/email-templates/cognito-email-handler.py` — reference Lambda implementation
 - `skills/email-templates/{welcome,verification,password-reset}.{html,txt}` — starter templates
-- `steering/aws-standards.md` — Cognito custom UI rule (companion to custom emails)
+- `steering/aws-auth-cognito.md` — Cognito custom UI rule (companion to custom emails)

@@ -55,7 +55,7 @@ If your contribution adds, modifies, or references email templates:
 
 ## Personal Rules Stay Local
 
-The `personal-*.md`, `agents/personal-*.json`, and `prompts/personal-*.md` patterns are gitignored. If you have personal preferences (e.g., UI style, test framework, deployment quirks), let the agent suggest them as personal rules per `steering/personal-rules-protocol.md` — they live on your machine and never get committed.
+The `personal-*.md` and `agents/personal-*.json` patterns are gitignored. If you have personal preferences (e.g., UI style, test framework, deployment quirks), let the agent suggest them as personal rules per `steering/personal-rules-protocol.md` — they live on your machine and never get committed.
 
 ## License
 

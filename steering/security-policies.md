@@ -8,7 +8,7 @@ description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Param
 
 ## Authentication
 
-- Amazon Cognito User Pools — MFA is **never forced by default**. Use Cognito's default `Mfa.OFF` unless a developer explicitly asks for MFA to be required or optional; when they do, apply exactly what they specify (`Mfa.OPTIONAL` or `Mfa.REQUIRED`) rather than defaulting to "more secure" on your own initiative. See `aws-standards.md` for the passkey/password baseline this pairs with.
+- Amazon Cognito User Pools — MFA is **never forced by default**. Use Cognito's default `Mfa.OFF` unless a developer explicitly asks for MFA to be required or optional; when they do, apply exactly what they specify (`Mfa.OPTIONAL` or `Mfa.REQUIRED`) rather than defaulting to "more secure" on your own initiative. See `aws-auth-cognito.md` for the passkey/password baseline this pairs with.
 - JWT token validation on every API request
 - Token rotation and short expiry (1 hour access, 30 day refresh)
 - Programmatic session management in Playwright tests via `storageState` (see `development-quality-gates.md` → "Playwright E2E Standards") — never a UI login flow, and never a Cypress-style `cy.session()` call (this project is Playwright-only)
@@ -48,7 +48,7 @@ When this applies:
 
 ## Data Protection
 
-- **Encryption at rest is always on — no exceptions.** For every resource, prefer the **AWS-owned key** (no KMS involvement, no cost, no key policy to manage) when the service offers one as its default. **DynamoDB always uses its AWS-owned default** — never switch it to an AWS-managed or customer-managed KMS key. See `aws-standards.md` "DynamoDB Encryption".
+- **Encryption at rest is always on — no exceptions.** For every resource, prefer the **AWS-owned key** (no KMS involvement, no cost, no key policy to manage) when the service offers one as its default. **DynamoDB always uses its AWS-owned default** — never switch it to an AWS-managed or customer-managed KMS key. See `aws-cdk-core.md` "DynamoDB".
 - For services where an AWS-owned key isn't an option (e.g., S3, SQS, SNS, EBS default to no encryption or require you to opt into a KMS key), use an **AWS-managed KMS key** (`aws/service-name`) as the next-best default — not customer-managed.
 - **Customer-managed KMS keys are the last resort** — use them only when a specific compliance requirement mandates control over key rotation or cross-account access. Don't reach for one "to be safe"; it adds cost, complexity, and IAM/key-policy surface area with no security benefit over AWS-managed for most workloads.
 - So the order of preference, every time: AWS-owned (if available) → AWS-managed KMS → customer-managed KMS (only if compliance requires it).

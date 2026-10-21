@@ -12,55 +12,39 @@ This applies to every user-facing email: account creation, email verification co
 
 ## What's Banned
 
-Concretely, an agent implementing any of these email types must NOT let the underlying AWS service send its own default email. Each bullet below is a specific default template/behavior to avoid — if you catch yourself about to enable one of these without also wiring a custom Lambda/template, stop and build the custom version instead:
+Don't let the underlying AWS service send its own default email — if about to enable one of these without wiring a custom Lambda/template, stop and build the custom version instead:
 
-- The default Cognito verification email ("Your verification code is XXXXXX" with no styling)
-- The default SES "Welcome" template
-- The default Amplify Auth signup/reset emails
-- Plain-text-only emails when a user-facing transaction triggered them
-- Emojis anywhere — subject line, preview text, headers, body. They render inconsistently across clients and feel unprofessional in transactional contexts
-- Generic templates from third-party libraries shipped without brand customization
-- Linking to external stylesheets (most email clients strip `<link>` and `<style>` tags)
+- The default Cognito verification/reset/MFA email, SES "Welcome" template, Amplify Auth signup/reset emails
+- Plain-text-only emails on a user-facing transaction
+- Emojis anywhere (subject, preview text, headers, body) — inconsistent rendering across clients, unprofessional in transactional contexts
+- Generic third-party templates shipped without brand customization
+- External stylesheets via `<link>`/`<style>` (most clients strip them)
 
 ## What's Required
 
 ### Visual Design
 
-- **Match the brand.** Use the project's logo, primary color palette, typography, and voice. The email should feel indistinguishable from the product UI.
-- **Use full color.** Primary brand color in headers, secondary color on call-to-action buttons. Don't ship monochrome emails when the brand has color.
-- **No emojis.** This applies to subject lines, preview text, headers, and body — even when "everyone uses them". Use icons (inline SVG or hosted PNG) if visual punctuation is needed.
-- **Mobile-responsive.** Single-column layout, max-width 600px outer container, inline CSS, touch-target-sized buttons (min 44x44px), generous padding.
-- **Hierarchy.** One primary CTA per email. Make the action obvious — a colored button, not just a hyperlink in body text.
+- **Match the brand** — logo, primary color palette, typography, voice; the email should feel indistinguishable from the product UI. Use full color (don't ship monochrome when the brand has color).
+- **No emojis**, anywhere, even "everyone uses them" — use icons (inline SVG/hosted PNG) for visual punctuation.
+- **Mobile-responsive** — single-column, max-width 600px, inline CSS, touch targets ≥44×44px, generous padding.
+- **One primary CTA** per email — a colored button, not a hyperlink in body text.
 
 ### Technical
 
-- **Inline all CSS.** Most email clients (Outlook, Gmail's clipped view, Yahoo) strip `<style>` blocks and `<link>` tags. Run HTML through a CSS inliner (Premailer, Juice, the Mailchimp inliner) before sending, OR write inline styles directly on each element.
-- **Send `multipart/alternative`** with both `text/html` and `text/plain` parts. The plain-text version is for clients that can't render HTML and for screen readers.
-- **Web-safe fonts only** — Arial, Helvetica, Georgia, Times New Roman, Verdana — OR include a `@font-face` fallback. Custom web fonts work in some clients (Apple Mail, iOS Mail) but not others (Outlook desktop).
-- **Logo and images:** host on a CDN (S3 + CloudFront), use absolute URLs, include `alt` text on every `<img>`, set explicit `width` and `height` to prevent layout shift. Avoid background images — Outlook strips them.
-- **Test across clients.** At minimum: Gmail (web + iOS app), Outlook (desktop + web), Apple Mail (macOS + iOS), dark-mode rendering. Tools: Litmus, Email on Acid, or maintain a manual test matrix.
+- **Inline all CSS.** Most clients (Outlook, Gmail's clipped view, Yahoo) strip `<style>` blocks and `<link>` tags — run HTML through a CSS inliner (Premailer, Juice) before sending.
+- **Send MIME `multipart/alternative`** with both `text/html` and `text/plain` parts (the plain-text part serves clients that can't render HTML and screen readers).
+- **Web-safe fonts only** — Arial, Helvetica, Georgia, Times New Roman, Verdana — OR a `@font-face` fallback (custom web fonts work in some clients but not Outlook desktop).
+- **Logo and images:** host on a CDN (S3 + CloudFront), absolute URLs, `alt` text on every `<img>`, explicit `width`/`height`. Avoid background images — Outlook strips them.
+- **Test across clients**: Gmail (web + iOS), Outlook (desktop + web), Apple Mail (macOS + iOS), dark-mode rendering. Tools: Litmus, Email on Acid, or a manual test matrix.
 
 ### Compliance
 
-- **Physical mailing address in the footer.** Required for marketing emails by CAN-SPAM (US) and CASL (Canada), good practice for transactional too.
-- **Unsubscribe link.** Required for marketing emails. Transactional emails should still link to email preferences.
+- **Physical mailing address in the footer** and **unsubscribe link** — required for marketing emails under **CAN-SPAM** (US) and **CASL** (Canada); good practice on transactional too (link to preferences instead of unsubscribe).
 - **Sender reputation.** Verify the From domain in SES, set up SPF + DKIM + DMARC records via Route53. Domain authentication is non-negotiable for production deliverability.
 
 ## Email Types To Customize (Non-Exhaustive)
 
-| Trigger                     | Email                                               |
-| --------------------------- | --------------------------------------------------- |
-| User signs up               | Welcome / account-created email                     |
-| Email verification (signup) | Verification code or link email                     |
-| Password reset              | Reset link or code email                            |
-| Passkey added to account    | "New passkey registered on \<device\>" notification |
-| Login from new device       | Security notification with device + location        |
-| Suspicious login attempt    | Security alert with "wasn't you?" link              |
-| Magic-link login            | One-time login link email                           |
-| Subscription renewed        | Billing receipt                                     |
-| Plan upgrade / downgrade    | Confirmation                                        |
-| Account deleted             | Confirmation + retention notice                     |
-| Trial ending soon           | Reminder + upgrade CTA                              |
+Signup/welcome, email verification code, password reset, passkey-added notification, new-device login, suspicious-login alert, magic-link login, billing receipt, plan upgrade/downgrade confirmation, account-deleted confirmation, trial-ending reminder.
 
 ## AWS Implementation
 
@@ -73,9 +57,7 @@ from aws_cdk import aws_cognito as cognito, aws_kms as kms
 from aws_cdk.aws_lambda_python_alpha import PythonFunction
 from aws_cdk.aws_lambda import Runtime
 
-# KMS key for the CustomEmailSender — Cognito encrypts the verification code
-# with this key before passing it to your Lambda
-email_key = kms.Key(self, "CognitoEmailKey", enable_key_rotation=True)
+email_key = kms.Key(self, "CognitoEmailKey", enable_key_rotation=True)  # Cognito encrypts the code with this before passing it to your Lambda
 
 email_lambda = PythonFunction(self, "CognitoEmailHandler",
     runtime=Runtime.PYTHON_3_14,
@@ -87,20 +69,17 @@ email_key.grant_decrypt(email_lambda)
 
 user_pool = cognito.UserPool(self, "UserPool",
     lambda_triggers=cognito.UserPoolTriggers(
-        custom_email_sender=cognito.CustomEmailSender(
-            function=email_lambda,
-            kms_key=email_key,
-        ),
+        custom_email_sender=cognito.CustomEmailSender(function=email_lambda, kms_key=email_key),
     ),
     # ... rest of pool config
 )
 ```
 
-The Lambda receives the Cognito event, decrypts the code, builds the HTML using a templating engine (Jinja2 / Mustache), and sends via SES `send_email` or `send_raw_email`.
+The Lambda decrypts the code, builds HTML via a templating engine (Jinja2/Mustache), and sends via SES `send_email`/`send_raw_email`.
 
 ### SES Templates
 
-For non-Cognito emails (welcome, billing, notifications), register reusable templates with SES. `aws_cdk.aws_ses` has no L2 construct for templates as of this writing (verified — still L1-only); `CfnTemplate` is the correct and current choice, not a stopgap:
+For non-Cognito emails (welcome, billing, notifications), register reusable templates with SES. `aws_cdk.aws_ses` has no L2 construct for templates as of this writing — `CfnTemplate` is the correct current choice, not a stopgap:
 
 ```python
 from aws_cdk import aws_ses as ses
@@ -116,93 +95,58 @@ ses.CfnTemplate(self, "WelcomeEmailTemplate",
 )
 ```
 
-Then send with `ses.send_templated_email()` and a JSON `TemplateData` payload.
+Send with `ses.send_templated_email()` and a JSON `TemplateData` payload.
 
 ## File Layout
 
-Store templates as source files in the project:
-
-```
-emails/
-├── welcome.html              # HTML version
-├── welcome.txt               # Plain-text fallback (for multipart/alternative)
-├── verification.html
-├── verification.txt
-├── password-reset.html
-├── password-reset.txt
-├── login-new-device.html
-├── login-new-device.txt
-├── partials/
-│   ├── header.html           # Shared brand header (logo, color band)
-│   └── footer.html           # Shared footer (address, unsubscribe, links)
-└── styles.css                # Inlined into HTML files at build time
-```
-
-The `partials/` and `styles.css` are inlined by the build step (Premailer in Python, Juice in Node) so the shipped HTML is fully self-contained.
+Store templates as source files: `emails/<type>.html` + `.txt` (plain-text fallback) per type, shared `emails/partials/header.html` + `footer.html`, and `emails/styles.css` inlined into the HTML at build time (Premailer in Python, Juice in Node) so the shipped HTML is fully self-contained.
 
 ## Templating Approach
 
-- Templates use named placeholders: `{{user_name}}`, `{{verification_code}}`, `{{cta_url}}`, `{{product_name}}`
+- Named placeholders: `{{user_name}}`, `{{verification_code}}`, `{{cta_url}}`, `{{product_name}}`
 - Test rendering with sample data BEFORE the first production send
 - Keep transactional language clear and direct — no marketing speak in security emails
-- Subject lines under 50 characters when possible (mobile preview cuts at 30-40)
 
 ## Accessibility
 
-- Body text contrast ratio ≥4.5:1, large text ≥3:1 (same as WCAG 2.1 AA — see `accessibility-standards.md`)
-- Never convey information by color alone
-- Semantic HTML (`<h1>`, `<p>`, `<a>`) where possible — email clients are inconsistent but it helps screen readers
-- `alt` text on every `<img>`. For decorative images, `alt=""`
-- Don't rely on background images (Outlook strips them, screen readers ignore them)
+Follow **WCAG 2.1 AA** (see `accessibility-standards.md`): contrast ≥4.5:1 body / ≥3:1 large text, never convey information by color alone, semantic HTML (`<h1>`, `<p>`, `<a>`) where email clients allow it, `alt` text on every `<img>` (`alt=""` for decorative), no background images (Outlook strips them, screen readers ignore them).
 
 ## Email Checklist (RUN BEFORE EVERY GO-LIVE)
 
-Before shipping any new transactional email, work through this list:
+Before shipping any new transactional email:
 
-1. **No defaults.** Confirm the template is not the Cognito / SES / Amplify default.
-2. **No emojis.** Subject line, preview text, headers, body — none.
-3. **Brand match.** Logo, primary color, accent color, typography all match the product UI.
-4. **Subject line under 50 characters.** Mobile preview truncates at 30-40.
-5. **Preheader present.** Hidden 50-100 char preview that shows in inbox alongside subject.
-6. **Single primary CTA.** One colored button, not three competing links.
-7. **Touch targets ≥44x44px** for buttons (WCAG / iOS HIG).
-8. **Inline CSS.** Run the template through Premailer / Juice. No `<style>` blocks should remain.
-9. **Plain-text alternative exists** alongside the HTML and is sent as `multipart/alternative`.
-10. **Web-safe fonts** with fallback stack (Arial, Helvetica, sans-serif) — or `@font-face` with fallback.
-11. **All `<img>` tags have `alt` text** and explicit `width` + `height`. No background images.
-12. **Color contrast ≥4.5:1** for body text (WCAG 2.1 AA — see `accessibility-standards.md`).
-13. **Physical mailing address** in the footer (CAN-SPAM / CASL).
-14. **Unsubscribe / preferences link** in the footer.
-15. **From-domain verified in SES** with SPF + DKIM + DMARC records published.
-16. **Cross-client preview**: rendered correctly in Gmail (web + iOS), Outlook (desktop + web), Apple Mail.
-17. **Dark-mode rendering** doesn't break (most clients ignore it but check Apple Mail / iOS).
-18. **No `<script>` tags** anywhere — clients strip them, may flag as spam.
-19. **Subject + preheader read sensibly together** in the inbox preview.
-20. **Test send to a real account** (not just a render preview) to confirm delivery + threading.
+1. Not a Cognito / SES / Amplify default template. No emojis anywhere (subject, preheader, headers, body).
+2. Brand match: logo, colors, typography consistent with product UI.
+3. Subject ≤50 chars (mobile truncates at 30-40); preheader present (50-100 char hidden preview).
+4. Single primary CTA (one colored button, not competing links); touch targets ≥44×44px.
+5. CSS inlined (no `<style>` blocks remain); plain-text alternative sent as `multipart/alternative`.
+6. Web-safe fonts with fallback stack, or `@font-face` with fallback.
+7. Every `<img>` has `alt` text + explicit `width`/`height`; no background images; no `<script>` tags.
+8. Color contrast ≥4.5:1 (WCAG 2.1 AA — see `accessibility-standards.md`).
+9. CAN-SPAM/CASL footer requirements met (mailing address, unsubscribe/preferences link).
+10. From-domain verified in SES with SPF + DKIM + DMARC published.
+11. Cross-client preview passes (Gmail web+iOS, Outlook desktop+web, Apple Mail) including dark mode.
+12. Subject + preheader read sensibly together; test send to a real account confirms delivery + threading (not just a render preview).
 
 If any item fails, fix before sending the first production email.
 
-## Templating Engines Comparison
+## Templating Engines
 
 For the rendering build pipeline (CSS inlining, build steps, runtime rendering), see the companion skill: **`skills/email-template-rendering.md`**.
 
-| Engine                 | When to use                                                                                                                                                        | Syntax                                     |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| **Jinja2**             | Python Lambda handlers (e.g., Cognito CustomEmailSender). Default choice for runtime rendering.                                                                    | `{{ user_name }}`, `{% if %}`, `{% for %}` |
-| **Mustache**           | Logic-less templates that need to render in BOTH Python and Node from a single source                                                                              | `{{ user_name }}`, `{{#section}}`          |
-| **MJML**               | Complex multi-section emails (newsletters, plan upgrades) where deeply nested `<table>` layouts get unmaintainable. Compiles MJML → responsive HTML at build time. | `<mj-section>`, `<mj-button>`              |
-| **SES `TemplateData`** | Pre-registered SES templates invoked via `send_templated_email`. Limited to `{{ name }}` substitution (no logic, no loops).                                        | `{{ name }}` only                          |
+| Engine | When to use |
+| --- | --- |
+| **Jinja2** | Python Lambda handlers (e.g., Cognito `CustomEmailSender`). Default for runtime rendering. |
+| **Mustache** | Logic-less templates rendering in BOTH Python and Node from one source. |
+| **MJML** | Complex multi-section emails (newsletters, plan upgrades) — compiles to responsive HTML at build time. |
+| **SES `TemplateData`** | Pre-registered SES templates via `send_templated_email` — `{{ name }}` substitution only, no logic. |
 
-Decision rules:
-
-- Cognito-driven emails (verification, reset, MFA) → Jinja2 in the CustomEmailSender Lambda
-- App-driven transactional emails (welcome, billing, plan changes, security alerts) → Jinja2 in Lambda OR pre-registered SES `CfnTemplate` with `TemplateData`
-- Marketing / newsletter / promotional → MJML compiled at build time, then registered as SES templates
+Decision rules: Cognito-driven emails → Jinja2 in the `CustomEmailSender` Lambda. App-driven transactional (welcome, billing, security alerts) → Jinja2 in Lambda or pre-registered SES `CfnTemplate`. Marketing/newsletter → MJML compiled at build time, registered as SES templates.
 
 ## Cross-References
 
-- `aws-standards.md` — Cognito custom UI rule (same spirit: never use the defaults)
+- `aws-auth-cognito.md` — Cognito custom UI rule (same spirit: never use the defaults)
 - `accessibility-standards.md` — WCAG 2.1 AA color contrast and semantic HTML
 - `security-policies.md` — Secrets management for SES API keys, sender domain verification
 
-> **Agent Toolkit AWS End User Messaging / SES skills (added Sep 2026)** — new skills in the managed AWS MCP Server cover SMS/RCS and WhatsApp via End User Messaging, and SES sending-identity/production-access verification. Retrieve via `aws___retrieve_skill` per `aws-agent-toolkit.md` if a project needs multi-channel (SMS/WhatsApp) notifications or help getting an SES account out of the sandbox — this repo has no multi-channel messaging usage yet. **These skills do not override the mandatory custom-template rule above** — they cover account/channel setup and delivery mechanics, not template content; every SES send still goes through a custom brand-matched template per this file, never a skill-suggested default.
+> **Agent Toolkit AWS End User Messaging / SES skills (added Sep 2026)** — cover SMS/RCS, WhatsApp, and SES sending-identity/production-access verification. Retrieve via `aws___retrieve_skill` per `aws-agent-toolkit.md` if a project needs multi-channel notifications or SES sandbox exit — this repo has no multi-channel usage yet. **These skills don't override the mandatory custom-template rule above** — they cover account/channel setup, not template content.

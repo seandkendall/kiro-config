@@ -36,7 +36,7 @@ Use the unified **AWS MCP Server** (`aws-mcp-server`, via `mcp-proxy-for-aws`) f
 
 ## deploy.sh Contract (MANDATORY)
 
-Every project ships a `deploy.sh` at the root following the full contract documented in `steering/aws-standards.md`. Reference template: `skills/deploy.sh.template`.
+Every project ships a `deploy.sh` at the root following the full contract documented in `steering/aws-deploy-contract.md`. Reference template: `skills/deploy.sh.template`.
 
 Required flags:
 
