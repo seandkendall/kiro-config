@@ -423,3 +423,9 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Updated `README.md`'s steering-doc count (29 → 32, net of +4 AWS split files +1 features log −2 personal files removed this/last session) and specialist-subagent count (was stale at 19/20, corrected to the actual current 21).
 - Verified `./validate.sh` green throughout (25 agents validate, all JSON parses, no privacy-guard regressions); live-tested the `master` agent again post-restructure to confirm steering and the removed personal rule both resolved correctly (no "never deploy to default" rule found, full 21-subagent roster listed correctly).
 - Noted but did not touch: `settings/cli.json` has unrelated drift (new `claude-opus-5`/`claude-fable-5.1` model-default blocks and a `chat.modelPicker.lastUsed` map, apparently written by Kiro CLI itself from another session) — left unstaged per the settings-drift confirmation rule; also noted two unexpected untracked runtime directories (`.kiro/settings/`, `enterprise-management/`) that are not part of this change and were left alone.
+
+## Round 52 — 2026-10-21 -06:00
+
+- Confirmed `chat.defaultModel` is `claude-opus-5.5` across the board, per explicit user instruction ("set the default model across the board now to: claude-opus-5.5"). No agent JSON overrides the model individually (confirmed via grep — zero `"model":` keys in any `agents/*.json`), so `settings/cli.json`'s single global `chat.defaultModel` is the only place this needed setting, and it was already correct.
+- Committed the previously-flagged `settings/cli.json` drift (new `claude-opus-5`/`claude-fable-5.1` model-default blocks and a `chat.modelPicker.lastUsed` map, written by Kiro CLI itself in another session) now that the user has confirmed the resulting default-model state is intentional.
+- Verified `README.md` already documents `claude-opus-5.5` as the default model — no doc change needed.

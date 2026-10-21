@@ -27,7 +27,24 @@
       "thinking": {
         "type": "disabled"
       }
+    },
+    "claude-opus-5": {
+      "output_config": {
+        "effort": "medium"
+      },
+      "thinking": {
+        "type": "adaptive"
+      }
+    },
+    "claude-fable-5.1": {
+      "output_config": {
+        "effort": "max"
+      }
     }
   },
-  "chat.agentEngine": "v3"
+  "chat.agentEngine": "v3",
+  "chat.modelPicker.lastUsed": {
+    "claude-fable-5.1": 1792204305916,
+    "claude-opus-5.5": 1792432785938
+  }
 }
