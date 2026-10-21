@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.2] - Fixed a stale "single AWS interaction point" rule contradicted since day one
+
+### Fixed
+
+- **`steering/tech.md`** — the rule "AWS MCP Server is the single AWS interaction point — no
+  per-service awslabs MCP servers" was contradicted by `security.json`/`devops.json` since this
+  repo's first commit (both mix specialized AWS Labs MCP servers alongside the general
+  `aws-mcp-server`). Verified against AWS's own Agent Toolkit documentation
+  (`understanding-mcp-server-tools.html`) that the general server has no curated IAM/CloudTrail/
+  Well-Architected/CloudWatch tools of its own, and confirmed via AWS Labs' deprecated-servers
+  list that `iam-mcp-server`, `cloudtrail-mcp-server`, `well-architected-security-mcp-server`, and
+  `cloudwatch-mcp-server` remain actively maintained, not superseded. Reworded the rule to state
+  the real policy: `aws-mcp-server` is the default, a specialized server is justified only when
+  it provides capability the general server lacks.
+
+### Added
+
+- **`steering/aws-agent-toolkit.md`** — new "Specialized AWS Labs MCP Servers — when they're
+  still justified" section documenting the general server's exact tool set and the concrete test
+  for adding a new per-service server in the future.
+
 ## [0.33.1] - Removed unused MCP servers; fixed dead github-MCP prompt instruction
 
 ### Removed

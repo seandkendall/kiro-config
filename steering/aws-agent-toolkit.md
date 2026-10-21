@@ -47,3 +47,18 @@ This applies to every tool listed above, not just `search_documentation` — the
 ## AWS Support API Guard
 
 See `post-task-recommendations.md` → "AWS Support Case Ban (STRICT)" for the full rule (never open AWS Support or Service Quotas cases without explicit user instruction). Not repeated here to avoid drift between two copies of the same rule — if you land on this file looking for that rule, follow the link.
+
+## Specialized AWS Labs MCP Servers — when they're still justified
+
+The general AWS MCP Server's complete tool set is 8 tools (`retrieve_skill`, `search_documentation`, `read_documentation`, `list_regions`, `get_regional_availability`, `run_script`, `get_presigned_url`, `get_tasks` — confirmed against AWS's own "Understanding the MCP Server tools" page). It has **no curated IAM, CloudTrail, Well-Architected, or CloudWatch tools** — reaching those services means the agent hand-writes `boto3` calls inside `run_script`.
+
+A skill (via `retrieve_skill`) is a markdown workflow guide, not an executable tool — it tells the agent which API calls to sequence, it doesn't replace a purpose-built tool that already packages that sequence into one call.
+
+This repo's `security.json` and `devops.json` deliberately keep these specialized, still-maintained (none are on AWS Labs' deprecated-servers list) AWS Labs MCP servers alongside `aws-mcp-server`, because each adds real, non-overlapping capability:
+
+- `iam-mcp-server` — task-oriented IAM operations (policy analysis, least-privilege checks) as single tool calls
+- `cloudtrail-mcp-server` — event lookup, user activity analysis, API call tracking, CloudTrail Lake analytics
+- `well-architected-security-mcp-server` — Security Pillar posture evaluation and compliance monitoring as a framework, not just raw API access
+- `cloudwatch-mcp-server` — alarm-based incident response, metric analysis, log pattern detection as curated tools
+
+Before adding a new per-service AWS Labs MCP server to any agent, confirm the general AWS MCP Server's tool set genuinely can't cover the need (check the current tool list above, since it evolves) — don't add one speculatively "to be thorough."

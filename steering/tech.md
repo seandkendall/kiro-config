@@ -67,4 +67,4 @@ Four tiers, covering phones through TV/dashboard displays. Use consistently acro
 - Master agent (`ctrl+1`) is the entry point — delegates to specialist subagents via `subagent` tool
 - Use `subagent` for synchronous orchestration; `delegate` only for long-running async background tasks
 - `deploy.sh` scripts route verbose output via `$AGENT_DISPLAY_OUT` and structured summaries via `$AGENT_CONTEXT_OUT` so the agent context stays lean
-- AWS MCP Server (`mcp-proxy-for-aws`) is the single AWS interaction point — no per-service awslabs MCP servers
+- AWS MCP Server (`mcp-proxy-for-aws`) is the default AWS interaction point. A specialized AWS Labs MCP server (e.g. `iam-mcp-server`, `cloudtrail-mcp-server`, `well-architected-security-mcp-server`, `cloudwatch-mcp-server`) is justified only when it provides curated, task-oriented tools the general AWS MCP Server doesn't have — verified for `security`/`devops` (see `steering/aws-agent-toolkit.md`). Don't add a per-service server speculatively; confirm the general server's tool set (`run_script`, `search_documentation`, `retrieve_skill`, etc.) genuinely can't cover the need first.
