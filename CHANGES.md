@@ -429,3 +429,11 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Confirmed `chat.defaultModel` is `claude-opus-5.5` across the board, per explicit user instruction ("set the default model across the board now to: claude-opus-5.5"). No agent JSON overrides the model individually (confirmed via grep — zero `"model":` keys in any `agents/*.json`), so `settings/cli.json`'s single global `chat.defaultModel` is the only place this needed setting, and it was already correct.
 - Committed the previously-flagged `settings/cli.json` drift (new `claude-opus-5`/`claude-fable-5.1` model-default blocks and a `chat.modelPicker.lastUsed` map, written by Kiro CLI itself in another session) now that the user has confirmed the resulting default-model state is intentional.
 - Verified `README.md` already documents `claude-opus-5.5` as the default model — no doc change needed.
+
+## Round 53 — 2026-10-21 -06:00
+
+- Deleted `agents/keyera-databricks.json` (the local-only Databricks SQL MCP demo agent) per explicit user request to remove it and anything that would be left unused/lingering.
+- Removed its `.gitignore` entry (`agents/keyera-databricks.json`).
+- Swept for dangling references before deleting, per this repo's known "deletion leaves 3 kinds of references" pattern: confirmed the agent was never in `master.json`'s or `quickwork_acp_kiro.json`'s subagent rosters (it had no subagent capability by design), had no `prompts/keyera-databricks.md` (prompt was always inline), wasn't mentioned in `README.md`/`steering/AGENTS.md`/`CONTRIBUTING.md`/`validate.sh`/any skill, and had no MCP server registered in global `settings/mcp.json` (its `databricks-sql` server was agent-scoped inline and died with the agent). Confirmed via `kiro-cli mcp list`.
+- Verified `./validate.sh` green: 24 agents validate (down from 25), no other drift.
+- Left two memory entries untouched pending the user's own decision: `keyera-demo-data` (dataset details specific to this agent's demo, now orphaned but harmless) and `databricks-managed-mcp` (generic Kiro CLI mechanics for wiring any Databricks MCP server, not agent-specific, kept as reusable knowledge).
