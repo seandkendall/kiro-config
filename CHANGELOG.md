@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.33.1] - Removed unused MCP servers; fixed dead github-MCP prompt instruction
+
+### Removed
+
+- **`agents/web-builder.json`, `agents/accounting.json`** — removed `bedrock-image-mcp-server`.
+  Both agents' prompts delegate all image generation to the `image-gen` subagent and never
+  instructed direct use of the image MCP tools, unlike `master.json`/`ai-builder.json` which do
+  and were left unchanged.
+
+### Fixed
+
+- **11 agent prompts** (`architect`, `data`, `docs`, `frontend`, `image-gen`, `promptgen`,
+  `security`, `serverless`, `shopify`, `stocks`, `web-builder`) — removed a dead "ALWAYS use the
+  github MCP server for github.com operations" instruction left over from boilerplate copying;
+  none of these agents actually have the `github` MCP server configured. Reworded to delegate
+  github.com operations to `master` instead, which does have it configured.
+
 ## [0.33.0] - Prompts inlined for cloud sync; steering files split under the 10K sync limit
 
 ### Changed
