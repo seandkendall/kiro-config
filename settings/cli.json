@@ -45,6 +45,7 @@
   "chat.agentEngine": "v3",
   "chat.modelPicker.lastUsed": {
     "claude-fable-5.1": 1792204305916,
-    "claude-opus-5.5": 1792432785938
+    "claude-opus-5.5": 1792432785938,
+    "claude-sonnet-5.5": 1792679957931
   }
 }
