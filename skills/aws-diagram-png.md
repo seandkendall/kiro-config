@@ -12,6 +12,7 @@ Generate production-ready PNG diagrams with official AWS architecture icons usin
 
 - Use **this skill** (`aws-diagram-png`) when the user wants a PNG file directly, a ready-to-share image, or a diagram for a slide/doc
 - Use **`aws-architecture-diagram`** when the user wants editable draw.io XML that they can modify later in [app.diagrams.net](https://app.diagrams.net)
+- Use **`aws-diagram-html`** when the user wants a polished HTML page with hand-routed connectors that never overlap (awsdac auto-layout can route lines across each other)
 
 ## Prerequisites
 

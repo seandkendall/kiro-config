@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.34.1] - Added a missing Pillow prerequisite and fixed a trailing-whitespace typo
+
+### Fixed
+
+- **`skills/aws-diagram-html/SKILL.md`** — documented the missing Pillow prerequisite (its
+  reference generator imports `PIL.Image` with no prerequisite called out anywhere); tightened a
+  confusing sentence in the icon-cache section that referred to a "cached" yaml file while
+  describing the case where the cache is missing.
+- **`agents/reinvent.json`** — removed stray trailing whitespace on the `name` line left over
+  from a manual edit.
+- **`.gitignore`** — added `__pycache__/` and `*.pyc` (missing entirely; caught a stray
+  `.pyc` file generated while verifying the new skill's reference script).
+- **`README.md`** — added Pillow to the local-tooling prerequisites table.
+
+## [0.34.0] - New `aws-diagram-html` skill so polished, non-overlapping AWS diagrams persist in the architect agent
+
+### Added
+
+- **`skills/aws-diagram-html/SKILL.md`** — new skill for self-contained HTML/SVG architecture
+  diagrams using the official AWS Architecture Icons (read from the `awsdac` icon cache), hand-routed
+  orthogonal connectors, numbered flow steps, and an observability panel. Captures the method proven
+  on the re:Imburse build: icon lookup and recoloring gotchas, card/port/lane layout rules, the
+  headless Chrome render-and-inspect loop (including the `read_file` stale image cache trap), and a
+  delivery quality bar.
+- **`skills/aws-diagram-html/references/make-diagram-example.py`** — complete working generator,
+  including `check_layout()`, which fails the run on any crossing or overlapping connector, a
+  connector through a card, or a label/badge collision.
+
+### Changed
+
+- **`agents/architect.json`** — loads the new skill and adds a `DIAGRAMS` rule to the prompt (always
+  real AWS icons, never overlapping lines, choose HTML, PNG, or draw.io by output, build from real
+  infrastructure code, verify by rendering).
+- **`skills/aws-architecture-diagram.md`**, **`skills/aws-diagram-png.md`** — "when to use" sections
+  now point to the HTML skill.
+- **`README.md`** — skill counts and the `awsdac` prerequisite row updated.
+
 ## [0.33.2] - Fixed a stale "single AWS interaction point" rule contradicted since day one
 
 ### Fixed

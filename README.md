@@ -6,7 +6,7 @@
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
 [![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
-Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 21 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 32 steering docs, 17 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
+Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 21 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 32 steering docs, 18 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
 > **💡 Tips for AI Agents working on this repo**
 >
@@ -134,10 +134,11 @@ Several MCP servers shell out to local tools. **If you're using an AI coding age
 | Tool                                         | Install (macOS)                                                                                   | Install (Linux)                                                                           | Used by                                                                                                                        |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | **Homebrew**                                 | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` | n/a — use distro package manager                                                          | Mac base                                                                                                                       |
-| **`uv` / `uvx`**                             | `curl -LsSf https://astral.sh/uv/install.sh \| sh`                                                | same                                                                                      | All `uvx` MCP servers (AWS toolkit, DuckDuckGo, etc.)                                                                          |
-| **`node` / `npx`**                           | `brew install node`                                                                               | `apt install nodejs npm` (or nvm)                                                         | Context7, GitHub, Playwright, shadcn, 21st.dev, Figma, Browser Lens, Sequential Thinking, Fetch, Chrome DevTools, Google Drive |
+| **`uv` / `uvx`**                             | `curl -LsSf https://astral.sh/uv/install.sh \| sh`                                                | same                                                                                      | All `uvx` MCP servers (AWS toolkit, image gen, etc.)                                                                          |
+| **`node` / `npx`**                           | `brew install node`                                                                               | `apt install nodejs npm` (or nvm)                                                         | Context7, GitHub, Playwright, shadcn, 21st.dev, Figma, Browser Lens, Google Drive |
 | **AWS CLI v2**                               | `brew install awscli`                                                                             | [AWS docs](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) | All AWS-flavored agents (configured profiles required)                                                                         |
-| **`awsdac`**                                 | `brew install awsdac`                                                                             | `go install github.com/awslabs/diagram-as-code/cmd/awsdac@latest`                         | `aws-diagram-png` skill (PNG architecture diagrams with real AWS icons)                                                        |
+| **`awsdac`**                                 | `brew install awsdac`                                                                             | `go install github.com/awslabs/diagram-as-code/cmd/awsdac@latest`                         | `aws-diagram-png` skill (PNG architecture diagrams with real AWS icons); its icon cache also feeds `aws-diagram-html`                                                        |
+| **Pillow**                                   | `pip3 install Pillow`                                                                              | `pip3 install Pillow`                                                                     | `aws-diagram-html` skill's example generator (decodes and recolors cached AWS icon PNGs)                                                                                      |
 | **Playwright browsers**                      | `npx playwright install --with-deps chromium firefox webkit`                                      | same                                                                                      | `@playwright/mcp` server (E2E testing, browser automation) on `frontend`, `testing`, `web-builder` agents                      |
 | **`graphviz`**                               | `brew install graphviz`                                                                           | `apt install graphviz`                                                                    | Optional — needed if anyone uses Python `diagrams` for ad-hoc PNG output                                                       |
 | **`ruff`, `prettier`, `shfmt`, `git-delta`** | `brew install ruff shfmt git-delta && npm i -g prettier`                                          | apt/npm equivalents                                                                       | PostToolUse formatter hook (`hooks-bin/format-written-file.sh`, auto-formats the written file)                                  |
@@ -197,11 +198,11 @@ Rules and standards automatically loaded into every session: accessibility, API 
 
 > **Personal steering** — say "always …" / "from now on …" / "I prefer …" or repeat a preference 2+ times in a session, and the agent will offer to save it as a `personal-<topic>.md` steering doc on your machine. These files are gitignored and ALWAYS win over base rules. No extra tooling required — they just work via Kiro's existing steering loader. See `steering/personal-rules-protocol.md` and `skills/personal-rules-management.md`.
 
-### Skills (19)
+### Skills (20)
 
 | Source                | Skills                                                                                                                                                                                                                                                                                                                                                      |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Custom (15)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws (+ `deploy.sh.template`, `package.json.template`, `gitignore.template`), AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), MCP tool discovery, personal rules management, email template rendering (+ templates), Cognito email migration, `reinvent-stack-toolkit` (for the `reinvent` agent) |
+| Custom (16)           | AWS serverless patterns, CDK infrastructure, React frontend, testing patterns, deploy-on-aws (+ `deploy.sh.template`, `package.json.template`, `gitignore.template`), AWS architecture diagrams (draw.io XML), AWS diagram PNG (awsdac), AWS diagram HTML (self-contained SVG with official icons and a no-overlap layout checker), MCP tool discovery, personal rules management, email template rendering (+ templates), Cognito email migration, `reinvent-stack-toolkit` (for the `reinvent` agent) |
 | AWS Agent Toolkit (1) | Amazon Bedrock (incl. AgentCore) — the other 14 vendored toolkit skills were retired 2026-07-21; the managed AWS MCP Server now serves them on demand via `aws___retrieve_skill` / Agent SOPs (see `skills/AWS-TOOLKIT-SKILLS-AUDIT.md`)                                                                                                |
 | iOS reference (3)     | Amazon Location Service, Amazon Polly generative voices, Cognito passkey auth (loaded by the `ios` agent)                                                                                                                                                                                                                                                   |
 
@@ -213,18 +214,17 @@ Agents configure their own MCP servers. Key servers used across agents:
 | ------------------- | ---------------------------------------------------------- | ------------------------------------ |
 | AWS MCP Server      | All 15 agents                                              | Full AWS API, docs, skills, scripts  |
 | Context7            | frontend, serverless, architect, data, web-builder, master | Live library docs (React, AWS, etc.) |
-| Playwright          | frontend                                                   | Browser automation and E2E testing   |
+| Playwright          | frontend, testing, web-builder                             | Browser automation and E2E testing   |
 | shadcn              | frontend, web-builder                                      | Component registry browsing/install  |
 | 21st.dev Magic      | frontend, web-builder                                      | AI UI generation from descriptions   |
 | Figma Framelink     | frontend                                                   | Design-to-code from Figma URLs       |
 | Browser Lens        | frontend, web-builder                                      | Live CSS/layout debugging            |
-| Sequential Thinking | master, frontend                                           | Structured reasoning chains          |
-| DuckDuckGo          | master, research + 3                                       | Privacy-first web search             |
-| GitHub              | master, research, devops + 1                               | GitHub API (repos, PRs, issues)      |
-| Chrome DevTools     | frontend, web-builder, testing                             | Chrome debugging                     |
-| Bedrock Image       | master, image-gen, frontend, web-builder, ai-builder       | Image generation                     |
+| GitHub              | master, research, devops, accounting, ai-builder, google-workspace, quickwork_acp_kiro | GitHub API (repos, PRs, issues) |
+| Bedrock Image       | master, image-gen, ai-builder                              | Image generation                     |
 | Google Drive        | google-workspace                                           | Google Docs/Sheets/Drive (read-only) |
 | mcp-email-server    | email-research                                             | IMAP/SMTP mailbox access (optional, local credentials only) |
+
+> **Native, not MCP:** structured reasoning and web search/fetch are Kiro CLI's own built-in `thinking` and `web_search`/`web_fetch` tools, not MCP servers — no `sequentialthinking` or `duckduckgo`/`web-search` MCP server is configured anywhere in this repo (removed once the native equivalents shipped).
 
 ## Environment Variables
 

@@ -12,6 +12,7 @@ Generate draw.io XML files with official AWS4 icons matching the style of AWS Re
 
 - Use **this skill** (`aws-architecture-diagram`) when the user wants **editable draw.io XML** they can refine in [app.diagrams.net](https://app.diagrams.net) before exporting
 - Use **`aws-diagram-png`** (the awsdac-based skill) when the user wants a **PNG image directly** for slides, docs, or PRs
+- Use **`aws-diagram-html`** when the user wants a polished, self-contained **HTML page** (inline SVG, official icons, verified non-overlapping lines) to open in a browser
 
 The two skills use different AWS icon libraries:
 

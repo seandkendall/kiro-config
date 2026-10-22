@@ -453,3 +453,17 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Decision (user-approved): keep all four specialized servers in `security.json`/`devops.json` — they provide genuine, non-overlapping capability. Fixed the actual problem instead, which was a stale rule: `steering/tech.md` said "AWS MCP Server is the single AWS interaction point — no per-service awslabs MCP servers," which `security`/`devops` have contradicted since this repo's first commit. Reworded the rule to state the real, now-verified policy: `aws-mcp-server` is the default, a specialized server is justified only when it adds curated capability the general server lacks.
 - Added a new "Specialized AWS Labs MCP Servers — when they're still justified" section to `steering/aws-agent-toolkit.md` documenting the general server's exact tool set, why a skill can't substitute for a missing tool, and the four servers currently justified in this repo — so future agent additions have a concrete test instead of re-researching this from scratch.
 - Verified both edited files stay under the 10K cloud-sync limit (`aws-agent-toolkit.md`: 8,600 chars, `tech.md`: 4,737 chars) and `./validate.sh` is green.
+
+## Round 56 — 2026-10-22
+
+- Added `skills/aws-diagram-html/SKILL.md` and `skills/aws-diagram-html/references/make-diagram-example.py` to persist the HTML/SVG diagram method (official icons, non-overlapping orthogonal routing, layout checker, render-and-inspect loop)
+- Updated `agents/architect.json` to load the new skill and added a `DIAGRAMS` rule to its prompt
+- Updated `skills/aws-architecture-diagram.md` and `skills/aws-diagram-png.md` to cross-reference the HTML skill
+- Updated `README.md` skill counts and `awsdac` prerequisite row, and added a `CHANGELOG.md` entry for 0.34.0
+
+## Round 57 — 2026-10-22
+
+- Fixed two issues found while reviewing the user's manual `aws-diagram-html` skill addition: removed stray trailing whitespace on `agents/reinvent.json`'s `name` line, and documented the missing Pillow prerequisite (`skills/aws-diagram-html/SKILL.md`'s "Getting the official icons" section + README's local-tooling table) since `references/make-diagram-example.py` imports `PIL.Image` with no prerequisite called out anywhere.
+- Tightened a confusing sentence in `SKILL.md`'s icon-cache section that referred to a "cached" yaml file while describing the case where the cache is missing; now states plainly that the first `awsdac` run downloads both the icon definition YAML and the full icon deck zip into `~/.cache/awsdac/`.
+- Verified via direct execution: the reference script's own `check_layout()` passes cleanly against its hardcoded example diagram (zero crossing/overlap issues), its Python syntax compiles, both edited agent JSONs parse, and all 10 pinned icon image numbers in `SKILL.md` match this machine's current `awsdac` icon cache exactly.
+- Confirmed `./validate.sh` green; no other files needed changes.

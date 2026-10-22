@@ -23,6 +23,10 @@ gcp-oauth.keys.json
 # macOS
 .DS_Store
 
+# Python bytecode cache (generated on any script run, e.g. skills/*/references/*.py)
+__pycache__/
+*.pyc
+
 # Backups
 steering-backup-*/
 
