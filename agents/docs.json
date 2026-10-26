@@ -40,14 +40,6 @@
     "file://../steering/*.md"
   ],
   "welcomeMessage": "Documentation specialist ready. READMEs, API docs, ADRs, runbooks, changelogs. What needs documenting?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "keyboardShortcut": "shift+o",
   "allowedTools": [
     "@creds-agent"

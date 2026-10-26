@@ -43,14 +43,6 @@
   ],
   "welcomeMessage": "Application Signals specialist ready. Service health audits, SLO compliance, distributed tracing, canary failure analysis — against the default AWS account. What needs investigating?",
   "keyboardShortcut": "shift+a",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "allowedTools": [
     "@creds-agent"
   ],

@@ -38,21 +38,13 @@
     "file://AGENTS.md",
     "file://README.md",
     "file://../steering/*.md",
-    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
-    "skill://~/.kiro/skills/deploy-on-aws.md",
-    "skill://~/.kiro/skills/aws-architecture-diagram.md",
-    "skill://~/.kiro/skills/aws-diagram-png.md",
+    "skill://~/.kiro/skills/cdk-infrastructure-patterns/SKILL.md",
+    "skill://~/.kiro/skills/deploy-on-aws/SKILL.md",
+    "skill://~/.kiro/skills/aws-architecture-diagram/SKILL.md",
+    "skill://~/.kiro/skills/aws-diagram-png/SKILL.md",
     "skill://~/.kiro/skills/aws-diagram-html/SKILL.md"
   ],
   "welcomeMessage": "Solutions Architect ready. I design before building — diagrams, cost estimates, Well-Architected reviews. What system are we designing?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "keyboardShortcut": "ctrl+8",
   "allowedTools": [
     "@creds-agent"

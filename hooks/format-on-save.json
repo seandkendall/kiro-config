@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Format on Save",
+      "trigger": "PostToolUse",
+      "description": "Global replacement for the 17 duplicated per-agent inline postToolUse hooks; auto-formats a file right after fs_write using the existing fail-closed formatter script (ruff/prettier/shfmt/swiftformat by extension). Not synced to kiro-cli --cloud sandboxes since hooks-bin/ is outside Configuration Sync's 7 synced folders, so it fails closed (no-op) there and never errors.",
+      "matcher": "fs_write",
+      "action": {
+        "type": "command",
+        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
+      }
+    }
+  ]
+}

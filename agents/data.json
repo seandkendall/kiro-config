@@ -40,14 +40,6 @@
     "file://../steering/*.md"
   ],
   "welcomeMessage": "Data specialist ready. DynamoDB single-table design, Postgres schemas, Aurora, migrations, ETL. What data model do we need?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "keyboardShortcut": "shift+d",
   "allowedTools": [
     "@creds-agent"

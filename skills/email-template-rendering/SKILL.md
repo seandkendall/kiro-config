@@ -192,5 +192,5 @@ print("Open preview.html in a browser to inspect.")
 ## Cross-References
 
 - `steering/email-standards.md` — what to ship (banned defaults, brand match, no emojis)
-- `skills/email-templates/welcome.html` — sample brand-matched template
-- `skills/email-templates/cognito-email-handler.py` — sample Cognito CustomEmailSender Lambda
+- `skills/email-template-rendering/references/welcome.html` — sample brand-matched template
+- `skills/email-template-rendering/references/cognito-email-handler.py` — sample Cognito CustomEmailSender Lambda

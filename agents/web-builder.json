@@ -104,14 +104,6 @@
       ]
     }
   },
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "keyboardShortcut": "shift+w",
   "welcomeMessage": "Web builder ready. React + AWS full-stack apps. I delegate UI work to the frontend subagent, backend to serverless, and AI features to ai-builder. What are we building?",
   "allowedTools": [

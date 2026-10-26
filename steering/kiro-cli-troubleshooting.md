@@ -57,7 +57,7 @@ DISPLAY_OUT="${AGENT_DISPLAY_OUT:-/dev/stderr}"
 CONTEXT_OUT="${AGENT_CONTEXT_OUT:-/dev/null}"
 ```
 
-This pattern is already used in `skills/deploy.sh.template`.
+This pattern is already used in `skills/deploy-on-aws/references/deploy.sh.template`.
 
 ### Agent doesn't see deploy summary
 
@@ -80,7 +80,7 @@ Some pushes get blocked by Code Defender. Approve manually in the prompt — the
 ## Diagnostic Commands
 
 ```bash
-kiro-cli --version                    # Confirm version (2.19.x tested; 2.3.0 min for side channels)
+kiro-cli --version                    # Confirm version (2.34.x tested; 2.3.0 min for side channels)
 kiro-cli mcp list                     # See all MCP servers and their status
 kiro-cli agent list                   # List configured agents
 kiro-cli agent validate --path <file> # Validate an agent config

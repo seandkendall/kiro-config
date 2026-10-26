@@ -72,7 +72,7 @@ Note: `deploy.sh.template`/`gitignore.template`/`package.json.template` were bri
 alongside the `reinvent`-specific template cleanup, then restored (2026-10-02) — `reinvent`
 never used these three (it has no `deploy.sh` contract and no file-based skeleton), but
 `serverless`/`web-builder`/`master`/`architect` and the repo-wide `deploy.sh` MANDATORY
-contract (`steering/aws-deploy-contract.md`, `skills/deploy-on-aws.md`) still depend on them.
+contract (`steering/aws-deploy-contract.md`, `skills/deploy-on-aws/SKILL.md`) still depend on them.
 
 ## Trade-off (why this is "mark," not auto-"trim")
 

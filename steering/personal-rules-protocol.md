@@ -140,7 +140,7 @@ Personal rules accumulate. To keep them useful, surface stale ones for review:
 - When the user starts a session and any personal rule's `## Source` date is **older than 60 days**, mention it once: "Heads up — `personal-X.md` was created on YYYY-MM-DD. Still relevant, or want to update/remove it?"
 - Don't nag — surface each stale rule at most once per week
 - If the user replies with `keep`, update the file's `## Source` footer with a `Last confirmed: <date>` line so it doesn't re-surface for another 60 days
-- If they reply with `remove`, follow the deletion flow in `skills/personal-rules-management.md`
+- If they reply with `remove`, follow the deletion flow in `skills/personal-rules-management/SKILL.md`
 - If they reply with `update`, follow the in-place edit flow
 
 This is a soft signal, not a forced cleanup. The user always controls retention.

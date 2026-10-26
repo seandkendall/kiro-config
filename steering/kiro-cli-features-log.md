@@ -1,10 +1,10 @@
 ---
 inclusion: manual
 name: kiro-cli-features-log
-description: 'Running log of Kiro CLI feature releases through 2.20.1 (side channels, OAuth, /rewind, model effort, subagent review loops, cloud sessions, /voice, global hooks, etc). Load manually when checking what shipped in a specific version — not needed for day-to-day agent work.'
+description: 'Running log of Kiro CLI feature releases through 2.34.0 (side channels, OAuth, /rewind, model effort, subagent review loops, cloud sessions, /voice, global hooks, Workflows, workspace trust, V3 agent schema, etc). Load manually when checking what shipped in a specific version — not needed for day-to-day agent work.'
 ---
 
-# Kiro CLI Features Worth Knowing (through 2.20.1)
+# Kiro CLI Features Worth Knowing (through 2.34.0)
 
 - **Agent output side channels** (2.3.0) — `$AGENT_DISPLAY_OUT` and `$AGENT_CONTEXT_OUT` env vars in shell commands route verbose output to the user TUI without polluting agent context (used by `deploy.sh`)
 - **OAuth Client ID for HTTP MCP servers** (2.3.0) — set `oauth.clientId` in MCP config to use Slack/GitHub/Figma HTTP MCP servers without DCR (we don't need this — our MCPs are stdio)
@@ -29,3 +29,9 @@ description: 'Running log of Kiro CLI feature releases through 2.20.1 (side chan
 - **Mouse support + stream resilience** (2.19.0) — mouse support in the spec review screen (scroll/click, toggle with `m`); an idle-stream watchdog + automatic retry-with-backoff + 60-minute streaming timeout mean a dropped/throttled connection no longer hangs or ends a turn (tunable via `api.streamIdleSoftTimeout` / `api.streamIdleHardTimeout` / `api.timeout`).
 - **Global hooks** (2.13.0, V3-only) — hooks placed in `~/.kiro/hooks/` now fire in every workspace automatically, not just the one they're defined in, so cross-cutting behaviors (lint-on-save, pre-commit security checks, custom approval gates) don't need per-project duplication. Workspace-level hooks still work alongside global ones. **Not yet usable in this repo as-is** — this repo's hooks are all inline `hooks` blocks inside each agent's JSON, not standalone files in a `hooks/` directory, so there's nothing to promote to global scope without a structural change.
 - **`/spec run` full-screen task view + scrollback** (2.20.0) — `/spec run` now opens a full-screen task execution view with real-time progress and a task-scope selection step before execution starts; a new "Preserve scrollback" toggle keeps terminal history available through output overflow and window-resize redraws.
+- **Project `.env` auto-load removed** (2.24.0, breaking) — project-level `.env` files no longer auto-load into chat/MCP/tools. This repo is unaffected: API keys are sourced via `~/.zshrc` (see `import.sh`), never a project `.env`.
+- **Kiro Workflows** (2.26.0) — opt-in (`/settings` → Features → Workflows), run via `/workflow run`. Explicitly allowed in this config (see `steering/no-cicd.md`) — Workflows are a user-triggered, local execution aid, not a CI/CD pipeline.
+- **Live steering file/folder references** (2.27.0) — steering docs can embed `#[[file:...]]` and `#[[folder:...]]` to pull in live content instead of copy-pasted reference docs, per the "point at MCP tools/live data, don't copy docs into steering" guidance from `kiro.dev/blog/teaching-kiro-new-tricks-with-agent-steering-and-mcp/`.
+- **Hooks match by tool category** (2.28.0) — hook `matcher` can target a tool category (`shell`, `read`, `write`) instead of only specific tool IDs, simplifying matchers like the global format-on-save hook's `write` match.
+- **Workspace trust prompts** (2.33.0) — the first V3 session opened in a folder asks "Trust this workspace?" before running; state lives under `~/.kiro/workspace-roots/`.
+- **V3 adoption window / agent schema** (2.30.0–2.34.0) — V3 adoption prompts began rolling out (Oct 12); the V3 agent schema adds tag-based tool selection, a unified `permissions` block (already present on every agent in this repo), optional Markdown agent format, and inline MCP definitions. Migrate via `/upgrade-agent` or `kiro-cli agent upgrade <dir> --dry-run`. CLI 3.0 GA is targeted for end of October 2026 and will retire the dedicated `use_aws` tool (AWS calls move to the generic `shell` tool under permission rules), inline shell autocomplete, the CLI desktop app, and the V2 "Classic" experience. As of 2.34.0 (Oct 23), 3.0 had not yet shipped as GA.

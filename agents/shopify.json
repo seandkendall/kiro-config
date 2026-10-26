@@ -38,14 +38,6 @@
     "file://README.md",
     "file://../steering/*.md"
   ],
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "allowedTools": [
     "@creds-agent"
   ],

@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.35.0] - Consolidated per-agent hooks into one global hook, migrated 11 skills to directory form, added a capability-placement decision framework
+
+### Added
+
+- `steering/capability-placement.md` (manual inclusion) — decision framework for whether a
+  capability belongs in a steering doc, a skill, a script/MCP tool, or a sub-agent; synthesized
+  from AWS's own agent-skills and Well-Architected Agentic AI Lens guidance
+- `hooks/format-on-save.json` — a single global `PostToolUse` hook replacing 17 identical inline
+  `hooks` blocks previously duplicated across `accounting.json`, `ai-builder.json`,
+  `architect.json`, `data.json`, `devops.json`, `docs.json`, `frontend.json`, `ios-testing.json`,
+  `ios.json`, `master.json`, `quickwork_acp_kiro.json`, `security.json`, `serverless.json`,
+  `shopify.json`, `signals.json`, `testing.json`, `web-builder.json`
+- Explicit Kiro CLI Workflows carve-out in `steering/no-cicd.md` (Workflows are user-triggered
+  and local; they are not CI/CD and were never covered by the ban's intent)
+- `kiro-cli-features-log.md` entries for CLI 2.24.0 through 2.34.0
+
+### Changed
+
+- Migrated 11 flat-file skills to the required Agent Skills directory form
+  (`skills/<name>/SKILL.md`): `aws-serverless-patterns`, `mcp-tool-discovery`,
+  `email-template-rendering`, `cdk-infrastructure-patterns`, `testing-patterns`,
+  `cognito-email-migration`, `personal-rules-management`, `aws-architecture-diagram`,
+  `react-frontend-patterns`, `aws-diagram-png`, `deploy-on-aws` — flat `.md` skill files are not
+  a recognized format, locally or in `kiro-cli --cloud`
+- Moved email-template and deploy-script reference assets into their owning skill's new
+  `references/` subdirectory and fixed every cross-reference to the old paths across agents,
+  steering docs, and `CONTRIBUTING.md`
+- Corrected stale version strings across `README.md`, `steering/AGENTS.md`,
+  `steering/kiro-cli-features-log.md`, `steering/tech.md`, `steering/kiro-cli-troubleshooting.md`
+- Corrected `steering/AGENTS.md`'s stale "V3 has no GA date" framing — `settings/cli.json`
+  already runs `chat.agentEngine: v3`
+
+### Fixed
+
+- `skills/testing-patterns/SKILL.md`'s "Playwright Quick Reference" section was listing Cypress
+  API calls (`cy.session()`, `cy.intercept()`, `cy.wait()`) under a Playwright heading; replaced
+  with the actual Playwright equivalents
+
 ## [0.34.1] - Added a missing Pillow prerequisite and fixed a trailing-whitespace typo
 
 ### Fixed

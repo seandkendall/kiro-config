@@ -86,18 +86,10 @@
     "file://AGENTS.md",
     "file://README.md",
     "file://../steering/*.md",
-    "skill://~/.kiro/skills/react-frontend-patterns.md"
+    "skill://~/.kiro/skills/react-frontend-patterns/SKILL.md"
   ],
   "keyboardShortcut": "ctrl+5",
   "welcomeMessage": "Frontend specialist ready. React 19+, TypeScript, Tailwind CSS, shadcn/ui, WCAG 2.1 AA. Equipped with Playwright, Figma, Browser Lens, 21st.dev Magic, and more. What are we building?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "allowedTools": [
     "@creds-agent"
   ],

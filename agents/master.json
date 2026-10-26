@@ -59,11 +59,11 @@
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
-    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
-    "skill://~/.kiro/skills/react-frontend-patterns.md",
-    "skill://~/.kiro/skills/aws-serverless-patterns.md",
-    "skill://~/.kiro/skills/testing-patterns.md",
-    "skill://~/.kiro/skills/mcp-tool-discovery.md"
+    "skill://~/.kiro/skills/cdk-infrastructure-patterns/SKILL.md",
+    "skill://~/.kiro/skills/react-frontend-patterns/SKILL.md",
+    "skill://~/.kiro/skills/aws-serverless-patterns/SKILL.md",
+    "skill://~/.kiro/skills/testing-patterns/SKILL.md",
+    "skill://~/.kiro/skills/mcp-tool-discovery/SKILL.md"
   ],
   "toolsSettings": {
     "subagent": {
@@ -117,14 +117,6 @@
   },
   "keyboardShortcut": "ctrl+1",
   "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (21 available), generate images and diagrams, and write deploy.sh scripts. What are we building?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "allowedTools": [
     "@creds-agent"
   ],

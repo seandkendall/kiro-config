@@ -96,7 +96,7 @@ description: 'CDK deployment errors, Lambda cold starts, API Gateway CORS, Cogni
 
 When you need to perform an action and the relevant MCP server isn't responding or isn't configured:
 
-1. **First, run discovery** — Use the `tool_search` tool to find any matching MCP tool (see `skills/mcp-tool-discovery.md` for the workflow). Don't assume an MCP server is missing without checking.
+1. **First, run discovery** — Use the `tool_search` tool to find any matching MCP tool (see `skills/mcp-tool-discovery/SKILL.md` for the workflow). Don't assume an MCP server is missing without checking.
 2. **Check `kiro-cli mcp list`** to see which servers are actually loaded for the current agent. A server may be listed but not yet booted.
 3. **Verify required env vars** — Some MCP servers (`github`, `21st-dev-magic`, `figma`) need API keys in `~/.zshrc`. Missing keys = server fails silently. Re-run `./import.sh` to re-prompt.
 4. **Check the agent config** — Open `~/.kiro/agents/<agent-name>.json` and confirm the MCP server is listed in `mcpServers` and not `disabled: true`.

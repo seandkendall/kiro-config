@@ -1,12 +1,12 @@
 # Kiro CLI Setup
 
-**Version:** 0.27
+**Version:** 0.34.1
 
 [![Latest release](https://img.shields.io/github/v/tag/seandkendall/kiro-config?label=release&sort=semver)](https://github.com/seandkendall/kiro-config/releases)
 [![Last commit](https://img.shields.io/github/last-commit/seandkendall/kiro-config)](https://github.com/seandkendall/kiro-config/commits/main)
 [![License](https://img.shields.io/github/license/seandkendall/kiro-config)](LICENSE)
 
-Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 21 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 32 steering docs, 18 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
+Multi-agent AWS development environment for the Kiro CLI — master orchestrator, 21 specialist subagents (incl. native iOS + iOS-testing), 1 standalone observability agent (`signals`), 33 steering docs, 18 skills, and a curated MCP server stack centered on the AWS Agent Toolkit.
 
 > **💡 Tips for AI Agents working on this repo**
 >
@@ -121,11 +121,13 @@ cp -r kiro-config/{agents,steering,skills,prompts,settings,hooks,hooks-bin} ~/.k
 
 ## Prerequisites
 
-- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.19.1**)
+- [Kiro CLI](https://kiro.dev) installed (latest tested with **2.34.0**)
 - Python 3.14+ with `uv` and `uvx`
 - Node.js 24+ with `npx`
 - AWS CLI v2 configured with named profiles
 - Git
+
+> **Workspace trust (Kiro CLI 2.33.0+)** — the first V3 session opened in any folder (including `~/.kiro` itself) prompts "Trust this workspace?" before it will run hooks, MCP servers, or tool calls. Approve it once per workspace; state is tracked under `~/.kiro/workspace-roots/`. If a session behaves as if no steering/skills/hooks loaded, check whether this prompt is still pending.
 
 ## Local Tooling Required by MCP Servers
 
@@ -141,7 +143,7 @@ Several MCP servers shell out to local tools. **If you're using an AI coding age
 | **Pillow**                                   | `pip3 install Pillow`                                                                              | `pip3 install Pillow`                                                                     | `aws-diagram-html` skill's example generator (decodes and recolors cached AWS icon PNGs)                                                                                      |
 | **Playwright browsers**                      | `npx playwright install --with-deps chromium firefox webkit`                                      | same                                                                                      | `@playwright/mcp` server (E2E testing, browser automation) on `frontend`, `testing`, `web-builder` agents                      |
 | **`graphviz`**                               | `brew install graphviz`                                                                           | `apt install graphviz`                                                                    | Optional — needed if anyone uses Python `diagrams` for ad-hoc PNG output                                                       |
-| **`ruff`, `prettier`, `shfmt`, `git-delta`** | `brew install ruff shfmt git-delta && npm i -g prettier`                                          | apt/npm equivalents                                                                       | PostToolUse formatter hook (`hooks-bin/format-written-file.sh`, auto-formats the written file)                                  |
+| **`ruff`, `prettier`, `shfmt`, `git-delta`** | `brew install ruff shfmt git-delta && npm i -g prettier`                                          | apt/npm equivalents                                                                       | Global format-on-save hook (`hooks/format-on-save.json` → `hooks-bin/format-written-file.sh`, auto-formats the written file); not functional in `kiro-cli --cloud` since `hooks-bin/` doesn't travel through Configuration Sync — fails closed there, see `steering/AGENTS.md` |
 | **LSP servers** (optional)                   | `npm i -g typescript-language-server pyright && brew install rust-analyzer jdtls gopls solargraph llvm` | distro/npm equivalents (`clangd` ships with `llvm`/`clang` packages)                       | `settings/lsp.json` — Kiro CLI's built-in code intelligence (`hover`, `goto_definition`, `find_references`, `completion`, `diagnostics`). Per-language: TypeScript/JS, Python (pyright), Rust, Java (jdtls), Go (gopls), Ruby (solargraph), C/C++ (clangd). Install only the languages you work in — code intelligence for a language with no server installed just won't be available, nothing else breaks. |
 
 **Rule of thumb for AI agents setting this up autonomously:** if `import.sh` is available, run it — it installs everything above interactively. If you must script it from scratch, install Homebrew first, then `uv`, then `node`, then `awscli`, then `awsdac`, then the formatter tools — in that order.
@@ -192,11 +194,11 @@ npm install -g prettier
 | `promptgen`        | Generates agentic prompts for full-stack AWS application builds                                                                                                     |
 | `signals`          | Standalone AWS observability agent — CloudWatch Application Signals (service health, SLOs, distributed tracing, root cause analysis). No subagents; not callable as a subagent by other agents. |
 
-### Steering Docs (32)
+### Steering Docs (33)
 
 Rules and standards automatically loaded into every session: accessibility, API design, AWS/CDK patterns, AWS Agent Toolkit usage, change logging, development workflow, Docker cleanup/disk hygiene, error handling, no-CI/CD, performance, Python standards, security policies, semantic anchors (manual-load meta-rule for writing steering docs), iOS (Swift/SwiftUI, CarPlay, audio, offline-first — loaded on Swift files), and more.
 
-> **Personal steering** — say "always …" / "from now on …" / "I prefer …" or repeat a preference 2+ times in a session, and the agent will offer to save it as a `personal-<topic>.md` steering doc on your machine. These files are gitignored and ALWAYS win over base rules. No extra tooling required — they just work via Kiro's existing steering loader. See `steering/personal-rules-protocol.md` and `skills/personal-rules-management.md`.
+> **Personal steering** — say "always …" / "from now on …" / "I prefer …" or repeat a preference 2+ times in a session, and the agent will offer to save it as a `personal-<topic>.md` steering doc on your machine. These files are gitignored and ALWAYS win over base rules. No extra tooling required — they just work via Kiro's existing steering loader. See `steering/personal-rules-protocol.md` and `skills/personal-rules-management/SKILL.md`.
 
 ### Skills (20)
 

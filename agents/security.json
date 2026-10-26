@@ -62,14 +62,6 @@
     "file://../steering/*.md"
   ],
   "welcomeMessage": "Security specialist ready. IAM audit, encryption review, cdk-nag remediation, Well-Architected Security assessment. What needs hardening?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "keyboardShortcut": "shift+s",
   "allowedTools": [
     "@creds-agent"

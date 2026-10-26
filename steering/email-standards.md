@@ -132,7 +132,7 @@ If any item fails, fix before sending the first production email.
 
 ## Templating Engines
 
-For the rendering build pipeline (CSS inlining, build steps, runtime rendering), see the companion skill: **`skills/email-template-rendering.md`**.
+For the rendering build pipeline (CSS inlining, build steps, runtime rendering), see the companion skill: **`skills/email-template-rendering/SKILL.md`**.
 
 | Engine | When to use |
 | --- | --- |

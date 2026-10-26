@@ -18,7 +18,7 @@ Take any application and deploy it to AWS with minimal user decisions.
 2. **Recommend** - Select AWS services, concisely explain rationale
 3. **Estimate** - Show monthly cost before proceeding
 4. **Generate** - Write IaC code with security defaults applied
-5. **Quality Gate** - Run the [Pre-Deployment Quality Gate from `development-workflow.md`](../steering/development-workflow.md#pre-deployment-quality-gate): lint (zero warnings), build (zero warnings), unit tests (≥90% coverage), Playwright E2E (target 100%), no deprecation notices, no critical/high vulnerabilities
+5. **Quality Gate** - Run the [Pre-Deployment Quality Gate from `development-workflow.md`](../../steering/development-workflow.md#pre-deployment-quality-gate): lint (zero warnings), build (zero warnings), unit tests (≥90% coverage), Playwright E2E (target 100%), no deprecation notices, no critical/high vulnerabilities
 6. **Deploy** - Run security checks (cdk-nag), then execute via `deploy.sh`
 
 ## Defaults
@@ -36,7 +36,7 @@ Use the unified **AWS MCP Server** (`aws-mcp-server`, via `mcp-proxy-for-aws`) f
 
 ## deploy.sh Contract (MANDATORY)
 
-Every project ships a `deploy.sh` at the root following the full contract documented in `steering/aws-deploy-contract.md`. Reference template: `skills/deploy.sh.template`.
+Every project ships a `deploy.sh` at the root following the full contract documented in `steering/aws-deploy-contract.md`. Reference template: `skills/deploy-on-aws/references/deploy.sh.template`.
 
 Required flags:
 

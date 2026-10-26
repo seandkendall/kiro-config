@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: tech
-description: 'Technology stack: React 19+/TypeScript strict + Tailwind + shadcn/ui + Vite, React Router v8, Python 3.14 Lambda + CDK Python, DynamoDB, API Gateway, AppSync, Cognito, CloudFront, S3, Kiro CLI 2.19.0+ tooling. Use as the canonical reference for which libraries, services, and versions to use.'
+description: 'Technology stack: React 19+/TypeScript strict + Tailwind + shadcn/ui + Vite, React Router v8, Python 3.14 Lambda + CDK Python, DynamoDB, API Gateway, AppSync, Cognito, CloudFront, S3, Kiro CLI 2.34.0+ tooling. Use as the canonical reference for which libraries, services, and versions to use.'
 ---
 
 # Technology Stack
@@ -24,7 +24,7 @@ description: 'Technology stack: React 19+/TypeScript strict + Tailwind + shadcn/
 
 ## Responsive Breakpoints
 
-Four tiers, covering phones through TV/dashboard displays. Use consistently across every project — this exact set is referenced from `accessibility-standards.md` and `skills/react-frontend-patterns.md` too; keep all three in sync if you ever change it.
+Four tiers, covering phones through TV/dashboard displays. Use consistently across every project — this exact set is referenced from `accessibility-standards.md` and `skills/react-frontend-patterns/SKILL.md` too; keep all three in sync if you ever change it.
 
 - **Mobile** (phones — iPhone, Android): 375px, default/mobile-first, no prefix
 - **Tablet / small laptop**: `md:` (768px)

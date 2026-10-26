@@ -49,21 +49,13 @@
     "file://AGENTS.md",
     "file://README.md",
     "file://../steering/*.md",
-    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
+    "skill://~/.kiro/skills/cdk-infrastructure-patterns/SKILL.md",
     "skill://~/.kiro/skills/amazon-polly-generative/SKILL.md",
     "skill://~/.kiro/skills/amazon-location-service/SKILL.md",
     "skill://~/.kiro/skills/cognito-passkey-auth/SKILL.md"
   ],
   "keyboardShortcut": "ctrl+7",
   "welcomeMessage": "iOS specialist ready. Swift 5.9+, SwiftUI, CarPlay, MapKit, AVFoundation, MusicKit, offline-first MVVM+Combine architecture. What are we building?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "allowedTools": [
     "@creds-agent"
   ],

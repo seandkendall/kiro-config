@@ -38,19 +38,11 @@
     "file://AGENTS.md",
     "file://README.md",
     "file://../steering/*.md",
-    "skill://~/.kiro/skills/cdk-infrastructure-patterns.md",
-    "skill://~/.kiro/skills/aws-serverless-patterns.md"
+    "skill://~/.kiro/skills/cdk-infrastructure-patterns/SKILL.md",
+    "skill://~/.kiro/skills/aws-serverless-patterns/SKILL.md"
   ],
   "keyboardShortcut": "ctrl+4",
   "welcomeMessage": "Serverless specialist ready. Lambda, API Gateway, DynamoDB, Step Functions, EventBridge — all with Powertools and X-Ray. What are we building?",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "allowedTools": [
     "@creds-agent"
   ],

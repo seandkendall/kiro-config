@@ -83,7 +83,7 @@ The same AWS account often hosts multiple projects sharing infrastructure (Route
 - **Shared certificates** — ACM certs in `us-east-1` are commonly reused (CloudFront requires certs there). If imported by another stack, never delete it on teardown, even if imported via `Certificate.fromCertificateArn`.
 - **CDK bootstrap stack** — `CDKToolkit` is shared across all CDK projects in the account. Never destroy it from `deploy.sh --delete`.
 
-The script handles: `cdk synth`, `cdk diff`, `cdk deploy`, frontend build + S3 sync, CloudFront invalidation, post-deploy state save. Reference template: `skills/deploy.sh.template`.
+The script handles: `cdk synth`, `cdk diff`, `cdk deploy`, frontend build + S3 sync, CloudFront invalidation, post-deploy state save. Reference template: `skills/deploy-on-aws/references/deploy.sh.template`.
 
 Never make manual changes in AWS Console.
 

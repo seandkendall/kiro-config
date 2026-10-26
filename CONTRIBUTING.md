@@ -49,9 +49,9 @@ If your contribution adds, modifies, or references email templates:
 
 - Follow `steering/email-standards.md` end-to-end (no defaults, no emojis, brand match, mobile-responsive, plain-text alternative, etc.)
 - Run new HTML templates through the 20-item Email Checklist in `email-standards.md` before committing
-- Place new templates under `skills/email-templates/` with a matching `.txt` plain-text companion
-- Use the build pipeline patterns from `skills/email-template-rendering.md` (Premailer for Python, Juice for Node) — never ship un-inlined `<style>` blocks
-- For Cognito-driven emails, follow the migration runbook in `skills/cognito-email-migration.md` if changing an existing User Pool's email sender
+- Place new templates under `skills/email-template-rendering/references/` with a matching `.txt` plain-text companion
+- Use the build pipeline patterns from `skills/email-template-rendering/SKILL.md` (Premailer for Python, Juice for Node) — never ship un-inlined `<style>` blocks
+- For Cognito-driven emails, follow the migration runbook in `skills/cognito-email-migration/SKILL.md` if changing an existing User Pool's email sender
 
 ## Personal Rules Stay Local
 

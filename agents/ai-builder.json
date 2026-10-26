@@ -106,14 +106,6 @@
   },
   "welcomeMessage": "AI builder ready. Default: Strands + AgentCore + Bedrock. SageMaker only for custom models not on Bedrock. Model selection, prompts, RAG, full app builds — what are we building?",
   "keyboardShortcut": "ctrl+0",
-  "hooks": {
-    "postToolUse": [
-      {
-        "matcher": "fs_write",
-        "command": "\"$HOME/.kiro/hooks-bin/format-written-file.sh\""
-      }
-    ]
-  },
   "permissions": {
     "rules": [
       {

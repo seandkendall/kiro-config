@@ -1,7 +1,7 @@
 ---
 inclusion: always
 name: AGENTS
-description: 'Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.20.1+ features. Use when building or routing across agents.'
+description: 'Multi-agent orchestration architecture, master/subagent ecosystem, delegation rules, subagent vs delegate semantics, subagent review loops, Kiro CLI 2.34.0+ features. Use when building or routing across agents.'
 ---
 
 # AGENTS.md
@@ -51,7 +51,7 @@ Builder agents automatically delegate to these specialists:
 - Use @path syntax to reference files inline — saves tool calls and tokens
 - **Orchestrators can call other orchestrators** (max 2 hops to avoid context fragmentation). `master` → `web-builder` (full-stack scaffolds) / `ai-builder` (agentic apps). `web-builder` → `ai-builder` when an app needs AI features. `ai-builder` → `web-builder`'s subagents (frontend, serverless) for the app shell.
 - **Subagent review loops (2.5.0+).** A reviewer stage can bounce work back to the implementer and loop until the bar is met, before results return to the parent — e.g., `serverless` implements → `security` reviews → loops back if cdk-nag findings remain. Set a `loop_to` target with a `trigger` phrase and a `max_iterations` cap.
-- **Hooks duplication — a real global-hooks candidate, not yet acted on.** Most agents' inline `hooks` blocks are one of two combinations of the same 3 format-on-save commands (`ruff check --fix`+`ruff format`, `npx prettier --write`, `shfmt -w`, each `|| true`-guarded). This is exactly what global hooks (`~/.kiro/hooks/`, 2.13.0) exist for. **Not migrated yet** — global hooks are V3-only and V3 has no GA date as of this writing (see `kiro-cli-features-log.md`). Revisit once V3 is this repo's default baseline.
+- **Hooks consolidated into one global hook (migrated).** The 17 agents that previously carried an identical inline `hooks` block (`postToolUse` → `fs_write` → `hooks-bin/format-written-file.sh`) now rely on a single global hook at `~/.kiro/hooks/format-on-save.json` instead. Global hooks are V3-only; `settings/cli.json` already sets `chat.agentEngine: v3`, so this repo has been on the V3 baseline since before this migration — the old "V3 has no GA date" framing was stale. One caveat: `kiro-cli --cloud` sessions sync `hooks/` via Configuration Sync but do NOT sync `hooks-bin/` (only 7 top-level folders sync: `steering/`, `agents/`, `hooks/`, `skills/`, `powers/`, `settings/`, `workflows/`). In a cloud session the hook command will therefore not find the script and no-op — by design, the script fails closed (does nothing) rather than erroring, so this is safe, just not functional for actual formatting in cloud. Inline the script into the hook's `command` if cloud-side formatting is ever required.
 
 ## Subagent Review Loops
 
@@ -83,6 +83,12 @@ If unsure, use subagent invocation.
 ## Kiro CLI Features
 
 For a running log of Kiro CLI feature releases (agent output side channels, OAuth, `/rewind`, model effort, subagent review loops, cloud sessions, `/voice`, global hooks, etc.), see `steering/kiro-cli-features-log.md` (manual inclusion — load it when you need to check what shipped in a specific version, not on every session).
+
+## Capability Placement
+
+Deciding whether a new capability belongs in a steering doc, a skill, a script/MCP tool, or a
+sub-agent is its own decision framework — see `steering/capability-placement.md` (manual
+inclusion — load it when adding a new rule, skill, or MCP integration).
 
 ## Adaptive Thinking (Kiro CLI 2.2+)
 

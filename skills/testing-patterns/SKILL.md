@@ -67,6 +67,6 @@ test('has no accessibility violations', async () => {
 ## Playwright Quick Reference
 
 - Selectors: `page.getByTestId("...")` (uses `data-testid` attribute) — never class/id/tag
-- Auth: `cy.session()` + `cy.request()`, never UI login
-- Waiting: `cy.intercept()` + `cy.wait('@alias')`, never `cy.wait(ms)`
+- Auth: `storageState` set up once in a setup project, never a UI login flow per test (see `development-quality-gates.md` → "Playwright E2E Standards")
+- Waiting: `page.waitForResponse()` / `page.route()` to intercept and wait on network calls, never `page.waitForTimeout(ms)`
 - Structure: `tests/e2e/*.spec.ts`, `tests/e2e/pages/*.ts`

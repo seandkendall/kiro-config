@@ -32,7 +32,7 @@ This is a one-way door for the duration the trigger is enabled. Bake in:
 
 ### 1. Generate the email assets in the existing project
 
-Copy from `skills/email-templates/`:
+Copy from `skills/email-template-rendering/references/`:
 
 - `welcome.html` + `welcome.txt`
 - `verification.html` + `verification.txt`
@@ -44,7 +44,7 @@ Build them through the CSS inliner per `email-template-rendering.md` so the ship
 
 ### 2. Add the Lambda handler
 
-Copy `skills/email-templates/cognito-email-handler.py` to `cdk-backend/lambda/functions/cognito_email/cognito_email.py`. Add `requirements.txt`:
+Copy `skills/email-template-rendering/references/cognito-email-handler.py` to `cdk-backend/lambda/functions/cognito_email/cognito_email.py`. Add `requirements.txt`:
 
 ```
 aws-encryption-sdk==4.0.1
@@ -214,7 +214,7 @@ Once the migration is stable in production for a week:
 ## Cross-References
 
 - `steering/email-standards.md` — what the new emails must look like
-- `skills/email-template-rendering.md` — CSS inlining build pipeline
-- `skills/email-templates/cognito-email-handler.py` — reference Lambda implementation
-- `skills/email-templates/{welcome,verification,password-reset}.{html,txt}` — starter templates
+- `skills/email-template-rendering/SKILL.md` — CSS inlining build pipeline
+- `skills/email-template-rendering/references/cognito-email-handler.py` — reference Lambda implementation
+- `skills/email-template-rendering/references/{welcome,verification,password-reset}.{html,txt}` — starter templates
 - `steering/aws-auth-cognito.md` — Cognito custom UI rule (companion to custom emails)
