@@ -42,19 +42,10 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -63,9 +54,6 @@
   ],
   "welcomeMessage": "Security specialist ready. IAM audit, encryption review, cdk-nag remediation, Well-Architected Security assessment. What needs hardening?",
   "keyboardShortcut": "shift+s",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -74,13 +62,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ],
     "policies": [

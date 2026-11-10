@@ -20,19 +20,10 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -41,9 +32,6 @@
   ],
   "welcomeMessage": "Documentation specialist ready. READMEs, API docs, ADRs, runbooks, changelogs. What needs documenting?",
   "keyboardShortcut": "shift+o",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -52,13 +40,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ],
     "policies": [

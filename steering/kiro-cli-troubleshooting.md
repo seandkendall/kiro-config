@@ -46,6 +46,10 @@ Check `~/.zshrc` for the env var. If not present, the server will fail at startu
 
 `uvx`/`npx` often download packages on first run (15-60s). Increase `mcp.noInteractiveTimeout` in `settings/cli.json` to `180000` (3 minutes) — already set in this config.
 
+### Google Drive MCP: "authorization was revoked or has expired"
+
+The stored refresh token for the connected Google account is dead (manual revoke at myaccount.google.com/permissions, a security event, or the 50-refresh-token-per-OAuth-client cap from repeated re-auths across machines). Confirm with the `authGetStatus` tool — a dead token shows `hasAccessToken`/`hasRefreshToken: false` or a negative `expiresInSec`. Fix: call `manage_accounts` with `action: "add"` and the SAME `account_id` alias already in use (check via `manage_accounts` `action: "list"`); it returns a fresh `authUrl`. Open that URL directly in Chrome yourself (`open -a "Google Chrome" "<url>"`) rather than asking the user to paste it — the MCP server's local loopback listener (`127.0.0.1:3000`) captures the redirect automatically once they click Allow. Re-check with `authGetStatus` to confirm `hasAccessToken`/`hasRefreshToken: true` and `missingScopes: []`. No file edits or reinstalls needed — this is purely a token-lifecycle issue, not a config problem.
+
 ## Side Channel Issues (Kiro CLI 2.3.0+)
 
 ### `$AGENT_DISPLAY_OUT` is empty when running deploy.sh manually

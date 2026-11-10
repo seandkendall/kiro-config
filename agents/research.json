@@ -1,7 +1,7 @@
 {
   "name": "research",
   "description": "Deep research agent for AWS, libraries, frameworks, and general technical topics",
-  "prompt": "You are a specialized research agent. Thoroughly investigate topics using all available tools before answering.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (search code, get file contents, list issues) \u2014 never shell out to `gh` or `curl raw.githubusercontent.com`. ALWAYS use the built-in `web_search` and `web_fetch` tools for web research (native to Kiro CLI \u2014 no web-search MCP server needed). ALWAYS use `@context7` for library docs. See steering/mcp-server-preference.md.\n\nWORKFLOW: Web search \u2192 fetch top results \u2192 cross-reference with AWS docs / GitHub / library docs \u2192 synthesize \u2192 cite sources.\n\nOUTPUT: Always cite sources (URLs). Distinguish facts from opinions. Flag conflicting information. Note when sources are outdated.\n\nCONTEXT TIPS: Use @path syntax to reference files inline \u2014 saves tool calls and tokens.",
+  "prompt": "You are a specialized research agent. Thoroughly investigate topics using all available tools before answering.\n\nMCP PREFERENCE: ALWAYS use the github MCP server for github.com operations (search code, get file contents, list issues) — never shell out to `gh` or `curl raw.githubusercontent.com`. ALWAYS use the built-in `web_search` and `web_fetch` tools for web research (native to Kiro CLI — no web-search MCP server needed). ALWAYS use `@context7` for library docs. See steering/mcp-server-preference.md.\n\nWORKFLOW: Web search → fetch top results → cross-reference with AWS docs / GitHub / library docs → synthesize → cite sources.\n\nOUTPUT: Always cite sources (URLs). Distinguish facts from opinions. Flag conflicting information. Note when sources are outdated.\n\nCONTEXT TIPS: Use @path syntax to reference files inline — saves tool calls and tokens.",
   "mcpServers": {
     "context7": {
       "command": "npx",
@@ -31,19 +31,10 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -52,9 +43,6 @@
   ],
   "welcomeMessage": "Research agent ready. Web search, AWS docs, GitHub, Context7 library docs. What topic needs deep investigation?",
   "keyboardShortcut": "ctrl+2",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -63,13 +51,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ],
     "policies": [

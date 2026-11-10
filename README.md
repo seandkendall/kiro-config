@@ -258,6 +258,8 @@ To enable it:
 2. Save it to `~/.config/google-drive-mcp/gcp-oauth.keys.json` (the path the `google-workspace` agent expects via `GOOGLE_DRIVE_OAUTH_CREDENTIALS`).
 3. Restart Kiro CLI; the agent runs read-only (`drive.readonly` scope).
 
+If a previously-working connection later fails with "authorization was revoked or has expired," that's a dead refresh token, not a setup problem — see `steering/kiro-cli-troubleshooting.md` → "Google Drive MCP: authorization was revoked or has expired" for the fix (re-run the OAuth flow for the same account alias via the `manage_accounts` tool).
+
 This file is a credential — keep it out of version control (it is gitignored here as `gcp-oauth.keys.json`).
 
 ### Email Research agent (optional, local-only setup)

@@ -12,27 +12,15 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
     "file://README.md",
     "file://../steering/*.md"
-  ],
-  "allowedTools": [
-    "@creds-agent"
   ],
   "permissions": {
     "rules": [
@@ -42,13 +30,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ]
   }

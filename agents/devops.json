@@ -43,19 +43,10 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -64,9 +55,6 @@
   ],
   "welcomeMessage": "DevOps specialist ready. CloudWatch monitoring, alerting, cost optimization. What monitoring or operations work do we need?",
   "keyboardShortcut": "ctrl+9",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -75,13 +63,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ],
     "policies": [

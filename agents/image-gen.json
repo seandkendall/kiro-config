@@ -23,19 +23,10 @@
         "AWS_REGION=us-east-1"
       ],
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -44,9 +35,6 @@
   ],
   "welcomeMessage": "Image generation + editing ready. Stable Image Ultra/Core + Stable Diffusion 3.5 via Bedrock (us-west-2). Logos, icons, mockups, virtual try-on, ambient art. What images do you need?",
   "keyboardShortcut": "shift+i",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -55,13 +43,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ]
   }

@@ -14,19 +14,10 @@
         "GOOGLE_DRIVE_MCP_SCOPES": "drive.readonly"
       },
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -34,9 +25,6 @@
     "file://../steering/*.md"
   ],
   "welcomeMessage": "Google Workspace agent ready (read-only). I can search Drive, read Docs, and pull data from Sheets. What would you like to look up?",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -45,13 +33,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ],
     "policies": [

@@ -42,19 +42,10 @@
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -117,9 +108,6 @@
   },
   "keyboardShortcut": "ctrl+1",
   "welcomeMessage": "Master orchestrator ready. I route any task to the right specialist subagent (21 available), generate images and diagrams, and write deploy.sh scripts. What are we building?",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -153,13 +141,6 @@
           "stocks",
           "testing",
           "web-builder"
-        ],
-        "effect": "allow"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
         ],
         "effect": "allow"
       }

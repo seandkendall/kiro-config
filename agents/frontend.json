@@ -68,19 +68,10 @@
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -90,9 +81,6 @@
   ],
   "keyboardShortcut": "ctrl+5",
   "welcomeMessage": "Frontend specialist ready. React 19+, TypeScript, Tailwind CSS, shadcn/ui, WCAG 2.1 AA. Equipped with Playwright, Figma, Browser Lens, 21st.dev Magic, and more. What are we building?",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -101,13 +89,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ],
     "policies": [

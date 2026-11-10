@@ -31,19 +31,10 @@
         "--caps=testing,storage,devtools"
       ],
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -53,9 +44,6 @@
   ],
   "keyboardShortcut": "ctrl+6",
   "welcomeMessage": "QA specialist ready. pytest + moto for Lambda, Vitest + RTL for React, Playwright for E2E. Target: 100% coverage. What needs testing?",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -64,13 +52,6 @@
           "git-defender*"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
-        ],
-        "effect": "allow"
       }
     ],
     "policies": [

@@ -57,19 +57,10 @@
         "--isolated"
       ],
       "disabled": false
-    },
-    "creds-agent": {
-      "command": "aim",
-      "args": [
-        "mcp",
-        "start-server",
-        "local-creds-agent-mcp"
-      ]
     }
   },
   "tools": [
-    "*",
-    "@creds-agent"
+    "*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -106,9 +97,6 @@
   },
   "keyboardShortcut": "shift+w",
   "welcomeMessage": "Web builder ready. React + AWS full-stack apps. I delegate UI work to the frontend subagent, backend to serverless, and AI features to ai-builder. What are we building?",
-  "allowedTools": [
-    "@creds-agent"
-  ],
   "permissions": {
     "rules": [
       {
@@ -131,13 +119,6 @@
           "security",
           "serverless",
           "testing"
-        ],
-        "effect": "allow"
-      },
-      {
-        "capability": "mcp",
-        "match": [
-          "creds-agent/*"
         ],
         "effect": "allow"
       }

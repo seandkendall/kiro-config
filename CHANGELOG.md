@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.35.1] - Removed the Amazon-internal creds-agent MCP server from version control
+
+### Removed
+
+- The `creds-agent` MCP server (`aim mcp start-server local-creds-agent-mcp`, an
+  Amazon-internal AIM credential agent) from all 21 tracked agent JSON files —
+  stripped the `mcpServers.creds-agent` block, `@creds-agent` tool entries, and
+  `creds-agent/*` permission rules. `agents/accounting.json` is unaffected since
+  it's already gitignored
+
+### Added
+
+- `steering/kiro-cli-troubleshooting.md` entry for a dead Google Drive OAuth
+  refresh token ("authorization was revoked or has expired") — fix via the
+  `google-drive` MCP server's `manage_accounts` tool, re-running the OAuth flow
+  for the same account alias
+
 ## [0.35.0] - Consolidated per-agent hooks into one global hook, migrated 11 skills to directory form, added a capability-placement decision framework
 
 ### Added
