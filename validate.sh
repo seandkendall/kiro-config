@@ -10,7 +10,8 @@
 #   2. Agents that fail kiro-cli's schema validation
 #   3. Bash syntax errors in import.sh and validate.sh
 #   4. Privacy guard regressions: any tracked file matching the
-#      personal-* gitignore patterns
+#      personal-* gitignore patterns, or either local-only demo agent
+#      (graham, keyera-databricks) and graham's local support directory
 #
 # This is NOT a CI/CD pipeline — it's a local script you run yourself.
 # The only deployment method for projects is still `deploy.sh` (per
@@ -95,6 +96,10 @@ echo "Step 4: Privacy guard check..."
 LEAKS=$(cd "$KIRO" && git ls-files \
   'agents/personal-*.json' \
   'agents/accounting.json' \
+  'agents/graham.json' \
+  'agents/keyera-databricks.json' \
+  'local/graham-databricks' \
+  'local/graham-databricks/*' \
   'steering/personal-*.md' 2>/dev/null \
   | grep -v 'steering/personal-rules-protocol.md' || true)
 
