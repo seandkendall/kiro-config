@@ -520,3 +520,12 @@ changes recorded before handing back to the user. Newest rounds are appended to 
 - Aligned `skills/deploy-on-aws/SKILL.md`'s KMS guidance to the same "ALWAYS preferred... lowest cost" phrasing.
 - Swept `steering/aws-cdk-core.md`, `steering/email-standards.md`, `steering/post-task-recommendations.md`, and 4 skill files for other KMS mentions — none needed changes (DynamoDB's exception already correctly self-documents as a deliberate carve-out from this rule; the others were generic usage examples, not restatements of the preference hierarchy).
 - `./validate.sh` green; `steering/security-policies.md` stayed under the 10,000-char cloud-sync limit (9,890/10,000).
+
+## Round 63 — 2026-11-14 09:28:00 -06:00
+
+- Sharpened the KMS rule in `steering/security-policies.md` per explicit user clarification of the global preference: "always prefer FREE KMS over PAID KMS." Made the free-vs-paid distinction factually precise rather than just cost-graded: only the AWS-owned key is truly free (zero KMS involvement, zero fee); AWS-managed and customer-managed are both real KMS keys that incur the standard per-request charge, with customer-managed additionally costing ~$1/month per key — so "cheapest paid option" (AWS-managed) is not the same thing as free (AWS-owned), and the doc now says so explicitly.
+- Reordered/tightened the "Data Protection" and "Secrets Management" sections to state the order plainly: AWS-owned (free) → AWS-managed (cheapest paid option) → customer-managed (compliance/hard-requirement only).
+- Trimmed the section to stay under the 10,000-char cloud-sync limit after the expansion (9,877/10,000).
+- Updated `skills/deploy-on-aws/SKILL.md`'s matching KMS line to the same free-vs-paid framing.
+- Re-verified `steering/aws-cdk-core.md`'s DynamoDB AWS-owned-key exception still reads consistently with the sharpened rule (it does — no change needed there).
+- `./validate.sh` green.

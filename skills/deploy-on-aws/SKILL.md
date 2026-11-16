@@ -110,4 +110,4 @@ Always fall back gracefully: `${AGENT_DISPLAY_OUT:-/dev/stderr}` works when not 
 - Run IaC security scans (cdk-nag, cfn-nag) before deployment
 - Don't ask "Lambda or Fargate?" — just pick the obvious one
 - If genuinely ambiguous, then ask
-- The AWS-managed KMS key is ALWAYS preferred over customer-managed (`aws/service-name`) — it's also the lowest-cost option — unless there's a specific compliance requirement
+- Use the FREE AWS-owned key when a service offers one as default (e.g., DynamoDB); otherwise the AWS-managed key (`aws/service-name`) is ALWAYS preferred over customer-managed — both are paid KMS keys, but AWS-managed has no monthly fee — unless there's a specific compliance requirement

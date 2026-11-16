@@ -22,7 +22,7 @@ description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Param
   - **Automatic credential rotation** — Secrets Manager has built-in rotation; Parameter Store does not
   - **Cross-account secret sharing**, or values larger than the Parameter Store limit
 - **In production and any shared/public repo, never put secrets in plaintext environment variables** — Lambda env vars are visible in the console, `GetFunctionConfiguration`, and CloudFormation. Fetch from SSM `SecureString` or Secrets Manager at runtime and cache outside the handler (e.g., the Lambda Powertools `parameters` utility).
-- Encrypt with KMS — the AWS-managed key is ALWAYS preferred over customer-managed (it's also the lowest-cost option) unless a compliance requirement or service hard-requirement dictates customer-managed (see KMS rule below).
+- Encrypt with KMS — AWS-owned (free) first when available, otherwise AWS-managed over customer-managed (cheaper paid option) unless compliance or a service hard-requirement dictates customer-managed (see KMS rule below).
 - **In production and any shared/public repo, never hardcode API keys, passwords, or tokens in code.** (For private solo repos, see "Committing Secrets in Private Repos" below — the user may opt into this.)
 - Use plain SSM Parameter Store (`String`) for non-secret configuration; environment variables are acceptable for **non-secret** config only.
 
@@ -48,10 +48,10 @@ When this applies:
 
 ## Data Protection
 
-- **Encryption at rest is always on — no exceptions.** For every resource, prefer the **AWS-owned key** (no KMS involvement, no cost, no key policy to manage) when the service offers one as its default. **DynamoDB always uses its AWS-owned default** — never switch it to an AWS-managed or customer-managed KMS key. See `aws-cdk-core.md` "DynamoDB".
-- **Whenever an AWS-owned key isn't available, the AWS-managed KMS key is ALWAYS preferred over any other key.** It's also the lowest-cost KMS option (no monthly key fee, unlike customer-managed). This applies to S3, SQS, SNS, EBS, and any other service that defaults to no encryption or requires opting into a KMS key — use the service's AWS-managed key (`aws/service-name`).
-- **Customer-managed KMS keys are the last resort** — use them only when a specific compliance requirement mandates control over key rotation or cross-account access, or a service technically requires one (e.g., Cognito's `CustomEmailSender` trigger). Don't reach for one "to be safe"; it adds cost, complexity, and IAM/key-policy surface area with no security benefit over AWS-managed for most workloads.
-- So the order of preference, every time: AWS-owned (if available, free) → AWS-managed KMS (always preferred otherwise) → customer-managed KMS (only if compliance or a service hard-requires it).
+- **Encryption at rest is always on — no exceptions. Global KMS preference: FREE before PAID.** Only the **AWS-owned key** is truly free (no KMS involvement, no fee at all). AWS-managed and customer-managed keys both incur per-request KMS charges; customer-managed additionally costs ~$1/month per key — "cheapest paid option" is not the same as free. Use AWS-owned whenever a service defaults to it. **DynamoDB always uses its AWS-owned default** — never switch it to AWS-managed or customer-managed. See `aws-cdk-core.md` "DynamoDB".
+- **When no free option exists, AWS-managed is ALWAYS preferred over customer-managed** (no monthly fee, only the per-request charge) — applies to S3, SQS, SNS, EBS, and anything else that defaults to no encryption or requires opting into a key. Use the service's AWS-managed key (`aws/service-name`).
+- **Customer-managed KMS keys are the last resort** — only for a specific compliance requirement (key rotation/cross-account control) or a service hard-requirement (e.g., Cognito's `CustomEmailSender`). Don't reach for one "to be safe"; it adds cost, complexity, and IAM/key-policy surface area with no benefit over AWS-managed for most workloads.
+- Order, every time: AWS-owned (free) → AWS-managed (cheapest paid option) → customer-managed (compliance/hard-requirement only).
 - Encryption in transit: TLS everywhere, ACM certificates.
 - S3: Block all public access, use CloudFront with OAC for public content.
 - DynamoDB: Enable point-in-time recovery.
