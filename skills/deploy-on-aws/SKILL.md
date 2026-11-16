@@ -110,4 +110,4 @@ Always fall back gracefully: `${AGENT_DISPLAY_OUT:-/dev/stderr}` works when not 
 - Run IaC security scans (cdk-nag, cfn-nag) before deployment
 - Don't ask "Lambda or Fargate?" — just pick the obvious one
 - If genuinely ambiguous, then ask
-- Use AWS managed KMS keys (`aws/service-name`) over customer-managed unless there's a specific compliance requirement
+- The AWS-managed KMS key is ALWAYS preferred over customer-managed (`aws/service-name`) — it's also the lowest-cost option — unless there's a specific compliance requirement

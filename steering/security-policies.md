@@ -22,7 +22,7 @@ description: 'Security policies: Cognito + MFA + passkeys, secrets via SSM Param
   - **Automatic credential rotation** — Secrets Manager has built-in rotation; Parameter Store does not
   - **Cross-account secret sharing**, or values larger than the Parameter Store limit
 - **In production and any shared/public repo, never put secrets in plaintext environment variables** — Lambda env vars are visible in the console, `GetFunctionConfiguration`, and CloudFormation. Fetch from SSM `SecureString` or Secrets Manager at runtime and cache outside the handler (e.g., the Lambda Powertools `parameters` utility).
-- Encrypt with KMS — prefer AWS managed keys unless a compliance requirement dictates customer-managed (see KMS rule below).
+- Encrypt with KMS — the AWS-managed key is ALWAYS preferred over customer-managed (it's also the lowest-cost option) unless a compliance requirement or service hard-requirement dictates customer-managed (see KMS rule below).
 - **In production and any shared/public repo, never hardcode API keys, passwords, or tokens in code.** (For private solo repos, see "Committing Secrets in Private Repos" below — the user may opt into this.)
 - Use plain SSM Parameter Store (`String`) for non-secret configuration; environment variables are acceptable for **non-secret** config only.
 
@@ -49,9 +49,9 @@ When this applies:
 ## Data Protection
 
 - **Encryption at rest is always on — no exceptions.** For every resource, prefer the **AWS-owned key** (no KMS involvement, no cost, no key policy to manage) when the service offers one as its default. **DynamoDB always uses its AWS-owned default** — never switch it to an AWS-managed or customer-managed KMS key. See `aws-cdk-core.md` "DynamoDB".
-- For services where an AWS-owned key isn't an option (e.g., S3, SQS, SNS, EBS default to no encryption or require you to opt into a KMS key), use an **AWS-managed KMS key** (`aws/service-name`) as the next-best default — not customer-managed.
-- **Customer-managed KMS keys are the last resort** — use them only when a specific compliance requirement mandates control over key rotation or cross-account access. Don't reach for one "to be safe"; it adds cost, complexity, and IAM/key-policy surface area with no security benefit over AWS-managed for most workloads.
-- So the order of preference, every time: AWS-owned (if available) → AWS-managed KMS → customer-managed KMS (only if compliance requires it).
+- **Whenever an AWS-owned key isn't available, the AWS-managed KMS key is ALWAYS preferred over any other key.** It's also the lowest-cost KMS option (no monthly key fee, unlike customer-managed). This applies to S3, SQS, SNS, EBS, and any other service that defaults to no encryption or requires opting into a KMS key — use the service's AWS-managed key (`aws/service-name`).
+- **Customer-managed KMS keys are the last resort** — use them only when a specific compliance requirement mandates control over key rotation or cross-account access, or a service technically requires one (e.g., Cognito's `CustomEmailSender` trigger). Don't reach for one "to be safe"; it adds cost, complexity, and IAM/key-policy surface area with no security benefit over AWS-managed for most workloads.
+- So the order of preference, every time: AWS-owned (if available, free) → AWS-managed KMS (always preferred otherwise) → customer-managed KMS (only if compliance or a service hard-requires it).
 - Encryption in transit: TLS everywhere, ACM certificates.
 - S3: Block all public access, use CloudFront with OAC for public content.
 - DynamoDB: Enable point-in-time recovery.
